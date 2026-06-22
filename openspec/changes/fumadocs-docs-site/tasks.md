@@ -28,11 +28,11 @@
 ## 5. Remove the Vite demo + cleanup
 
 - [x] 5.1 Delete `demo/`, `vite.config.ts`, `index.html`; remove Vite/react-plugin deps and the `pnpm demo` script
-- [ ] 5.2 Update README (dev = `pnpm dev` Next; registry usage unchanged) and `.gitignore` as needed
+- [x] 5.2 Update README (dev = `pnpm dev` Next; registry usage unchanged) and `.gitignore` as needed
 
 ## 6. Verify
 
-- [ ] 6.1 `pnpm dev` runs; all 8 component pages + theme page render with working Preview/Code, routing, sidebar, TOC
-- [ ] 6.2 Dark/light toggle re-themes every preview consistently
-- [ ] 6.3 Registry build emits all `public/r/*.json` and the app serves them; `npx shadcn add @acrylic/button` resolves against the local host
-- [ ] 6.4 Adding a throwaway test component (source + registry item + MDX + example) appears with no framework/config edits — then revert it
+- [x] 6.1 `pnpm dev` runs; all 8 component pages + theme page render with working Preview/Code, routing, sidebar, TOC
+- [x] 6.2 Dark/light toggle re-themes every preview consistently
+- [x] 6.3 Registry build emits all `public/r/*.json` and the app serves them; `npx shadcn add @acrylic/button` resolves against the local host
+- [x] 6.4 Adding a throwaway test component (source + registry item + MDX + example) appears with no framework/config edits — then revert it

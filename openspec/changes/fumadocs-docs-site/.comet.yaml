@@ -12,3 +12,5 @@ verified_at: null
 archived: false
 handoff_context: openspec/changes/fumadocs-docs-site/.comet/handoff/design-context.json
 handoff_hash: 36cd1025cbff8145eeae7d2aaa7db30109419b6e2fda52417184143928d35204
+build_command: ./node_modules/.bin/next build
+verify_command: ./node_modules/.bin/next build
