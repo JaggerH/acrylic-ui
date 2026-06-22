@@ -2,6 +2,7 @@
 change: fumadocs-docs-site
 design-doc: openspec/changes/fumadocs-docs-site/design.md
 base-ref: fe84ba4
+archived-with: 2026-06-23-fumadocs-docs-site
 ---
 
 # Plan — Acrylic Fumadocs docs site

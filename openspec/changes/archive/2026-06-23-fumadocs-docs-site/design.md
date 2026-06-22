@@ -2,6 +2,8 @@
 comet_change: fumadocs-docs-site
 role: technical-design
 canonical_spec: openspec
+archived-with: 2026-06-23-fumadocs-docs-site
+status: final
 ---
 
 ## Context

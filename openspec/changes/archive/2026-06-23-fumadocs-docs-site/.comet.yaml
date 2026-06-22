@@ -1,15 +1,15 @@
 workflow: full
-phase: verify
+phase: archive
 build_mode: executing-plans
 isolation: branch
 verify_mode: full
 design_doc: openspec/changes/fumadocs-docs-site/design.md
 plan: docs/superpowers/plans/2026-06-23-fumadocs-docs-site.md
-verify_result: pending
+verify_result: pass
 verification_report: openspec/changes/fumadocs-docs-site/verification-report.md
 branch_status: handled
-verified_at: null
-archived: false
+verified_at: 2026-06-23
+archived: true
 handoff_context: openspec/changes/fumadocs-docs-site/.comet/handoff/design-context.json
 handoff_hash: 36cd1025cbff8145eeae7d2aaa7db30109419b6e2fda52417184143928d35204
 build_command: ./node_modules/.bin/next build
