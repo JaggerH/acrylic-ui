@@ -1,0 +1,23 @@
+---
+title: Alert Dialog
+description: Frosted confirm dialog — the AlertDialog counterpart of the acrylic Dialog.
+---
+
+A confirm dialog with the same 72px frosted overlay and translucent panel as the
+[Dialog](/docs/components/dialog). It shares the dialog's ref-counted body-paint,
+so it can stack on top of a Dialog without either one losing its frost.
+
+## Installation
+
+```bash
+npx shadcn add @acrylic/alert-dialog
+```
+
+## Usage
+
+<ComponentPreview name="alert-dialog-demo" />
+
+## Notes
+
+- Self-contained `AlertDialogAction` / `AlertDialogCancel` — no external Button dependency.
+- For a destructive action, pass `className="bg-destructive text-white"` to `AlertDialogAction`.

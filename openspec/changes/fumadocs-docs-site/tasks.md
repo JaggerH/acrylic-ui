@@ -20,10 +20,10 @@
 
 ## 4. Migrate the 8 components to MDX pages
 
-- [ ] 4.1 Author MDX pages (alphabetical): alert-dialog, auto-textarea, button, dialog, glass-card, input, toaster — each with title, description, `npx shadcn add @acrylic/<name>`, ≥1 example, and a props/variants table
-- [ ] 4.2 Create one example item per component in the registry + index
-- [ ] 4.3 Add a "Theme / Tokens" docs page documenting the `--acr-*` macOS-26 token set (light/dark)
-- [ ] 4.4 Confirm sidebar is alphabetical with active highlight; TOC present on each page
+- [x] 4.1 Author MDX pages (alphabetical): alert-dialog, auto-textarea, button, dialog, glass-card, input, toaster — each with title, description, `npx shadcn add @acrylic/<name>`, ≥1 example, and a props/variants table
+- [x] 4.2 Create one example item per component in the registry + index
+- [x] 4.3 Add a "Theme / Tokens" docs page documenting the `--acr-*` macOS-26 token set (light/dark)
+- [x] 4.4 Confirm sidebar is alphabetical with active highlight; TOC present on each page
 
 ## 5. Remove the Vite demo + cleanup
 

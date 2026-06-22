@@ -1,0 +1,36 @@
+---
+title: Theme & Tokens
+description: The Acrylic token set — colors, fills, surfaces — lifted from the official macOS 26 UI Kit (light + dark).
+---
+
+Acrylic ships one token set (`registry/acrylic/acrylic.css`) that every component
+references, so they all re-theme together. Values are lifted from the official
+Apple **macOS 26** UI Kit. Structure follows the shadcn / next-themes convention:
+`:root` is light, `.dark` is dark.
+
+## Semantic colors
+
+| token | source (macOS 26) | light | dark |
+| --- | --- | --- | --- |
+| `--foreground` | Label · Primary | `#000` .85 | `#fff` 1 |
+| `--muted-foreground` | Label · Secondary | `#000` .5 | `#fff` .55 |
+| `--primary` | System Blue (accent) | `#0088ff` | `#0091ff` |
+| `--destructive` | System Red | `#ff383c` | `#ff4245` |
+| `--border` | Separator | `#3c3c43` .29 | `#fff` .12 |
+
+## Translucent fills & surfaces (`--acr-*`)
+
+| token | role | source |
+| --- | --- | --- |
+| `--acr-chip` | filled control (Neutral button) | Fill · Primary (10%) |
+| `--acr-field` | input fill | Fill · Tertiary (5%) |
+| `--acr-hover` | ghost hover | Fill · Quaternary (3%) |
+| `--acr-control` | bordered-button fill | controlColor |
+| `--acr-surface` | GlassCard | material approximation |
+| `--acr-panel` | Dialog panel | material approximation |
+| `--acr-overlay` | Dialog overlay tint | material approximation |
+
+## Spacing & radius
+
+Spacing is the native 8pt grid (Tailwind `p-2` = 8px, `p-4` = 16px…). Control
+corner radius follows macOS: **radius = height ÷ 4**.

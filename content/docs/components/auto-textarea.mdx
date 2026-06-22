@@ -1,0 +1,25 @@
+---
+title: AutoTextarea
+description: Frosted-white auto-growing textarea that grows to maxLines, then scrolls.
+---
+
+A translucent frosted input that auto-grows with its content up to `maxLines`,
+then scrolls with the macOS-style overlay scrollbar.
+
+## Installation
+
+```bash
+npx shadcn add @acrylic/auto-textarea
+```
+
+## Usage
+
+<ComponentPreview name="auto-textarea-demo" />
+
+## Props
+
+| prop | type | default | description |
+| --- | --- | --- | --- |
+| `maxLines` | `number` | `3` | grow up to this many rows, then scroll |
+
+Plus all native `<textarea>` props.
