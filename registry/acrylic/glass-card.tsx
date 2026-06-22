@@ -19,10 +19,10 @@ const GlassCard = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "relative rounded-xl bg-zinc-950/40 backdrop-blur-xl",
+      "relative rounded-xl bg-[var(--acr-surface)] backdrop-blur-xl",
       "transition-[transform,filter,background-color] duration-200",
       interactive &&
-        "hover:-translate-y-px hover:bg-zinc-900/55 " +
+        "hover:-translate-y-px hover:bg-[var(--acr-surface-hover)] " +
         "hover:drop-shadow-[0_11px_22px_rgba(0,0,0,0.55)]",
       className
     )}

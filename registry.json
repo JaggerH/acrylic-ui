@@ -55,6 +55,33 @@
       ]
     },
     {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Acrylic Button",
+      "description": "Button modeled on the Muse: solid-white primary, translucent secondary, ghost, outline, and a glow CTA (dark pill with a luminous sky ring). asChild via Radix Slot.",
+      "dependencies": ["@radix-ui/react-slot", "class-variance-authority"],
+      "files": [
+        {
+          "path": "registry/acrylic/button.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Acrylic Input",
+      "description": "Translucent dark input pill with a hairline border + backdrop-blur and a soft focus ring — the Muse search field. Compose a leading icon by wrapping.",
+      "files": [
+        {
+          "path": "registry/acrylic/input.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/input.tsx"
+        }
+      ]
+    },
+    {
       "name": "auto-textarea",
       "type": "registry:ui",
       "title": "AutoTextarea",

@@ -14,9 +14,9 @@ export function Toaster(props: ToasterProps) {
       offset={56}
       toastOptions={{
         classNames: {
-          toast: "bg-zinc-900/95 border border-white/10 text-zinc-100 backdrop-blur-xl shadow-lg",
+          toast: "bg-[var(--acr-toast)] border border-[var(--acr-border-soft)] text-foreground backdrop-blur-xl shadow-lg",
           title: "text-[12px] font-medium",
-          description: "text-[11px] text-zinc-400",
+          description: "text-[11px] text-muted-foreground",
           actionButton: "bg-primary text-primary-foreground text-[11px]",
         },
       }}

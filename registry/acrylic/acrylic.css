@@ -1,43 +1,138 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   Acrylic — optional global helpers
+   Acrylic theme tokens — values lifted from the official Apple macOS 26 UI Kit
    ---------------------------------------------------------------------------
-   The components (GlassCard, Acrylic Dialog) need NO global CSS to work on a
-   normal (opaque-body) web app: the Dialog overlay's `backdrop-filter` frosts
-   the page directly, and GlassCard is a self-contained translucent fill.
+   Components reference `var(--acr-*)` (translucent surfaces) + semantic color
+   vars, so they flip with the `.light` / `.dark` class on <html>. Import this
+   file (or copy these blocks) into your app's global stylesheet.
 
-   The rules below are OPT-IN, only needed for TRANSPARENT-window desktop apps
-   (Tauri / Electron with native vibrancy). See README → "Tauri / transparent-
-   window apps". Copy them into your app's global stylesheet if relevant. */
-
-/* When the native window is a transparent vibrancy surface, the app sets
-   `html.vibrancy` to let the desktop show through. While a Dialog is open the
-   component adds `html.modal-acrylic`, which repaints the body opaque so the
-   overlay's backdrop-filter has real pixels to frost. Harmless otherwise. */
-html.vibrancy {
-  --background: transparent;
+   Source mapping:
+     --foreground / --muted-foreground  ← Label · Primary / Secondary
+     --acr-chip / --acr-field / --acr-hover ← Fills · Primary(10%) / Tertiary(5%) / Quaternary(3%)
+     --primary ← System Blue · accent       --destructive ← System Red
+     --border  ← Separator
+   Surfaces (--acr-surface / --acr-panel / --acr-overlay) are a frosted material
+   approximation — iterate toward Liquid Glass separately. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-destructive: var(--destructive);
+  --color-ring: var(--ring);
+  --color-border: var(--border);
 }
-html.vibrancy.modal-acrylic {
-  --background: rgba(24, 24, 27, 0.92);
+
+:root,
+.dark {
+  --background: #1e1e1e;
+  --foreground: rgba(255, 255, 255, 1);
+  --muted-foreground: rgba(255, 255, 255, 0.55);
+  --label-tertiary: rgba(255, 255, 255, 0.25);
+  --accent: #98989d;
+  --primary: #0091ff;
+  --primary-foreground: #ffffff;
+  --destructive: #ff4245;
+  --ring: #0091ff;
+  --border: rgba(255, 255, 255, 0.12);
+
+  --acr-chip: rgba(255, 255, 255, 0.10);
+  --acr-chip-hover: rgba(255, 255, 255, 0.14);
+  --acr-field: rgba(255, 255, 255, 0.05);
+  --acr-hover: rgba(255, 255, 255, 0.03);
+  --acr-border: rgba(255, 255, 255, 0.12);
+  --acr-border-soft: rgba(255, 255, 255, 0.08);
+  --acr-control: rgba(255, 255, 255, 0.09);
+  --acr-control-hover: rgba(255, 255, 255, 0.13);
+  --acr-control-border: rgba(255, 255, 255, 0.12);
+
+  --acr-surface: rgba(9, 9, 11, 0.40);
+  --acr-surface-hover: rgba(28, 28, 30, 0.55);
+  --acr-panel: rgba(255, 255, 255, 0.08);
+  --acr-overlay: rgba(9, 9, 11, 0.55);
+  --acr-field-strong: rgba(255, 255, 255, 0.18);
+  --acr-toast: rgba(28, 28, 30, 0.95);
+  --acr-solid: #ffffff;
+  --acr-solid-fg: #1c1c1e;
+  --acr-scrollbar: rgba(255, 255, 255, 0.28);
+  --acr-scrollbar-hover: rgba(255, 255, 255, 0.45);
+}
+
+.light {
+  --background: #ececec;
+  --foreground: rgba(0, 0, 0, 0.85);
+  --muted-foreground: rgba(0, 0, 0, 0.50);
+  --label-tertiary: rgba(0, 0, 0, 0.25);
+  --accent: #8e8e93;
+  --primary: #0088ff;
+  --primary-foreground: #ffffff;
+  --destructive: #ff383c;
+  --ring: #0088ff;
+  --border: rgba(60, 60, 67, 0.29);
+
+  --acr-chip: rgba(0, 0, 0, 0.10);
+  --acr-chip-hover: rgba(0, 0, 0, 0.14);
+  --acr-field: rgba(0, 0, 0, 0.05);
+  --acr-hover: rgba(0, 0, 0, 0.03);
+  --acr-border: rgba(60, 60, 67, 0.29);
+  --acr-border-soft: rgba(60, 60, 67, 0.18);
+  --acr-control: #ffffff;
+  --acr-control-hover: #f4f4f5;
+  --acr-control-border: rgba(0, 0, 0, 0.13);
+
+  --acr-surface: rgba(255, 255, 255, 0.55);
+  --acr-surface-hover: rgba(255, 255, 255, 0.75);
+  --acr-panel: rgba(255, 255, 255, 0.62);
+  --acr-overlay: rgba(236, 236, 236, 0.45);
+  --acr-field-strong: rgba(255, 255, 255, 0.60);
+  --acr-toast: rgba(255, 255, 255, 0.92);
+  --acr-solid: #1c1c1e;
+  --acr-solid-fg: #fafafa;
+  --acr-scrollbar: rgba(0, 0, 0, 0.28);
+  --acr-scrollbar-hover: rgba(0, 0, 0, 0.45);
+}
+
+html,
+body {
+  font-family: -apple-system, "SF Pro Text", system-ui, "Segoe UI", sans-serif;
 }
 
 /* macOS-style thin overlay scrollbar — add className="scrollbar-mac". */
 .scrollbar-mac {
   scrollbar-width: thin;
-  scrollbar-color: rgba(235, 235, 245, 0.28) transparent;
+  scrollbar-color: var(--acr-scrollbar) transparent;
 }
-.scrollbar-mac::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
+.scrollbar-mac::-webkit-scrollbar { width: 10px; height: 10px; }
+.scrollbar-mac::-webkit-scrollbar-track { background: transparent; }
 .scrollbar-mac::-webkit-scrollbar-thumb {
-  background-color: rgba(235, 235, 245, 0.22);
+  background-color: var(--acr-scrollbar);
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 .scrollbar-mac::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(235, 235, 245, 0.42);
+  background-color: var(--acr-scrollbar-hover);
   background-clip: content-box;
+}
+
+/* Optional — Tauri/Electron transparent vibrancy window only. See README. */
+html.vibrancy { --background: transparent; }
+html.vibrancy.modal-acrylic { --background: rgba(30, 30, 30, 0.92); }
+
+/* macOS / SF Pro type scale (px) — reference for building text-heavy components.
+   --text-body 13 is the macOS base (denser than web's 16). */
+:root {
+  --text-largetitle: 26px;
+  --text-title1: 22px;
+  --text-title2: 17px;
+  --text-title3: 15px;
+  --text-headline: 13px;
+  --text-body: 13px;
+  --text-callout: 12px;
+  --text-subheadline: 11px;
+  --text-footnote: 10px;
+  --text-caption: 10px;
 }

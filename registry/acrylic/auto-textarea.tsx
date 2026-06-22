@@ -41,10 +41,10 @@ const AutoTextarea = React.forwardRef<HTMLTextAreaElement, AutoTextareaProps>(
         value={value}
         onChange={(e) => { onChange?.(e); resize() }}
         className={cn(
-          "w-full resize-none rounded-md border border-transparent bg-white/20 backdrop-blur-2xl backdrop-brightness-150",
-          "text-white placeholder:text-white/90",
+          "w-full resize-none rounded-md border border-transparent bg-[var(--acr-field-strong)] backdrop-blur-2xl backdrop-brightness-150",
+          "text-foreground placeholder:text-muted-foreground",
           "px-3 py-2 text-xs leading-5 outline-none transition-colors",
-          "focus:bg-white/25 focus:border-primary disabled:opacity-60 scrollbar-mac",
+          "focus:border-primary disabled:opacity-60 scrollbar-mac",
           className,
         )}
         {...props}
