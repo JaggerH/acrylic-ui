@@ -1,0 +1,15 @@
+{
+  "change": "fumadocs-docs-site",
+  "phase": "design",
+  "mode": "compact",
+  "canonical_spec": "openspec",
+  "generated_by": "comet-handoff.sh",
+  "context_hash": "36cd1025cbff8145eeae7d2aaa7db30109419b6e2fda52417184143928d35204",
+  "files": [
+    { "path": "openspec/changes/fumadocs-docs-site/proposal.md", "sha256": "cf4068e9f1f00af9033a4cb7f0eaba9d3ff7577a7f65f245e39306c7b9b03607" },
+    { "path": "openspec/changes/fumadocs-docs-site/design.md", "sha256": "86ab225b35464cf2abf00b2d3fc133471fb86cc22b28d2024cc25d4ec3dddfa1" },
+    { "path": "openspec/changes/fumadocs-docs-site/tasks.md", "sha256": "23a63c5623989e31655947d6d2f42309c3db713a5c1c8cd84d36e1892a20a377" },
+    { "path": "openspec/changes/fumadocs-docs-site/specs/component-docs/spec.md", "sha256": "6e5b1b2ce3372db4bef485294918f663cc1dd8c72529f9de867dec57a3f8cdff" },
+    { "path": "openspec/changes/fumadocs-docs-site/specs/live-preview/spec.md", "sha256": "ac5038206f205b76846fb5fa5e64c77c266664b2d232c02e2a5615618e18ffb2" }
+  ]
+}
