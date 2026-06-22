@@ -1,6 +1,6 @@
 ## 1. Scaffold the Next.js + Fumadocs app
 
-- [ ] 1.1 Branch; bootstrap the Fumadocs shadcn template (or Vercel Registry Starter) into a temp dir; evaluate which grafts our registry build with least friction
+- [x] 1.1 Evaluate scaffold source (on master, no branch). Finding: the official `fumadocs-shadcn` example is Tailwind **v3** (Fumadocs 14, tailwind.config.js + tailwind-plugin); our registry is Tailwind **v4** (`@theme` + `bg-[var(--acr-*)]`). Using it would force a v4→v3 downgrade that breaks our token system. Decision: scaffold with current **`create-fumadocs-app` (Fumadocs v15 + Tailwind v4)** — same official tooling, v4-native — then graft the registry.
 - [ ] 1.2 Bring the chosen scaffold to the repo root (Next app: `app/`, `content/docs/`, `mdx-components`, fumadocs config), keeping the existing `registry/`, `registry.json`, `acrylic.css` untouched for now
 - [ ] 1.3 Wire Tailwind v4 + `acrylic.css` as the app's global stylesheet; verify the `--acr-*` tokens win over Fumadocs' default theme tokens (frosted surfaces read; chrome neutral)
 - [ ] 1.4 Reproduce the dark/light toggle (Fumadocs theme or a small client component flipping `html.dark/.light`); backdrop optional
