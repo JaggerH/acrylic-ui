@@ -69,3 +69,10 @@ Rollback: revert the branch; the prior Vite demo + registry remain at the last c
 
 - Exact template: `fumadocs-shadcn` example vs Vercel "Registry Starter" — pick during build by whichever grafts our registry build with least friction.
 - Props/variants tables: hand-authored MDX now; auto-generation from types is a later, non-migrating enhancement.
+
+## Implementation Divergence
+
+- **Examples are static-imported, not lazy** (live-preview spec's "lazy-loaded example
+  index" scenario). The index IS generated (`scripts/gen-examples.mjs` → single source
+  of truth) and Next still code-splits per route, but examples use static imports rather
+  than `React.lazy`. Accepted as a non-migrating future refinement; recorded at verify.
