@@ -1,0 +1,1337 @@
+{
+  "source": "Apple macOS 26 UI Kit.sketch",
+  "component": "button",
+  "note": "faithful extraction from Sketch; radius from style.corners.radii (raw 100 => fully-rounded => height/2). *_dark mapped via kit Dark swatch families (accent #0091FF, red #FF4245, black-opacity fills->white).",
+  "sizes": {
+    "mini": 16,
+    "small": 20,
+    "medium": 24,
+    "large": 28,
+    "xl": 36
+  },
+  "categories": {
+    "Arrow Button": {
+      "mini": {
+        "height": 16,
+        "radius": 8,
+        "radiusRaw": 100,
+        "padding": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "paddingX": 3,
+        "font": "SFPro-Semibold",
+        "fontSize": 11,
+        "fills_light": [
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(255, 255, 255, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 0, 0, 0.05)"
+          }
+        ],
+        "textColor_light": "rgba(0, 0, 0, 0.85)",
+        "textColor_dark": "rgba(255, 255, 255, 0.85)"
+      },
+      "small": {
+        "height": 20,
+        "radius": 10,
+        "radiusRaw": 100,
+        "padding": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "paddingX": 0,
+        "font": "SFPro-Semibold",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(255, 255, 255, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 0, 0, 0.05)"
+          }
+        ],
+        "textColor_light": "rgba(0, 0, 0, 0.85)",
+        "textColor_dark": "rgba(255, 255, 255, 0.85)"
+      },
+      "medium": {
+        "height": 24,
+        "radius": 12,
+        "radiusRaw": 100,
+        "padding": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "paddingX": 0,
+        "font": "SFPro-Semibold",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(255, 255, 255, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 0, 0, 0.05)"
+          }
+        ],
+        "textColor_light": "rgba(0, 0, 0, 0.85)",
+        "textColor_dark": "rgba(255, 255, 255, 0.85)"
+      },
+      "large": {
+        "height": 28,
+        "radius": 14,
+        "radiusRaw": 100,
+        "padding": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "paddingX": 0,
+        "font": "SFPro-Semibold",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(255, 255, 255, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 0, 0, 0.05)"
+          }
+        ],
+        "textColor_light": "rgba(0, 0, 0, 0.85)",
+        "textColor_dark": "rgba(255, 255, 255, 0.85)"
+      },
+      "xl": {
+        "height": 36,
+        "radius": 18,
+        "radiusRaw": 100,
+        "padding": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "paddingX": 0,
+        "font": "SFPro-Semibold",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(255, 255, 255, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 0, 0, 0.05)"
+          }
+        ],
+        "textColor_light": "rgba(0, 0, 0, 0.85)",
+        "textColor_dark": "rgba(255, 255, 255, 0.85)"
+      }
+    },
+    "Borderless (on = label change)": {
+      "mini": {
+        "height": 16,
+        "radius": null,
+        "radiusRaw": null,
+        "padding": {
+          "top": 2,
+          "right": 7,
+          "bottom": 1,
+          "left": 7
+        },
+        "paddingX": 7,
+        "font": "SFPro-Medium",
+        "fontSize": 10,
+        "fills_light": [],
+        "fills_dark": [],
+        "textColor_light": "rgba(0, 120, 240, 1)",
+        "textColor_dark": "rgba(0, 145, 255, 1)"
+      },
+      "small": {
+        "height": 20,
+        "radius": null,
+        "radiusRaw": null,
+        "padding": {
+          "top": 4,
+          "right": 10,
+          "bottom": 3,
+          "left": 10
+        },
+        "paddingX": 10,
+        "font": "SFPro-Medium",
+        "fontSize": 11,
+        "fills_light": [],
+        "fills_dark": [],
+        "textColor_light": "rgba(0, 120, 240, 1)",
+        "textColor_dark": "rgba(0, 145, 255, 1)"
+      },
+      "medium": {
+        "height": 24,
+        "radius": null,
+        "radiusRaw": null,
+        "padding": {
+          "top": 4,
+          "right": 16,
+          "bottom": 4,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [],
+        "fills_dark": [],
+        "textColor_light": "rgba(0, 120, 240, 1)",
+        "textColor_dark": "rgba(0, 145, 255, 1)"
+      },
+      "large": {
+        "height": 28,
+        "radius": null,
+        "radiusRaw": null,
+        "padding": {
+          "top": 6,
+          "right": 16,
+          "bottom": 6,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [],
+        "fills_dark": [],
+        "textColor_light": "rgba(0, 120, 240, 1)",
+        "textColor_dark": "rgba(0, 145, 255, 1)"
+      },
+      "xl": {
+        "height": 36,
+        "radius": null,
+        "radiusRaw": null,
+        "padding": {
+          "top": 10,
+          "right": 16,
+          "bottom": 10,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [],
+        "fills_dark": [],
+        "textColor_light": "rgba(0, 120, 240, 1)",
+        "textColor_dark": "rgba(0, 145, 255, 1)"
+      }
+    },
+    "Borderless (on = bezel)": {
+      "mini": {
+        "height": 16,
+        "radius": 4,
+        "radiusRaw": 4,
+        "padding": {
+          "top": 2,
+          "right": 7,
+          "bottom": 1,
+          "left": 7
+        },
+        "paddingX": 7,
+        "font": "SFPro-Medium",
+        "fontSize": 10,
+        "fills_light": [],
+        "fills_dark": [],
+        "textColor_light": "rgba(0, 120, 240, 1)",
+        "textColor_dark": "rgba(0, 145, 255, 1)"
+      },
+      "small": {
+        "height": 20,
+        "radius": 5,
+        "radiusRaw": 5,
+        "padding": {
+          "top": 4,
+          "right": 10,
+          "bottom": 3,
+          "left": 10
+        },
+        "paddingX": 10,
+        "font": "SFPro-Medium",
+        "fontSize": 11,
+        "fills_light": [],
+        "fills_dark": [],
+        "textColor_light": "rgba(0, 120, 240, 1)",
+        "textColor_dark": "rgba(0, 145, 255, 1)"
+      },
+      "medium": {
+        "height": 24,
+        "radius": 6,
+        "radiusRaw": 6,
+        "padding": {
+          "top": 4,
+          "right": 16,
+          "bottom": 4,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [],
+        "fills_dark": [],
+        "textColor_light": "rgba(0, 120, 240, 1)",
+        "textColor_dark": "rgba(0, 145, 255, 1)"
+      },
+      "large": {
+        "height": 28,
+        "radius": 14,
+        "radiusRaw": 14,
+        "padding": {
+          "top": 6,
+          "right": 16,
+          "bottom": 6,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [],
+        "fills_dark": [],
+        "textColor_light": "rgba(0, 120, 240, 1)",
+        "textColor_dark": "rgba(0, 145, 255, 1)"
+      },
+      "xl": {
+        "height": 36,
+        "radius": 18,
+        "radiusRaw": 18,
+        "padding": {
+          "top": 10,
+          "right": 16,
+          "bottom": 10,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [],
+        "fills_dark": [],
+        "textColor_light": "rgba(0, 120, 240, 1)",
+        "textColor_dark": "rgba(0, 145, 255, 1)"
+      }
+    },
+    "Bordered Default": {
+      "mini": {
+        "height": 16,
+        "radius": 4,
+        "radiusRaw": 4,
+        "padding": {
+          "top": 2,
+          "right": 7,
+          "bottom": 1,
+          "left": 7
+        },
+        "paddingX": 7,
+        "font": "SFPro-Medium",
+        "fontSize": 10,
+        "fills_light": [
+          {
+            "color": "rgba(0, 136, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 16,
+            "opacity": 1
+          },
+          {
+            "color": "rgba(0, 136, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 0,
+            "opacity": 1
+          },
+          {
+            "color": "rgba(0, 136, 255, 1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 14,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(0, 145, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 16,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 0.5)"
+          },
+          {
+            "color": "rgba(0, 145, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 0.5)"
+          },
+          {
+            "color": "rgba(0, 145, 255, 1.0)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 14,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 1)"
+          }
+        ],
+        "textColor_light": "rgba(255, 255, 255, 1)",
+        "textColor_dark": "rgba(255, 255, 255, 1)"
+      },
+      "small": {
+        "height": 20,
+        "radius": 5,
+        "radiusRaw": 5,
+        "padding": {
+          "top": 4,
+          "right": 10,
+          "bottom": 3,
+          "left": 10
+        },
+        "paddingX": 10,
+        "font": "SFPro-Medium",
+        "fontSize": 11,
+        "fills_light": [
+          {
+            "color": "rgba(0, 136, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 16,
+            "opacity": 1
+          },
+          {
+            "color": "rgba(0, 136, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 0,
+            "opacity": 1
+          },
+          {
+            "color": "rgba(0, 136, 255, 1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 14,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(0, 145, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 16,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 0.5)"
+          },
+          {
+            "color": "rgba(0, 145, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 0.5)"
+          },
+          {
+            "color": "rgba(0, 145, 255, 1.0)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 14,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 1)"
+          }
+        ],
+        "textColor_light": "rgba(255, 255, 255, 1)",
+        "textColor_dark": "rgba(255, 255, 255, 1)"
+      },
+      "medium": {
+        "height": 24,
+        "radius": 6,
+        "radiusRaw": 6,
+        "padding": {
+          "top": 4,
+          "right": 16,
+          "bottom": 4,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 136, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 16,
+            "opacity": 1
+          },
+          {
+            "color": "rgba(0, 136, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 0,
+            "opacity": 1
+          },
+          {
+            "color": "rgba(0, 136, 255, 1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 14,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(0, 145, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 16,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 0.5)"
+          },
+          {
+            "color": "rgba(0, 145, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 0.5)"
+          },
+          {
+            "color": "rgba(0, 145, 255, 1.0)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 14,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 1)"
+          }
+        ],
+        "textColor_light": "rgba(255, 255, 255, 1)",
+        "textColor_dark": "rgba(255, 255, 255, 1)"
+      },
+      "large": {
+        "height": 28,
+        "radius": 14,
+        "radiusRaw": 14,
+        "padding": {
+          "top": 6,
+          "right": 16,
+          "bottom": 6,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 136, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 16,
+            "opacity": 1
+          },
+          {
+            "color": "rgba(0, 136, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 0,
+            "opacity": 1
+          },
+          {
+            "color": "rgba(0, 136, 255, 1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 14,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(0, 145, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 16,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 0.5)"
+          },
+          {
+            "color": "rgba(0, 145, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 0.5)"
+          },
+          {
+            "color": "rgba(0, 145, 255, 1.0)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 14,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 1)"
+          }
+        ],
+        "textColor_light": "rgba(255, 255, 255, 1)",
+        "textColor_dark": "rgba(255, 255, 255, 1)"
+      },
+      "xl": {
+        "height": 36,
+        "radius": 18,
+        "radiusRaw": 18,
+        "padding": {
+          "top": 10,
+          "right": 16,
+          "bottom": 10,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 136, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 16,
+            "opacity": 1
+          },
+          {
+            "color": "rgba(0, 136, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 0,
+            "opacity": 1
+          },
+          {
+            "color": "rgba(0, 136, 255, 1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 14,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(0, 145, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 16,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 0.5)"
+          },
+          {
+            "color": "rgba(0, 145, 255, 0.5)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 50%",
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 0.5)"
+          },
+          {
+            "color": "rgba(0, 145, 255, 1.0)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 14,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 1)"
+          }
+        ],
+        "textColor_light": "rgba(255, 255, 255, 1)",
+        "textColor_dark": "rgba(255, 255, 255, 1)"
+      }
+    },
+    "Bordered Destructive": {
+      "mini": {
+        "height": 16,
+        "radius": 4,
+        "radiusRaw": 4,
+        "padding": {
+          "top": 2,
+          "right": 7,
+          "bottom": 1,
+          "left": 7
+        },
+        "paddingX": 7,
+        "font": "SFPro-Medium",
+        "fontSize": 10,
+        "fills_light": [
+          {
+            "color": "rgba(255, 56, 60, 0.25)",
+            "swatch": "Accent Colors (Opacities)/Destructive 25%",
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(255, 66, 69, 0.25)",
+            "swatch": "Accent Colors (Opacities)/Destructive 25%",
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(255, 56, 60, 0.25)"
+          }
+        ],
+        "textColor_light": "rgba(255, 56, 60, 1)",
+        "textColor_dark": "rgba(255, 66, 69, 1.0)"
+      },
+      "small": {
+        "height": 20,
+        "radius": 5,
+        "radiusRaw": 5,
+        "padding": {
+          "top": 4,
+          "right": 10,
+          "bottom": 3,
+          "left": 10
+        },
+        "paddingX": 10,
+        "font": "SFPro-Medium",
+        "fontSize": 11,
+        "fills_light": [
+          {
+            "color": "rgba(255, 56, 60, 0.25)",
+            "swatch": "Accent Colors (Opacities)/Destructive 25%",
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(255, 66, 69, 0.25)",
+            "swatch": "Accent Colors (Opacities)/Destructive 25%",
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(255, 56, 60, 0.25)"
+          }
+        ],
+        "textColor_light": "rgba(255, 56, 60, 1)",
+        "textColor_dark": "rgba(255, 66, 69, 1.0)"
+      },
+      "medium": {
+        "height": 24,
+        "radius": 5,
+        "radiusRaw": 5,
+        "padding": {
+          "top": 4,
+          "right": 16,
+          "bottom": 4,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(255, 56, 60, 0.25)",
+            "swatch": "Accent Colors (Opacities)/Destructive 25%",
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(255, 66, 69, 0.25)",
+            "swatch": "Accent Colors (Opacities)/Destructive 25%",
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(255, 56, 60, 0.25)"
+          }
+        ],
+        "textColor_light": "rgba(255, 56, 60, 1)",
+        "textColor_dark": "rgba(255, 66, 69, 1.0)"
+      },
+      "large": {
+        "height": 28,
+        "radius": 14,
+        "radiusRaw": 14,
+        "padding": {
+          "top": 6,
+          "right": 16,
+          "bottom": 6,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(255, 56, 60, 0.25)",
+            "swatch": "Accent Colors (Opacities)/Destructive 25%",
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(255, 66, 69, 0.25)",
+            "swatch": "Accent Colors (Opacities)/Destructive 25%",
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(255, 56, 60, 0.25)"
+          }
+        ],
+        "textColor_light": "rgba(255, 56, 60, 1)",
+        "textColor_dark": "rgba(255, 66, 69, 1.0)"
+      },
+      "xl": {
+        "height": 36,
+        "radius": 18,
+        "radiusRaw": 18,
+        "padding": {
+          "top": 10,
+          "right": 16,
+          "bottom": 10,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(255, 56, 60, 0.25)",
+            "swatch": "Accent Colors (Opacities)/Destructive 25%",
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(255, 66, 69, 0.25)",
+            "swatch": "Accent Colors (Opacities)/Destructive 25%",
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(255, 56, 60, 0.25)"
+          }
+        ],
+        "textColor_light": "rgba(255, 56, 60, 1)",
+        "textColor_dark": "rgba(255, 66, 69, 1.0)"
+      }
+    },
+    "Bordered Secondary": {
+      "mini": {
+        "height": 16,
+        "radius": 4,
+        "radiusRaw": 4,
+        "padding": {
+          "top": 2,
+          "right": 7,
+          "bottom": 1,
+          "left": 7
+        },
+        "paddingX": 7,
+        "font": "SFPro-Medium",
+        "fontSize": 10,
+        "fills_light": [
+          {
+            "color": "rgba(0, 136, 255, 0.1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 10%",
+            "blendMode": 16,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(0, 145, 255, 0.1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 10%",
+            "blendMode": 16,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 0.1)"
+          }
+        ],
+        "textColor_light": "rgba(0, 120, 240, 1)",
+        "textColor_dark": "rgba(0, 145, 255, 1)"
+      },
+      "small": {
+        "height": 20,
+        "radius": 5,
+        "radiusRaw": 5,
+        "padding": {
+          "top": 4,
+          "right": 10,
+          "bottom": 3,
+          "left": 10
+        },
+        "paddingX": 10,
+        "font": "SFPro-Medium",
+        "fontSize": 11,
+        "fills_light": [
+          {
+            "color": "rgba(0, 136, 255, 0.1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 10%",
+            "blendMode": 16,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(0, 145, 255, 0.1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 10%",
+            "blendMode": 16,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 0.1)"
+          }
+        ],
+        "textColor_light": "rgba(0, 120, 240, 1)",
+        "textColor_dark": "rgba(0, 145, 255, 1)"
+      },
+      "medium": {
+        "height": 24,
+        "radius": 6,
+        "radiusRaw": 6,
+        "padding": {
+          "top": 4,
+          "right": 16,
+          "bottom": 4,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 136, 255, 0.1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 10%",
+            "blendMode": 16,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(0, 145, 255, 0.1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 10%",
+            "blendMode": 16,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 0.1)"
+          }
+        ],
+        "textColor_light": "rgba(0, 120, 240, 1)",
+        "textColor_dark": "rgba(0, 145, 255, 1)"
+      },
+      "large": {
+        "height": 28,
+        "radius": 14,
+        "radiusRaw": 14,
+        "padding": {
+          "top": 6,
+          "right": 16,
+          "bottom": 6,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 136, 255, 0.1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 10%",
+            "blendMode": 16,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(0, 145, 255, 0.1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 10%",
+            "blendMode": 16,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 0.1)"
+          }
+        ],
+        "textColor_light": "rgba(0, 120, 240, 1)",
+        "textColor_dark": "rgba(0, 145, 255, 1)"
+      },
+      "xl": {
+        "height": 36,
+        "radius": 18,
+        "radiusRaw": 18,
+        "padding": {
+          "top": 10,
+          "right": 16,
+          "bottom": 10,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 136, 255, 0.1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 10%",
+            "blendMode": 16,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(0, 145, 255, 0.1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 10%",
+            "blendMode": 16,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 0.1)"
+          }
+        ],
+        "textColor_light": "rgba(0, 120, 240, 1)",
+        "textColor_dark": "rgba(0, 145, 255, 1)"
+      }
+    },
+    "Bordered Colored": {
+      "mini": {
+        "height": 16,
+        "radius": 4,
+        "radiusRaw": 4,
+        "padding": {
+          "top": 2,
+          "right": 7,
+          "bottom": 1,
+          "left": 7
+        },
+        "paddingX": 7,
+        "font": "SFPro-Medium",
+        "fontSize": 10,
+        "fills_light": [
+          {
+            "color": "rgba(0, 136, 255, 1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(0, 145, 255, 1.0)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 1)"
+          }
+        ],
+        "textColor_light": "rgba(255, 255, 255, 1)",
+        "textColor_dark": "rgba(255, 255, 255, 1)"
+      },
+      "small": {
+        "height": 20,
+        "radius": 5,
+        "radiusRaw": 5,
+        "padding": {
+          "top": 4,
+          "right": 10,
+          "bottom": 3,
+          "left": 10
+        },
+        "paddingX": 10,
+        "font": "SFPro-Medium",
+        "fontSize": 11,
+        "fills_light": [
+          {
+            "color": "rgba(0, 136, 255, 1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(0, 145, 255, 1.0)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 1)"
+          }
+        ],
+        "textColor_light": "rgba(255, 255, 255, 1)",
+        "textColor_dark": "rgba(255, 255, 255, 1)"
+      },
+      "medium": {
+        "height": 24,
+        "radius": 6,
+        "radiusRaw": 6,
+        "padding": {
+          "top": 4,
+          "right": 16,
+          "bottom": 4,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 136, 255, 1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(0, 145, 255, 1.0)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 1)"
+          }
+        ],
+        "textColor_light": "rgba(255, 255, 255, 1)",
+        "textColor_dark": "rgba(255, 255, 255, 1)"
+      },
+      "large": {
+        "height": 28,
+        "radius": 14,
+        "radiusRaw": 14,
+        "padding": {
+          "top": 6,
+          "right": 16,
+          "bottom": 6,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 136, 255, 1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(0, 145, 255, 1.0)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 1)"
+          }
+        ],
+        "textColor_light": "rgba(255, 255, 255, 1)",
+        "textColor_dark": "rgba(255, 255, 255, 1)"
+      },
+      "xl": {
+        "height": 36,
+        "radius": 18,
+        "radiusRaw": 18,
+        "padding": {
+          "top": 10,
+          "right": 16,
+          "bottom": 10,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 136, 255, 1)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(0, 145, 255, 1.0)",
+            "swatch": "Accent Colors (Opacities)/Accent Appearance 100%",
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 136, 255, 1)"
+          }
+        ],
+        "textColor_light": "rgba(255, 255, 255, 1)",
+        "textColor_dark": "rgba(255, 255, 255, 1)"
+      }
+    },
+    "Neutral": {
+      "mini": {
+        "height": 16,
+        "radius": 4,
+        "radiusRaw": 4,
+        "padding": {
+          "top": 2,
+          "right": 7,
+          "bottom": 2,
+          "left": 7
+        },
+        "paddingX": 7,
+        "font": "SFPro-Medium",
+        "fontSize": 10,
+        "fills_light": [
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(255, 255, 255, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 0, 0, 0.05)"
+          }
+        ],
+        "textColor_light": "rgba(26, 26, 26, 1)",
+        "textColor_dark": "rgba(245, 245, 245, 1)"
+      },
+      "small": {
+        "height": 20,
+        "radius": 5,
+        "radiusRaw": 5,
+        "padding": {
+          "top": 4,
+          "right": 10,
+          "bottom": 3,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 11,
+        "fills_light": [
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(255, 255, 255, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 0, 0, 0.05)"
+          }
+        ],
+        "textColor_light": "rgba(26, 26, 26, 1)",
+        "textColor_dark": "rgba(245, 245, 245, 1)"
+      },
+      "medium": {
+        "height": 24,
+        "radius": 6,
+        "radiusRaw": 6,
+        "padding": {
+          "top": 4,
+          "right": 16,
+          "bottom": 4,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(255, 255, 255, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 0, 0, 0.05)"
+          }
+        ],
+        "textColor_light": "rgba(26, 26, 26, 1)",
+        "textColor_dark": "rgba(245, 245, 245, 1)"
+      },
+      "large": {
+        "height": 28,
+        "radius": 14,
+        "radiusRaw": 14,
+        "padding": {
+          "top": 6,
+          "right": 16,
+          "bottom": 6,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(255, 255, 255, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 0, 0, 0.05)"
+          }
+        ],
+        "textColor_light": "rgba(26, 26, 26, 1)",
+        "textColor_dark": "rgba(245, 245, 245, 1)"
+      },
+      "xl": {
+        "height": 36,
+        "radius": 18,
+        "radiusRaw": 18,
+        "padding": {
+          "top": 10,
+          "right": 16,
+          "bottom": 10,
+          "left": 16
+        },
+        "paddingX": 16,
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "fills_light": [
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1
+          }
+        ],
+        "fills_dark": [
+          {
+            "color": "rgba(255, 255, 255, 0.05)",
+            "swatch": null,
+            "blendMode": 0,
+            "opacity": 1,
+            "_light": "rgba(0, 0, 0, 0.05)"
+          }
+        ],
+        "textColor_light": "rgba(26, 26, 26, 1)",
+        "textColor_dark": "rgba(245, 245, 245, 1)"
+      }
+    }
+  },
+  "radiusBySize": {
+    "mini": 4,
+    "small": 5,
+    "medium": 6,
+    "large": 14,
+    "xl": 18
+  }
+}

@@ -1,6 +1,5 @@
-# `msw` (transitive of shadcn) has a build script we don't need — declining it
-# stops pnpm 11 from aborting `pnpm build`. `esbuild` (via vite) DOES need its
-# build script to fetch the native binary, so it's allowed.
+# Build scripts: sharp (Next image), esbuild allowed; msw (shadcn transitive) declined.
 allowBuilds:
-  msw: false
+  sharp: true
   esbuild: true
+  msw: false
