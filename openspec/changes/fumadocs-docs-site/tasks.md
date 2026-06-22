@@ -7,16 +7,16 @@
 
 ## 2. Registry build + hosting in the app
 
-- [ ] 2.1 Move `registry/acrylic/*` into the app source tree; keep `registry.json` paths valid
-- [ ] 2.2 Wire `shadcn build` → `public/r/*.json`; confirm all current items still emit
-- [ ] 2.3 Verify the app serves `public/r/<name>.json` (registry endpoint == docs host)
+- [x] 2.1 Move `registry/acrylic/*` into the app source tree; keep `registry.json` paths valid
+- [x] 2.2 Wire `shadcn build` → `public/r/*.json`; confirm all current items still emit
+- [x] 2.3 Verify the app serves `public/r/<name>.json` (registry endpoint == docs host)
 
 ## 3. Live preview infrastructure (vertical slice)
 
-- [ ] 3.1 Add an `examples` area in the registry; create `button-demo` example item + file
-- [ ] 3.2 Implement `__registry__` index codegen (name → `React.lazy` import + raw source string) as part of the build; never hand-edited
-- [ ] 3.3 Build the `<ComponentPreview name>` MDX component: Preview tab (lazy live render) + Code tab (source string)
-- [ ] 3.4 Author the Button MDX page end-to-end as the slice; confirm Preview renders + Code shows source + page routed + in sidebar
+- [x] 3.1 Add an `examples` area in the registry; create `button-demo` example item + file
+- [x] 3.2 Implement `__registry__` index codegen (name → `React.lazy` import + raw source string) as part of the build; never hand-edited
+- [x] 3.3 Build the `<ComponentPreview name>` MDX component: Preview tab (lazy live render) + Code tab (source string)
+- [x] 3.4 Author the Button MDX page end-to-end as the slice; confirm Preview renders + Code shows source + page routed + in sidebar
 
 ## 4. Migrate the 8 components to MDX pages
 

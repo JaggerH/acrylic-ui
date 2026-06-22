@@ -1,85 +1,88 @@
 ---
 name: sketch-component-tokens
-description: [TODO: Complete and informative explanation of what the skill does and when to use it. Include WHEN to use this skill - specific scenarios, file types, or tasks that trigger it.]
+description: Extract design tokens (sizes, variants, colors, radius, padding, typography, per-state styling) for a UI component directly from a Sketch (.sketch) UI kit — without Sketch installed — and shape them into a token matrix for building shadcn/ui wrappers. Use when the user wants to read a component's parameters out of a .sketch file, align a shadcn/ui component to a Sketch design (e.g. the Apple macOS 26 UI Kit), build or audit acrylic-ui registry components against the kit, or asks "extract the button/input/etc. from the sketch".
 ---
 
 # Sketch Component Tokens
 
-## Overview
+Read a component's full parameter set straight out of a `.sketch` UI kit and turn
+it into a condensed `variant × size` token matrix that drives a shadcn/ui wrapper.
 
-[TODO: 1-2 sentences explaining what this skill enables]
+A `.sketch` file is a **ZIP of JSON** — no Sketch app needed. The scripts here
+parse it directly. Before trusting any field, read `references/sketch-format.md`:
+the Apple kit stores several things in non-obvious places (corner radius is the
+big one — it is NOT in `cornerRadius`).
 
-## Structuring This Skill
+## Workflow
 
-[TODO: Choose the structure that best fits this skill's purpose. Common patterns:
+Run scripts with `conda run -n qlib python` (any Python 3 with stdlib works; no
+third-party deps). `SK` = path to the `.sketch` file.
 
-**1. Workflow-Based** (best for sequential processes)
-- Works well when there are clear step-by-step procedures
-- Example: DOCX skill with "Workflow Decision Tree" → "Reading" → "Creating" → "Editing"
-- Structure: ## Overview → ## Workflow Decision Tree → ## Step 1 → ## Step 2...
+1. **Find the component's page.**
+   ```bash
+   python scripts/sketch_tokens.py pages "$SK" | grep -i button
+   ```
+   Page names carry an SF-Symbol glyph prefix (e.g. `􁸞 Buttons`); pass the plain
+   trailing name (`Buttons`) — exact match wins over substring.
 
-**2. Task-Based** (best for tool collections)
-- Works well when the skill offers different operations/capabilities
-- Example: PDF skill with "Quick Start" → "Merge PDFs" → "Split PDFs" → "Extract Text"
-- Structure: ## Overview → ## Quick Start → ## Task Category 1 → ## Task Category 2...
+2. **Explore the taxonomy.** Discover how variants/sizes/states are encoded in
+   the symbolMaster names before extracting.
+   ```bash
+   python scripts/sketch_tokens.py explore "$SK" Buttons
+   ```
+   Names decompose as `{Type}/{Area}/{Style}/{Size}/{State}`. Confirm the size
+   tokens (`1 Mn`..`5 XL`) and state words, and read off the distinct values per
+   segment position — these become the component's variant/size/state dimensions.
 
-**3. Reference/Guidelines** (best for standards or specifications)
-- Works well for brand guidelines, coding standards, or requirements
-- Example: Brand styling with "Brand Guidelines" → "Colors" → "Typography" → "Features"
-- Structure: ## Overview → ## Guidelines → ## Specifications → ## Usage...
+3. **Extract the universal raw dump.** One record per symbolMaster, every visual
+   param fully resolved (frame, radius, padding, fills, borders, text), faithful
+   and component-agnostic.
+   ```bash
+   python scripts/sketch_tokens.py extract "$SK" Buttons --out raw.json
+   ```
 
-**4. Capabilities-Based** (best for integrated systems)
-- Works well when the skill provides multiple interrelated features
-- Example: Product Management with "Core Capabilities" → numbered capability list
-- Structure: ## Overview → ## Core Capabilities → ### 1. Feature → ### 2. Feature...
+4. **Shape into a condensed token matrix.** This step encodes the component's
+   taxonomy (which segment is the variant, which is the size) and picks the
+   canonical resting state. For Button, use the worked template:
+   ```bash
+   python scripts/shape_button.py raw.json --out ../../../tokens/button.json
+   ```
+   For a NEW component, copy `shape_button.py` and adjust `category()`,
+   `size_of()`, and `is_resting()` to that component's taxonomy. The light→dark
+   colour map in that script is **kit-general** (reuse as-is). See
+   `references/button-example.md` for the fully worked Button case.
 
-Patterns can be mixed and matched as needed. Most skills combine patterns (e.g., start with task-based, add workflow for complex operations).
+5. **Map to shadcn/ui and build the wrapper** (next phase — out of scope for the
+   extraction itself). Read `references/button-example.md` for the proposed
+   Apple-category → shadcn-variant mapping and the open design decisions
+   (radius is a two-regime rule, not a single formula; colours are light-mode,
+   dark is mapped).
 
-Delete this entire "Structuring This Skill" section when done - it's just guidance.]
+## Key facts (full detail in references/sketch-format.md)
 
-## [TODO: Replace with the first main section based on chosen structure]
+- **Corner radius** lives in `style.corners.radii` (an `MSImmutableStyleCorners`
+  object), **not** `cornerRadius`/`fixedRadius`. Value `100` is a "fully rounded"
+  sentinel → resolve to `height/2` (capsule/circle). The scripts already do this
+  and expose both `radius` (resolved) and `radiusRaw`.
+- **Backgrounds are fills on the symbolMaster** — these controls have no
+  rectangle/shape layers. Fills can be multi-layer (blend modes) for the macOS
+  material look.
+- **Colours reference shared swatches** by `swatchID`; the scripts resolve them
+  to swatch names via `document.json` → `sharedSwatches`.
+- **State explosion**: each variant×size has many masters (Active/Inactive ×
+  On/Off × Idle/Hover/Clicked/Disabled). `shape_button.py` picks the canonical
+  resting state = `Active, Off, Idle` (window active, toggle off, not pressed).
 
-[TODO: Add content here. See examples in existing skills:
-- Code samples for technical skills
-- Decision trees for complex workflows
-- Concrete examples with realistic user requests
-- References to scripts/templates/references as needed]
+## Output
 
-## Resources
+`tokens/<component>.json` (at the acrylic-ui repo root) — condensed
+`categories[variant][size]` with `height`, `radius`(+`radiusRaw`), `padding`,
+`font`/`fontSize`, `fills_light`/`fills_dark`, `textColor_light`/`textColor_dark`,
+plus a top-level `radiusBySize`. The raw dump (all masters, all states) is the
+intermediate `raw.json`.
 
-This skill includes example resource directories that demonstrate how to organize different types of bundled resources:
+## Status
 
-### scripts/
-Executable code (Python/Bash/etc.) that can be run directly to perform specific operations.
-
-**Examples from other skills:**
-- PDF skill: `fill_fillable_fields.py`, `extract_form_field_info.py` - utilities for PDF manipulation
-- DOCX skill: `document.py`, `utilities.py` - Python modules for document processing
-
-**Appropriate for:** Python scripts, shell scripts, or any executable code that performs automation, data processing, or specific operations.
-
-**Note:** Scripts may be executed without loading into context, but can still be read by Claude for patching or environment adjustments.
-
-### references/
-Documentation and reference material intended to be loaded into context to inform Claude's process and thinking.
-
-**Examples from other skills:**
-- Product management: `communication.md`, `context_building.md` - detailed workflow guides
-- BigQuery: API reference documentation and query examples
-- Finance: Schema documentation, company policies
-
-**Appropriate for:** In-depth documentation, API references, database schemas, comprehensive guides, or any detailed information that Claude should reference while working.
-
-### assets/
-Files not intended to be loaded into context, but rather used within the output Claude produces.
-
-**Examples from other skills:**
-- Brand styling: PowerPoint template files (.pptx), logo files
-- Frontend builder: HTML/React boilerplate project directories
-- Typography: Font files (.ttf, .woff2)
-
-**Appropriate for:** Templates, boilerplate code, document templates, images, icons, fonts, or any files meant to be copied or used in the final output.
-
----
-
-**Any unneeded directories can be deleted.** Not every skill requires all three types of resources.
+Extraction (steps 1–4) is complete and validated against the macOS 26 Buttons
+page (785 masters → 8 categories × 5 sizes). The shadcn mapping + wrapper +
+docs-page showcase (step 5) are not yet built.

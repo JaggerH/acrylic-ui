@@ -1,0 +1,41 @@
+---
+title: Button
+description: macOS Push Button — 5 classes × 5 sizes (heights 16/20/24/28/36, radius = height ÷ 4) × states.
+---
+
+macOS-style push buttons: prominent (`default`), neutral (`secondary`), colored
+(`tinted`), `destructive`, and borderless (`ghost`), plus a non-standard `glow`
+CTA. Capsule-rounded with a per-size corner radius, theme-aware via the Acrylic
+token set.
+
+## Installation
+
+```bash
+npx shadcn add @acrylic/button
+```
+
+## Usage
+
+<ComponentPreview name="button-demo" />
+
+```tsx
+import { Button } from "@/components/acrylic/button"
+
+<Button variant="secondary" size="large">Label</Button>
+```
+
+## Variants
+
+| variant | macOS class | look |
+| --- | --- | --- |
+| `default` | Bordered Default (prominent) | accent-filled (System Blue) |
+| `secondary` | Bordered Neutral | translucent gray fill |
+| `tinted` | Bordered Colored | accent tint |
+| `destructive` | Bordered Destructive | red fill (System Red) |
+| `ghost` | Borderless | text only |
+| `glow` | — (CTA) | dark pill + sky ring |
+
+## Sizes
+
+`mini` (16px) · `small` (20) · `medium` (24) · `large` (28, default) · `xl` (36) · `icon`.
+Corner radius follows macOS: **radius = height ÷ 4** (4 / 5 / 6 / 7 / 9 px).

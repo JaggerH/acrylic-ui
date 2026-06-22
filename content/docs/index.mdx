@@ -1,13 +1,32 @@
 ---
-title: Hello World
-description: Your first document
+title: Acrylic
+description: A dark frosted-glass shadcn/ui registry, color/spacing/radius aligned to the official macOS 26 UI Kit.
 ---
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
+**Acrylic** is a shadcn/ui component registry with a dark frosted-glass (Big Sur /
+macOS vibrancy) aesthetic. Color, spacing, and corner radii are lifted from the
+official Apple **macOS 26** UI Kit; every component is theme-aware (light / dark)
+through one token set.
 
-## What is Next?
+## Install
 
-<Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.dev" />
-</Cards>
+Point your project's `components.json` at the Acrylic registry:
+
+```json
+{
+  "registries": {
+    "@acrylic": "https://<this-host>/r/{name}.json"
+  }
+}
+```
+
+Then add components with the CLI:
+
+```bash
+npx shadcn add @acrylic/button
+```
+
+## Components
+
+Browse the components in the sidebar. Each page has a live **Preview**, the
+**Code**, the install command, and a props/variants reference.

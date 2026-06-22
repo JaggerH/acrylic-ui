@@ -1,0 +1,34 @@
+"use client"
+
+import { useState, type ReactNode } from "react"
+
+/** Preview / Code tabbed block. Preview renders the live example; Code shows its
+ *  source. Chrome uses Fumadocs `fd-*` tokens so it matches the docs UI. */
+export function PreviewTabs({ source, children }: { source: string; children: ReactNode }) {
+  const [tab, setTab] = useState<"preview" | "code">("preview")
+  const tabCls = (active: boolean) =>
+    "rounded-md px-2.5 py-1 text-sm font-medium transition-colors " +
+    (active
+      ? "bg-fd-primary/10 text-fd-foreground"
+      : "text-fd-muted-foreground hover:text-fd-foreground")
+
+  return (
+    <div className="not-prose my-6 overflow-hidden rounded-xl border border-fd-border">
+      <div className="flex gap-1 border-b border-fd-border bg-fd-card px-2 py-1.5">
+        <button type="button" onClick={() => setTab("preview")} className={tabCls(tab === "preview")}>
+          Preview
+        </button>
+        <button type="button" onClick={() => setTab("code")} className={tabCls(tab === "code")}>
+          Code
+        </button>
+      </div>
+      {tab === "preview" ? (
+        <div className="flex min-h-44 items-center justify-center p-10">{children}</div>
+      ) : (
+        <pre className="m-0 overflow-x-auto bg-fd-secondary/30 p-4 text-[13px] leading-relaxed">
+          <code>{source}</code>
+        </pre>
+      )}
+    </div>
+  )
+}
