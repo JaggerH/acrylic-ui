@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Acrylic — optional global helpers
+   ---------------------------------------------------------------------------
+   The components (GlassCard, Acrylic Dialog) need NO global CSS to work on a
+   normal (opaque-body) web app: the Dialog overlay's `backdrop-filter` frosts
+   the page directly, and GlassCard is a self-contained translucent fill.
+
+   The rules below are OPT-IN, only needed for TRANSPARENT-window desktop apps
+   (Tauri / Electron with native vibrancy). See README → "Tauri / transparent-
+   window apps". Copy them into your app's global stylesheet if relevant. */
+
+/* When the native window is a transparent vibrancy surface, the app sets
+   `html.vibrancy` to let the desktop show through. While a Dialog is open the
+   component adds `html.modal-acrylic`, which repaints the body opaque so the
+   overlay's backdrop-filter has real pixels to frost. Harmless otherwise. */
+html.vibrancy {
+  --background: transparent;
+}
+html.vibrancy.modal-acrylic {
+  --background: rgba(24, 24, 27, 0.92);
+}
+
+/* macOS-style thin overlay scrollbar — add className="scrollbar-mac". */
+.scrollbar-mac {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(235, 235, 245, 0.28) transparent;
+}
+.scrollbar-mac::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.scrollbar-mac::-webkit-scrollbar-thumb {
+  background-color: rgba(235, 235, 245, 0.22);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.scrollbar-mac::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(235, 235, 245, 0.42);
+  background-clip: content-box;
+}

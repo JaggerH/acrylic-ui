@@ -1,0 +1,5 @@
+# Building the registry only emits JSON — no dependency needs to run install
+# scripts. Declining msw's build script stops pnpm 11 from treating the skipped
+# script as an error and aborting `pnpm build` / `pnpm dev`.
+allowBuilds:
+  msw: false

@@ -1,0 +1,16 @@
+{
+  "name": "acrylic-ui",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Acrylic — a dark frosted-glass shadcn/ui component registry (GlassCard, Acrylic Dialog).",
+  "scripts": {
+    "build": "shadcn build",
+    "serve": "serve public -l 4000",
+    "dev": "shadcn build && serve public -l 4000"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4",
+    "shadcn": "^3.4.0"
+  }
+}

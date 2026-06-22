@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "acrylic",
+  "homepage": "https://github.com/jaggerh/acrylic-ui",
+  "items": [
+    {
+      "name": "glass-card",
+      "type": "registry:component",
+      "title": "GlassCard",
+      "description": "Dark frosted-glass (acrylic) surface card — a charcoal translucent pane over a blurred backdrop. Flat at rest, soft float shadow + lift on hover (interactive).",
+      "files": [
+        {
+          "path": "registry/acrylic/glass-card.tsx",
+          "type": "registry:component",
+          "target": "components/acrylic/glass-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Acrylic Dialog",
+      "description": "Radix Dialog dressed as a frosted-acrylic modal: a 72px blur+saturate overlay and a translucent white-tint panel. Drop-in replacement for the shadcn Dialog, installed alongside it under components/acrylic so the stock dialog stays untouched.",
+      "dependencies": ["@radix-ui/react-dialog", "lucide-react"],
+      "files": [
+        {
+          "path": "registry/acrylic/dialog.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/dialog.tsx"
+        }
+      ]
+    }
+  ]
+}

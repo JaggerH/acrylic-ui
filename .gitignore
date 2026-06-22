@@ -1,0 +1,8 @@
+node_modules/
+.DS_Store
+*.log
+
+# `shadcn build` output. Commit it instead if you want to serve the registry
+# straight from GitHub raw URLs (then DELETE this line). Ignored by default so
+# the JSON is treated as a build artifact you regenerate with `pnpm build`.
+public/r/
