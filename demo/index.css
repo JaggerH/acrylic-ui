@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+/* Minimal design tokens the Acrylic components reference (subset of a shadcn
+   theme): muted-foreground / accent / ring / background / foreground. */
+@theme {
+  --color-background: #18181b;
+  --color-foreground: #fafafa;
+  --color-muted-foreground: rgba(235, 235, 245, 0.82);
+  --color-accent: #3f3f46;
+  --color-primary: #facc15;
+  --color-primary-foreground: #09090b;
+  --color-destructive: #b91c1c;
+  --color-ring: #facc15;
+  --color-border: #3f3f46;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  color: var(--color-foreground);
+  font-family: system-ui, -apple-system, sans-serif;
+}

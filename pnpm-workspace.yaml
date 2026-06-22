@@ -1,5 +1,6 @@
-# Building the registry only emits JSON — no dependency needs to run install
-# scripts. Declining msw's build script stops pnpm 11 from treating the skipped
-# script as an error and aborting `pnpm build` / `pnpm dev`.
+# `msw` (transitive of shadcn) has a build script we don't need — declining it
+# stops pnpm 11 from aborting `pnpm build`. `esbuild` (via vite) DOES need its
+# build script to fetch the native binary, so it's allowed.
 allowBuilds:
   msw: false
+  esbuild: true
