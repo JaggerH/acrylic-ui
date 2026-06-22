@@ -27,6 +27,57 @@
           "path": "registry/acrylic/dialog.tsx",
           "type": "registry:ui",
           "target": "components/acrylic/dialog.tsx"
+        },
+        {
+          "path": "registry/acrylic/use-modal-acrylic.ts",
+          "type": "registry:lib",
+          "target": "components/acrylic/use-modal-acrylic.ts"
+        }
+      ]
+    },
+    {
+      "name": "alert-dialog",
+      "type": "registry:ui",
+      "title": "Acrylic Alert Dialog",
+      "description": "Frosted confirm dialog — the AlertDialog counterpart of the acrylic Dialog (72px blur overlay + translucent panel), with self-contained action/cancel buttons. Shares the Dialog's ref-counted body-paint so it can stack on a Dialog without either losing its frost.",
+      "dependencies": ["@radix-ui/react-alert-dialog"],
+      "files": [
+        {
+          "path": "registry/acrylic/alert-dialog.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/alert-dialog.tsx"
+        },
+        {
+          "path": "registry/acrylic/use-modal-acrylic.ts",
+          "type": "registry:lib",
+          "target": "components/acrylic/use-modal-acrylic.ts"
+        }
+      ]
+    },
+    {
+      "name": "auto-textarea",
+      "type": "registry:ui",
+      "title": "AutoTextarea",
+      "description": "Frosted-white, auto-growing textarea — a translucent white field (backdrop-blur) that reads on a dark page and grows 1 → maxLines rows before scrolling.",
+      "files": [
+        {
+          "path": "registry/acrylic/auto-textarea.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/auto-textarea.tsx"
+        }
+      ]
+    },
+    {
+      "name": "toaster",
+      "type": "registry:ui",
+      "title": "Acrylic Toaster",
+      "description": "Sonner toast theme as a translucent dark pill (zinc-900/95 + backdrop-blur). Mount once near the app root, then call toast() from sonner.",
+      "dependencies": ["sonner"],
+      "files": [
+        {
+          "path": "registry/acrylic/toaster.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/toaster.tsx"
         }
       ]
     }

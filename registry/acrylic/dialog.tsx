@@ -3,25 +3,9 @@ import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { useModalAcrylicBody } from "./use-modal-acrylic"
 
 const Dialog = DialogPrimitive.Root
-
-// While any Dialog is open, paint the body opaque (`html.modal-acrylic`) so the
-// overlay's `backdrop-filter` has real pixels to frost; revert on close. This only
-// matters when the app window is a TRANSPARENT vibrancy surface (e.g. a Tauri/Electron
-// desktop window) — see the README "Tauri / transparent-window apps" note. On a normal
-// web page the body is already opaque, so this is a harmless no-op. Ref-counted for stacking.
-let openDialogs = 0
-function useModalAcrylicBody() {
-  React.useEffect(() => {
-    openDialogs += 1
-    document.documentElement.classList.add("modal-acrylic")
-    return () => {
-      openDialogs = Math.max(0, openDialogs - 1)
-      if (openDialogs === 0) document.documentElement.classList.remove("modal-acrylic")
-    }
-  }, [])
-}
 
 const DialogTrigger = DialogPrimitive.Trigger
 
