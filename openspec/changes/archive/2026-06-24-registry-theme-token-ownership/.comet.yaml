@@ -9,6 +9,6 @@ verify_result: pass
 verification_report: openspec/changes/registry-theme-token-ownership/verification-report.md
 branch_status: handled
 verified_at: 2026-06-24
-archived: false
+archived: true
 build_command: npm run registry:build
 verify_command: npx tsc --noEmit
