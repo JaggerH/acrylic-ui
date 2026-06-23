@@ -26,8 +26,8 @@ const buttonVariants = cva(
           "bg-destructive/25 text-destructive hover:bg-destructive/35 active:bg-destructive/45",
         neutral:                                       // Neutral — gray fill, foreground label
           "bg-[var(--acr-chip)] text-foreground hover:bg-[var(--acr-chip-hover)]",
-        ghost:                                         // Borderless — no fill at rest, accent label (theme color)
-          "bg-transparent text-primary hover:bg-[var(--acr-hover)]",
+        ghost:                                         // Borderless — no fill at rest, accent label (theme color); hover reveals the neutral chip fill
+          "bg-transparent text-primary hover:bg-[var(--acr-chip)] active:bg-[var(--acr-chip-hover)]",
       },
       // The five macOS control sizes (heights 16/20/24/28/36 from the kit).
       size: {
