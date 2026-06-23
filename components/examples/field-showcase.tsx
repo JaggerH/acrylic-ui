@@ -1,81 +1,29 @@
 "use client"
 
 import * as React from "react"
-import {
-  ChevronDown,
-  ChevronUp,
-  ChevronsUpDown,
-  Info,
-  MoreHorizontal,
-} from "lucide-react"
+import { Info, MoreHorizontal } from "lucide-react"
 
-import { cn } from "@/lib/utils"
 import { Input } from "@/registry/acrylic/input"
 import { Button } from "@/registry/acrylic/button"
 import { Combobox } from "@/registry/acrylic/combobox"
 import { GlassCard } from "@/registry/acrylic/glass-card"
+import { Switch } from "@/registry/acrylic/switch"
+import { Stepper } from "@/registry/acrylic/stepper"
+import { RadioGroup, RadioGroupItem } from "@/registry/acrylic/radio-group"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/registry/acrylic/select"
 import { Field, FieldGroup, FieldLabel } from "@/registry/acrylic/field"
 
 // Mode 2 — the macOS "Trailing accessory options" settings card: a Card-wrapped
 // FieldGroup of rows, each label-left / trailing-control-right (grid-cols-[1fr_auto])
-// with hairline dividers. Uses our real Input/Combobox/Button; the controls we
-// don't ship yet (switch/stepper/radio/popup/info/more) are inline approximations.
-
-function Switch({ on = false }: { on?: boolean }) {
-  return (
-    <span
-      className={cn(
-        "inline-flex h-[18px] w-[30px] shrink-0 items-center rounded-full p-0.5 transition-colors",
-        on ? "bg-primary" : "bg-[var(--acr-chip)]"
-      )}
-    >
-      <span className={cn("size-3.5 rounded-full bg-white shadow-sm transition-transform", on && "translate-x-3")} />
-    </span>
-  )
-}
-
-function InfoIcon() {
-  return <Info className="size-[18px] shrink-0 text-muted-foreground" />
-}
-
-function Popup({ children = "Label" }: { children?: React.ReactNode }) {
-  return (
-    <button
-      type="button"
-      className="inline-flex items-center gap-1 rounded-[6px] px-1.5 py-0.5 text-[13px] hover:bg-[var(--acr-hover)]"
-    >
-      <span>{children}</span>
-      <ChevronsUpDown className="size-3.5 text-muted-foreground" />
-    </button>
-  )
-}
-
-function Stepper() {
-  return (
-    <div className="flex items-stretch overflow-hidden rounded-[6px] border border-[var(--acr-control-border)] bg-[var(--acr-control)]">
-      <span className="px-2 py-1 text-[13px] tabular-nums">3.00</span>
-      <span className="flex flex-col border-l border-[var(--acr-control-border)]">
-        <button type="button" className="flex flex-1 items-center justify-center px-1 hover:bg-[var(--acr-hover)]">
-          <ChevronUp className="size-3" />
-        </button>
-        <button type="button" className="flex flex-1 items-center justify-center border-t border-[var(--acr-control-border)] px-1 hover:bg-[var(--acr-hover)]">
-          <ChevronDown className="size-3" />
-        </button>
-      </span>
-    </div>
-  )
-}
-
-function Radio({ label, on = false }: { label: string; on?: boolean }) {
-  return (
-    <span className={cn("flex items-center gap-1.5 text-[13px]", !on && "text-muted-foreground")}>
-      <span className={cn("grid size-3.5 place-items-center rounded-full", on ? "bg-primary" : "bg-[var(--acr-chip)]")}>
-        {on && <span className="size-1.5 rounded-full bg-white" />}
-      </span>
-      {label}
-    </span>
-  )
-}
+// with hairline dividers. Every trailing accessory is a real Acrylic component
+// (Switch · Stepper · Select pop-up · RadioGroup · Input · Combobox · Button);
+// Info / More are plain glyphs.
 
 // A settings row: label on the left, trailing control on the right.
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
@@ -98,32 +46,40 @@ export default function FieldShowcase() {
             <span className="text-[13px] text-muted-foreground">Label</span>
           </Row>
           <Row label="Info">
-            <InfoIcon />
+            <Info className="size-[18px] shrink-0 text-muted-foreground" />
           </Row>
           <Row label="Popup">
-            <Popup />
+            <Select defaultValue="label">
+              <SelectTrigger size="small">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="label">Label</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
           </Row>
           <Row label="Toggle">
-            <Switch on />
+            <Switch size="small" defaultChecked />
           </Row>
           <Row label="Info Button + Toggle">
             <span className="flex items-center gap-2">
-              <InfoIcon />
-              <Switch />
+              <Info className="size-[18px] shrink-0 text-muted-foreground" />
+              <Switch size="small" />
             </span>
           </Row>
           <Row label="Label + Info Button">
             <span className="flex items-center gap-2">
               <span className="text-[13px] text-muted-foreground">Label</span>
-              <InfoIcon />
+              <Info className="size-[18px] shrink-0 text-muted-foreground" />
             </span>
           </Row>
           <Row label="Stepper">
-            <Stepper />
+            <Stepper size="small" defaultValue={3} />
           </Row>
           <Row label="Stepper + Label">
             <span className="flex items-center gap-2">
-              <Stepper />
+              <Stepper size="small" defaultValue={30} min={0} step={5} />
               <span className="text-[13px] text-muted-foreground">seconds</span>
             </span>
           </Row>
@@ -131,10 +87,16 @@ export default function FieldShowcase() {
             <Input defaultValue="Value" className="w-32" />
           </Row>
           <Row label="Radio buttons">
-            <span className="flex items-center gap-4">
-              <Radio label="Option 2" on />
-              <Radio label="Option 1" />
-            </span>
+            <RadioGroup defaultValue="2" className="flex flex-row items-center gap-4">
+              <label className="flex items-center gap-1.5 text-[13px]">
+                <RadioGroupItem value="2" size="small" />
+                Option 2
+              </label>
+              <label className="flex items-center gap-1.5 text-[13px]">
+                <RadioGroupItem value="1" size="small" />
+                Option 1
+              </label>
+            </RadioGroup>
           </Row>
           <Row label="More button">
             <MoreHorizontal className="size-4 text-muted-foreground" />
@@ -149,7 +111,15 @@ export default function FieldShowcase() {
           </Row>
           <Row label="Menu + Button">
             <span className="flex items-center gap-2">
-              <Popup>Full Screen</Popup>
+              <Select defaultValue="full">
+                <SelectTrigger size="small">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="full">Full Screen</SelectItem>
+                  <SelectItem value="window">Window</SelectItem>
+                </SelectContent>
+              </Select>
               <Button variant="neutral" size="small">Choose Display…</Button>
             </span>
           </Row>
