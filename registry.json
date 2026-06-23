@@ -4,16 +4,135 @@
   "homepage": "https://acrylic-ui.vercel.app",
   "items": [
     {
+      "name": "acrylic",
+      "type": "registry:style",
+      "title": "Acrylic Theme",
+      "description": "The Acrylic theme tokens lifted from the Apple macOS 26 UI Kit: semantic color vars (--primary/--destructive/--border/...), the frosted --acr-* surface/control/material tokens, the SF Pro type scale, and the macOS thin scrollbar utility. Light + dark. Every Acrylic component references this, so it is pulled in automatically as a dependency.",
+      "dependencies": [
+        "tailwindcss"
+      ],
+      "cssVars": {
+        "theme": {
+          "color-background": "var(--background)",
+          "color-foreground": "var(--foreground)",
+          "color-muted-foreground": "var(--muted-foreground)",
+          "color-accent": "var(--accent)",
+          "color-primary": "var(--primary)",
+          "color-primary-foreground": "var(--primary-foreground)",
+          "color-destructive": "var(--destructive)",
+          "color-ring": "var(--ring)",
+          "color-border": "var(--border)"
+        },
+        "light": {
+          "background": "#ececec",
+          "foreground": "rgba(0, 0, 0, 0.85)",
+          "muted-foreground": "rgba(0, 0, 0, 0.50)",
+          "label-tertiary": "rgba(0, 0, 0, 0.25)",
+          "accent": "#8e8e93",
+          "primary": "#0088ff",
+          "primary-foreground": "#ffffff",
+          "destructive": "#ff383c",
+          "ring": "#0088ff",
+          "border": "rgba(60, 60, 67, 0.29)",
+          "acr-chip": "rgba(0, 0, 0, 0.10)",
+          "acr-chip-hover": "rgba(0, 0, 0, 0.14)",
+          "acr-field": "rgba(0, 0, 0, 0.05)",
+          "acr-hover": "rgba(0, 0, 0, 0.03)",
+          "acr-border": "rgba(60, 60, 67, 0.29)",
+          "acr-border-soft": "rgba(60, 60, 67, 0.18)",
+          "acr-control": "#ffffff",
+          "acr-control-hover": "#f4f4f5",
+          "acr-control-border": "rgba(0, 0, 0, 0.13)",
+          "acr-surface": "rgba(255, 255, 255, 0.55)",
+          "acr-surface-hover": "rgba(255, 255, 255, 0.75)",
+          "acr-panel": "rgba(255, 255, 255, 0.62)",
+          "acr-overlay": "rgba(236, 236, 236, 0.45)",
+          "acr-field-strong": "rgba(255, 255, 255, 0.60)",
+          "acr-toast": "rgba(255, 255, 255, 0.72)",
+          "acr-solid": "#1c1c1e",
+          "acr-solid-fg": "#fafafa",
+          "acr-scrollbar": "rgba(0, 0, 0, 0.28)",
+          "acr-scrollbar-hover": "rgba(0, 0, 0, 0.45)",
+          "text-largetitle": "26px",
+          "text-title1": "22px",
+          "text-title2": "17px",
+          "text-title3": "15px",
+          "text-headline": "13px",
+          "text-body": "13px",
+          "text-callout": "12px",
+          "text-subheadline": "11px",
+          "text-footnote": "10px"
+        },
+        "dark": {
+          "background": "#1e1e1e",
+          "foreground": "rgba(255, 255, 255, 1)",
+          "muted-foreground": "rgba(255, 255, 255, 0.55)",
+          "label-tertiary": "rgba(255, 255, 255, 0.25)",
+          "accent": "#98989d",
+          "primary": "#0091ff",
+          "primary-foreground": "#ffffff",
+          "destructive": "#ff4245",
+          "ring": "#0091ff",
+          "border": "rgba(255, 255, 255, 0.12)",
+          "acr-chip": "rgba(255, 255, 255, 0.10)",
+          "acr-chip-hover": "rgba(255, 255, 255, 0.14)",
+          "acr-field": "rgba(255, 255, 255, 0.05)",
+          "acr-hover": "rgba(255, 255, 255, 0.03)",
+          "acr-border": "rgba(255, 255, 255, 0.12)",
+          "acr-border-soft": "rgba(255, 255, 255, 0.08)",
+          "acr-control": "rgba(255, 255, 255, 0.09)",
+          "acr-control-hover": "rgba(255, 255, 255, 0.13)",
+          "acr-control-border": "rgba(255, 255, 255, 0.12)",
+          "acr-surface": "rgba(9, 9, 11, 0.40)",
+          "acr-surface-hover": "rgba(28, 28, 30, 0.55)",
+          "acr-panel": "rgba(255, 255, 255, 0.08)",
+          "acr-overlay": "rgba(9, 9, 11, 0.55)",
+          "acr-field-strong": "rgba(255, 255, 255, 0.18)",
+          "acr-toast": "rgba(44, 44, 46, 0.68)",
+          "acr-solid": "#ffffff",
+          "acr-solid-fg": "#1c1c1e",
+          "acr-scrollbar": "rgba(255, 255, 255, 0.28)",
+          "acr-scrollbar-hover": "rgba(255, 255, 255, 0.45)"
+        }
+      },
+      "css": {
+        ".scrollbar-mac": {
+          "scrollbar-width": "thin",
+          "scrollbar-color": "var(--acr-scrollbar) transparent"
+        },
+        ".scrollbar-mac::-webkit-scrollbar": {
+          "width": "10px",
+          "height": "10px"
+        },
+        ".scrollbar-mac::-webkit-scrollbar-track": {
+          "background": "transparent"
+        },
+        ".scrollbar-mac::-webkit-scrollbar-thumb": {
+          "background-color": "var(--acr-scrollbar)",
+          "border-radius": "999px",
+          "border": "2px solid transparent",
+          "background-clip": "content-box"
+        },
+        ".scrollbar-mac::-webkit-scrollbar-thumb:hover": {
+          "background-color": "var(--acr-scrollbar-hover)",
+          "background-clip": "content-box"
+        }
+      }
+    },
+    {
       "name": "glass-card",
       "type": "registry:component",
       "title": "GlassCard",
-      "description": "Dark frosted-glass (acrylic) surface card — a charcoal translucent pane over a blurred backdrop. Flat at rest, soft float shadow + lift on hover (interactive).",
+      "description": "Dark frosted-glass (acrylic) surface card \u2014 a charcoal translucent pane over a blurred backdrop. Flat at rest, soft float shadow + lift on hover (interactive).",
       "files": [
         {
           "path": "registry/acrylic/glass-card.tsx",
           "type": "registry:component",
           "target": "components/acrylic/glass-card.tsx"
         }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
       ]
     },
     {
@@ -21,8 +140,14 @@
       "type": "registry:ui",
       "title": "Acrylic Dialog",
       "description": "Radix Dialog dressed as a frosted-acrylic modal: a 72px blur+saturate overlay and a translucent panel (20px radius, macOS 26 metrics). The close (X) reuses the acrylic Button (ghost icon) and is not auto-focused on open; toggle it with showCloseButton. Drop-in replacement for the shadcn Dialog.",
-      "dependencies": ["@radix-ui/react-dialog", "lucide-react"],
-      "registryDependencies": ["button"],
+      "dependencies": [
+        "@radix-ui/react-dialog",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json",
+        "https://acrylic-ui.vercel.app/r/button.json"
+      ],
       "files": [
         {
           "path": "registry/acrylic/dialog.tsx",
@@ -40,9 +165,15 @@
       "name": "alert-dialog",
       "type": "registry:ui",
       "title": "Acrylic Alert Dialog",
-      "description": "Frosted confirm dialog — the AlertDialog counterpart of the acrylic Dialog (72px blur overlay + translucent panel). Modeled on the macOS 26 Alerts page: 26px panel radius and action/cancel buttons that reuse the acrylic Button (buttonVariants) at the kit's large size. Shares the Dialog's ref-counted body-paint so it can stack on a Dialog without either losing its frost.",
-      "dependencies": ["@radix-ui/react-alert-dialog", "class-variance-authority"],
-      "registryDependencies": ["button"],
+      "description": "Frosted confirm dialog \u2014 the AlertDialog counterpart of the acrylic Dialog (72px blur overlay + translucent panel). Modeled on the macOS 26 Alerts page: 26px panel radius and action/cancel buttons that reuse the acrylic Button (buttonVariants) at the kit's large size. Shares the Dialog's ref-counted body-paint so it can stack on a Dialog without either losing its frost.",
+      "dependencies": [
+        "@radix-ui/react-alert-dialog",
+        "class-variance-authority"
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json",
+        "https://acrylic-ui.vercel.app/r/button.json"
+      ],
       "files": [
         {
           "path": "registry/acrylic/alert-dialog.tsx",
@@ -61,13 +192,19 @@
       "type": "registry:ui",
       "title": "Acrylic Button",
       "description": "Button lifted from the Apple macOS 26 UI Kit: a solid prominent default plus tinted secondary, destructive, neutral, and borderless ghost variants, in the five macOS control sizes (16/20/24/28/36) with kit-exact per-size radii and a round icon size. Colors flip light/dark via the Acrylic theme tokens; asChild via Radix Slot.",
-      "dependencies": ["@radix-ui/react-slot", "class-variance-authority"],
+      "dependencies": [
+        "@radix-ui/react-slot",
+        "class-variance-authority"
+      ],
       "files": [
         {
           "path": "registry/acrylic/button.tsx",
           "type": "registry:ui",
           "target": "components/acrylic/button.tsx"
         }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
       ]
     },
     {
@@ -81,6 +218,9 @@
           "type": "registry:ui",
           "target": "components/acrylic/input.tsx"
         }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
       ]
     },
     {
@@ -88,41 +228,58 @@
       "type": "registry:ui",
       "title": "Acrylic Toaster",
       "description": "Sonner toasts restyled as the macOS 26 notification banner: a 344px frosted-acrylic card (--acr-toast + backdrop-blur), 16px radius, SFPro-Bold/13 title, top-center. Follows the app theme via next-themes. Mount once near the app root, then call toast() from sonner.",
-      "dependencies": ["sonner", "next-themes"],
+      "dependencies": [
+        "sonner",
+        "next-themes"
+      ],
       "files": [
         {
           "path": "registry/acrylic/toaster.tsx",
           "type": "registry:ui",
           "target": "components/acrylic/toaster.tsx"
         }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
       ]
     },
     {
       "name": "popover",
       "type": "registry:ui",
       "title": "Acrylic Popover",
-      "description": "Frosted floating panel (translucent material + backdrop-blur) — the dropdown surface for Combobox and other overlays. Radix Popover under the hood.",
-      "dependencies": ["@radix-ui/react-popover"],
+      "description": "Frosted floating panel (translucent material + backdrop-blur) \u2014 the dropdown surface for Combobox and other overlays. Radix Popover under the hood.",
+      "dependencies": [
+        "@radix-ui/react-popover"
+      ],
       "files": [
         {
           "path": "registry/acrylic/popover.tsx",
           "type": "registry:ui",
           "target": "components/acrylic/popover.tsx"
         }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
       ]
     },
     {
       "name": "command",
       "type": "registry:ui",
       "title": "Acrylic Command",
-      "description": "cmdk command list styled for the frosted popover surface — accessible keyboard nav + filtering for Combobox and command palettes.",
-      "dependencies": ["cmdk", "lucide-react"],
+      "description": "cmdk command list styled for the frosted popover surface \u2014 accessible keyboard nav + filtering for Combobox and command palettes.",
+      "dependencies": [
+        "cmdk",
+        "lucide-react"
+      ],
       "files": [
         {
           "path": "registry/acrylic/command.tsx",
           "type": "registry:ui",
           "target": "components/acrylic/command.tsx"
         }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
       ]
     },
     {
@@ -130,8 +287,18 @@
       "type": "registry:ui",
       "title": "Acrylic Combobox",
       "description": "The macOS 26 Combo Box: an editable, searchable select. An Input-styled trigger with a chevron opens a frosted Popover holding a filterable Command list, in the five macOS control sizes. Assembled from Input + Popover + Command.",
-      "dependencies": ["@radix-ui/react-popover", "cmdk", "class-variance-authority", "lucide-react"],
-      "registryDependencies": ["input", "popover", "command"],
+      "dependencies": [
+        "@radix-ui/react-popover",
+        "cmdk",
+        "class-variance-authority",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json",
+        "https://acrylic-ui.vercel.app/r/input.json",
+        "https://acrylic-ui.vercel.app/r/popover.json",
+        "https://acrylic-ui.vercel.app/r/command.json"
+      ],
       "files": [
         {
           "path": "registry/acrylic/combobox.tsx",
@@ -145,13 +312,19 @@
       "type": "registry:ui",
       "title": "Acrylic Field",
       "description": "Form field layout family from the macOS 26 Forms page, mapped to the shadcn Field API: Field/FieldLabel/FieldTitle/FieldDescription/FieldError/FieldContent/FieldGroup/FieldSet/FieldLegend/FieldSeparator. Vertical/horizontal/responsive orientation; hairline separators at the kit's 5% rhythm. Colors flip light/dark via the Acrylic theme tokens.",
-      "dependencies": ["@radix-ui/react-slot", "class-variance-authority"],
+      "dependencies": [
+        "@radix-ui/react-slot",
+        "class-variance-authority"
+      ],
       "files": [
         {
           "path": "registry/acrylic/field.tsx",
           "type": "registry:ui",
           "target": "components/acrylic/field.tsx"
         }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
       ]
     },
     {
@@ -159,7 +332,10 @@
       "type": "registry:ui",
       "title": "Acrylic Input Group",
       "description": "Composable input container (shadcn InputGroup) styled to match the Input: InputGroup/InputGroupInput/InputGroupTextarea/InputGroupAddon/InputGroupButton/InputGroupText. Addons align inline-start/inline-end/block-start/block-end; InputGroupTextarea supports autoResize + maxRows (supersedes the old AutoTextarea).",
-      "registryDependencies": ["button"],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json",
+        "https://acrylic-ui.vercel.app/r/button.json"
+      ],
       "files": [
         {
           "path": "registry/acrylic/input-group.tsx",
@@ -172,14 +348,19 @@
       "name": "slider",
       "type": "registry:ui",
       "title": "Acrylic Slider",
-      "description": "Radix Slider aligned to the macOS 26 Sliders page: a capsule translucent rail, an accent-blue filled range, and a frosted-white pill knob with a hairline border + soft shadow, in five control sizes. Two kit variants — standard and center-biased fill — plus the Ticked add-on (marks), range (two-thumb), stepping, vertical orientation, and disabled. Colors flip light/dark via the Acrylic theme tokens.",
-      "dependencies": ["@radix-ui/react-slider"],
+      "description": "Radix Slider aligned to the macOS 26 Sliders page: a capsule translucent rail, an accent-blue filled range, and a frosted-white pill knob with a hairline border + soft shadow, in five control sizes. Two kit variants \u2014 standard and center-biased fill \u2014 plus the Ticked add-on (marks), range (two-thumb), stepping, vertical orientation, and disabled. Colors flip light/dark via the Acrylic theme tokens.",
+      "dependencies": [
+        "@radix-ui/react-slider"
+      ],
       "files": [
         {
           "path": "registry/acrylic/slider.tsx",
           "type": "registry:ui",
           "target": "components/acrylic/slider.tsx"
         }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
       ]
     },
     {
@@ -187,13 +368,18 @@
       "type": "registry:ui",
       "title": "Acrylic Switch",
       "description": "On/off toggle from the macOS 26 Toggles page: a capsule rail (gray off / accent-blue on) with a white knob, in five control sizes. Radix Switch; colors flip light/dark via the Acrylic theme tokens.",
-      "dependencies": ["@radix-ui/react-switch"],
+      "dependencies": [
+        "@radix-ui/react-switch"
+      ],
       "files": [
         {
           "path": "registry/acrylic/switch.tsx",
           "type": "registry:ui",
           "target": "components/acrylic/switch.tsx"
         }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
       ]
     },
     {
@@ -201,13 +387,18 @@
       "type": "registry:ui",
       "title": "Acrylic Radio Group",
       "description": "Radio buttons from the macOS 26 Toggles page: a circular control (gray unselected / accent-filled with a white center dot when selected), in five sizes. Radix RadioGroup; colors flip light/dark via the Acrylic theme tokens.",
-      "dependencies": ["@radix-ui/react-radio-group"],
+      "dependencies": [
+        "@radix-ui/react-radio-group"
+      ],
       "files": [
         {
           "path": "registry/acrylic/radio-group.tsx",
           "type": "registry:ui",
           "target": "components/acrylic/radio-group.tsx"
         }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
       ]
     },
     {
@@ -215,13 +406,19 @@
       "type": "registry:ui",
       "title": "Acrylic Stepper",
       "description": "macOS 26 Stepper: a number readout plus a chevron up/down bezel stack (kit radii 4/5/6/7/9), controlled with value/min/max/step. Auto-disables at bounds, keyboard arrow support; colors flip light/dark via the Acrylic theme tokens.",
-      "dependencies": ["class-variance-authority", "lucide-react"],
+      "dependencies": [
+        "class-variance-authority",
+        "lucide-react"
+      ],
       "files": [
         {
           "path": "registry/acrylic/stepper.tsx",
           "type": "registry:ui",
           "target": "components/acrylic/stepper.tsx"
         }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
       ]
     },
     {
@@ -229,22 +426,34 @@
       "type": "registry:ui",
       "title": "Acrylic Select",
       "description": "The macOS 26 Pop-up Button as a Select: a flat control-surface trigger with the up/down chevron (kit radii 4/5/6/14/18) opening a frosted popover of items, in five sizes. Radix Select; colors flip light/dark via the Acrylic theme tokens.",
-      "dependencies": ["@radix-ui/react-select", "class-variance-authority", "lucide-react"],
+      "dependencies": [
+        "@radix-ui/react-select",
+        "class-variance-authority",
+        "lucide-react"
+      ],
       "files": [
         {
           "path": "registry/acrylic/select.tsx",
           "type": "registry:ui",
           "target": "components/acrylic/select.tsx"
         }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
       ]
     },
     {
       "name": "button-group",
       "type": "registry:ui",
       "title": "Acrylic Button Group",
-      "description": "Button Group aligned to the macOS 26 Segmented Controls — group buttons into a rounded gray well. Variants: attached (flush + hairline dividers), segmented (active item as a raised white pill), split (gapped); horizontal/vertical. Exports ButtonGroup/ButtonGroupSeparator/ButtonGroupText. Colors flip light/dark via the Acrylic theme tokens.",
-      "dependencies": ["class-variance-authority"],
-      "registryDependencies": ["button"],
+      "description": "Button Group aligned to the macOS 26 Segmented Controls \u2014 group buttons into a rounded gray well. Variants: attached (flush + hairline dividers), segmented (active item as a raised white pill), split (gapped); horizontal/vertical. Exports ButtonGroup/ButtonGroupSeparator/ButtonGroupText. Colors flip light/dark via the Acrylic theme tokens.",
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json",
+        "https://acrylic-ui.vercel.app/r/button.json"
+      ],
       "files": [
         {
           "path": "registry/acrylic/button-group.tsx",

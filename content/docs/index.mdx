@@ -10,20 +10,39 @@ through one token set.
 
 ## Install
 
-Point your project's `components.json` at the Acrylic registry:
+Add any component straight from its URL — no config required. The Acrylic theme
+tokens are a dependency of every component, so they come along automatically:
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/button.json
+```
+
+### Optional: the `@acrylic` shortcut
+
+If you'll pull in several components, register the namespace once in your
+`components.json`:
 
 ```json
 {
   "registries": {
-    "@acrylic": "https://<this-host>/r/{name}.json"
+    "@acrylic": "https://acrylic-ui.vercel.app/r/{name}.json"
   }
 }
 ```
 
-Then add components with the CLI:
+Then the short form works:
 
 ```bash
 npx shadcn add @acrylic/button
+```
+
+### Theme only
+
+To install just the token set — e.g. to theme your own components — add the
+theme item on its own:
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/acrylic.json
 ```
 
 ## Components

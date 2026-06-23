@@ -8,6 +8,17 @@ references, so they all re-theme together. Values are lifted from the official
 Apple **macOS 26** UI Kit. Structure follows the shadcn / next-themes convention:
 `:root` is light, `.dark` is dark.
 
+Every component depends on the theme, so installing any one pulls it in. To add
+the tokens on their own (e.g. to style your own components), install the theme
+item directly:
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/acrylic.json
+```
+
+It merges the semantic + `--acr-*` variables (light & dark), the `@theme` color
+mappings, and the `.scrollbar-mac` utility into your global stylesheet.
+
 ## Semantic colors
 
 | token | source (macOS 26) | light | dark |
