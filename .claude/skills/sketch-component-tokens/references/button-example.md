@@ -54,22 +54,40 @@ red `#FF4245`, black-opacity fills → white-opacity, labels Light→Dark). acry
 is a dark frosted theme, so the wrapper should consume the `_dark` values (or wire
 both behind the theme's CSS variables).
 
-## Building the shadcn wrapper (step 5 — not yet done)
+## The shadcn wrapper — as built
 
-Target: `registry/acrylic/button.tsx` (currently a draft with height/4-guessed
-radii and `px-3` medium padding — both wrong vs the kit). Plan:
+`registry/acrylic/button.tsx`. The 8 kit categories were collapsed to **5
+variants** (the kit conflates fill-emphasis × tone; the 4 "Bordered" colors plus
+borderless become 5 clean variants) **× 5 sizes + `icon`**, faithful to the kit:
 
-1. Define `buttonVariants` (CVA) with the 8 categories above as `variant` and the
-   5 sizes as `size`; wire colours to the theme's CSS variables / `_dark` tokens.
-2. Fix the size scale to the extracted values: heights 16/20/24/28/36, radii
-   4/5/6/14/18, padX 7/10/16/16/16, fontSize 10/11/13/13/13.
-3. Keep `asChild` via Radix `Slot` (already in the draft).
-4. Decide the variant-name mapping (Apple names vs shadcn conventional names) —
-   the current draft already uses `default/secondary/tinted/outline/ghost/
-   destructive/glow`; reconcile with the 8 extracted categories.
+- **variant** (colours → theme CSS vars, flip light/dark for free):
+  `default` (Bordered Default — solid `bg-primary`, white label, the only
+  high-emphasis one), `secondary` (Bordered Secondary — `bg-primary/10`, accent
+  label), `destructive` (Bordered Destructive — `bg-destructive/25`, red label),
+  `neutral` (Neutral — `bg-[--acr-chip]`, foreground label), `ghost` (Borderless
+  — transparent, foreground label).
+- **size** (geometry → extracted values): heights 16/20/24/28/36, radii
+  **4/5/6/14/18** (two-regime), padX 7/10/16/16/16, fontSize 10/11/13/13/13;
+  `icon` = square + `rounded-full` (the Arrow Button). default size = `medium`.
 
-Open decisions to confirm with the user before writing the wrapper:
-- variant naming (keep Apple category names, or shadcn-conventional names?),
-- whether `Bordered Default`'s 3-layer material is worth replicating or flatten
-  to a single accent fill,
-- map `Arrow Button` → the existing `icon` size or a dedicated variant.
+Resolved decisions (kept here as the rationale for the next component):
+- **Dropped `Bordered Colored`** — redundant solid-accent, duplicate of `default`
+  in (emphasis, tone) space.
+- **`default` is solid / others are tinted** — chose kit-faithful (mixed
+  emphasis) over uniform colour-swap; this is real macOS behaviour.
+- **Borderless bezel vs label-change are NOT button variants** — they are the
+  macOS toggle on-state patterns (bezel grows a pill / label text changes); both
+  rest as a plain `ghost`. The toggle behaviour belongs to a future `Toggle`
+  component, not Button.
+- **Arrow Button → `size="icon"`** (a shape, usable with any variant), not a
+  variant — naming follows shadcn.
+
+Colours cost nothing to wire: `acrylic.css` `--primary`/`--destructive`/`--acr-*`
+were themselves lifted from this kit and match the extracted `_dark` values.
+
+## Showcase / docs
+
+`components/examples/button-demo.tsx` (one-row usage) and
+`components/examples/button-showcase.tsx` (full variant × size matrix), indexed by
+`components/examples-map.ts` (regenerate with `node scripts/gen-examples.mjs`),
+shown in `content/docs/components/button.mdx` via `<ComponentPreview name="..." />`.

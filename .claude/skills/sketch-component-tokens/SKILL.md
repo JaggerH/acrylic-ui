@@ -52,11 +52,30 @@ third-party deps). `SK` = path to the `.sketch` file.
    colour map in that script is **kit-general** (reuse as-is). See
    `references/button-example.md` for the fully worked Button case.
 
-5. **Map to shadcn/ui and build the wrapper** (next phase — out of scope for the
-   extraction itself). Read `references/button-example.md` for the proposed
-   Apple-category → shadcn-variant mapping and the open design decisions
-   (radius is a two-regime rule, not a single formula; colours are light-mode,
-   dark is mapped).
+5. **Map to shadcn/ui and build the wrapper.** Collapse the kit's categories to a
+   clean variant set (the kit often conflates *fill emphasis* × *tone* into one
+   "category" axis — separate them), then write the component as a standalone CVA
+   that follows shadcn's shape (`cva` + `VariantProps` + Radix `Slot` +
+   `data-slot`/`data-variant`/`data-size`), wiring **colours to the theme CSS
+   variables** (`acrylic.css` already carries the kit's light/dark values, so
+   colours flip for free) and **geometry to the extracted values**
+   (height/radius/padding/font). Target `registry/acrylic/<component>.tsx`.
+   Read `references/button-example.md` for the fully worked mapping.
+
+6. **Add a showcase + docs page** — displaying the component is part of the job.
+   The docs site (fumadocs) renders live examples via `<ComponentPreview
+   name="..." />`:
+   - Write `components/examples/<name>.tsx` (default-export a React component).
+     Add both a small usage demo and a **full variant × size matrix** showcase.
+   - Run `node scripts/gen-examples.mjs` to regenerate `components/examples-map.ts`
+     (auto-generated index — never hand-edit it).
+   - Reference the examples in `content/docs/components/<component>.mdx`
+     (`<ComponentPreview name="<name>" />`), and keep the variant/size tables in
+     that page in sync with the actual CVA.
+   - Update the component's `registry.json` description.
+
+7. **Verify + view.** `pnpm types:check` (tsc) and `pnpm registry:build` must both
+   pass. Then restart the dev app (`pnpm dev`, Next.js) to view the page.
 
 ## Key facts (full detail in references/sketch-format.md)
 
@@ -83,6 +102,20 @@ intermediate `raw.json`.
 
 ## Status
 
-Extraction (steps 1–4) is complete and validated against the macOS 26 Buttons
-page (785 masters → 8 categories × 5 sizes). The shadcn mapping + wrapper +
-docs-page showcase (step 5) are not yet built.
+**Button and Input are fully done end-to-end** (steps 1–7), both validated against
+the kit and shipped to `registry/acrylic/` with showcases in the docs;
+`types:check` + `registry:build` pass.
+- Button — 785 masters → 8 categories collapsed to 5 variants × 5 sizes + `icon`.
+  Shaper: `scripts/shape_button.py`. Worked example: `references/button-example.md`.
+- Input — 60 masters → Text Field, 5 sizes (no variant axis), uniform radius
+  4/5/6/7/9, accent focus ring. Shaper: `scripts/shape_input.py`.
+- Alert — 7 masters → composite (no variant×size). Panel radius 26 + frosted
+  material, backdrop black 23%, buttons are 28px = Button `large`. `alert-dialog.tsx`
+  now styles Action/Cancel via `buttonVariants({size:"large"})` (Action→default,
+  Cancel→neutral). Shaper: `scripts/shape_alert.py`.
+
+Each new component gets its own `shape_<component>.py` (copy the nearest existing
+one and adjust the taxonomy parsing + resting-state pick). Composite components
+(like Alert) reuse already-built atomic components (Button) rather than a
+variant×size matrix. Other components (Search Field, Combo Box, Toggle, …) still
+need steps 1–7.

@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/registry/acrylic/button"
+import { Button, buttonVariants } from "@/registry/acrylic/button"
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -17,7 +17,7 @@ export default function AlertDialogDemo() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">Delete…</Button>
+        <Button variant="destructive">Open Alert Dialog</Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="sm:max-w-[380px]">
         <AlertDialogHeader>
@@ -26,7 +26,9 @@ export default function AlertDialogDemo() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction className="bg-destructive text-white">Delete</AlertDialogAction>
+          <AlertDialogAction className={buttonVariants({ variant: "destructive", size: "large" })}>
+            Delete
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

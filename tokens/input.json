@@ -1,0 +1,259 @@
+{
+  "source": "Apple macOS 26 UI Kit.sketch",
+  "component": "input",
+  "note": "Text Field. radius = uniform ~height/4 (4/5/6/7/9), NO capsule (unlike Button). bg solid white -> dark translucent control; hairline border #000/8%; focus = accent ring (#007AFF 25% 3.5px + 15% 1px). Placeholder text color absent from kit -> use muted token.",
+  "sizes": {
+    "mini": 16,
+    "small": 20,
+    "medium": 24,
+    "large": 28,
+    "xl": 36
+  },
+  "bySize": {
+    "mini": {
+      "height": 16,
+      "radius": 4,
+      "padding": {
+        "top": 0,
+        "right": 2,
+        "bottom": 0,
+        "left": 6
+      },
+      "font": "SFPro-Medium",
+      "fontSize": 10,
+      "bg": {
+        "light": "rgba(255, 255, 255, 1)",
+        "dark": "rgba(255, 255, 255, 0.09)"
+      },
+      "border": [
+        {
+          "color": "rgba(0, 0, 0, 0.08)",
+          "colorDark": "rgba(255, 255, 255, 0.08)",
+          "thickness": 1
+        }
+      ],
+      "focusRing": [
+        {
+          "color": "rgba(0, 0, 0, 0.08)",
+          "colorDark": "rgba(255, 255, 255, 0.08)",
+          "thickness": 1
+        },
+        {
+          "color": "rgba(0, 122, 255, 0.25)",
+          "colorDark": "rgba(0, 145, 255, 0.25)",
+          "thickness": 3.5
+        },
+        {
+          "color": "rgba(0, 122, 255, 0.15)",
+          "colorDark": "rgba(0, 145, 255, 0.15)",
+          "thickness": 1
+        }
+      ],
+      "disabledBg": {
+        "light": "rgba(255, 255, 255, 0.5)",
+        "dark": "rgba(255, 255, 255, 0.09)"
+      },
+      "textColor": {
+        "light": "rgba(26, 26, 26, 1)",
+        "dark": "rgba(245, 245, 245, 1.0)"
+      },
+      "placeholderColor": null
+    },
+    "small": {
+      "height": 20,
+      "radius": 5,
+      "padding": {
+        "top": 0,
+        "right": 2.5,
+        "bottom": 0,
+        "left": 6
+      },
+      "font": "SFPro-Medium",
+      "fontSize": 11,
+      "bg": {
+        "light": "rgba(255, 255, 255, 1)",
+        "dark": "rgba(255, 255, 255, 0.09)"
+      },
+      "border": [
+        {
+          "color": "rgba(0, 0, 0, 0.08)",
+          "colorDark": "rgba(255, 255, 255, 0.08)",
+          "thickness": 1
+        }
+      ],
+      "focusRing": [
+        {
+          "color": "rgba(0, 0, 0, 0.08)",
+          "colorDark": "rgba(255, 255, 255, 0.08)",
+          "thickness": 1
+        },
+        {
+          "color": "rgba(0, 122, 255, 0.25)",
+          "colorDark": "rgba(0, 145, 255, 0.25)",
+          "thickness": 3.5
+        },
+        {
+          "color": "rgba(0, 122, 255, 0.15)",
+          "colorDark": "rgba(0, 145, 255, 0.15)",
+          "thickness": 1
+        }
+      ],
+      "disabledBg": {
+        "light": "rgba(255, 255, 255, 0.5)",
+        "dark": "rgba(255, 255, 255, 0.09)"
+      },
+      "textColor": {
+        "light": "rgba(26, 26, 26, 1)",
+        "dark": "rgba(245, 245, 245, 1.0)"
+      },
+      "placeholderColor": null
+    },
+    "medium": {
+      "height": 24,
+      "radius": 6,
+      "padding": {
+        "top": 0,
+        "right": 4,
+        "bottom": 0,
+        "left": 8
+      },
+      "font": "SFPro-Medium",
+      "fontSize": 13,
+      "bg": {
+        "light": "rgba(255, 255, 255, 1)",
+        "dark": "rgba(255, 255, 255, 0.09)"
+      },
+      "border": [
+        {
+          "color": "rgba(0, 0, 0, 0.08)",
+          "colorDark": "rgba(255, 255, 255, 0.08)",
+          "thickness": 1
+        }
+      ],
+      "focusRing": [
+        {
+          "color": "rgba(0, 0, 0, 0.08)",
+          "colorDark": "rgba(255, 255, 255, 0.08)",
+          "thickness": 1
+        },
+        {
+          "color": "rgba(0, 122, 255, 0.25)",
+          "colorDark": "rgba(0, 145, 255, 0.25)",
+          "thickness": 3.5
+        },
+        {
+          "color": "rgba(0, 122, 255, 0.15)",
+          "colorDark": "rgba(0, 145, 255, 0.15)",
+          "thickness": 1
+        }
+      ],
+      "disabledBg": {
+        "light": "rgba(255, 255, 255, 0.5)",
+        "dark": "rgba(255, 255, 255, 0.09)"
+      },
+      "textColor": {
+        "light": "rgba(26, 26, 26, 1)",
+        "dark": "rgba(245, 245, 245, 1.0)"
+      },
+      "placeholderColor": null
+    },
+    "large": {
+      "height": 28,
+      "radius": 7,
+      "padding": {
+        "top": 0,
+        "right": 6,
+        "bottom": 0,
+        "left": 8
+      },
+      "font": "SFPro-Medium",
+      "fontSize": 13,
+      "bg": {
+        "light": "rgba(255, 255, 255, 1)",
+        "dark": "rgba(255, 255, 255, 0.09)"
+      },
+      "border": [
+        {
+          "color": "rgba(0, 0, 0, 0.08)",
+          "colorDark": "rgba(255, 255, 255, 0.08)",
+          "thickness": 1
+        }
+      ],
+      "focusRing": [
+        {
+          "color": "rgba(0, 0, 0, 0.08)",
+          "colorDark": "rgba(255, 255, 255, 0.08)",
+          "thickness": 1
+        },
+        {
+          "color": "rgba(0, 122, 255, 0.25)",
+          "colorDark": "rgba(0, 145, 255, 0.25)",
+          "thickness": 3.5
+        },
+        {
+          "color": "rgba(0, 122, 255, 0.15)",
+          "colorDark": "rgba(0, 145, 255, 0.15)",
+          "thickness": 1
+        }
+      ],
+      "disabledBg": {
+        "light": "rgba(255, 255, 255, 0.5)",
+        "dark": "rgba(255, 255, 255, 0.09)"
+      },
+      "textColor": {
+        "light": "rgba(26, 26, 26, 1)",
+        "dark": "rgba(245, 245, 245, 1.0)"
+      },
+      "placeholderColor": null
+    },
+    "xl": {
+      "height": 36,
+      "radius": 9,
+      "padding": {
+        "top": 11,
+        "right": 8,
+        "bottom": 10,
+        "left": 10
+      },
+      "font": "SFPro-Medium",
+      "fontSize": 13,
+      "bg": {
+        "light": "rgba(255, 255, 255, 1)",
+        "dark": "rgba(255, 255, 255, 0.09)"
+      },
+      "border": [
+        {
+          "color": "rgba(0, 0, 0, 0.08)",
+          "colorDark": "rgba(255, 255, 255, 0.08)",
+          "thickness": 1
+        }
+      ],
+      "focusRing": [
+        {
+          "color": "rgba(0, 0, 0, 0.08)",
+          "colorDark": "rgba(255, 255, 255, 0.08)",
+          "thickness": 1
+        },
+        {
+          "color": "rgba(0, 122, 255, 0.25)",
+          "colorDark": "rgba(0, 145, 255, 0.25)",
+          "thickness": 3.5
+        },
+        {
+          "color": "rgba(0, 122, 255, 0.15)",
+          "colorDark": "rgba(0, 145, 255, 0.15)",
+          "thickness": 1
+        }
+      ],
+      "disabledBg": {
+        "light": "rgba(255, 255, 255, 0.5)",
+        "dark": "rgba(255, 255, 255, 0.09)"
+      },
+      "textColor": {
+        "light": "rgba(26, 26, 26, 1)",
+        "dark": "rgba(245, 245, 245, 1.0)"
+      },
+      "placeholderColor": null
+    }
+  }
+}

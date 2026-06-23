@@ -1,12 +1,12 @@
 ---
 title: Button
-description: macOS Push Button — 5 classes × 5 sizes (heights 16/20/24/28/36, radius = height ÷ 4) × states.
+description: macOS 26 Push Button — 5 variants × 5 sizes (heights 16/20/24/28/36) × states.
 ---
 
-macOS-style push buttons: prominent (`default`), neutral (`secondary`), colored
-(`tinted`), `destructive`, and borderless (`ghost`), plus a non-standard `glow`
-CTA. Capsule-rounded with a per-size corner radius, theme-aware via the Acrylic
-token set.
+macOS-style push buttons lifted from the Apple macOS 26 UI Kit: a prominent
+solid `default`, three low-emphasis tinted colors (`secondary`, `destructive`,
+`neutral`), and a borderless `ghost`. Per-size corner radius and a round `icon`
+size, theme-aware via the Acrylic token set (colors flip light/dark).
 
 ## Installation
 
@@ -26,16 +26,30 @@ import { Button } from "@/components/acrylic/button"
 
 ## Variants
 
-| variant | macOS class | look |
-| --- | --- | --- |
-| `default` | Bordered Default (prominent) | accent-filled (System Blue) |
-| `secondary` | Bordered Neutral | translucent gray fill |
-| `tinted` | Bordered Colored | accent tint |
-| `destructive` | Bordered Destructive | red fill (System Red) |
-| `ghost` | Borderless | text only |
-| `glow` | — (CTA) | dark pill + sky ring |
+| variant | macOS class | look | emphasis |
+| --- | --- | --- | --- |
+| `default` | Bordered Default | solid accent fill, white label (System Blue) | high |
+| `secondary` | Bordered Secondary | 10% accent tint, accent label | low |
+| `destructive` | Bordered Destructive | 25% red tint, red label (System Red) | low |
+| `neutral` | Neutral | translucent gray fill, foreground label | low |
+| `ghost` | Borderless | text only, no fill at rest | low |
 
 ## Sizes
 
-`mini` (16px) · `small` (20) · `medium` (24) · `large` (28, default) · `xl` (36) · `icon`.
-Corner radius follows macOS: **radius = height ÷ 4** (4 / 5 / 6 / 7 / 9 px).
+`mini` (16px) · `small` (20) · `medium` (24, default) · `large` (28) · `xl` (36) · `icon` (round).
+Corner radius is taken straight from the kit and is **not** a single formula —
+mini/small/medium stay quarter-height rounded rectangles while large/xl snap to a
+full capsule:
+
+| size | mini | small | medium | large | xl |
+| --- | --- | --- | --- | --- | --- |
+| radius | 4 | 5 | 6 | **14** | **18** |
+
+`size="icon"` is a square, full-circle button (the kit's Arrow Button) and pairs
+with any variant.
+
+## Showcase
+
+Every variant in every size (plus the round `icon`):
+
+<ComponentPreview name="button-showcase" />

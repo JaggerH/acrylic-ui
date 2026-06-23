@@ -1,10 +1,12 @@
 ---
 title: Input
-description: Translucent dark input with a hairline border and a blue (System Blue) focus ring.
+description: macOS 26 Text Field — 5 control sizes, solid control surface, hairline border, accent focus ring.
 ---
 
-A translucent dark field with a defined hairline border, muted placeholder, and a
-macOS-blue focus ring. Compose a leading icon by wrapping the field.
+The macOS 26 Text Field: a solid control-surface field with a hairline border,
+muted placeholder, and an accent focus ring, in the five macOS control sizes.
+Geometry is lifted from the Apple macOS 26 UI Kit; colors flip light/dark via the
+Acrylic theme tokens. Compose a leading icon by wrapping the field.
 
 ## Installation
 
@@ -16,7 +18,22 @@ npx shadcn add @acrylic/input
 
 <ComponentPreview name="input-demo" />
 
+```tsx
+import { Input } from "@/components/acrylic/input"
+
+<Input size="medium" placeholder="Email…" />
+```
+
+## Sizes
+
+`mini` (16px) · `small` (20) · `medium` (24, default) · `large` (28) · `xl` (36).
+Radius is uniform ~height ÷ 4 (4 / 5 / 6 / 7 / 9) — unlike Button, text fields
+never go capsule.
+
+<ComponentPreview name="input-showcase" />
+
 ## Notes
 
-- Height `h-8`, `rounded-md`, `px-2.5` — macOS control metrics.
-- For a leading icon, wrap in a `relative` container, absolutely position the icon, and add `pl-8` to the input (see the search field above).
+- Solid control surface (`--acr-control`) with a hairline border and an accent
+  focus ring (`ring-ring/25`), all theme-aware.
+- For a leading icon, wrap in a `relative` container, absolutely position the icon, and add padding (e.g. `pl-8`) to the input (see the search field above).

@@ -2,13 +2,15 @@ import * as React from "react"
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
 
 import { cn } from "@/lib/utils"
+import { buttonVariants } from "./button"
 import { useModalAcrylicBody } from "./use-modal-acrylic"
 
 // Frosted confirm dialog — the AlertDialog counterpart of the acrylic Dialog:
-// a 72px blur+saturate overlay and a translucent white-tint panel, with self-
-// contained (no external Button dep) action/cancel buttons. Shares the same
-// ref-counted body-paint as Dialog, so it can stack on top of a Dialog without
-// either one losing its frost.
+// a 72px blur+saturate overlay and a translucent white-tint panel. Modeled on the
+// macOS 26 UI Kit Alerts page: 26px panel radius, and action/cancel buttons that
+// reuse the acrylic Button (via buttonVariants) defaulting to the `large` size
+// (28px) — the size the kit uses for alert buttons. Shares the Dialog's
+// ref-counted body-paint so it can stack on a Dialog without losing its frost.
 
 const AlertDialog = AlertDialogPrimitive.Root
 
@@ -43,7 +45,7 @@ const AlertDialogContent = React.forwardRef<
       <AlertDialogPrimitive.Content
         ref={ref}
         className={cn(
-          "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 bg-[var(--acr-panel)] backdrop-blur-xl p-6 shadow-[0_0_0_1px_rgba(190,190,190,0.16),0_16px_48px_rgba(0,0,0,0.45)] duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
+          "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 rounded-[26px] bg-[var(--acr-panel)] backdrop-blur-xl p-6 shadow-[0_0_0_1px_rgba(190,190,190,0.16),0_16px_48px_rgba(0,0,0,0.45)] duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]",
           className
         )}
         {...props}
@@ -99,34 +101,29 @@ const AlertDialogDescription = React.forwardRef<
 ))
 AlertDialogDescription.displayName = AlertDialogPrimitive.Description.displayName
 
-// Solid primary confirm. Pass `className="bg-destructive text-white hover:opacity-90"`
-// (or your own red) for a destructive action like delete.
+// Preferred (confirm) button — the kit's solid-accent alert button, `large` size.
+// For a destructive action ("Don't Save"), pass
+// `className={buttonVariants({ variant: "destructive", size: "large" })}`.
 const AlertDialogAction = React.forwardRef<
   React.ComponentRef<typeof AlertDialogPrimitive.Action>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action>
 >(({ className, ...props }, ref) => (
   <AlertDialogPrimitive.Action
     ref={ref}
-    className={cn(
-      "inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-      className
-    )}
+    className={cn(buttonVariants({ variant: "default", size: "large" }), className)}
     {...props}
   />
 ))
 AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName
 
-// Translucent ghost cancel — reads on the frosted panel.
+// Cancel button — the kit's neutral gray alert button, `large` size.
 const AlertDialogCancel = React.forwardRef<
   React.ComponentRef<typeof AlertDialogPrimitive.Cancel>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel>
 >(({ className, ...props }, ref) => (
   <AlertDialogPrimitive.Cancel
     ref={ref}
-    className={cn(
-      "inline-flex h-9 items-center justify-center rounded-md border border-[var(--acr-border)] bg-[var(--acr-field)] px-4 text-sm text-foreground transition-colors hover:bg-[var(--acr-chip)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-      className
-    )}
+    className={cn(buttonVariants({ variant: "neutral", size: "large" }), className)}
     {...props}
   />
 ))

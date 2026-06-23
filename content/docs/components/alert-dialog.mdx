@@ -19,5 +19,7 @@ npx shadcn add @acrylic/alert-dialog
 
 ## Notes
 
-- Self-contained `AlertDialogAction` / `AlertDialogCancel` — no external Button dependency.
-- For a destructive action, pass `className="bg-destructive text-white"` to `AlertDialogAction`.
+- Panel uses the macOS 26 alert metrics — 26px corner radius over the frosted overlay.
+- `AlertDialogAction` / `AlertDialogCancel` reuse the acrylic [Button](/docs/components/button)
+  (via `buttonVariants`) at the kit's **`large`** size (28px): Action → `default`, Cancel → `neutral`.
+- For a destructive action, pass `className={buttonVariants({ variant: "destructive", size: "large" })}`.

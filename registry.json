@@ -39,8 +39,9 @@
       "name": "alert-dialog",
       "type": "registry:ui",
       "title": "Acrylic Alert Dialog",
-      "description": "Frosted confirm dialog — the AlertDialog counterpart of the acrylic Dialog (72px blur overlay + translucent panel), with self-contained action/cancel buttons. Shares the Dialog's ref-counted body-paint so it can stack on a Dialog without either losing its frost.",
-      "dependencies": ["@radix-ui/react-alert-dialog"],
+      "description": "Frosted confirm dialog — the AlertDialog counterpart of the acrylic Dialog (72px blur overlay + translucent panel). Modeled on the macOS 26 Alerts page: 26px panel radius and action/cancel buttons that reuse the acrylic Button (buttonVariants) at the kit's large size. Shares the Dialog's ref-counted body-paint so it can stack on a Dialog without either losing its frost.",
+      "dependencies": ["@radix-ui/react-alert-dialog", "class-variance-authority"],
+      "registryDependencies": ["button"],
       "files": [
         {
           "path": "registry/acrylic/alert-dialog.tsx",
@@ -58,7 +59,7 @@
       "name": "button",
       "type": "registry:ui",
       "title": "Acrylic Button",
-      "description": "Button modeled on the Muse: solid-white primary, translucent secondary, ghost, outline, and a glow CTA (dark pill with a luminous sky ring). asChild via Radix Slot.",
+      "description": "Button lifted from the Apple macOS 26 UI Kit: a solid prominent default plus tinted secondary, destructive, neutral, and borderless ghost variants, in the five macOS control sizes (16/20/24/28/36) with kit-exact per-size radii and a round icon size. Colors flip light/dark via the Acrylic theme tokens; asChild via Radix Slot.",
       "dependencies": ["@radix-ui/react-slot", "class-variance-authority"],
       "files": [
         {
@@ -72,7 +73,7 @@
       "name": "input",
       "type": "registry:ui",
       "title": "Acrylic Input",
-      "description": "Translucent dark input pill with a hairline border + backdrop-blur and a soft focus ring — the Muse search field. Compose a leading icon by wrapping.",
+      "description": "Input lifted from the Apple macOS 26 UI Kit Text Field: a solid control-surface field with a hairline border and an accent focus ring, in the five macOS control sizes (16/20/24/28/36) with kit-exact per-size radii (uniform ~height/4). Colors flip light/dark via the Acrylic theme tokens. Compose a leading icon by wrapping.",
       "files": [
         {
           "path": "registry/acrylic/input.tsx",

@@ -1,0 +1,89 @@
+{
+  "source": "Apple macOS 26 UI Kit.sketch",
+  "component": "alert",
+  "note": "composite. panel radius 26 + translucent white material; modal backdrop = black 23%; buttons are 28px = Button `large` size. roles map to Button variants (Preferred→default, Cancel→neutral, Destructive→destructive).",
+  "panel": {
+    "radius": 26,
+    "fills": [
+      {
+        "color": "rgba(255, 255, 255, 0.7)",
+        "swatch": null
+      },
+      {
+        "color": "rgba(250, 250, 250, 1)",
+        "swatch": null
+      }
+    ]
+  },
+  "backdrop": {
+    "fill": "rgba(0, 0, 0, 0.23)"
+  },
+  "layouts": {
+    "sideBySide": {
+      "width": 260,
+      "height": 170,
+      "padding": {
+        "top": 20,
+        "right": 16,
+        "bottom": 16,
+        "left": 16
+      },
+      "bodyText": {
+        "font": "SFPro-Regular",
+        "fontSize": 13,
+        "color": "rgba(26, 26, 26, 1)"
+      }
+    },
+    "stacked": {
+      "width": 260,
+      "height": 238,
+      "padding": {
+        "top": 20,
+        "right": 16,
+        "bottom": 16,
+        "left": 16
+      },
+      "bodyText": {
+        "font": "SFPro-Regular",
+        "fontSize": 13,
+        "color": "rgba(26, 26, 26, 1)"
+      }
+    }
+  },
+  "buttons": {
+    "size": "large",
+    "height": 28,
+    "roles": {
+      "preferred": {
+        "mapsToVariant": "default",
+        "size": "large",
+        "height": 28,
+        "radius": 14,
+        "radiusRaw": 100,
+        "fill": "rgba(10, 153, 255, 1)",
+        "textColor": "rgba(255, 255, 255, 1)",
+        "sampleLabel": "Save"
+      },
+      "cancel": {
+        "mapsToVariant": "neutral",
+        "size": "large",
+        "height": 28,
+        "radius": 14,
+        "radiusRaw": 100,
+        "fill": "rgba(230, 230, 230, 1)",
+        "textColor": "rgba(77, 77, 77, 1)",
+        "sampleLabel": "Cancel"
+      },
+      "destructive": {
+        "mapsToVariant": "destructive",
+        "size": "large",
+        "height": 28,
+        "radius": 14,
+        "radiusRaw": 100,
+        "fill": null,
+        "textColor": "rgba(255, 59, 48, 1)",
+        "sampleLabel": "Don’t Save"
+      }
+    }
+  }
+}

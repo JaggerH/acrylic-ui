@@ -3,17 +3,21 @@ import type { ComponentType } from "react"
 import C0 from "./examples/alert-dialog-demo"
 import C1 from "./examples/auto-textarea-demo"
 import C2 from "./examples/button-demo"
-import C3 from "./examples/dialog-demo"
-import C4 from "./examples/glass-card-demo"
-import C5 from "./examples/input-demo"
-import C6 from "./examples/toaster-demo"
+import C3 from "./examples/button-showcase"
+import C4 from "./examples/dialog-demo"
+import C5 from "./examples/glass-card-demo"
+import C6 from "./examples/input-demo"
+import C7 from "./examples/input-showcase"
+import C8 from "./examples/toaster-demo"
 
 export const examples: Record<string, ComponentType> = {
   "alert-dialog-demo": C0,
   "auto-textarea-demo": C1,
   "button-demo": C2,
-  "dialog-demo": C3,
-  "glass-card-demo": C4,
-  "input-demo": C5,
-  "toaster-demo": C6,
+  "button-showcase": C3,
+  "dialog-demo": C4,
+  "glass-card-demo": C5,
+  "input-demo": C6,
+  "input-showcase": C7,
+  "toaster-demo": C8,
 }
