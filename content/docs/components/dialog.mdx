@@ -17,7 +17,15 @@ npx shadcn add @acrylic/dialog
 
 <ComponentPreview name="dialog-demo" />
 
+## Examples
+
+Basic (with a form), no close button, and scrollable content with a sticky footer:
+
+<ComponentPreview name="dialog-showcase" />
+
 ## Notes
 
-- Exports `Dialog`, `DialogTrigger`, `DialogContent`, `DialogHeader`, `DialogFooter`, `DialogTitle`, `DialogDescription`.
+- Exports `Dialog`, `DialogTrigger`, `DialogContent`, `DialogClose`, `DialogHeader`, `DialogFooter`, `DialogTitle`, `DialogDescription`.
+- The close (X) is the acrylic [Button](/docs/components/button) (`variant="ghost" size="icon"`). Hide it with `<DialogContent showCloseButton={false}>` and dismiss via your own `DialogClose` buttons.
+- On open, focus stays on the trigger (the X is not auto-focused, matching macOS). Override with `onOpenAutoFocus` on `DialogContent` if you need to focus a field.
 - On a transparent (Tauri/Electron vibrancy) window, see the README for the optional `modal-acrylic` body-paint.

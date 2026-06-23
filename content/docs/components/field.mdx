@@ -1,0 +1,68 @@
+---
+title: Field
+description: The macOS 26 Form layout family — labelled rows with descriptions, errors, separators, and fieldsets, in vertical / horizontal / responsive orientations.
+---
+
+A macOS Form is a **layout**, not a control: each row pairs a label with a control
+on a shared baseline, rows stack with a uniform vertical rhythm, and 1px hairline
+separators divide them. The Field family is that layout, expressed as composable
+parts. Spacing and typography are lifted from the Apple macOS 26 UI Kit; colors
+flip light/dark via the Acrylic theme tokens. API-compatible with the shadcn Field.
+
+## Installation
+
+```bash
+npx shadcn add @acrylic/field
+```
+
+## Usage
+
+A `FieldGroup` of vertical `Field`s, each a `FieldLabel` + control + `FieldDescription`,
+with the last one in an invalid state showing a `FieldError`:
+
+<ComponentPreview name="field-demo" />
+
+```tsx
+import { Input } from "@/components/acrylic/input"
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/acrylic/field"
+
+<FieldGroup>
+  <Field>
+    <FieldLabel htmlFor="email">Email</FieldLabel>
+    <Input id="email" type="email" placeholder="ada@example.com" />
+    <FieldDescription>We'll never share your email.</FieldDescription>
+  </Field>
+</FieldGroup>
+```
+
+## Examples
+
+A vertical field, a horizontal field (label leading, control trailing), a
+`FieldSeparator` inside a group, a `FieldSet` + `FieldLegend`, and an invalid
+field with a `FieldError`:
+
+<ComponentPreview name="field-showcase" />
+
+## Notes
+
+- Exports `Field`, `FieldLabel`, `FieldTitle`, `FieldDescription`, `FieldError`,
+  `FieldContent`, `FieldGroup`, `FieldSet`, `FieldLegend`, `FieldSeparator`.
+- **Orientation** — `Field` takes `orientation`: `vertical` (default, label over
+  control), `horizontal` (label leading, control trailing on one baseline), or
+  `responsive` (vertical until the enclosing `FieldGroup` is ≥ ~28rem wide, then
+  horizontal — via container queries, so it adapts to its container, not the
+  viewport).
+- **Errors** — `FieldError` accepts an `errors` array of `{ message }` objects or
+  plain `children`, and renders nothing when there's neither. Set `data-invalid`
+  on the `Field` to tint its label/control toward the destructive color.
+- **Separators** — `FieldSeparator` is a 1px hairline (`--acr-field`, the exact
+  kit separator color); pass inline children to render a label centered over the
+  line.
+- **Grouping** — `FieldContent` stacks a control with its title/description for
+  horizontal rows; `FieldSet` + `FieldLegend` group related fields (`FieldLegend`
+  `variant`: `legend` default, or `label` for a smaller heading).

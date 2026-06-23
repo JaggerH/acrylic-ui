@@ -1,0 +1,105 @@
+{
+  "source": "Apple macOS 26 UI Kit.sketch",
+  "component": "dialog",
+  "note": "composite. Single master is a full 1512x982 screen scene; the panel \"Save Dialog - Collapsed\" lives deep in the layer tree. Panel = OPAQUE WHITE sheet (NOT a frosted material like Alert), radius 20, drop shadow + 1px hairline, 20px padding. NO close (X) button, no separators. Action buttons are 24px = Button `medium` (3 Md). Modal backdrop not present in this scene; reuse Alert backdrop (black 23%) downstream.",
+  "panel": {
+    "width": 500,
+    "height": 274,
+    "radius": 20,
+    "radiusRaw": 20,
+    "fills": [
+      {
+        "color": "rgba(255, 255, 255, 1)",
+        "blendMode": 0,
+        "fillType": 0
+      }
+    ],
+    "borders": [],
+    "shadows": [
+      {
+        "color": "rgba(0, 0, 0, 0.3)",
+        "blur": 60,
+        "offsetX": 0,
+        "offsetY": 18,
+        "spread": 0
+      },
+      {
+        "color": "rgba(0, 0, 0, 0.7)",
+        "blur": 1,
+        "offsetX": 0,
+        "offsetY": 0,
+        "spread": 0
+      }
+    ],
+    "padding": {
+      "top": 20,
+      "right": 20,
+      "bottom": 20,
+      "left": 20
+    },
+    "material": "opaque-white"
+  },
+  "icon": {
+    "present": true,
+    "width": 52,
+    "height": 69,
+    "note": "app/document icon image slot (52x69, no fill)"
+  },
+  "title": {
+    "font": "SFPro-Bold",
+    "fontSize": 13,
+    "color": "rgba(0, 0, 0, 0.85)",
+    "sample": "Do you want to keep this new document “Untitled”?"
+  },
+  "body": {
+    "font": "SFPro-Medium",
+    "fontSize": 11,
+    "color": "rgba(0, 0, 0, 0.85)",
+    "sample": "You can choose to save your changes, or delete this document immediately. You can’t undo this action."
+  },
+  "closeButton": {
+    "present": false,
+    "note": "kit Dialog has NO X / close button (dismiss via action buttons)"
+  },
+  "separators": {
+    "present": false
+  },
+  "backdrop": {
+    "present": false,
+    "note": "no dimming-layer master in this scene; reuse Alert backdrop = black 23%"
+  },
+  "buttons": {
+    "size": "medium",
+    "height": 24,
+    "layout": "horizontal",
+    "roles": [
+      {
+        "label": "Delete",
+        "mapsToVariant": "destructive",
+        "size": "medium",
+        "width": 76,
+        "height": 24,
+        "x": 0,
+        "masterName": "Push Button/Over-glass/Bordered Destructive/3 Md/Active, Off, 1 Idle"
+      },
+      {
+        "label": "Cancel",
+        "mapsToVariant": "neutral",
+        "size": "medium",
+        "width": 76,
+        "height": 24,
+        "x": 216,
+        "masterName": "Push Button/Content Area/Neutral/3 Md/Active, Off, 1 Idle"
+      },
+      {
+        "label": "Save",
+        "mapsToVariant": "default",
+        "size": "medium",
+        "width": 76,
+        "height": 24,
+        "x": 300,
+        "masterName": "Push Button/Content Area/Bordered Colored/3 Md/Active, Off, 1 Idle"
+      }
+    ]
+  }
+}

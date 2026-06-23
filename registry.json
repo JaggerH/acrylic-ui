@@ -20,8 +20,9 @@
       "name": "dialog",
       "type": "registry:ui",
       "title": "Acrylic Dialog",
-      "description": "Radix Dialog dressed as a frosted-acrylic modal: a 72px blur+saturate overlay and a translucent white-tint panel. Drop-in replacement for the shadcn Dialog, installed alongside it under components/acrylic so the stock dialog stays untouched.",
+      "description": "Radix Dialog dressed as a frosted-acrylic modal: a 72px blur+saturate overlay and a translucent panel (20px radius, macOS 26 metrics). The close (X) reuses the acrylic Button (ghost icon) and is not auto-focused on open; toggle it with showCloseButton. Drop-in replacement for the shadcn Dialog.",
       "dependencies": ["@radix-ui/react-dialog", "lucide-react"],
+      "registryDependencies": ["button"],
       "files": [
         {
           "path": "registry/acrylic/dialog.tsx",
@@ -83,19 +84,6 @@
       ]
     },
     {
-      "name": "auto-textarea",
-      "type": "registry:ui",
-      "title": "AutoTextarea",
-      "description": "Frosted-white, auto-growing textarea — a translucent white field (backdrop-blur) that reads on a dark page and grows 1 → maxLines rows before scrolling.",
-      "files": [
-        {
-          "path": "registry/acrylic/auto-textarea.tsx",
-          "type": "registry:ui",
-          "target": "components/acrylic/auto-textarea.tsx"
-        }
-      ]
-    },
-    {
       "name": "toaster",
       "type": "registry:ui",
       "title": "Acrylic Toaster",
@@ -149,6 +137,48 @@
           "path": "registry/acrylic/combobox.tsx",
           "type": "registry:ui",
           "target": "components/acrylic/combobox.tsx"
+        }
+      ]
+    },
+    {
+      "name": "field",
+      "type": "registry:ui",
+      "title": "Acrylic Field",
+      "description": "Form field layout family from the macOS 26 Forms page, mapped to the shadcn Field API: Field/FieldLabel/FieldTitle/FieldDescription/FieldError/FieldContent/FieldGroup/FieldSet/FieldLegend/FieldSeparator. Vertical/horizontal/responsive orientation; hairline separators at the kit's 5% rhythm. Colors flip light/dark via the Acrylic theme tokens.",
+      "dependencies": ["@radix-ui/react-slot", "class-variance-authority"],
+      "files": [
+        {
+          "path": "registry/acrylic/field.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/field.tsx"
+        }
+      ]
+    },
+    {
+      "name": "input-group",
+      "type": "registry:ui",
+      "title": "Acrylic Input Group",
+      "description": "Composable input container (shadcn InputGroup) styled to match the Input: InputGroup/InputGroupInput/InputGroupTextarea/InputGroupAddon/InputGroupButton/InputGroupText. Addons align inline-start/inline-end/block-start/block-end; InputGroupTextarea supports autoResize + maxRows (supersedes the old AutoTextarea).",
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "path": "registry/acrylic/input-group.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/input-group.tsx"
+        }
+      ]
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Acrylic Slider",
+      "description": "Radix Slider aligned to the macOS 26 Sliders page: a capsule translucent rail, an accent-blue filled range, and a white knob with a hairline border + soft shadow, in five control sizes. Supports range (two-thumb), stepping, vertical orientation, and disabled. Colors flip light/dark via the Acrylic theme tokens.",
+      "dependencies": ["@radix-ui/react-slider"],
+      "files": [
+        {
+          "path": "registry/acrylic/slider.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/slider.tsx"
         }
       ]
     }

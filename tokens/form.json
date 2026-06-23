@@ -1,0 +1,144 @@
+{
+  "source": "Apple macOS 26 UI Kit.sketch",
+  "component": "form",
+  "mapsTo": "shadcn/ui Field family (Field, FieldLabel, FieldDescription, FieldGroup, FieldSet, FieldError)",
+  "note": "A macOS Form is a LAYOUT wrapper, not a control. Each Field = one Row: a leading label column + a trailing control, sharing one baseline, with a 1px hairline separator and uniform vertical rhythm between rows. Tokens are spacing + typography. The 10 page masters are only leading accessories (disclosure chevron, icon backgrounds, sidebar/service icons) — the row layout was measured from the Example Forms artboard.",
+  "fieldRow": {
+    "mapsTo": "Field (orientation=horizontal)",
+    "layout": "label leading, control trailing on one baseline (space-between)",
+    "labelAlignment": "leading",
+    "controlAlignment": "trailing",
+    "rowContentInset": 10,
+    "rowEdgeGap": 21,
+    "labelToControlGap": "space-between (label & control occupy opposite ends of the row width)",
+    "trailingAccessoryColumn": 30,
+    "rowHeights": [
+      16,
+      24,
+      30,
+      32,
+      92
+    ]
+  },
+  "fieldLabel": {
+    "mapsTo": "FieldLabel",
+    "alignment": "leading",
+    "font": "SFPro-Medium",
+    "fontSize": 13,
+    "color_light": "rgba(26, 26, 26, 1)",
+    "color_dark": "rgba(245, 245, 245, 1)"
+  },
+  "fieldLabelSecondary": {
+    "mapsTo": "FieldLabel (muted/disabled)",
+    "font": "SFPro-Medium",
+    "fontSize": 13,
+    "color_light": "rgba(114, 114, 114, 1)",
+    "color_dark": "rgba(152, 152, 152, 1)"
+  },
+  "fieldDescription": {
+    "mapsTo": "FieldDescription (the macOS 'Subtitle')",
+    "titleToDescriptionGap": 2,
+    "alignment": "leading",
+    "font": "SFPro-Regular",
+    "fontSize": 11,
+    "color_light": "rgba(114, 114, 114, 1)",
+    "color_dark": "rgba(152, 152, 152, 1)"
+  },
+  "fieldError": {
+    "mapsTo": "FieldError",
+    "note": "NOT present in the macOS kit (0/40 strings carried validation copy). Derived: same metrics as FieldDescription, recolored to the kit destructive red.",
+    "font": "SFPro-Regular",
+    "fontSize": 11,
+    "color_light": "rgba(255, 56, 60, 1)",
+    "color_dark": "rgba(255, 66, 69, 1)"
+  },
+  "fieldGroup": {
+    "mapsTo": "FieldGroup / FieldSet",
+    "note": "rows are stacked and visually divided by a 1px hairline separator; the group is the rounded container window the rows sit in.",
+    "separator": {
+      "thickness": 1,
+      "inset": 10,
+      "color_light": "rgba(0, 0, 0, 0.05)",
+      "color_dark": "rgba(255, 255, 255, 0.05)"
+    },
+    "rowGap": 21
+  },
+  "leadingAccessories": {
+    "note": "optional symbol/icon rendered before the FieldLabel.",
+    "iconToLabelGap": 8,
+    "disclosure": {
+      "name": "disclosure chevron (expanded)",
+      "width": 18,
+      "height": 16,
+      "radius": null,
+      "radiusRaw": null
+    },
+    "iconBackgroundGray": {
+      "name": "icon background (gray, concentric)",
+      "width": 40,
+      "height": 40,
+      "radius": 0,
+      "radiusRaw": 0
+    },
+    "sidebarIconRound": {
+      "name": "sidebar icon (circular)",
+      "width": 40,
+      "height": 40,
+      "radius": 20,
+      "radiusRaw": 20
+    },
+    "sidebarIconRoundedCorner": {
+      "name": "sidebar icon (rounded corner)",
+      "width": 40,
+      "height": 40,
+      "radius": 9,
+      "radiusRaw": 9
+    },
+    "serviceIcon32": {
+      "name": "service icon 32pt",
+      "width": 32,
+      "height": 32,
+      "radius": 7.2,
+      "radiusRaw": 7.2
+    },
+    "serviceIcon24": {
+      "name": "service icon 24pt",
+      "width": 24,
+      "height": 24,
+      "radius": 5.4,
+      "radiusRaw": 5.4
+    }
+  },
+  "_measured": {
+    "rowInset": 10,
+    "separatorThickness": 1,
+    "separatorWidth": 440,
+    "separatorColor": "rgba(0, 0, 0, 0.05)",
+    "rowEdgeGap": 21,
+    "titleSubtitleGap": 2,
+    "leadingIconGap": 8,
+    "typography": {
+      "SFPro-Medium|13|rgba(26, 26, 26, 1)": [
+        "Button",
+        "Combo Box",
+        "Menu + Button",
+        "More button",
+        "Radio buttons"
+      ],
+      "SFPro-Regular|13|rgba(26, 26, 26, 1)": [
+        "Full Screen"
+      ],
+      "SFPro-Medium|13|rgba(114, 114, 114, 1)": [
+        "Label",
+        "seconds"
+      ],
+      "SFPro-Medium|11|rgba(114, 114, 114, 1)": [
+        "Subtitle",
+        "Subtitle only"
+      ],
+      "SFPro-Regular|11|rgba(114, 114, 114, 1)": [
+        "Subtitle"
+      ]
+    }
+  }
+}

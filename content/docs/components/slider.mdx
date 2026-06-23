@@ -1,0 +1,58 @@
+---
+title: Slider
+description: macOS 26 slider — a capsule translucent rail with an accent range and a frosted-white knob, on Radix Slider.
+---
+
+The macOS 26 slider, aligned onto the Radix Slider primitive: a capsule
+translucent rail, an accent-blue filled range, and a soft frosted-white knob.
+Geometry (track height, knob diameter, capsule radii) is lifted from the Apple
+macOS 26 UI Kit; colors flip light/dark via the Acrylic theme tokens. Supports
+single value, range (two thumbs), stepping, and disabled — with a shadcn-compatible
+API.
+
+## Installation
+
+```bash
+npx shadcn add @acrylic/slider
+```
+
+## Usage
+
+<ComponentPreview name="slider-demo" />
+
+```tsx
+import { Slider } from "@/components/acrylic/slider"
+
+<Slider defaultValue={[60]} max={100} step={1} />
+```
+
+## Examples
+
+A single value, a two-thumb range, a stepped slider with tick marks, and a
+disabled one.
+
+<ComponentPreview name="slider-showcase" />
+
+## Notes
+
+- **Track (rail):** capsule, `6px` tall (kit medium/large/xl; mini/small are `4px`),
+  filled with `--acr-chip` — the kit's translucent black/white rail (≈6% in the
+  kit), so it flips light/dark for free.
+- **Range (filled):** capsule, `bg-primary` — the kit's `#0088FF` accent (dark
+  `#0091FF`) maps exactly onto `--primary`.
+- **Thumb (knob):** circular white knob (`--acr-control`) with a hairline border
+  (`--acr-control-border`) and a soft ambient shadow, mirroring the kit's frosted
+  rounded-pill knob. Diameter follows `size` — the kit's knob heights are
+  `12 / 14 / 16 / 20 / 20` px for `mini / small / medium / large / xl`. Focus
+  shows an accent ring (`ring-ring/25`); disabled dims to 50%.
+- **Ticks:** the kit's "linear slider with ticks" variant draws 9 small
+  `2×2` black-25% capsule dots beneath the track (see the stepped example).
+- **Props:** `defaultValue`, `value`, `min` (0), `max` (100), `step`,
+  `onValueChange`, `orientation` (`horizontal` | `vertical`), `disabled`, and
+  `size` (`mini` · `small` · `medium` (default) · `large` · `xl`). Pass an array
+  with two entries to get a range slider.
+```tsx
+<Slider defaultValue={[25, 75]} max={100} step={1} />        {/* range */}
+<Slider defaultValue={[50]} max={100} step={10} />           {/* stepped */}
+<Slider defaultValue={[40]} orientation="vertical" />        {/* vertical */}
+```

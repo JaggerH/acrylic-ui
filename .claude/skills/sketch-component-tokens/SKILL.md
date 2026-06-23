@@ -119,6 +119,14 @@ the kit and shipped to `registry/acrylic/` with showcases in the docs;
   Shaper: `scripts/shape_combobox.py`. Note: a composite can require NEW primitives
   (here Popover + Command, with deps @radix-ui/react-popover + cmdk) before it can
   be assembled — check the registry for them first.
+- Dialog — page is a full screen scene; the panel is a nested group
+  (`Save Dialog - Collapsed`), so `shape_dialog.py` re-reads the .sketch to reach it
+  (the universal `extract` only sees the top-level frame). Panel: radius 20, 20px
+  padding, opaque-white sheet (we keep the frosted acrylic panel instead). **No X/
+  close button in the kit** — dismissed via actions; action buttons are 24px =
+  Button `medium` (vs Alert's large). `dialog.tsx` now: close = ghost-icon Button
+  (not auto-focused on open, matching macOS), `showCloseButton` prop. Shaper:
+  `scripts/shape_dialog.py`.
 
 Each new component gets its own `shape_<component>.py` (copy the nearest existing
 one and adjust the taxonomy parsing + resting-state pick). Composite components

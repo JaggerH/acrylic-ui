@@ -1,0 +1,414 @@
+{
+  "source": "Apple macOS 26 UI Kit.sketch",
+  "component": "slider",
+  "note": "macOS 26 slider. Capsule rail (Track - Unfilled) = black 6% idle / 3% disabled; capsule range (Track - Filled) = accent blue #0088FF (dark #0091FF). Thumb = frosted-white rounded-rect PILL, per-size (mini 16x12 .. xl 24x20, radius=height/2), ambient soft shadow + inner highlight rims. Track height 4px (mini/small) / 6px (medium/large/xl). Ticks = 2x2 black-25% capsule dots (9 marks). Dial = 36x36 circle + 2x7 grabber. Colours flip light/dark via theme.",
+  "sizes": {
+    "mini": {
+      "trackHeight": 4,
+      "thumb": "16x12"
+    },
+    "small": {
+      "trackHeight": 4,
+      "thumb": "18x14"
+    },
+    "medium": {
+      "trackHeight": 6,
+      "thumb": "20x16"
+    },
+    "large": {
+      "trackHeight": 6,
+      "thumb": "24x20"
+    },
+    "xl": {
+      "trackHeight": 6,
+      "thumb": "24x20"
+    }
+  },
+  "range": {
+    "color": "rgba(0, 136, 255, 1)",
+    "colorDark": "rgba(0, 145, 255, 1.0)",
+    "radius": 50,
+    "fillStack": [
+      "rgba(0, 136, 255, 0.5)",
+      "rgba(0, 136, 255, 0.5)",
+      "rgba(0, 0, 0, 0.1)",
+      "rgba(0, 136, 255, 1)"
+    ]
+  },
+  "rail": {
+    "idle": {
+      "light": "rgba(0, 0, 0, 0.06)",
+      "dark": "rgba(255, 255, 255, 0.06)"
+    },
+    "disabled": {
+      "light": "rgba(0, 0, 0, 0.03)",
+      "dark": "rgba(255, 255, 255, 0.03)"
+    },
+    "radius": "capsule (radii=50 -> height/2)"
+  },
+  "ticks": {
+    "count": 9,
+    "dot": {
+      "width": 2,
+      "height": 2,
+      "radius": 10
+    },
+    "color": "rgba(0, 0, 0, 0.25)",
+    "colorDark": "rgba(255, 255, 255, 0.25)"
+  },
+  "dial": {
+    "diameter": 36,
+    "radius": 100,
+    "grabber": {
+      "width": 2,
+      "height": 7,
+      "radius": 1
+    }
+  },
+  "bySize": {
+    "mini": {
+      "trackHeight": 4,
+      "trackRadius": 50,
+      "railColor": {
+        "light": "rgba(0, 0, 0, 0.06)",
+        "dark": "rgba(255, 255, 255, 0.06)"
+      },
+      "railColorDisabled": {
+        "light": "rgba(0, 0, 0, 0.03)",
+        "dark": "rgba(255, 255, 255, 0.03)"
+      },
+      "thumb": {
+        "width": 16,
+        "height": 12,
+        "radius": 7,
+        "fillsLight": [
+          "rgba(255, 255, 255, 0.65)",
+          "rgba(255, 255, 255, 0.45)",
+          "rgba(255, 255, 255, 0.35)"
+        ],
+        "fill": "rgba(255, 255, 255, 1)",
+        "shadows": [
+          {
+            "color": "rgba(0, 0, 0, 0.1)",
+            "blur": 44,
+            "x": 0,
+            "y": 0,
+            "spread": 0
+          },
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "blur": 4,
+            "x": 0,
+            "y": 0,
+            "spread": -0.5
+          },
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "blur": 1,
+            "x": 0,
+            "y": 0,
+            "spread": -0.25
+          },
+          {
+            "color": "rgba(255, 255, 255, 1)",
+            "blur": 1,
+            "x": 1.75,
+            "y": 2.5,
+            "spread": -1.5
+          },
+          {
+            "color": "rgba(255, 255, 255, 1)",
+            "blur": 2,
+            "x": -1.75,
+            "y": -2.5,
+            "spread": -1.5
+          },
+          {
+            "color": "rgba(255, 255, 255, 0.1)",
+            "blur": 1,
+            "x": 0,
+            "y": 0,
+            "spread": 0
+          }
+        ]
+      }
+    },
+    "small": {
+      "trackHeight": 4,
+      "trackRadius": 50,
+      "railColor": {
+        "light": "rgba(0, 0, 0, 0.06)",
+        "dark": "rgba(255, 255, 255, 0.06)"
+      },
+      "railColorDisabled": {
+        "light": "rgba(0, 0, 0, 0.03)",
+        "dark": "rgba(255, 255, 255, 0.03)"
+      },
+      "thumb": {
+        "width": 18,
+        "height": 14,
+        "radius": 7,
+        "fillsLight": [
+          "rgba(255, 255, 255, 0.65)",
+          "rgba(255, 255, 255, 0.45)",
+          "rgba(255, 255, 255, 0.35)"
+        ],
+        "fill": "rgba(255, 255, 255, 1)",
+        "shadows": [
+          {
+            "color": "rgba(0, 0, 0, 0.1)",
+            "blur": 44,
+            "x": 0,
+            "y": 0,
+            "spread": 0
+          },
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "blur": 4,
+            "x": 0,
+            "y": 0,
+            "spread": -0.5
+          },
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "blur": 1,
+            "x": 0,
+            "y": 0,
+            "spread": -0.25
+          },
+          {
+            "color": "rgba(255, 255, 255, 1)",
+            "blur": 1,
+            "x": 1.75,
+            "y": 2.5,
+            "spread": -1.5
+          },
+          {
+            "color": "rgba(255, 255, 255, 1)",
+            "blur": 2,
+            "x": -1.75,
+            "y": -2.5,
+            "spread": -1.5
+          },
+          {
+            "color": "rgba(255, 255, 255, 0.1)",
+            "blur": 1,
+            "x": 0,
+            "y": 0,
+            "spread": 0
+          }
+        ]
+      }
+    },
+    "medium": {
+      "trackHeight": 6,
+      "trackRadius": 50,
+      "railColor": {
+        "light": "rgba(0, 0, 0, 0.06)",
+        "dark": "rgba(255, 255, 255, 0.06)"
+      },
+      "railColorDisabled": {
+        "light": "rgba(0, 0, 0, 0.03)",
+        "dark": "rgba(255, 255, 255, 0.03)"
+      },
+      "thumb": {
+        "width": 20,
+        "height": 16,
+        "radius": 8,
+        "fillsLight": [
+          "rgba(255, 255, 255, 0.65)",
+          "rgba(255, 255, 255, 0.45)",
+          "rgba(255, 255, 255, 0.35)"
+        ],
+        "fill": "rgba(255, 255, 255, 1)",
+        "shadows": [
+          {
+            "color": "rgba(0, 0, 0, 0.1)",
+            "blur": 44,
+            "x": 0,
+            "y": 0,
+            "spread": 0
+          },
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "blur": 4,
+            "x": 0,
+            "y": 0,
+            "spread": -0.5
+          },
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "blur": 1,
+            "x": 0,
+            "y": 0,
+            "spread": -0.25
+          },
+          {
+            "color": "rgba(255, 255, 255, 1)",
+            "blur": 1,
+            "x": 1.75,
+            "y": 2.5,
+            "spread": -1.5
+          },
+          {
+            "color": "rgba(255, 255, 255, 1)",
+            "blur": 2,
+            "x": -1.75,
+            "y": -2.5,
+            "spread": -1.5
+          },
+          {
+            "color": "rgba(255, 255, 255, 0.1)",
+            "blur": 1,
+            "x": 0,
+            "y": 0,
+            "spread": 0
+          }
+        ]
+      }
+    },
+    "large": {
+      "trackHeight": 6,
+      "trackRadius": 50,
+      "railColor": {
+        "light": "rgba(0, 0, 0, 0.06)",
+        "dark": "rgba(255, 255, 255, 0.06)"
+      },
+      "railColorDisabled": {
+        "light": "rgba(0, 0, 0, 0.03)",
+        "dark": "rgba(255, 255, 255, 0.03)"
+      },
+      "thumb": {
+        "width": 24,
+        "height": 20,
+        "radius": 10,
+        "fillsLight": [
+          "rgba(255, 255, 255, 0.65)",
+          "rgba(255, 255, 255, 0.45)",
+          "rgba(255, 255, 255, 0.35)"
+        ],
+        "fill": "rgba(255, 255, 255, 1)",
+        "shadows": [
+          {
+            "color": "rgba(0, 0, 0, 0.1)",
+            "blur": 44,
+            "x": 0,
+            "y": 0,
+            "spread": 0
+          },
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "blur": 4,
+            "x": 0,
+            "y": 0,
+            "spread": -0.5
+          },
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "blur": 1,
+            "x": 0,
+            "y": 0,
+            "spread": -0.25
+          },
+          {
+            "color": "rgba(255, 255, 255, 1)",
+            "blur": 1,
+            "x": 1.75,
+            "y": 2.5,
+            "spread": -1.5
+          },
+          {
+            "color": "rgba(255, 255, 255, 1)",
+            "blur": 2,
+            "x": -1.75,
+            "y": -2.5,
+            "spread": -1.5
+          },
+          {
+            "color": "rgba(255, 255, 255, 0.1)",
+            "blur": 1,
+            "x": 0,
+            "y": 0,
+            "spread": 0
+          }
+        ]
+      }
+    },
+    "xl": {
+      "trackHeight": 6,
+      "trackRadius": 50,
+      "railColor": {
+        "light": "rgba(0, 0, 0, 0.06)",
+        "dark": "rgba(255, 255, 255, 0.06)"
+      },
+      "railColorDisabled": {
+        "light": "rgba(0, 0, 0, 0.03)",
+        "dark": "rgba(255, 255, 255, 0.03)"
+      },
+      "thumb": {
+        "width": 24,
+        "height": 20,
+        "radius": 10,
+        "fillsLight": [
+          "rgba(255, 255, 255, 0.65)",
+          "rgba(255, 255, 255, 0.45)",
+          "rgba(255, 255, 255, 0.35)"
+        ],
+        "fill": "rgba(255, 255, 255, 1)",
+        "shadows": [
+          {
+            "color": "rgba(0, 0, 0, 0.1)",
+            "blur": 44,
+            "x": 0,
+            "y": 0,
+            "spread": 0
+          },
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "blur": 4,
+            "x": 0,
+            "y": 0,
+            "spread": -0.5
+          },
+          {
+            "color": "rgba(0, 0, 0, 0.05)",
+            "blur": 1,
+            "x": 0,
+            "y": 0,
+            "spread": -0.25
+          },
+          {
+            "color": "rgba(255, 255, 255, 1)",
+            "blur": 1,
+            "x": 1.75,
+            "y": 2.5,
+            "spread": -1.5
+          },
+          {
+            "color": "rgba(255, 255, 255, 1)",
+            "blur": 2,
+            "x": -1.75,
+            "y": -2.5,
+            "spread": -1.5
+          },
+          {
+            "color": "rgba(255, 255, 255, 0.1)",
+            "blur": 1,
+            "x": 0,
+            "y": 0,
+            "spread": 0
+          }
+        ]
+      }
+    }
+  },
+  "canonical": {
+    "size": "medium",
+    "trackHeight": 6,
+    "thumbSize": 16,
+    "thumbRadius": "full",
+    "thumbFill": "white / --acr-control",
+    "railColor": "black 6% -> --acr-chip translucent",
+    "rangeColor": "accent #0088FF -> --primary"
+  }
+}

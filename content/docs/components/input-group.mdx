@@ -1,0 +1,61 @@
+---
+title: Input Group
+description: shadcn composable input group, acrylic-styled — pair a control with icon, text, and button addons; auto-grow via InputGroupTextarea.
+---
+
+A composable input group, ported from [shadcn/ui](https://ui.shadcn.com) and
+restyled with the Acrylic tokens so it matches our [Input](/docs/components/input).
+This one is **not** from the Apple macOS 26 UI Kit — it's a shadcn composable that
+slots into the same theme. The group owns the chrome (border, control surface,
+radius, and the `focus-within` accent ring); the inner control is bare.
+
+It **supersedes the old AutoTextarea**: auto-grow now lives on
+`InputGroupTextarea` via the `autoResize` prop, so a comment box that grows with
+its content is just a textarea inside a group.
+
+## Installation
+
+```bash
+npx shadcn add @acrylic/input-group
+```
+
+## Usage
+
+<ComponentPreview name="input-group-demo" />
+
+```tsx
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+  InputGroupText,
+  InputGroupTextarea,
+} from "@/components/acrylic/input-group"
+
+<InputGroup>
+  <InputGroupTextarea autoResize maxRows={5} placeholder="Write a comment…" />
+  <InputGroupAddon align="block-end">
+    <InputGroupText>0/280</InputGroupText>
+    <InputGroupButton className="ml-auto" variant="default">Send</InputGroupButton>
+  </InputGroupAddon>
+</InputGroup>
+```
+
+## Examples
+
+<ComponentPreview name="input-group-showcase" />
+
+## Notes
+
+- **Sub-components:** `InputGroup` (wrapper that carries the field chrome),
+  `InputGroupInput` (bare `<input>`), `InputGroupTextarea` (bare `<textarea>`),
+  `InputGroupAddon` (icons / text / buttons), `InputGroupButton` (compact
+  [Button](/docs/components/button), `ghost` by default), and `InputGroupText`
+  (muted inline text).
+- **Addon placement:** put `InputGroupAddon` **after** the control in the DOM and
+  let `align` position it. Values: `inline-start` (default), `inline-end`,
+  `block-start`, `block-end`. Clicking an addon's empty space focuses the control.
+- **Auto-grow:** set `autoResize` on `InputGroupTextarea` to grow from 1 row up to
+  `maxRows` (default `3`), then scroll with the macOS-style overlay scrollbar.
+  Works in both controlled (`value`) and uncontrolled usage.
