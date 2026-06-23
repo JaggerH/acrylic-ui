@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowRight, Search } from "lucide-react"
+import { Search } from "lucide-react"
 
 import {
   InputGroup,
@@ -64,8 +64,8 @@ export default function InputGroupShowcase() {
             <InputGroupText>
               {bio.length}/{MAX}
             </InputGroupText>
-            <InputGroupButton className="ml-auto" size="icon">
-              <ArrowRight />
+            <InputGroupButton className="ml-auto" variant="default">
+              Send
             </InputGroupButton>
           </InputGroupAddon>
         </InputGroup>

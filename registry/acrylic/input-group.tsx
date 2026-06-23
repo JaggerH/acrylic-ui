@@ -167,9 +167,17 @@ function InputGroupAddon({
           "order-0 pl-2 has-[>[data-slot=input-group-button]]:pl-0.5",
         align === "inline-end" &&
           "order-2 pr-2 has-[>[data-slot=input-group-button]]:pr-0.5",
-        // Block addons span the full width above/below the control.
-        align === "block-start" && "order-0 w-full px-2 pt-1.5",
-        align === "block-end" && "order-2 w-full px-2 pb-1.5",
+        // Block addons span the full width above/below the control. Footer text
+        // (a counter / hint) is caption-sized (11px) to match the button label so
+        // the two read as one row and center cleanly. When the addon holds a
+        // Button pinned to the far edge (ml-auto), tighten BOTH that edge's insets
+        // to ~2px so the button's two exposed sides (e.g. bottom-right) get an
+        // equal, evenly-nested gap; the left keeps its 8px so the counter still
+        // lines up under the control's text.
+        align === "block-start" &&
+          "order-0 w-full px-2 pt-1.5 [&_[data-slot=input-group-text]]:text-[11px] has-[>[data-slot=input-group-button]]:pt-0.5 has-[>[data-slot=input-group-button]]:pr-0.5",
+        align === "block-end" &&
+          "order-2 w-full px-2 pb-1.5 [&_[data-slot=input-group-text]]:text-[11px] has-[>[data-slot=input-group-button]]:pb-0.5 has-[>[data-slot=input-group-button]]:pr-0.5",
         className
       )}
       // Focus the control when the addon's empty space is clicked.
