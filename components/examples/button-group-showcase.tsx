@@ -5,6 +5,7 @@ import {
   Bold,
   Italic,
   Underline,
+  Strikethrough,
   AlignLeft,
   AlignCenter,
   AlignRight,
@@ -17,6 +18,7 @@ import { Button } from "@/registry/acrylic/button"
 import {
   ButtonGroup,
   ButtonGroupItem,
+  ButtonGroupToggle,
   ButtonGroupSeparator,
   ButtonGroupText,
 } from "@/registry/acrylic/button-group"
@@ -24,6 +26,7 @@ import {
 // Demonstrates every Button Group variant against the acrylic theme.
 export default function ButtonGroupShowcase() {
   const [format, setFormat] = React.useState("center")
+  const [marks, setMarks] = React.useState<string[]>(["bold"])
 
   return (
     <div className="flex flex-col gap-6 text-foreground">
@@ -94,6 +97,28 @@ export default function ButtonGroupShowcase() {
         </ButtonGroup>
       </Row>
 
+      {/* multiple: a toggle group (select-any) — selected marks tint to the accent;
+          several can be on at once. The macOS B/I/U/S formatting toolbar. */}
+      <Row label="multiple">
+        <ButtonGroup type="multiple" value={marks} onValueChange={setMarks}>
+          <ButtonGroupToggle value="bold" aria-label="Bold">
+            <Bold />
+          </ButtonGroupToggle>
+          <ButtonGroupSeparator />
+          <ButtonGroupToggle value="italic" aria-label="Italic">
+            <Italic />
+          </ButtonGroupToggle>
+          <ButtonGroupSeparator />
+          <ButtonGroupToggle value="underline" aria-label="Underline">
+            <Underline />
+          </ButtonGroupToggle>
+          <ButtonGroupSeparator />
+          <ButtonGroupToggle value="strike" aria-label="Strikethrough">
+            <Strikethrough />
+          </ButtonGroupToggle>
+        </ButtonGroup>
+      </Row>
+
       {/* split: separate buttons, small gap, no shared well */}
       <Row label="split">
         <ButtonGroup variant="split">
@@ -109,16 +134,6 @@ export default function ButtonGroupShowcase() {
         </ButtonGroup>
       </Row>
 
-      {/* vertical attached group */}
-      <Row label="vertical">
-        <ButtonGroup orientation="vertical" className="w-32">
-          <Button variant="neutral">Top</Button>
-          <ButtonGroupSeparator orientation="horizontal" />
-          <Button variant="neutral">Middle</Button>
-          <ButtonGroupSeparator orientation="horizontal" />
-          <Button variant="neutral">Bottom</Button>
-        </ButtonGroup>
-      </Row>
     </div>
   )
 }

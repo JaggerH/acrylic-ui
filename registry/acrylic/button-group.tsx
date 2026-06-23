@@ -32,7 +32,7 @@ import { cn } from "@/lib/utils"
 // group flips light/dark for free.
 
 const buttonGroupVariants = cva(
-  "inline-flex isolate text-foreground data-[orientation=vertical]:flex-col",
+  "inline-flex isolate text-foreground",
   {
     variants: {
       variant: {
@@ -40,12 +40,18 @@ const buttonGroupVariants = cva(
         // inner radii and outer corners rounded to the inner (6 − 2) radius.
         attached: cn(
           "items-stretch rounded-[6px] bg-[var(--acr-field)] p-0.5",
+          // Items sit FLAT on the shared well: strip any per-button fill/shadow so
+          // the single gray surface (and the hairline separators between items) show
+          // through instead of a second gray slab stacked on top; foreground text +
+          // a faint hover give press feedback. The attribute selector here is (0,2,0)
+          // — it outweighs the Button variant's own single-class bg/text, so this
+          // wins regardless of which variant the caller passes.
+          "[&>[data-slot=button]]:bg-transparent [&>[data-slot=button]]:text-foreground [&>[data-slot=button]]:shadow-none",
+          "[&>[data-slot=button]:hover]:bg-[var(--acr-hover)]",
           // outer corners follow the inner well radius; inner corners go square so
           // adjacent children read as one continuous capsule.
           "[&>*]:rounded-none",
-          "[&>*:first-child]:rounded-l-[4px] [&>*:last-child]:rounded-r-[4px]",
-          "data-[orientation=vertical]:[&>*:first-child]:rounded-t-[4px] data-[orientation=vertical]:[&>*:first-child]:rounded-l-none",
-          "data-[orientation=vertical]:[&>*:last-child]:rounded-b-[4px] data-[orientation=vertical]:[&>*:last-child]:rounded-r-none"
+          "[&>*:first-child]:rounded-l-[4px] [&>*:last-child]:rounded-r-[4px]"
         ),
         // Selectable segmented control: gray well + active item = white raised pill.
         // Uniform 2px inset; pill radius 4 (= 6 − 2) stays concentric with the well.
@@ -61,7 +67,7 @@ const buttonGroupVariants = cva(
           "[&>[aria-pressed=true]]:shadow-[0_1px_2px_rgba(0,0,0,0.16),0_0_0_0.5px_rgba(0,0,0,0.04)]"
         ),
         // Separate buttons, small gap, no shared surface.
-        split: "items-center gap-1.5 data-[orientation=vertical]:gap-1.5",
+        split: "items-center gap-1.5",
       },
     },
     defaultVariants: { variant: "attached" },
@@ -78,27 +84,80 @@ type SegmentedContextValue = {
 
 const SegmentedContext = React.createContext<SegmentedContextValue | null>(null)
 
-type ButtonGroupProps = React.ComponentProps<"div"> &
-  VariantProps<typeof buttonGroupVariants> & {
-    orientation?: "horizontal" | "vertical"
-    /** Controlled selected value (segmented variant). */
-    value?: string
-    /** Uncontrolled initial value (segmented variant). */
-    defaultValue?: string
-    /** Fires with the new value when a segment is selected. */
-    onValueChange?: (value: string) => void
+// ── Multi-select (toggle) context ─────────────────────────────────────────────
+// For `type="multiple"`: a set of selected values + a toggle callback. Each
+// ButtonGroupToggle child reads its own on/off state and flips it on click. This
+// is the macOS "select any" mode — selected items tint to the accent, multiple at
+// once, no sliding pill (unlike the single-select segmented radio).
+type MultiSelectContextValue = {
+  value: string[]
+  toggle: (value: string) => void
+}
+
+const MultiSelectContext = React.createContext<MultiSelectContextValue | null>(
+  null
+)
+
+type ButtonGroupBaseProps = Omit<
+  React.ComponentProps<"div">,
+  "defaultValue" | "onChange"
+> &
+  VariantProps<typeof buttonGroupVariants>
+
+// Single-select (default): segmented radio with the sliding white pill.
+type ButtonGroupSingleProps = ButtonGroupBaseProps & {
+  type?: "single"
+  /** Controlled selected value (segmented variant). */
+  value?: string
+  /** Uncontrolled initial value (segmented variant). */
+  defaultValue?: string
+  /** Fires with the new value when a segment is selected. */
+  onValueChange?: (value: string) => void
+}
+
+// Multi-select: a toggle group (shadcn-style array API) — selected items tint to
+// the accent and several can be on at once. Children are `ButtonGroupToggle`.
+type ButtonGroupMultipleProps = ButtonGroupBaseProps & {
+  type: "multiple"
+  /** Controlled set of selected values. */
+  value?: string[]
+  /** Uncontrolled initial set of selected values. */
+  defaultValue?: string[]
+  /** Fires with the new set whenever a toggle flips. */
+  onValueChange?: (value: string[]) => void
+}
+
+type ButtonGroupProps = ButtonGroupSingleProps | ButtonGroupMultipleProps
+
+function ButtonGroup(props: ButtonGroupProps) {
+  // Multi-select toggle group (type="multiple").
+  if (props.type === "multiple") {
+    const { className, value, defaultValue, onValueChange, children, ...rest } =
+      props
+    return (
+      <MultiToggleGroup
+        className={className}
+        value={value}
+        defaultValue={defaultValue}
+        onValueChange={onValueChange}
+        {...rest}
+      >
+        {children}
+      </MultiToggleGroup>
+    )
   }
 
-function ButtonGroup({
-  className,
-  variant,
-  orientation = "horizontal",
-  value,
-  defaultValue,
-  onValueChange,
-  children,
-  ...props
-}: ButtonGroupProps) {
+  const {
+    className,
+    variant,
+    value,
+    defaultValue,
+    onValueChange,
+    children,
+    type: _type,
+    ...rest
+  } = props
+
   // The sliding pill only applies to the segmented variant when used as a
   // value-driven control (any of value/defaultValue/onValueChange supplied).
   const isControlledSegmented =
@@ -111,11 +170,10 @@ function ButtonGroup({
     return (
       <SegmentedSlider
         className={className}
-        orientation={orientation}
         value={value}
         defaultValue={defaultValue}
         onValueChange={onValueChange}
-        {...props}
+        {...rest}
       >
         {children}
       </SegmentedSlider>
@@ -127,11 +185,59 @@ function ButtonGroup({
       role="group"
       data-slot="button-group"
       data-variant={variant ?? "attached"}
-      data-orientation={orientation}
       className={cn(buttonGroupVariants({ variant }), className)}
-      {...props}
+      {...rest}
     >
       {children}
+    </div>
+  )
+}
+
+// The macOS multi-select toggle group: an attached gray well with always-visible
+// hairline separators; each ButtonGroupToggle child tints to the accent when on.
+// Controlled via value/defaultValue/onValueChange (an array, shadcn-style).
+function MultiToggleGroup({
+  className,
+  value: valueProp,
+  defaultValue,
+  onValueChange,
+  children,
+  ...props
+}: Omit<ButtonGroupMultipleProps, "type">) {
+  const [uncontrolled, setUncontrolled] = React.useState<string[]>(
+    defaultValue ?? []
+  )
+  const isControlled = valueProp !== undefined
+  const value = isControlled ? valueProp! : uncontrolled
+
+  const toggle = React.useCallback(
+    (next: string) => {
+      const set = value.includes(next)
+        ? value.filter((v) => v !== next)
+        : [...value, next]
+      if (!isControlled) setUncontrolled(set)
+      onValueChange?.(set)
+    },
+    [value, isControlled, onValueChange]
+  )
+
+  return (
+    <div
+      role="group"
+      data-slot="button-group"
+      data-variant="multiple"
+      className={cn(
+        // Same shared gray well as the attached variant, with flush items + the
+        // outer corners rounded to the inner (6 − 2) radius.
+        "inline-flex isolate items-stretch rounded-[6px] bg-[var(--acr-field)] p-0.5 text-foreground",
+        "[&>*]:rounded-none [&>*:first-child]:rounded-l-[4px] [&>*:last-child]:rounded-r-[4px]",
+        className
+      )}
+      {...props}
+    >
+      <MultiSelectContext.Provider value={{ value, toggle }}>
+        {children}
+      </MultiSelectContext.Provider>
     </div>
   )
 }
@@ -142,15 +248,12 @@ function ButtonGroup({
 // it under prefers-reduced-motion. role="radiogroup" + arrow-key navigation.
 function SegmentedSlider({
   className,
-  orientation = "horizontal",
   value: valueProp,
   defaultValue,
   onValueChange,
   children,
   ...props
-}: Omit<ButtonGroupProps, "variant"> & {
-  orientation?: "horizontal" | "vertical"
-}) {
+}: Omit<ButtonGroupSingleProps, "type" | "variant">) {
   const items = React.useMemo(
     () =>
       React.Children.toArray(children).filter(
@@ -179,40 +282,31 @@ function SegmentedSlider({
 
   const activeIndex = Math.max(0, values.indexOf(value as string))
   const count = items.length || 1
-  const vertical = orientation === "vertical"
 
   // Keyboard: arrows move selection between segments (radiogroup semantics).
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    const next = vertical ? "ArrowDown" : "ArrowRight"
-    const prev = vertical ? "ArrowUp" : "ArrowLeft"
-    if (event.key === next || event.key === prev) {
+    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
       event.preventDefault()
-      const delta = event.key === next ? 1 : -1
+      const delta = event.key === "ArrowRight" ? 1 : -1
       const target = (activeIndex + delta + count) % count
       setValue(values[target] as string)
     }
   }
 
   // Indicator size/offset as a fraction of the INNER TRACK (the content box inside
-  // the well's 2px padding). Because the indicator and the flex-1 items share the
-  // same un-padded positioning context, width = 100/N% and translate = index×100%
-  // line up exactly — no measurement, and the pill never overruns the padding.
-  const indicatorStyle: React.CSSProperties = vertical
-    ? {
-        height: `${100 / count}%`,
-        transform: `translateY(${activeIndex * 100}%)`,
-      }
-    : {
-        width: `${100 / count}%`,
-        transform: `translateX(${activeIndex * 100}%)`,
-      }
+  // the well's 2px padding). Because the indicator and the equal-width grid columns
+  // share the same un-padded positioning context, width = 100/N% and translate =
+  // index×100% line up exactly — no measurement, and the pill never overruns.
+  const indicatorStyle: React.CSSProperties = {
+    width: `${100 / count}%`,
+    transform: `translateX(${activeIndex * 100}%)`,
+  }
 
   return (
     <div
       role="radiogroup"
       data-slot="button-group"
       data-variant="segmented"
-      data-orientation={orientation}
       onKeyDown={onKeyDown}
       className={cn(
         // The well: gray track with a uniform 2px inset on all four sides.
@@ -221,12 +315,17 @@ function SegmentedSlider({
       )}
       {...props}
     >
-      {/* Inner track = the content box (no padding). Both the sliding pill and the
-          flex-1 segments are positioned against THIS box, so the 2px well inset is
-          honored evenly on every side and the pill stays inside it. */}
+      {/* Inner track = the content box (no padding). A grid of EQUAL tracks, not a
+          flex row: in a shrink-to-fit container flex-1 can't equalize (each segment
+          would collapse to its own text width, so "Week" ≠ "Month" and the pill /
+          dividers drift). `repeat(N, minmax(0,1fr))` resolves every track to the
+          WIDEST segment's width (the macOS equal-width segmented look), so the pill's
+          100/N% and the boundary dividers land exactly on the column edges. The pill
+          and dividers are absolutely positioned, so they sit outside the grid flow. */}
       <div
         data-slot="button-group-track"
-        className={cn("relative isolate inline-flex flex-1", vertical && "flex-col")}
+        className="relative isolate grid flex-1"
+        style={{ gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))` }}
       >
         {/* The single white pill. Pinned flush to the inner track (inset-0 ⇒ 2px
             from the well edge top/bottom/left/right) and slid via transform. */}
@@ -234,14 +333,38 @@ function SegmentedSlider({
           aria-hidden
           data-slot="button-group-indicator"
           className={cn(
-            "pointer-events-none absolute left-0 top-0 z-0 rounded-[4px] bg-[var(--acr-control)]",
+            "pointer-events-none absolute left-0 top-0 z-0 h-full rounded-[4px] bg-[var(--acr-control)]",
             "shadow-[0_1px_2px_rgba(0,0,0,0.16),0_0_0_0.5px_rgba(0,0,0,0.04)]",
-            "transition-[transform,width,height] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)]",
-            "motion-reduce:transition-none",
-            vertical ? "w-full" : "h-full"
+            "transition-[transform,width] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)]",
+            "motion-reduce:transition-none"
           )}
           style={indicatorStyle}
         />
+        {/* Built-in hairline dividers between every pair of segments (the macOS
+            default). Absolutely positioned at each boundary so they don't eat into
+            the segment width — the pill's 100/N% math stays exact. The two dividers
+            touching the active segment fade out, since the white pill's rounded
+            edges stand in for them; they fade back as the pill slides away. */}
+        {count > 1 &&
+          Array.from({ length: count - 1 }, (_, i) => {
+            const boundary = i + 1 // sits between segment (boundary-1) and boundary
+            const hidden =
+              activeIndex === boundary - 1 || activeIndex === boundary
+            const pos = `${(boundary / count) * 100}%`
+            return (
+              <span
+                key={i}
+                aria-hidden
+                data-slot="button-group-divider"
+                className={cn(
+                  "pointer-events-none absolute inset-y-1 z-[1] w-px -translate-x-1/2 bg-[var(--acr-border-soft)]",
+                  "transition-opacity duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none",
+                  hidden && "opacity-0"
+                )}
+                style={{ left: pos }}
+              />
+            )
+          })}
         <SegmentedContext.Provider value={{ value, setValue }}>
           {children}
         </SegmentedContext.Provider>
@@ -299,6 +422,53 @@ function ButtonGroupItem({
 ;(ButtonGroupItem as unknown as { __isButtonGroupItem: boolean }).__isButtonGroupItem =
   true
 
+type ButtonGroupToggleProps = React.ComponentProps<"button"> & {
+  /** The value this toggle contributes to the group's selected set. */
+  value: string
+  asChild?: boolean
+}
+
+// A toggle in the multi-select group (ButtonGroup type="multiple"). A flat button
+// that sits on the shared well; when on it tints to the accent (text-primary) —
+// the macOS "select any" look (e.g. a B/I/U/S formatting toolbar). aria-pressed
+// carries the on/off state. Place `ButtonGroupSeparator`s between toggles for the
+// always-visible hairlines.
+function ButtonGroupToggle({
+  className,
+  value,
+  asChild = false,
+  onClick,
+  ...props
+}: ButtonGroupToggleProps) {
+  const ctx = React.useContext(MultiSelectContext)
+  const on = ctx?.value.includes(value) ?? false
+  const Comp = asChild ? Slot : "button"
+  return (
+    <Comp
+      type={asChild ? undefined : "button"}
+      aria-pressed={on}
+      data-slot="button-group-toggle"
+      data-state={on ? "on" : "off"}
+      onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+        ctx?.toggle(value)
+        onClick?.(event)
+      }}
+      className={cn(
+        "relative z-10 inline-flex flex-1 select-none items-center justify-center whitespace-nowrap",
+        "h-6 gap-1.5 rounded-[4px] px-4 text-[13px] font-medium outline-none transition-colors",
+        // Flat on the well; ON tints the label/glyph to the accent (no fill — the
+        // color change is the selection hint), with a faint neutral hover.
+        "bg-transparent text-foreground hover:bg-[var(--acr-hover)]",
+        "data-[state=on]:text-primary data-[state=on]:font-semibold",
+        "focus-visible:ring-2 focus-visible:ring-ring/50",
+        "[&_svg]:pointer-events-none [&_svg]:size-3.5 [&_svg]:shrink-0",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
 // Hairline divider between flush items (attached variant). Lifted from the kit's
 // 1px Separator inset ~5px top/bottom on the track — here a thin self-stretching
 // rule in --acr-border-soft that flips orientation with the group.
@@ -336,7 +506,10 @@ function ButtonGroupText({
     <Comp
       data-slot="button-group-text"
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap px-3 text-[13px] font-medium text-foreground select-none",
+        // leading-none pins the text line box so an inherited (e.g. prose)
+        // line-height can't inflate this auto-height slot past the fixed-height
+        // buttons — which under items-stretch would top-align them and leave a gap.
+        "inline-flex items-center justify-center whitespace-nowrap px-3 text-[13px] leading-none font-medium text-foreground select-none",
         className
       )}
       {...props}
@@ -347,6 +520,7 @@ function ButtonGroupText({
 export {
   ButtonGroup,
   ButtonGroupItem,
+  ButtonGroupToggle,
   ButtonGroupSeparator,
   ButtonGroupText,
   buttonGroupVariants,

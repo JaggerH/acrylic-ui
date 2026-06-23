@@ -100,8 +100,6 @@ type StepperProps = Omit<
     step?: number
     onValueChange?: (value: number) => void
     disabled?: boolean
-    /** Optional trailing label rendered after the readout (e.g. "seconds"). */
-    unit?: React.ReactNode
   }
 
 function Stepper({
@@ -114,7 +112,6 @@ function Stepper({
   step = 1,
   onValueChange,
   disabled = false,
-  unit,
   ...props
 }: StepperProps) {
   const isControlled = valueProp !== undefined
@@ -180,9 +177,6 @@ function Stepper({
         className={cn(fieldVariants({ size }))}
       >
         {value}
-        {unit ? (
-          <span className="ml-1 text-muted-foreground">{unit}</span>
-        ) : null}
       </span>
       <div
         data-slot="stepper-buttons"

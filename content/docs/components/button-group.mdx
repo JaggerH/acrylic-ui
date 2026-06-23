@@ -44,11 +44,16 @@ import {
 
 - **`ButtonGroup`** — the wrapper. Renders a `role="group"` container and connects
   its children into the macOS well.
+- **`ButtonGroupItem`** — a segment in the single-select **segmented** control
+  (keyed by `value`). The sliding white pill marks the selected one.
+- **`ButtonGroupToggle`** — a toggle in the multi-select group (`type="multiple"`,
+  keyed by `value`). When on it tints to the accent; several can be on at once.
 - **`ButtonGroupSeparator`** — the hairline divider between flush items
-  (`--acr-border-soft`). Takes its own `orientation` (`vertical` default,
-  `horizontal` for vertical groups).
+  (`--acr-border-soft`).
 - **`ButtonGroupText`** — a non-interactive text / label slot inside the group
-  (e.g. the value readout in a −/value/+ stepper, or a leading caption).
+  (e.g. a leading caption like the "Zoom" label, or a static read-only value).
+  For a numeric increment/decrement control, use the dedicated
+  [Stepper](/docs/components/stepper) rather than a `−/value/+` button group.
 
 ## Variants
 
@@ -63,18 +68,38 @@ import {
 - **`split`** — separate buttons with a small gap and no shared well, still grouped
   semantically. Use for sub-groups sitting side by side.
 
-## Orientation
+## Selection
 
-`orientation` is `horizontal` (default) or `vertical`. The outer corner rounding
-and the `ButtonGroupSeparator` rule both follow the axis.
+For value-driven groups, set `type` (shadcn-style):
+
+- **`type="single"`** (default) — a radio. Use `variant="segmented"` with
+  `ButtonGroupItem` children keyed by `value`, and `value`/`defaultValue`/
+  `onValueChange` (a string). The raised white pill **slides** to the selection.
+- **`type="multiple"`** — a toggle group ("select any"). Use `ButtonGroupToggle`
+  children keyed by `value`, and `value`/`defaultValue`/`onValueChange` (a string
+  array). Selected toggles **tint to the accent** and several can be on at once —
+  the macOS B/I/U/S formatting toolbar.
+
+```tsx
+// multi-select toggle group
+const [marks, setMarks] = React.useState<string[]>(["bold"])
+
+<ButtonGroup type="multiple" value={marks} onValueChange={setMarks}>
+  <ButtonGroupToggle value="bold"><Bold /></ButtonGroupToggle>
+  <ButtonGroupSeparator />
+  <ButtonGroupToggle value="italic"><Italic /></ButtonGroupToggle>
+</ButtonGroup>
+```
 
 ## Notes
 
 - The well uses `--acr-field` (the kit's 5% black track, 5% white in dark); the
   selected pill uses `--acr-control` (white → translucent white in dark); the
   hairline uses `--acr-border-soft`. All flip with the theme.
-- Items reuse the Acrylic `Button` — use `variant="neutral"` for attached actions
-  and `variant="ghost"` for segmented items (the well supplies the surface).
+- Items reuse the Acrylic `Button`. In the **attached** well the group renders
+  items flat (it strips each button's own fill/shadow so the single gray surface
+  and the hairline separators show through), so the `Button` variant you pass
+  doesn't change their look — the well supplies the surface and a faint hover.
 - The kit also ships an accent-blue selected segment (window-focused). The default
   styling targets the modern macOS 26 white-pill look; switch to an accent fill on
   the active item if you prefer the focused appearance.

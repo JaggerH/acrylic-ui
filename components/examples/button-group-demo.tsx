@@ -1,45 +1,36 @@
 "use client"
 
 import * as React from "react"
-import { Minus, Plus, AlignLeft, AlignCenter, AlignRight } from "lucide-react"
+import { Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight } from "lucide-react"
 
 import { Button } from "@/registry/acrylic/button"
 import {
   ButtonGroup,
   ButtonGroupItem,
   ButtonGroupSeparator,
-  ButtonGroupText,
 } from "@/registry/acrylic/button-group"
 
-// A small macOS-style toolbar: an attached −/value/+ stepper group (one gray well,
-// flush buttons with a hairline divider) next to a segmented alignment group whose
-// active item is a raised white pill.
+// A small macOS-style toolbar: an attached formatting cluster (one gray well,
+// flush neutral buttons with hairline dividers) next to a segmented alignment
+// control whose active item is a raised white pill that slides on selection.
+// (Numeric +/- increment is a Stepper, not a Button Group — see the Stepper page.)
 export default function ButtonGroupDemo() {
-  const [count, setCount] = React.useState(3)
   const [align, setAlign] = React.useState<"left" | "center" | "right">("center")
 
   return (
     <div className="flex flex-wrap items-center gap-4 text-foreground">
-      {/* attached: −/value/+ */}
+      {/* attached: a cluster of momentary formatting actions */}
       <ButtonGroup>
-        <Button
-          variant="neutral"
-          size="medium"
-          aria-label="Decrease"
-          onClick={() => setCount((c) => c - 1)}
-        >
-          <Minus />
+        <Button variant="neutral" size="medium" aria-label="Bold">
+          <Bold />
         </Button>
         <ButtonGroupSeparator />
-        <ButtonGroupText className="min-w-9 tabular-nums">{count}</ButtonGroupText>
+        <Button variant="neutral" size="medium" aria-label="Italic">
+          <Italic />
+        </Button>
         <ButtonGroupSeparator />
-        <Button
-          variant="neutral"
-          size="medium"
-          aria-label="Increase"
-          onClick={() => setCount((c) => c + 1)}
-        >
-          <Plus />
+        <Button variant="neutral" size="medium" aria-label="Underline">
+          <Underline />
         </Button>
       </ButtonGroup>
 

@@ -4,8 +4,8 @@ import * as React from "react"
 import { Stepper } from "@/registry/acrylic/stepper"
 
 // The Stepper from the Apple macOS 26 UI Kit Steppers page: a number readout plus
-// an up/down button stack in the kit's bezel. Shows a basic stepper, one with a
-// trailing unit label, and a disabled stepper.
+// an up/down button stack in the kit's bezel. Shows a basic stepper, a custom
+// step, and a disabled stepper.
 export default function StepperShowcase() {
   const [value, setValue] = React.useState(5)
 
@@ -16,8 +16,8 @@ export default function StepperShowcase() {
         <Stepper value={value} onValueChange={setValue} min={0} max={20} />
       </div>
       <div className="flex items-center gap-3">
-        <span className="w-16 shrink-0 text-xs text-muted-foreground">unit</span>
-        <Stepper defaultValue={30} min={0} max={60} step={5} unit="seconds" />
+        <span className="w-16 shrink-0 text-xs text-muted-foreground">step 5</span>
+        <Stepper defaultValue={30} min={0} max={60} step={5} />
       </div>
       <div className="flex items-center gap-3">
         <span className="w-16 shrink-0 text-xs text-muted-foreground">disabled</span>
