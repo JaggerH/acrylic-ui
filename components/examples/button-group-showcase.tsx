@@ -119,6 +119,53 @@ export default function ButtonGroupShowcase() {
         </ButtonGroup>
       </Row>
 
+      {/* disabled — A and B enable independently (both / one / neither). Unavailable
+          buttons dim to 40% and drop their hover, so it's obvious at a glance which
+          are usable. */}
+      <Row label="disabled">
+        <div className="flex flex-col gap-2">
+          {(
+            [
+              ["both", false, false],
+              ["A only", false, true],
+              ["B only", true, false],
+              ["neither", true, true],
+            ] as const
+          ).map(([state, aOff, bOff]) => (
+            <div key={state} className="flex items-center gap-3">
+              <span className="w-14 shrink-0 text-[11px] text-muted-foreground">{state}</span>
+              <ButtonGroup>
+                <Button variant="neutral" disabled={aOff}>Approve</Button>
+                <ButtonGroupSeparator />
+                <Button variant="neutral" disabled={bOff}>Reject</Button>
+              </ButtonGroup>
+            </div>
+          ))}
+        </div>
+      </Row>
+
+      {/* disabled in the selectable variants too: a dimmed segment / toggle */}
+      <Row label="disabled (selectable)">
+        <div className="flex flex-wrap items-center gap-4">
+          <ButtonGroup variant="segmented" defaultValue="all">
+            <ButtonGroupItem value="all">All</ButtonGroupItem>
+            <ButtonGroupItem value="active">Active</ButtonGroupItem>
+            <ButtonGroupItem value="archived" disabled>
+              Archived
+            </ButtonGroupItem>
+          </ButtonGroup>
+          <ButtonGroup type="multiple" defaultValue={["bold"]}>
+            <ButtonGroupToggle value="bold" aria-label="Bold">
+              <Bold />
+            </ButtonGroupToggle>
+            <ButtonGroupSeparator />
+            <ButtonGroupToggle value="italic" aria-label="Italic" disabled>
+              <Italic />
+            </ButtonGroupToggle>
+          </ButtonGroup>
+        </div>
+      </Row>
+
       {/* split: separate buttons, small gap, no shared well */}
       <Row label="split">
         <ButtonGroup variant="split">

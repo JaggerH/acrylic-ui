@@ -410,6 +410,9 @@ function ButtonGroupItem({
         "relative z-10 inline-flex flex-1 select-none items-center justify-center whitespace-nowrap",
         "h-6 gap-1.5 rounded-[4px] px-4 text-[13px] font-medium outline-none transition-colors",
         "bg-transparent text-foreground focus-visible:ring-2 focus-visible:ring-ring/50",
+        // Disabled: clearly dimmed + inert, so an unavailable segment reads as
+        // unavailable next to its live neighbours.
+        "disabled:pointer-events-none disabled:opacity-40",
         "[&_svg]:pointer-events-none [&_svg]:size-3.5 [&_svg]:shrink-0",
         className
       )}
@@ -460,6 +463,7 @@ function ButtonGroupToggle({
         // color change is the selection hint), with a faint neutral hover.
         "bg-transparent text-foreground hover:bg-[var(--acr-hover)]",
         "data-[state=on]:text-primary data-[state=on]:font-semibold",
+        "disabled:pointer-events-none disabled:opacity-40",
         "focus-visible:ring-2 focus-visible:ring-ring/50",
         "[&_svg]:pointer-events-none [&_svg]:size-3.5 [&_svg]:shrink-0",
         className

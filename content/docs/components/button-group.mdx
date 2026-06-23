@@ -100,6 +100,10 @@ const [marks, setMarks] = React.useState<string[]>(["bold"])
   items flat (it strips each button's own fill/shadow so the single gray surface
   and the hairline separators show through), so the `Button` variant you pass
   doesn't change their look — the well supplies the surface and a faint hover.
+- **Disabled** works per item across every variant: pass `disabled` to a `Button`
+  (attached / split), a `ButtonGroupItem` (segmented), or a `ButtonGroupToggle`
+  (multiple). Unavailable items dim to 40% and drop their hover, so a half-enabled
+  group clearly reads which buttons are usable.
 - The kit also ships an accent-blue selected segment (window-focused). The default
   styling targets the modern macOS 26 white-pill look; switch to an accent fill on
   the active item if you prefer the focused appearance.
