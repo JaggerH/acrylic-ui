@@ -1,0 +1,14 @@
+workflow: hotfix
+phase: build
+build_mode: direct
+isolation: branch
+verify_mode: light
+design_doc: null
+plan: null
+verify_result: pending
+verification_report: null
+branch_status: pending
+verified_at: null
+archived: false
+build_command: npm run registry:build
+verify_command: npx tsc --noEmit
