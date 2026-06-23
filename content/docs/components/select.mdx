@@ -1,0 +1,70 @@
+---
+title: Select
+description: macOS 26 Pop-up Button — shows the chosen value plus an up/down double-chevron, opening a frosted menu of options.
+---
+
+The macOS 26 Pop-up Button: a control-surface trigger that displays the chosen
+value and an up/down double-chevron, opening a frosted menu of selectable items
+with a check indicator. Built on
+[`@radix-ui/react-select`](https://www.radix-ui.com/primitives/docs/components/select).
+The trigger geometry (height/radius/padding/font) is lifted verbatim from the kit
+— radius matches the Button exactly (mini/small/medium quarter-height; large/xl
+capsule). The menu panel reuses the frosted [Popover](/docs/components/popover)
+material.
+
+## Installation
+
+```bash
+npx shadcn add @acrylic/select
+```
+
+## Usage
+
+<ComponentPreview name="select-demo" />
+
+```tsx
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/acrylic/select"
+
+<Select>
+  <SelectTrigger>
+    <SelectValue placeholder="Select a fruit…" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="apple">Apple</SelectItem>
+    <SelectItem value="banana">Banana</SelectItem>
+  </SelectContent>
+</Select>
+```
+
+## Examples
+
+Default, grouped options with `SelectLabel` / `SelectSeparator`, and disabled.
+
+<ComponentPreview name="select-showcase" />
+
+## Sizes
+
+`mini` · `small` · `medium` (default) · `large` · `xl` — pass `size` to
+`SelectTrigger`. Heights are the five macOS control sizes (16/20/24/28/36); radius
+matches the Button (4/5/6/14/18).
+
+```tsx
+<SelectTrigger size="large">…</SelectTrigger>
+```
+
+## Notes
+
+- This is the macOS **Pop-up Button** (a value select). The related Pull-down
+  Button is an action menu, not represented here.
+- The trigger icon is the kit's up/down double-chevron (`􀆏` →
+  lucide `ChevronsUpDown`); the flat control fill, hairline border, and accent
+  focus ring resolve through the acrylic theme vars so they flip light/dark.
+- For an editable, searchable variant use the [Combobox](/docs/components/combobox).
+- Items highlight with `bg-[var(--acr-hover)]`; the menu surface is the frosted
+  acrylic Popover panel (`bg-[var(--acr-panel)]` + `backdrop-blur`).

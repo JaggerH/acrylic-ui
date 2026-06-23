@@ -181,6 +181,77 @@
           "target": "components/acrylic/slider.tsx"
         }
       ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Acrylic Switch",
+      "description": "On/off toggle from the macOS 26 Toggles page: a capsule rail (gray off / accent-blue on) with a white knob, in five control sizes. Radix Switch; colors flip light/dark via the Acrylic theme tokens.",
+      "dependencies": ["@radix-ui/react-switch"],
+      "files": [
+        {
+          "path": "registry/acrylic/switch.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/switch.tsx"
+        }
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "Acrylic Radio Group",
+      "description": "Radio buttons from the macOS 26 Toggles page: a circular control (gray unselected / accent-filled with a white center dot when selected), in five sizes. Radix RadioGroup; colors flip light/dark via the Acrylic theme tokens.",
+      "dependencies": ["@radix-ui/react-radio-group"],
+      "files": [
+        {
+          "path": "registry/acrylic/radio-group.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/radio-group.tsx"
+        }
+      ]
+    },
+    {
+      "name": "stepper",
+      "type": "registry:ui",
+      "title": "Acrylic Stepper",
+      "description": "macOS 26 Stepper: a number readout plus a chevron up/down bezel stack (kit radii 4/5/6/7/9), controlled with value/min/max/step. Auto-disables at bounds, keyboard arrow support; colors flip light/dark via the Acrylic theme tokens.",
+      "dependencies": ["class-variance-authority", "lucide-react"],
+      "files": [
+        {
+          "path": "registry/acrylic/stepper.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/stepper.tsx"
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Acrylic Select",
+      "description": "The macOS 26 Pop-up Button as a Select: a flat control-surface trigger with the up/down chevron (kit radii 4/5/6/14/18) opening a frosted popover of items, in five sizes. Radix Select; colors flip light/dark via the Acrylic theme tokens.",
+      "dependencies": ["@radix-ui/react-select", "class-variance-authority", "lucide-react"],
+      "files": [
+        {
+          "path": "registry/acrylic/select.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/select.tsx"
+        }
+      ]
+    },
+    {
+      "name": "button-group",
+      "type": "registry:ui",
+      "title": "Acrylic Button Group",
+      "description": "Button Group aligned to the macOS 26 Segmented Controls — group buttons into a rounded gray well. Variants: attached (flush + hairline dividers), segmented (active item as a raised white pill), split (gapped); horizontal/vertical. Exports ButtonGroup/ButtonGroupSeparator/ButtonGroupText. Colors flip light/dark via the Acrylic theme tokens.",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "path": "registry/acrylic/button-group.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/button-group.tsx"
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,200 @@
+{
+  "source": "Apple macOS 26 UI Kit.sketch",
+  "component": "radio",
+  "note": "Radio Button (Toggles page). Composite row = circle child group \"Radio Button\" + label. Circle radius = fully-round (height/2). Unchecked = gray group fill (black 5% -> white 5% dark), no border layer in kit. Checked = accent 100% fill (#0088FF -> #0091FF) with white center dot ~40% of circle. Disabled checked = accent 50% + group opacity 0.5; disabled unchecked = black 4%. Inactive (window blurred) checked = gray fill + gray dot. Mixed = white dash bar.",
+  "diameter": {
+    "mini": 12,
+    "small": 14,
+    "medium": 16,
+    "large": 18,
+    "xl": 18
+  },
+  "dot": {
+    "mini": 4,
+    "small": 4.8,
+    "medium": 4.8,
+    "large": 5,
+    "xl": 5
+  },
+  "font": {
+    "mini": "SFPro-Medium",
+    "small": "SFPro-Medium",
+    "medium": "SFPro-Medium",
+    "large": "SFPro-Medium",
+    "xl": "SFPro-Medium"
+  },
+  "fontSize": {
+    "mini": 10,
+    "small": 11,
+    "medium": 13,
+    "large": 13,
+    "xl": 13
+  },
+  "bySize": {
+    "mini": {
+      "diameter": 12,
+      "dotDiameter": 4,
+      "uncheckedFill": {
+        "light": "rgba(0, 0, 0, 0.05)",
+        "dark": "rgba(255, 255, 255, 0.05)"
+      },
+      "checkedFill": {
+        "light": "rgba(0, 136, 255, 1)",
+        "dark": "rgba(0, 145, 255, 1.0)"
+      },
+      "dotFill": {
+        "light": "rgba(255, 255, 255, 1)",
+        "dark": "rgba(255, 255, 255, 1.0)"
+      },
+      "disabledUncheckedFill": {
+        "light": "rgba(0, 0, 0, 0.04)",
+        "dark": "rgba(255, 255, 255, 0.04)"
+      },
+      "disabledCheckedFill": {
+        "light": "rgba(0, 136, 255, 0.5)",
+        "dark": "rgba(0, 145, 255, 0.5)"
+      },
+      "disabledOpacity": 0.5,
+      "label": {
+        "font": "SFPro-Medium",
+        "fontSize": 10,
+        "color": {
+          "light": "rgba(26, 26, 26, 1)",
+          "dark": "rgba(245, 245, 245, 1.0)"
+        }
+      }
+    },
+    "small": {
+      "diameter": 14,
+      "dotDiameter": 4.8,
+      "uncheckedFill": {
+        "light": "rgba(0, 0, 0, 0.05)",
+        "dark": "rgba(255, 255, 255, 0.05)"
+      },
+      "checkedFill": {
+        "light": "rgba(0, 136, 255, 1)",
+        "dark": "rgba(0, 145, 255, 1.0)"
+      },
+      "dotFill": {
+        "light": "rgba(255, 255, 255, 1)",
+        "dark": "rgba(255, 255, 255, 1.0)"
+      },
+      "disabledUncheckedFill": {
+        "light": "rgba(0, 0, 0, 0.04)",
+        "dark": "rgba(255, 255, 255, 0.04)"
+      },
+      "disabledCheckedFill": {
+        "light": "rgba(0, 136, 255, 0.5)",
+        "dark": "rgba(0, 145, 255, 0.5)"
+      },
+      "disabledOpacity": 0.5,
+      "label": {
+        "font": "SFPro-Medium",
+        "fontSize": 11,
+        "color": {
+          "light": "rgba(26, 26, 26, 1)",
+          "dark": "rgba(245, 245, 245, 1.0)"
+        }
+      }
+    },
+    "medium": {
+      "diameter": 16,
+      "dotDiameter": 4.8,
+      "uncheckedFill": {
+        "light": "rgba(0, 0, 0, 0.05)",
+        "dark": "rgba(255, 255, 255, 0.05)"
+      },
+      "checkedFill": {
+        "light": "rgba(0, 136, 255, 1)",
+        "dark": "rgba(0, 145, 255, 1.0)"
+      },
+      "dotFill": {
+        "light": "rgba(255, 255, 255, 1)",
+        "dark": "rgba(255, 255, 255, 1.0)"
+      },
+      "disabledUncheckedFill": {
+        "light": "rgba(0, 0, 0, 0.04)",
+        "dark": "rgba(255, 255, 255, 0.04)"
+      },
+      "disabledCheckedFill": {
+        "light": "rgba(0, 136, 255, 0.5)",
+        "dark": "rgba(0, 145, 255, 0.5)"
+      },
+      "disabledOpacity": 0.5,
+      "label": {
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "color": {
+          "light": "rgba(26, 26, 26, 1)",
+          "dark": "rgba(245, 245, 245, 1.0)"
+        }
+      }
+    },
+    "large": {
+      "diameter": 18,
+      "dotDiameter": 5,
+      "uncheckedFill": {
+        "light": "rgba(0, 0, 0, 0.05)",
+        "dark": "rgba(255, 255, 255, 0.05)"
+      },
+      "checkedFill": {
+        "light": "rgba(0, 136, 255, 1)",
+        "dark": "rgba(0, 145, 255, 1.0)"
+      },
+      "dotFill": {
+        "light": "rgba(255, 255, 255, 1)",
+        "dark": "rgba(255, 255, 255, 1.0)"
+      },
+      "disabledUncheckedFill": {
+        "light": "rgba(0, 0, 0, 0.04)",
+        "dark": "rgba(255, 255, 255, 0.04)"
+      },
+      "disabledCheckedFill": {
+        "light": "rgba(0, 136, 255, 0.5)",
+        "dark": "rgba(0, 145, 255, 0.5)"
+      },
+      "disabledOpacity": 0.5,
+      "label": {
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "color": {
+          "light": "rgba(26, 26, 26, 1)",
+          "dark": "rgba(245, 245, 245, 1.0)"
+        }
+      }
+    },
+    "xl": {
+      "diameter": 18,
+      "dotDiameter": 5,
+      "uncheckedFill": {
+        "light": "rgba(0, 0, 0, 0.05)",
+        "dark": "rgba(255, 255, 255, 0.05)"
+      },
+      "checkedFill": {
+        "light": "rgba(0, 136, 255, 1)",
+        "dark": "rgba(0, 145, 255, 1.0)"
+      },
+      "dotFill": {
+        "light": "rgba(255, 255, 255, 1)",
+        "dark": "rgba(255, 255, 255, 1.0)"
+      },
+      "disabledUncheckedFill": {
+        "light": "rgba(0, 0, 0, 0.04)",
+        "dark": "rgba(255, 255, 255, 0.04)"
+      },
+      "disabledCheckedFill": {
+        "light": "rgba(0, 136, 255, 0.5)",
+        "dark": "rgba(0, 145, 255, 0.5)"
+      },
+      "disabledOpacity": 0.5,
+      "label": {
+        "font": "SFPro-Medium",
+        "fontSize": 13,
+        "color": {
+          "light": "rgba(26, 26, 26, 1)",
+          "dark": "rgba(245, 245, 245, 1.0)"
+        }
+      }
+    }
+  }
+}

@@ -10,9 +10,14 @@ export default function ToasterDemo() {
       <Toaster />
       <Button
         variant="secondary"
-        onClick={() => toast("Saved", { description: "Your changes have been saved." })}
+        onClick={() =>
+          toast("New message", {
+            description: "Alex sent you a photo.",
+            action: { label: "Reply", onClick: () => {} },
+          })
+        }
       >
-        Show toast
+        Show notification
       </Button>
     </>
   )

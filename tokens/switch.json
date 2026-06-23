@@ -1,0 +1,184 @@
+{
+  "source": "Apple macOS 26 UI Kit.sketch",
+  "component": "switch",
+  "note": "macOS 26 Toggle. Track = capsule (radius=height/2). OFF rail = black 6% (Fills/Light) -> white 6% dark. ON rail composites to opaque accent #0088FF -> dark #0091FF. Knob = soft white pill (W>H squircle) inset 2px (1.5 mini / 3 xl); travel = onX-offX. 5 macOS control sizes.",
+  "sizes": {
+    "mini": {
+      "track": [
+        36,
+        16
+      ]
+    },
+    "small": {
+      "track": [
+        44,
+        20
+      ]
+    },
+    "medium": {
+      "track": [
+        54,
+        24
+      ]
+    },
+    "large": {
+      "track": [
+        64,
+        28
+      ]
+    },
+    "xl": {
+      "track": [
+        80,
+        36
+      ]
+    }
+  },
+  "bySize": {
+    "mini": {
+      "track": {
+        "w": 36,
+        "h": 16,
+        "radius": 8
+      },
+      "knob": {
+        "w": 21,
+        "h": 13,
+        "inset": 1.5,
+        "travel": 12.0
+      },
+      "trackOff": {
+        "light": "rgba(0, 0, 0, 0.06)",
+        "dark": "rgba(255, 255, 255, 0.06)"
+      },
+      "trackOn": {
+        "light": "rgba(0, 136, 255, 1)",
+        "dark": "rgba(0, 145, 255, 1.0)"
+      },
+      "knobFill": {
+        "light": "rgba(255, 255, 255, 1)",
+        "dark": "rgba(255, 255, 255, 1)"
+      },
+      "disabledTrackOff": {
+        "light": "rgba(0, 0, 0, 0.03)",
+        "dark": "rgba(255, 255, 255, 0.03)"
+      }
+    },
+    "small": {
+      "track": {
+        "w": 44,
+        "h": 20,
+        "radius": 10
+      },
+      "knob": {
+        "w": 26,
+        "h": 16,
+        "inset": 2,
+        "travel": 14
+      },
+      "trackOff": {
+        "light": "rgba(0, 0, 0, 0.06)",
+        "dark": "rgba(255, 255, 255, 0.06)"
+      },
+      "trackOn": {
+        "light": "rgba(0, 136, 255, 1)",
+        "dark": "rgba(0, 145, 255, 1.0)"
+      },
+      "knobFill": {
+        "light": "rgba(255, 255, 255, 1)",
+        "dark": "rgba(255, 255, 255, 1)"
+      },
+      "disabledTrackOff": {
+        "light": "rgba(0, 0, 0, 0.03)",
+        "dark": "rgba(255, 255, 255, 0.03)"
+      }
+    },
+    "medium": {
+      "track": {
+        "w": 54,
+        "h": 24,
+        "radius": 12
+      },
+      "knob": {
+        "w": 32,
+        "h": 20,
+        "inset": 2,
+        "travel": 18
+      },
+      "trackOff": {
+        "light": "rgba(0, 0, 0, 0.06)",
+        "dark": "rgba(255, 255, 255, 0.06)"
+      },
+      "trackOn": {
+        "light": "rgba(0, 136, 255, 1)",
+        "dark": "rgba(0, 145, 255, 1.0)"
+      },
+      "knobFill": {
+        "light": "rgba(255, 255, 255, 1)",
+        "dark": "rgba(255, 255, 255, 1)"
+      },
+      "disabledTrackOff": {
+        "light": "rgba(0, 0, 0, 0.03)",
+        "dark": "rgba(255, 255, 255, 0.03)"
+      }
+    },
+    "large": {
+      "track": {
+        "w": 64,
+        "h": 28,
+        "radius": 14
+      },
+      "knob": {
+        "w": 38,
+        "h": 24,
+        "inset": 2,
+        "travel": 22
+      },
+      "trackOff": {
+        "light": "rgba(0, 0, 0, 0.06)",
+        "dark": "rgba(255, 255, 255, 0.06)"
+      },
+      "trackOn": {
+        "light": "rgba(0, 136, 255, 1)",
+        "dark": "rgba(0, 145, 255, 1.0)"
+      },
+      "knobFill": {
+        "light": "rgba(255, 255, 255, 1)",
+        "dark": "rgba(255, 255, 255, 1)"
+      },
+      "disabledTrackOff": {
+        "light": "rgba(0, 0, 0, 0.03)",
+        "dark": "rgba(255, 255, 255, 0.03)"
+      }
+    },
+    "xl": {
+      "track": {
+        "w": 80,
+        "h": 36,
+        "radius": 18
+      },
+      "knob": {
+        "w": 47,
+        "h": 30,
+        "inset": 3,
+        "travel": 27
+      },
+      "trackOff": {
+        "light": "rgba(0, 0, 0, 0.06)",
+        "dark": "rgba(255, 255, 255, 0.06)"
+      },
+      "trackOn": {
+        "light": "rgba(0, 136, 255, 1)",
+        "dark": "rgba(0, 145, 255, 1.0)"
+      },
+      "knobFill": {
+        "light": "rgba(255, 255, 255, 1)",
+        "dark": "rgba(255, 255, 255, 1)"
+      },
+      "disabledTrackOff": {
+        "light": "rgba(0, 0, 0, 0.03)",
+        "dark": "rgba(255, 255, 255, 0.03)"
+      }
+    }
+  }
+}

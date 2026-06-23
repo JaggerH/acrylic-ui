@@ -1,0 +1,240 @@
+{
+  "source": "Apple macOS 26 UI Kit.sketch",
+  "component": "button-group",
+  "note": "composite (Segmented Controls page). WELL = gray rounded track fill rgba(0,0,0,0.05) (-> --acr-field), radius/height per macOS control size (4/5/6/14/18 ; 16/20/24/28/36). SEPARATOR = 1px hairline rgba(230,230,230,1) (-> --acr-border-soft), inset ~5px top/bottom. SEGMENT selected pill: kit ships accent-blue (focused) and 13% gray (blurred); the modern macOS look the wrapper targets is a RAISED WHITE pill (-> --acr-control) + soft shadow over the well. Segment radius concentric with well.",
+  "sizes": {
+    "mini": 16,
+    "small": 20,
+    "medium": 24,
+    "large": 28,
+    "xl": 36
+  },
+  "radiusBySize": {
+    "mini": 4,
+    "small": 5,
+    "medium": 6,
+    "large": 14,
+    "xl": 18
+  },
+  "well": {
+    "mini": {
+      "height": 16,
+      "radius": 4,
+      "radiusRaw": 4,
+      "fill": {
+        "light": "rgba(0, 0, 0, 0.05)",
+        "dark": "rgba(255, 255, 255, 0.05)"
+      }
+    },
+    "small": {
+      "height": 20,
+      "radius": 5,
+      "radiusRaw": 5,
+      "fill": {
+        "light": "rgba(0, 0, 0, 0.05)",
+        "dark": "rgba(255, 255, 255, 0.05)"
+      }
+    },
+    "medium": {
+      "height": 24,
+      "radius": 6,
+      "radiusRaw": 6,
+      "fill": {
+        "light": "rgba(0, 0, 0, 0.05)",
+        "dark": "rgba(255, 255, 255, 0.05)"
+      }
+    },
+    "large": {
+      "height": 28,
+      "radius": 14,
+      "radiusRaw": 14,
+      "fill": {
+        "light": "rgba(0, 0, 0, 0.05)",
+        "dark": "rgba(255, 255, 255, 0.05)"
+      }
+    },
+    "xl": {
+      "height": 36,
+      "radius": 18,
+      "radiusRaw": 18,
+      "fill": {
+        "light": "rgba(0, 0, 0, 0.05)",
+        "dark": "rgba(255, 255, 255, 0.05)"
+      }
+    }
+  },
+  "segment": {
+    "mini": {
+      "height": 16,
+      "radius": 4,
+      "radiusRaw": 4,
+      "unselected": {
+        "fill": null,
+        "textColor": {
+          "light": "rgba(26, 26, 26, 1)",
+          "dark": "rgba(245, 245, 245, 1.0)"
+        }
+      },
+      "selectedAccent": {
+        "fill": {
+          "light": "rgba(0, 136, 255, 1)",
+          "dark": "rgba(0, 145, 255, 1.0)"
+        },
+        "textColor": {
+          "light": "rgba(255, 255, 255, 1)",
+          "dark": "rgba(255, 255, 255, 0.09)"
+        }
+      },
+      "selectedMuted": {
+        "fill": {
+          "light": "rgba(0, 0, 0, 0.13)",
+          "dark": "rgba(255, 255, 255, 0.13)"
+        }
+      },
+      "font": "SFPro-Medium",
+      "fontSize": 10
+    },
+    "small": {
+      "height": 20,
+      "radius": 5,
+      "radiusRaw": 5,
+      "unselected": {
+        "fill": null,
+        "textColor": {
+          "light": "rgba(26, 26, 26, 1)",
+          "dark": "rgba(245, 245, 245, 1.0)"
+        }
+      },
+      "selectedAccent": {
+        "fill": {
+          "light": "rgba(0, 136, 255, 1)",
+          "dark": "rgba(0, 145, 255, 1.0)"
+        },
+        "textColor": {
+          "light": "rgba(255, 255, 255, 1)",
+          "dark": "rgba(255, 255, 255, 0.09)"
+        }
+      },
+      "selectedMuted": {
+        "fill": {
+          "light": "rgba(0, 0, 0, 0.13)",
+          "dark": "rgba(255, 255, 255, 0.13)"
+        }
+      },
+      "font": "SFPro-Medium",
+      "fontSize": 11
+    },
+    "medium": {
+      "height": 24,
+      "radius": 6,
+      "radiusRaw": 6,
+      "unselected": {
+        "fill": null,
+        "textColor": {
+          "light": "rgba(26, 26, 26, 1)",
+          "dark": "rgba(245, 245, 245, 1.0)"
+        }
+      },
+      "selectedAccent": {
+        "fill": {
+          "light": "rgba(0, 136, 255, 1)",
+          "dark": "rgba(0, 145, 255, 1.0)"
+        },
+        "textColor": {
+          "light": "rgba(255, 255, 255, 1)",
+          "dark": "rgba(255, 255, 255, 0.09)"
+        }
+      },
+      "selectedMuted": {
+        "fill": {
+          "light": "rgba(0, 0, 0, 0.13)",
+          "dark": "rgba(255, 255, 255, 0.13)"
+        }
+      },
+      "font": "SFPro-Medium",
+      "fontSize": 13
+    },
+    "large": {
+      "height": 28,
+      "radius": 14,
+      "radiusRaw": 14,
+      "unselected": {
+        "fill": null,
+        "textColor": {
+          "light": "rgba(26, 26, 26, 1)",
+          "dark": "rgba(245, 245, 245, 1.0)"
+        }
+      },
+      "selectedAccent": {
+        "fill": {
+          "light": "rgba(0, 136, 255, 1)",
+          "dark": "rgba(0, 145, 255, 1.0)"
+        },
+        "textColor": {
+          "light": "rgba(255, 255, 255, 1)",
+          "dark": "rgba(255, 255, 255, 0.09)"
+        }
+      },
+      "selectedMuted": {
+        "fill": {
+          "light": "rgba(0, 0, 0, 0.13)",
+          "dark": "rgba(255, 255, 255, 0.13)"
+        }
+      },
+      "font": "SFPro-Medium",
+      "fontSize": 13
+    },
+    "xl": {
+      "height": 36,
+      "radius": 18,
+      "radiusRaw": 18,
+      "unselected": {
+        "fill": null,
+        "textColor": {
+          "light": "rgba(26, 26, 26, 1)",
+          "dark": "rgba(245, 245, 245, 1.0)"
+        }
+      },
+      "selectedAccent": {
+        "fill": {
+          "light": "rgba(0, 136, 255, 1)",
+          "dark": "rgba(0, 145, 255, 1.0)"
+        },
+        "textColor": {
+          "light": "rgba(255, 255, 255, 1)",
+          "dark": "rgba(255, 255, 255, 0.09)"
+        }
+      },
+      "selectedMuted": {
+        "fill": {
+          "light": "rgba(0, 0, 0, 0.13)",
+          "dark": "rgba(255, 255, 255, 0.13)"
+        }
+      },
+      "font": "SFPro-Medium",
+      "fontSize": 13
+    }
+  },
+  "separator": {
+    "thickness": 1,
+    "color": {
+      "light": "rgba(230, 230, 230, 1)",
+      "dark": "rgba(255, 255, 255, 0.08)"
+    },
+    "insetNote": "~5px top/bottom (14px tall on a 24px track)",
+    "mapsTo": "--acr-border-soft"
+  },
+  "selectedPill": {
+    "note": "macOS 26 target = raised white pill with soft shadow over the well",
+    "fill": {
+      "light": "rgba(255, 255, 255, 1)",
+      "dark": "rgba(255, 255, 255, 0.09)"
+    },
+    "mapsTo": "--acr-control",
+    "shadow": "0 1px 2px rgba(0,0,0,0.16), 0 0 0 0.5px rgba(0,0,0,0.04)",
+    "altAccent": {
+      "light": "rgba(0, 136, 255, 1)",
+      "dark": "rgba(0, 145, 255, 1.0)"
+    }
+  }
+}

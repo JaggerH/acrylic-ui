@@ -1,0 +1,321 @@
+{
+  "source": "Apple macOS 26 UI Kit.sketch",
+  "component": "stepper",
+  "note": "composite, no variant axis. A small vertical up/down increment control. Top-level page masters are thin wrappers; the real child layers live in the nested instance master (Stepper/_<glyph>/Content Area/{Size}/Active/{State}). Bezel = two stacked half-rectangles (each height/2), radius ~height/4 (4/5/6/7/9, never capsule), no master fill/border. Each half black 5% idle, darkens to 15% when its arrow is pressed. A 1px inset horizontal separator (gray #BFBFBF) splits the halves. Two chevron glyphs (up top, down bottom), black 85% idle / 25% disabled. light->dark: black-alpha -> white-alpha, separator gray -> white 18%. Wrapper wires bezel to --acr-control/-border, half hover to --acr-hover, divider to --acr-control-border, chevron to currentColor.",
+  "sizes": {
+    "mini": 16,
+    "small": 20,
+    "medium": 24,
+    "large": 28,
+    "xl": 36
+  },
+  "radiusBySize": {
+    "mini": 4,
+    "small": 5,
+    "medium": 6,
+    "large": 7,
+    "xl": 9
+  },
+  "bySize": {
+    "mini": {
+      "bezel": {
+        "width": 13,
+        "height": 16,
+        "radius": 4,
+        "radiusRaw": 4
+      },
+      "half": {
+        "frame": {
+          "x": 0,
+          "y": 0,
+          "w": 13,
+          "h": 8
+        },
+        "fillIdle": {
+          "light": "rgba(0, 0, 0, 0.05)",
+          "dark": "rgba(255, 255, 255, 0.05)",
+          "swatch": null
+        },
+        "fillPressed": {
+          "light": "rgba(0, 0, 0, 0.15)",
+          "dark": "rgba(255, 255, 255, 0.15)",
+          "swatch": null
+        }
+      },
+      "separator": {
+        "frame": {
+          "x": 2,
+          "y": 7.5,
+          "w": 9,
+          "h": 1
+        },
+        "thickness": 1,
+        "inset": 2,
+        "fill": {
+          "light": "rgba(191, 191, 191, 1)",
+          "dark": "rgba(255, 255, 255, 0.18)",
+          "swatch": "Label Colors/Light Vibrant (use plus darker)/3 Tertiary"
+        },
+        "radius": 0.5
+      },
+      "chevron": {
+        "frame": {
+          "x": 3.09,
+          "y": 1.88,
+          "w": 6.81,
+          "h": 3.83
+        },
+        "fillIdle": {
+          "light": "rgba(0, 0, 0, 0.85)",
+          "dark": "rgba(255, 255, 255, 0.85)",
+          "swatch": "Label Colors/Light/1 Primary"
+        },
+        "fillDisabled": {
+          "light": "rgba(0, 0, 0, 0.25)",
+          "dark": "rgba(255, 255, 255, 0.25)",
+          "swatch": "Label Colors/Light/3 Tertiary"
+        }
+      }
+    },
+    "small": {
+      "bezel": {
+        "width": 17,
+        "height": 20,
+        "radius": 5,
+        "radiusRaw": 5
+      },
+      "half": {
+        "frame": {
+          "x": 0,
+          "y": 0,
+          "w": 17,
+          "h": 10
+        },
+        "fillIdle": {
+          "light": "rgba(0, 0, 0, 0.05)",
+          "dark": "rgba(255, 255, 255, 0.05)",
+          "swatch": null
+        },
+        "fillPressed": {
+          "light": "rgba(0, 0, 0, 0.15)",
+          "dark": "rgba(255, 255, 255, 0.15)",
+          "swatch": null
+        }
+      },
+      "separator": {
+        "frame": {
+          "x": 3,
+          "y": 9.5,
+          "w": 11,
+          "h": 1
+        },
+        "thickness": 1,
+        "inset": 3,
+        "fill": {
+          "light": "rgba(191, 191, 191, 1)",
+          "dark": "rgba(255, 255, 255, 0.18)",
+          "swatch": "Label Colors/Light Vibrant (use plus darker)/3 Tertiary"
+        },
+        "radius": 0.5
+      },
+      "chevron": {
+        "frame": {
+          "x": 4.52,
+          "y": 2.73,
+          "w": 7.96,
+          "h": 4.58
+        },
+        "fillIdle": {
+          "light": "rgba(0, 0, 0, 0.85)",
+          "dark": "rgba(255, 255, 255, 0.85)",
+          "swatch": "Label Colors/Light/1 Primary"
+        },
+        "fillDisabled": {
+          "light": "rgba(0, 0, 0, 0.25)",
+          "dark": "rgba(255, 255, 255, 0.25)",
+          "swatch": "Label Colors/Light/3 Tertiary"
+        }
+      }
+    },
+    "medium": {
+      "bezel": {
+        "width": 20,
+        "height": 24,
+        "radius": 6,
+        "radiusRaw": 6
+      },
+      "half": {
+        "frame": {
+          "x": 0,
+          "y": 0,
+          "w": 20,
+          "h": 12
+        },
+        "fillIdle": {
+          "light": "rgba(0, 0, 0, 0.05)",
+          "dark": "rgba(255, 255, 255, 0.05)",
+          "swatch": null
+        },
+        "fillPressed": {
+          "light": "rgba(0, 0, 0, 0.15)",
+          "dark": "rgba(255, 255, 255, 0.15)",
+          "swatch": null
+        }
+      },
+      "separator": {
+        "frame": {
+          "x": 3,
+          "y": 11.5,
+          "w": 14,
+          "h": 1
+        },
+        "thickness": 1,
+        "inset": 3,
+        "fill": {
+          "light": "rgba(191, 191, 191, 1)",
+          "dark": "rgba(255, 255, 255, 0.18)",
+          "swatch": "Label Colors/Light Vibrant (use plus darker)/3 Tertiary"
+        },
+        "radius": 0.5
+      },
+      "chevron": {
+        "frame": {
+          "x": 4.7,
+          "y": 2.86,
+          "w": 10.6,
+          "h": 5.97
+        },
+        "fillIdle": {
+          "light": "rgba(0, 0, 0, 0.85)",
+          "dark": "rgba(255, 255, 255, 0.85)",
+          "swatch": "Label Colors/Light/1 Primary"
+        },
+        "fillDisabled": {
+          "light": "rgba(0, 0, 0, 0.25)",
+          "dark": "rgba(255, 255, 255, 0.25)",
+          "swatch": "Label Colors/Light/3 Tertiary"
+        }
+      }
+    },
+    "large": {
+      "bezel": {
+        "width": 23,
+        "height": 28,
+        "radius": 7,
+        "radiusRaw": 7
+      },
+      "half": {
+        "frame": {
+          "x": 0,
+          "y": -0.0,
+          "w": 23,
+          "h": 14
+        },
+        "fillIdle": {
+          "light": "rgba(0, 0, 0, 0.05)",
+          "dark": "rgba(255, 255, 255, 0.05)",
+          "swatch": null
+        },
+        "fillPressed": {
+          "light": "rgba(0, 0, 0, 0.15)",
+          "dark": "rgba(255, 255, 255, 0.15)",
+          "swatch": null
+        }
+      },
+      "separator": {
+        "frame": {
+          "x": 4.0,
+          "y": 13.5,
+          "w": 15.0,
+          "h": 1.0
+        },
+        "thickness": 1.0,
+        "inset": 4.0,
+        "fill": {
+          "light": "rgba(191, 191, 191, 1)",
+          "dark": "rgba(255, 255, 255, 0.18)",
+          "swatch": "Label Colors/Light Vibrant (use plus darker)/3 Tertiary"
+        },
+        "radius": 0.5
+      },
+      "chevron": {
+        "frame": {
+          "x": 6.2,
+          "y": 3.86,
+          "w": 10.6,
+          "h": 5.97
+        },
+        "fillIdle": {
+          "light": "rgba(0, 0, 0, 0.85)",
+          "dark": "rgba(255, 255, 255, 0.85)",
+          "swatch": "Label Colors/Light/1 Primary"
+        },
+        "fillDisabled": {
+          "light": "rgba(0, 0, 0, 0.25)",
+          "dark": "rgba(255, 255, 255, 0.25)",
+          "swatch": "Label Colors/Light/3 Tertiary"
+        }
+      }
+    },
+    "xl": {
+      "bezel": {
+        "width": 30,
+        "height": 36,
+        "radius": 9,
+        "radiusRaw": 9
+      },
+      "half": {
+        "frame": {
+          "x": 0,
+          "y": 0,
+          "w": 30,
+          "h": 18
+        },
+        "fillIdle": {
+          "light": "rgba(0, 0, 0, 0.05)",
+          "dark": "rgba(255, 255, 255, 0.05)",
+          "swatch": null
+        },
+        "fillPressed": {
+          "light": "rgba(0, 0, 0, 0.15)",
+          "dark": "rgba(255, 255, 255, 0.15)",
+          "swatch": null
+        }
+      },
+      "separator": {
+        "frame": {
+          "x": 5,
+          "y": 17.5,
+          "w": 20,
+          "h": 1
+        },
+        "thickness": 1,
+        "inset": 5,
+        "fill": {
+          "light": "rgba(191, 191, 191, 1)",
+          "dark": "rgba(255, 255, 255, 0.18)",
+          "swatch": "Label Colors/Light Vibrant (use plus darker)/3 Tertiary"
+        },
+        "radius": 0.5
+      },
+      "chevron": {
+        "frame": {
+          "x": 9.7,
+          "y": 5.86,
+          "w": 10.6,
+          "h": 5.97
+        },
+        "fillIdle": {
+          "light": "rgba(0, 0, 0, 0.85)",
+          "dark": "rgba(255, 255, 255, 0.85)",
+          "swatch": "Label Colors/Light/1 Primary"
+        },
+        "fillDisabled": {
+          "light": "rgba(0, 0, 0, 0.25)",
+          "dark": "rgba(255, 255, 255, 0.25)",
+          "swatch": "Label Colors/Light/3 Tertiary"
+        }
+      }
+    }
+  }
+}

@@ -44,6 +44,14 @@ export default function InputGroupDemo() {
           <Search />
         </InputGroupAddon>
       </InputGroup>
+
+      {/* Trailing Button addon: the button hugs the edge, evenly inset. */}
+      <InputGroup>
+        <InputGroupInput placeholder="Type to search…" />
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton variant="secondary">Search</InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
     </div>
   )
 }

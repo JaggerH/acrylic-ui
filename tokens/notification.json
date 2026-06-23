@@ -1,0 +1,88 @@
+{
+  "source": "Apple macOS 26 UI Kit.sketch",
+  "component": "notification",
+  "note": "composite. macOS notification BANNER = web Sonner toast. Card 344x78 radius 16, frosted translucent material (separate BG master: Light white 70% over #FAFAFA; Dark black 40% over #121212) => backdrop-blur acrylic surface (--acr-toast). App-icon 32x32 left slot; Title SFPro-Bold/13; Body SFPro-Regular/13; Timestamp SFPro-Regular/11 top-right. NO persistent close X (banners auto-dismiss/swipe; Sonner closeButton opt-in). Stacked variant peeks the next card 8px = Sonner native stacking.",
+  "card": {
+    "width": 344,
+    "height": 78,
+    "radius": 16,
+    "radiusRaw": 16,
+    "cornerStyle": 1,
+    "padding": {
+      "top": 12,
+      "right": 14,
+      "bottom": 12,
+      "left": 10
+    },
+    "material": "frosted-translucent (backdrop-blur)",
+    "fills_light": [
+      {
+        "color": "rgba(255, 255, 255, 0.7)",
+        "blendMode": 4
+      },
+      {
+        "color": "rgba(250, 250, 250, 1)",
+        "blendMode": 1
+      }
+    ],
+    "fills_dark": [
+      {
+        "color": "rgba(0, 0, 0, 0.4)",
+        "blendMode": 1
+      },
+      {
+        "color": "rgba(18, 18, 18, 1)",
+        "blendMode": 4
+      }
+    ]
+  },
+  "appIcon": {
+    "present": true,
+    "width": 32,
+    "height": 32,
+    "note": "app/sender glyph slot at left"
+  },
+  "thumbnail": {
+    "present": true,
+    "width": 32,
+    "height": 32,
+    "radius": 6,
+    "note": "optional trailing image-attachment slot"
+  },
+  "title": {
+    "font": "SFPro-Bold",
+    "fontSize": 13,
+    "color_light": "rgba(26, 26, 26, 1)",
+    "color_dark": "rgba(245, 245, 245, 1)",
+    "weight": "bold"
+  },
+  "body": {
+    "font": "SFPro-Regular",
+    "fontSize": 13,
+    "color_light": "rgba(26, 26, 26, 1)",
+    "color_dark": "rgba(245, 245, 245, 1)",
+    "weight": "regular",
+    "sample": "Description"
+  },
+  "timestamp": {
+    "font": "SFPro-Regular",
+    "fontSize": 11,
+    "color_light": "rgba(114, 114, 114, 1)",
+    "color_dark": "rgba(138, 138, 138, 1)",
+    "position": "top-right",
+    "sample": "now"
+  },
+  "spacing": {
+    "iconToText": 16,
+    "textStackX": 58,
+    "titleToBody": 0
+  },
+  "closeButton": {
+    "present": false,
+    "note": "kit banner has NO persistent X; auto-dismiss / swipe. Sonner closeButton is opt-in — render as subtle ghost affordance."
+  },
+  "stacked": {
+    "reveal": 8,
+    "note": "peeking next-card reveal (px) = Sonner native stacking"
+  }
+}

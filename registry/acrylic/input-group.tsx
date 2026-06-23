@@ -159,8 +159,14 @@ function InputGroupAddon({
       className={cn(
         "flex items-center gap-1.5 text-muted-foreground [&_svg]:pointer-events-none [&_svg]:size-3.5 [&_svg]:shrink-0",
         // Inline addons hug the start/end and keep the control between them.
-        align === "inline-start" && "order-0 pl-2",
-        align === "inline-end" && "order-2 pr-2",
+        // Icon/text addons keep a roomy 8px inset; but when the addon holds a
+        // Button, tighten the inset to ~the 2px vertical gap (the h-6 input sets
+        // a 24px row, the h-5 button centers with 2px top/bottom) so the button
+        // nests evenly on all four sides instead of floating off the edge.
+        align === "inline-start" &&
+          "order-0 pl-2 has-[>[data-slot=input-group-button]]:pl-0.5",
+        align === "inline-end" &&
+          "order-2 pr-2 has-[>[data-slot=input-group-button]]:pr-0.5",
         // Block addons span the full width above/below the control.
         align === "block-start" && "order-0 w-full px-2 pt-1.5",
         align === "block-end" && "order-2 w-full px-2 pb-1.5",

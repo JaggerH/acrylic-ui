@@ -1,0 +1,48 @@
+---
+title: Stepper
+description: macOS 26 Stepper — a small up/down increment control with a number readout and a two-button bezel stack.
+---
+
+The macOS 26 Stepper: a small vertical up/down increment control. A number
+readout (the kit's Text Field look) sits beside a two-button stack in a bezel —
+a chevron-up button over a chevron-down button, split by a hairline divider.
+Geometry is lifted from the Apple macOS 26 UI Kit; colors flip light/dark via the
+Acrylic theme tokens. It is a controlled custom component (no Radix dependency).
+
+## Installation
+
+```bash
+npx shadcn add @acrylic/stepper
+```
+
+## Usage
+
+<ComponentPreview name="stepper-demo" />
+
+```tsx
+import { Stepper } from "@/components/acrylic/stepper"
+
+<Stepper defaultValue={3} min={0} max={10} />
+```
+
+## Examples
+
+A basic stepper, one with a trailing unit label, and a disabled stepper.
+
+<ComponentPreview name="stepper-showcase" />
+
+## Props
+
+- `value` / `defaultValue` — controlled and uncontrolled current value.
+- `min` / `max` — clamp bounds (default unbounded); the arrows auto-disable at the edges.
+- `step` — increment per press / keypress (default `1`).
+- `onValueChange(value)` — fired when the value changes.
+- `disabled` — disables the whole control.
+- `unit` — optional trailing label rendered after the readout (e.g. `"seconds"`).
+- `size` — the five macOS control sizes: `mini` · `small` · `medium` (default) · `large` · `xl`.
+
+## Notes
+
+- The bezel geometry (W×H 13×16 / 17×20 / 20×24 / 23×28 / 30×36, radius 4 / 5 / 6 / 7 / 9) is lifted from the kit. Radius is uniform ~height ÷ 4 — never capsule, matching the Text Field.
+- The bezel uses `--acr-control` / `--acr-control-border`; each arrow half hovers to `--acr-hover` and presses to `--acr-chip`; the divider is `--acr-control-border`; the chevron glyph is `currentColor` — all theme-aware.
+- Keyboard: focus the control and press <kbd>↑</kbd> / <kbd>↓</kbd> to increment / decrement. It exposes `role="spinbutton"` with `aria-valuenow`/`min`/`max`.

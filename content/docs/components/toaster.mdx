@@ -1,10 +1,12 @@
 ---
 title: Toaster
-description: Sonner toast theme as a translucent dark pill — mount once, call toast() anywhere.
+description: Sonner toast theme styled as a macOS notification banner — mount once, call toast() anywhere.
 ---
 
-A [Sonner](https://sonner.emilkowal.ski/) toast theme styled as a translucent dark
-pill that matches the acrylic aesthetic.
+A [Sonner](https://sonner.emilkowal.ski/) toast theme aligned to the **macOS
+notification banner** from the Apple macOS 26 UI Kit. A Sonner toast is the web
+equivalent of a macOS notification: a frosted, translucent card that slides in
+and auto-dismisses.
 
 ## Installation
 
@@ -16,7 +18,24 @@ npx shadcn add @acrylic/toaster
 
 <ComponentPreview name="toaster-demo" />
 
+## macOS notification alignment
+
+The theme is lifted verbatim from the kit's Notifications page (banner master
+`Notifications/Light/Single`):
+
+- **Card** — 344px wide, `16px` corner radius, padding `12 / 14 / 12 / 10`.
+- **Material** — frosted translucent surface via `--acr-toast`
+  (white 92% in light, dark 95% in dark) over `backdrop-blur`, so the glass
+  flips with the theme. A soft hairline border + lifted shadow match the banner.
+- **App-icon slot** — 32×32 leading glyph.
+- **Title** — SF Pro Bold, 13px.
+- **Body** — SF Pro Regular, 13px, muted.
+- **Action** — accent-fill capsule (the kit's prominent control).
+- **Close** — the kit banner has no persistent X (banners auto-dismiss / swipe),
+  so Sonner's `closeButton` is opt-in and styled as a subtle ghost affordance.
+
 ## Notes
 
 - Mount `<Toaster />` once near your app root, then call `toast(...)` from `sonner` anywhere.
+- Pass a `description` and `action` to get the full title + body + button banner layout.
 - Position/offset are sensible defaults you can override via props.

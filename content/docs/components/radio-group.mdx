@@ -1,0 +1,66 @@
+---
+title: Radio Group
+description: macOS 26 radio buttons — a circle that flips from a gray ring to a solid accent fill with a white center dot, on Radix RadioGroup.
+---
+
+The macOS 26 radio button, aligned onto the Radix RadioGroup primitive: a small
+circle that flips from a translucent gray ring (unselected) to a solid accent
+fill with a white center dot (selected). Geometry (circle diameter, dot size) is
+lifted from the Apple macOS 26 UI Kit Toggles page; colors flip light/dark via
+the Acrylic theme tokens. Fully accessible and keyboard-operable (arrow keys move
+selection) with a shadcn-compatible API.
+
+## Installation
+
+```bash
+npx shadcn add @acrylic/radio-group
+```
+
+## Usage
+
+<ComponentPreview name="radio-group-demo" />
+
+```tsx
+import { RadioGroup, RadioGroupItem } from "@/components/acrylic/radio-group"
+
+<RadioGroup defaultValue="comfortable">
+  <div className="flex items-center gap-2">
+    <RadioGroupItem value="compact" id="r1" />
+    <label htmlFor="r1">Compact</label>
+  </div>
+  <div className="flex items-center gap-2">
+    <RadioGroupItem value="comfortable" id="r2" />
+    <label htmlFor="r2">Comfortable</label>
+  </div>
+</RadioGroup>
+```
+
+## Examples
+
+A vertical group, an inline (horizontal) group, and a disabled group.
+
+<ComponentPreview name="radio-group-showcase" />
+
+## Notes
+
+- **Circle:** unselected is the kit's translucent gray ring/fill (black 5% light
+  / white 5% dark), wired to `--acr-chip` so it flips light/dark for free.
+  Selected is the kit's opaque accent `#0088FF` (dark `#0091FF`), which maps
+  exactly onto `bg-primary`.
+- **Center dot:** a white dot ~30% of the circle diameter, shown only when
+  selected (the kit's `Dot` oval — `4 / 4.8 / 4.8 / 5 / 5` px for the five sizes).
+- **Diameters** (verbatim from the kit): `12 / 14 / 16 / 18 / 18` px for
+  `mini / small / medium / large / xl`. `medium` (16px) is the default.
+- **States:** focus shows an accent ring (`ring-ring/25`); disabled dims to 40%,
+  echoing the kit's accent-50% + reduced-opacity disabled treatment.
+- **Layout:** `RadioGroup` lays items out in a vertical grid by default; pass
+  `className="flex flex-row …"` for an inline group.
+- **Props:** `RadioGroup` takes `value`, `defaultValue`, `onValueChange`,
+  `disabled`, `name`, `required`, `orientation`. `RadioGroupItem` takes `value`
+  (required), `id`, `disabled`, and `size` (`mini` · `small` · `medium` (default)
+  · `large` · `xl`).
+
+```tsx
+<RadioGroupItem value="lg" id="r-lg" size="large" />
+<RadioGroup value={plan} onValueChange={setPlan}>…</RadioGroup>
+```

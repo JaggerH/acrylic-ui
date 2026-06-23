@@ -1,0 +1,60 @@
+---
+title: Switch
+description: macOS 26 toggle — a capsule track that flips from a translucent gray rail to accent blue, with a soft white knob, on Radix Switch.
+---
+
+The macOS 26 toggle, aligned onto the Radix Switch primitive: a capsule track
+that flips from a translucent gray rail (off) to accent blue (on), with a soft
+white knob that slides across. Geometry (track size, capsule radius, knob
+diameter, travel) is lifted from the Apple macOS 26 UI Kit; colors flip
+light/dark via the Acrylic theme tokens. Fully accessible and keyboard-operable
+with a shadcn-compatible API.
+
+## Installation
+
+```bash
+npx shadcn add @acrylic/switch
+```
+
+## Usage
+
+<ComponentPreview name="switch-demo" />
+
+```tsx
+import { Switch } from "@/components/acrylic/switch"
+
+<Switch defaultChecked />
+```
+
+## Examples
+
+The five macOS control sizes across on / off / disabled states, plus a labelled
+settings-style row.
+
+<ComponentPreview name="switch-showcase" />
+
+## Notes
+
+- **Track:** a capsule (radius = height/2). OFF is the kit's translucent gray
+  rail (black 6% light / white 6% dark), wired to `--acr-chip` so it flips
+  light/dark for free. ON is the kit's opaque accent `#0088FF` (dark `#0091FF`),
+  which maps exactly onto `bg-primary`.
+- **Knob:** a soft white circle inset `2px` (`1.5` mini / `3` xl) inside the
+  track, with the kit's layered ambient shadow and a hairline border. The kit's
+  own knob is a wide squircle pill; on the web we use a circular knob (diameter =
+  track height − 2·inset), the conventional Switch look, matching our Slider.
+- **Travel:** the knob slides by `trackWidth − knobWidth − 2·inset` (computed via
+  `calc()`, so it always lands at the right inset) = `20 / 24 / 30 / 36 / 44` px for
+  `mini / small / medium / large / xl`, with a macOS easing
+  (`cubic-bezier(0.32, 0.72, 0, 1)`, 200ms; respects `prefers-reduced-motion`).
+- **States:** focus shows an accent ring (`ring-ring/25`); disabled dims to 50%.
+- **Track sizes** (W×H, verbatim from the kit): `36×16 / 44×20 / 54×24 / 64×28 /
+  80×36` px for `mini / small / medium / large / xl`.
+- **Props:** `checked`, `defaultChecked`, `onCheckedChange`, `disabled`,
+  `required`, `name`, `value`, and `size` (`mini` · `small` · `medium` (default)
+  · `large` · `xl`).
+```tsx
+<Switch defaultChecked size="large" />
+<Switch checked={enabled} onCheckedChange={setEnabled} />
+<Switch disabled />
+```

@@ -1,0 +1,206 @@
+{
+  "source": "Apple macOS 26 UI Kit.sketch",
+  "component": "select",
+  "note": "macOS 26 Pop-up Button = a Select (shows chosen value + up/down double chevron). Trigger geometry/radius IDENTICAL to Button (4/5/6/14/18). Resting fill flat control surface rgba(0,0,0,0.05), NO border. Chevron = SF 􀆏 (chevron.up.chevron.down -> lucide ChevronsUpDown), SFPro-Semibold, rgba(0,0,0,0.85) / 0.25 disabled. Dropdown menu not cleanly on this page -> reuse acrylic Popover panel.",
+  "sizes": {
+    "mini": 16,
+    "small": 20,
+    "medium": 24,
+    "large": 28,
+    "xl": 36
+  },
+  "radiusBySize": {
+    "mini": 4,
+    "small": 5,
+    "medium": 6,
+    "large": 14,
+    "xl": 18
+  },
+  "bySize": {
+    "mini": {
+      "height": 16,
+      "radius": 4,
+      "radiusRaw": 4,
+      "padding": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 7
+      },
+      "font": "SFPro-Medium",
+      "fontSize": 10,
+      "bg": {
+        "light": "rgba(0, 0, 0, 0.05)",
+        "dark": "rgba(255, 255, 255, 0.05)"
+      },
+      "border": [],
+      "textColor": {
+        "light": "rgba(26, 26, 26, 1)",
+        "dark": "rgba(245, 245, 245, 1.0)"
+      },
+      "disabledBg": {
+        "light": "rgba(0, 0, 0, 0.03)",
+        "dark": "rgba(255, 255, 255, 0.03)"
+      },
+      "chevron": {
+        "glyph": "􀆏",
+        "sf": "chevron.up.chevron.down",
+        "lucide": "ChevronsUpDown",
+        "font": "SFPro-Semibold",
+        "fontSize": 10,
+        "color": {
+          "light": "rgba(0, 0, 0, 0.85)",
+          "dark": "rgba(255, 255, 255, 0.85)"
+        }
+      }
+    },
+    "small": {
+      "height": 20,
+      "radius": 5,
+      "radiusRaw": 5,
+      "padding": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 10
+      },
+      "font": "SFPro-Medium",
+      "fontSize": 11,
+      "bg": {
+        "light": "rgba(0, 0, 0, 0.05)",
+        "dark": "rgba(255, 255, 255, 0.05)"
+      },
+      "border": [],
+      "textColor": {
+        "light": "rgba(26, 26, 26, 1)",
+        "dark": "rgba(245, 245, 245, 1.0)"
+      },
+      "disabledBg": {
+        "light": "rgba(0, 0, 0, 0.03)",
+        "dark": "rgba(255, 255, 255, 0.03)"
+      },
+      "chevron": {
+        "glyph": "􀆏",
+        "sf": "chevron.up.chevron.down",
+        "lucide": "ChevronsUpDown",
+        "font": "SFPro-Semibold",
+        "fontSize": 11,
+        "color": {
+          "light": "rgba(0, 0, 0, 0.85)",
+          "dark": "rgba(255, 255, 255, 0.85)"
+        }
+      }
+    },
+    "medium": {
+      "height": 24,
+      "radius": 6,
+      "radiusRaw": 6,
+      "padding": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 12
+      },
+      "font": "SFPro-Medium",
+      "fontSize": 13,
+      "bg": {
+        "light": "rgba(0, 0, 0, 0.05)",
+        "dark": "rgba(255, 255, 255, 0.05)"
+      },
+      "border": [],
+      "textColor": {
+        "light": "rgba(26, 26, 26, 1)",
+        "dark": "rgba(245, 245, 245, 1.0)"
+      },
+      "disabledBg": {
+        "light": "rgba(0, 0, 0, 0.03)",
+        "dark": "rgba(255, 255, 255, 0.03)"
+      },
+      "chevron": {
+        "glyph": "􀆏",
+        "sf": "chevron.up.chevron.down",
+        "lucide": "ChevronsUpDown",
+        "font": "SFPro-Semibold",
+        "fontSize": 13,
+        "color": {
+          "light": "rgba(0, 0, 0, 0.85)",
+          "dark": "rgba(255, 255, 255, 0.85)"
+        }
+      }
+    },
+    "large": {
+      "height": 28,
+      "radius": 14,
+      "radiusRaw": 14,
+      "padding": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 14
+      },
+      "font": "SFPro-Medium",
+      "fontSize": 13,
+      "bg": {
+        "light": "rgba(0, 0, 0, 0.05)",
+        "dark": "rgba(255, 255, 255, 0.05)"
+      },
+      "border": [],
+      "textColor": {
+        "light": "rgba(26, 26, 26, 1)",
+        "dark": "rgba(245, 245, 245, 1.0)"
+      },
+      "disabledBg": {
+        "light": "rgba(0, 0, 0, 0.03)",
+        "dark": "rgba(255, 255, 255, 0.03)"
+      },
+      "chevron": {
+        "glyph": "􀆏",
+        "sf": "chevron.up.chevron.down",
+        "lucide": "ChevronsUpDown",
+        "font": "SFPro-Semibold",
+        "fontSize": 13,
+        "color": {
+          "light": "rgba(0, 0, 0, 0.85)",
+          "dark": "rgba(255, 255, 255, 0.85)"
+        }
+      }
+    },
+    "xl": {
+      "height": 36,
+      "radius": 18,
+      "radiusRaw": 18,
+      "padding": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 18
+      },
+      "font": "SFPro-Medium",
+      "fontSize": 13,
+      "bg": {
+        "light": "rgba(0, 0, 0, 0.05)",
+        "dark": "rgba(255, 255, 255, 0.05)"
+      },
+      "border": [],
+      "textColor": {
+        "light": "rgba(26, 26, 26, 1)",
+        "dark": "rgba(245, 245, 245, 1.0)"
+      },
+      "disabledBg": {
+        "light": "rgba(0, 0, 0, 0.03)",
+        "dark": "rgba(255, 255, 255, 0.03)"
+      },
+      "chevron": {
+        "glyph": "􀆏",
+        "sf": "chevron.up.chevron.down",
+        "lucide": "ChevronsUpDown",
+        "font": "SFPro-Semibold",
+        "fontSize": 13,
+        "color": {
+          "light": "rgba(0, 0, 0, 0.85)",
+          "dark": "rgba(255, 255, 255, 0.85)"
+        }
+      }
+    }
+  }
+}

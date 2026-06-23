@@ -1,0 +1,92 @@
+---
+title: Button Group
+description: macOS 26 grouped control — attached buttons in a gray well, a selectable segmented control with a raised white pill, or a split group.
+---
+
+The macOS 26 grouped control. A set of buttons sits inside a rounded gray "well";
+adjacent buttons are flush and separated by thin hairline dividers. For a
+selectable group, the active item floats as a raised white pill over the well.
+Anatomy (well fill, hairline color, segment radius, pill shadow) is lifted from
+the Apple macOS 26 UI Kit "Segmented Controls" page; every color resolves through
+the Acrylic theme tokens so the group flips light/dark. Reuses the Acrylic
+[Button](/docs/components/button) for its items.
+
+## Installation
+
+```bash
+npx shadcn add @acrylic/button-group
+```
+
+## Usage
+
+<ComponentPreview name="button-group-demo" />
+
+```tsx
+import { Button } from "@/components/acrylic/button"
+import {
+  ButtonGroup,
+  ButtonGroupSeparator,
+  ButtonGroupText,
+} from "@/components/acrylic/button-group"
+
+<ButtonGroup>
+  <Button variant="neutral">Cut</Button>
+  <ButtonGroupSeparator />
+  <Button variant="neutral">Copy</Button>
+</ButtonGroup>
+```
+
+## Examples
+
+<ComponentPreview name="button-group-showcase" />
+
+## Parts
+
+- **`ButtonGroup`** — the wrapper. Renders a `role="group"` container and connects
+  its children into the macOS well.
+- **`ButtonGroupSeparator`** — the hairline divider between flush items
+  (`--acr-border-soft`). Takes its own `orientation` (`vertical` default,
+  `horizontal` for vertical groups).
+- **`ButtonGroupText`** — a non-interactive text / label slot inside the group
+  (e.g. the value readout in a −/value/+ stepper, or a leading caption).
+
+## Variants
+
+`ButtonGroup` has a `variant` prop:
+
+- **`attached`** (default) — action buttons sharing one rounded gray well
+  (`--acr-field`), flush, with collapsed inner radii so they read as one capsule.
+  Insert `ButtonGroupSeparator` between items for the macOS hairlines.
+- **`segmented`** — a selectable control: the same gray well, but the active item
+  becomes a raised white pill (`--acr-control`) with a soft shadow. Mark the
+  active item with `aria-pressed` (or `data-active`); the others stay plain.
+- **`split`** — separate buttons with a small gap and no shared well, still grouped
+  semantically. Use for sub-groups sitting side by side.
+
+## Orientation
+
+`orientation` is `horizontal` (default) or `vertical`. The outer corner rounding
+and the `ButtonGroupSeparator` rule both follow the axis.
+
+## Notes
+
+- The well uses `--acr-field` (the kit's 5% black track, 5% white in dark); the
+  selected pill uses `--acr-control` (white → translucent white in dark); the
+  hairline uses `--acr-border-soft`. All flip with the theme.
+- Items reuse the Acrylic `Button` — use `variant="neutral"` for attached actions
+  and `variant="ghost"` for segmented items (the well supplies the surface).
+- The kit also ships an accent-blue selected segment (window-focused). The default
+  styling targets the modern macOS 26 white-pill look; switch to an accent fill on
+  the active item if you prefer the focused appearance.
+
+```tsx
+// segmented: active item = raised white pill
+<ButtonGroup variant="segmented">
+  <Button variant="ghost" aria-pressed={align === "left"}>
+    <AlignLeft />
+  </Button>
+  <Button variant="ghost" aria-pressed={align === "center"}>
+    <AlignCenter />
+  </Button>
+</ButtonGroup>
+```

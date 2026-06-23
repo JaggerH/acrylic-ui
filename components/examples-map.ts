@@ -2,38 +2,60 @@
 import type { ComponentType } from "react"
 import C0 from "./examples/alert-dialog-demo"
 import C1 from "./examples/button-demo"
-import C2 from "./examples/button-showcase"
-import C3 from "./examples/combobox-demo"
-import C4 from "./examples/combobox-showcase"
-import C5 from "./examples/dialog-demo"
-import C6 from "./examples/dialog-showcase"
-import C7 from "./examples/field-demo"
-import C8 from "./examples/field-showcase"
-import C9 from "./examples/glass-card-demo"
-import C10 from "./examples/input-demo"
-import C11 from "./examples/input-group-demo"
-import C12 from "./examples/input-group-showcase"
-import C13 from "./examples/input-showcase"
-import C14 from "./examples/slider-demo"
-import C15 from "./examples/slider-showcase"
-import C16 from "./examples/toaster-demo"
+import C2 from "./examples/button-group-demo"
+import C3 from "./examples/button-group-showcase"
+import C4 from "./examples/button-showcase"
+import C5 from "./examples/combobox-demo"
+import C6 from "./examples/combobox-showcase"
+import C7 from "./examples/dialog-demo"
+import C8 from "./examples/dialog-showcase"
+import C9 from "./examples/field-demo"
+import C10 from "./examples/field-showcase"
+import C11 from "./examples/glass-card-demo"
+import C12 from "./examples/input-demo"
+import C13 from "./examples/input-group-demo"
+import C14 from "./examples/input-group-showcase"
+import C15 from "./examples/input-showcase"
+import C16 from "./examples/radio-group-demo"
+import C17 from "./examples/radio-group-showcase"
+import C18 from "./examples/select-demo"
+import C19 from "./examples/select-showcase"
+import C20 from "./examples/slider-demo"
+import C21 from "./examples/slider-showcase"
+import C22 from "./examples/stepper-demo"
+import C23 from "./examples/stepper-showcase"
+import C24 from "./examples/switch-demo"
+import C25 from "./examples/switch-showcase"
+import C26 from "./examples/toaster-demo"
+import C27 from "./examples/toaster-showcase"
 
 export const examples: Record<string, ComponentType> = {
   "alert-dialog-demo": C0,
   "button-demo": C1,
-  "button-showcase": C2,
-  "combobox-demo": C3,
-  "combobox-showcase": C4,
-  "dialog-demo": C5,
-  "dialog-showcase": C6,
-  "field-demo": C7,
-  "field-showcase": C8,
-  "glass-card-demo": C9,
-  "input-demo": C10,
-  "input-group-demo": C11,
-  "input-group-showcase": C12,
-  "input-showcase": C13,
-  "slider-demo": C14,
-  "slider-showcase": C15,
-  "toaster-demo": C16,
+  "button-group-demo": C2,
+  "button-group-showcase": C3,
+  "button-showcase": C4,
+  "combobox-demo": C5,
+  "combobox-showcase": C6,
+  "dialog-demo": C7,
+  "dialog-showcase": C8,
+  "field-demo": C9,
+  "field-showcase": C10,
+  "glass-card-demo": C11,
+  "input-demo": C12,
+  "input-group-demo": C13,
+  "input-group-showcase": C14,
+  "input-showcase": C15,
+  "radio-group-demo": C16,
+  "radio-group-showcase": C17,
+  "select-demo": C18,
+  "select-showcase": C19,
+  "slider-demo": C20,
+  "slider-showcase": C21,
+  "stepper-demo": C22,
+  "stepper-showcase": C23,
+  "switch-demo": C24,
+  "switch-showcase": C25,
+  "toaster-demo": C26,
+  "toaster-showcase": C27,
 }
