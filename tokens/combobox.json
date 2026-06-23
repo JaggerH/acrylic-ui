@@ -1,0 +1,50 @@
+{
+  "source": "Apple macOS 26 UI Kit.sketch",
+  "component": "combobox",
+  "note": "composite = Input (Text Field) + trailing chevron Menu Button. field geometry reuses Input tokens; chevron = SF chevron.down (SFPro-Bold, foreground) sized per control; menu-button chip bg rgba(0,0,0,0.13) radius ~4.5. dropdown list not on this page.",
+  "sizes": {
+    "mini": 16,
+    "small": 20,
+    "medium": 24,
+    "large": 28,
+    "xl": 36
+  },
+  "reuses": "input",
+  "chevronBySize": {
+    "mini": {
+      "height": 16,
+      "glyph": "􀆈",
+      "font": "SFPro-Bold",
+      "fontSize": 9,
+      "color": "rgba(0, 0, 0, 0.85)"
+    },
+    "small": {
+      "height": 20,
+      "glyph": "􀆈",
+      "font": "SFPro-Bold",
+      "fontSize": 10,
+      "color": "rgba(0, 0, 0, 0.85)"
+    },
+    "medium": {
+      "height": 24,
+      "glyph": "􀆈",
+      "font": "SFPro-Bold",
+      "fontSize": 10,
+      "color": "rgba(0, 0, 0, 0.85)"
+    },
+    "large": {
+      "height": 28,
+      "glyph": "􀆈",
+      "font": "SFPro-Bold",
+      "fontSize": 12.5,
+      "color": "rgba(0, 0, 0, 0.85)"
+    },
+    "xl": {
+      "height": 36,
+      "glyph": "􀆈",
+      "font": "SFPro-Bold",
+      "fontSize": 13,
+      "color": "rgba(0, 0, 0, 0.85)"
+    }
+  }
+}

@@ -113,6 +113,12 @@ the kit and shipped to `registry/acrylic/` with showcases in the docs;
   material, backdrop black 23%, buttons are 28px = Button `large`. `alert-dialog.tsx`
   now styles Action/Cancel via `buttonVariants({size:"large"})` (Action→default,
   Cancel→neutral). Shaper: `scripts/shape_alert.py`.
+- Combobox — 40 masters → composite = Text Field instance (== Input) + a trailing
+  chevron Menu Button. Assembled `combobox.tsx` from Input (trigger via
+  `inputVariants`, 5 sizes) + new `popover.tsx` (Radix) + `command.tsx` (cmdk).
+  Shaper: `scripts/shape_combobox.py`. Note: a composite can require NEW primitives
+  (here Popover + Command, with deps @radix-ui/react-popover + cmdk) before it can
+  be assembled — check the registry for them first.
 
 Each new component gets its own `shape_<component>.py` (copy the nearest existing
 one and adjust the taxonomy parsing + resting-state pick). Composite components

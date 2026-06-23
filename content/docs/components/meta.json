@@ -1,4 +1,4 @@
 {
   "title": "Components",
-  "pages": ["alert-dialog", "auto-textarea", "button", "dialog", "glass-card", "input", "toaster"]
+  "pages": ["alert-dialog", "auto-textarea", "button", "combobox", "dialog", "glass-card", "input", "toaster"]
 }

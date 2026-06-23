@@ -1,0 +1,45 @@
+---
+title: Combobox
+description: macOS 26 Combo Box — an editable, searchable select. Text-field trigger + chevron, opening a frosted Command list.
+---
+
+The macOS 26 Combo Box: an [Input](/docs/components/input)-styled trigger with a
+trailing chevron that opens a frosted Popover holding a searchable Command list.
+Assembled from Input + Popover + Command, mirroring the
+kit's composite (Text Field + Menu Button). Unlike a plain Select, the list is
+filterable. Five control sizes via the shared Input geometry.
+
+## Installation
+
+```bash
+npx shadcn add @acrylic/combobox
+```
+
+## Usage
+
+<ComponentPreview name="combobox-demo" />
+
+```tsx
+import { Combobox } from "@/components/acrylic/combobox"
+
+const options = [
+  { value: "next", label: "Next.js" },
+  { value: "vite", label: "Vite" },
+]
+
+<Combobox options={options} value={value} onValueChange={setValue} />
+```
+
+## Sizes
+
+`mini` · `small` · `medium` (default) · `large` · `xl` — the trigger reuses the
+Input control sizes (heights 16/20/24/28/36).
+
+<ComponentPreview name="combobox-showcase" />
+
+## Notes
+
+- Built on `@radix-ui/react-popover` + `cmdk` for accessible keyboard nav and
+  filtering; the list surface is the acrylic Popover, the items the acrylic Command.
+- The trigger is styled with `inputVariants` so it matches the Input exactly.
+- Pass `size` to scale the trigger; `contentClassName` to style the dropdown.

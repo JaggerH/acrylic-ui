@@ -4,20 +4,24 @@ import C0 from "./examples/alert-dialog-demo"
 import C1 from "./examples/auto-textarea-demo"
 import C2 from "./examples/button-demo"
 import C3 from "./examples/button-showcase"
-import C4 from "./examples/dialog-demo"
-import C5 from "./examples/glass-card-demo"
-import C6 from "./examples/input-demo"
-import C7 from "./examples/input-showcase"
-import C8 from "./examples/toaster-demo"
+import C4 from "./examples/combobox-demo"
+import C5 from "./examples/combobox-showcase"
+import C6 from "./examples/dialog-demo"
+import C7 from "./examples/glass-card-demo"
+import C8 from "./examples/input-demo"
+import C9 from "./examples/input-showcase"
+import C10 from "./examples/toaster-demo"
 
 export const examples: Record<string, ComponentType> = {
   "alert-dialog-demo": C0,
   "auto-textarea-demo": C1,
   "button-demo": C2,
   "button-showcase": C3,
-  "dialog-demo": C4,
-  "glass-card-demo": C5,
-  "input-demo": C6,
-  "input-showcase": C7,
-  "toaster-demo": C8,
+  "combobox-demo": C4,
+  "combobox-showcase": C5,
+  "dialog-demo": C6,
+  "glass-card-demo": C7,
+  "input-demo": C8,
+  "input-showcase": C9,
+  "toaster-demo": C10,
 }
