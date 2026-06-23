@@ -4,35 +4,23 @@ import { Input } from "@/registry/acrylic/input"
 import {
   Field,
   FieldDescription,
-  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/registry/acrylic/field"
 
-// A small sign-up form: vertical Fields (label + Input + description), the last
-// one in an invalid state showing a FieldError, all stacked in a FieldGroup.
+// macOS aligned form (Mode 1): labels share one right-aligned column sized to the
+// widest ("Email address"), so every input starts at the same x and is equal width.
 export default function FieldDemo() {
   return (
-    <FieldGroup className="w-full max-w-xs text-foreground">
+    <FieldGroup variant="aligned" className="w-full max-w-md text-foreground">
       <Field>
-        <FieldLabel htmlFor="field-demo-name">Name</FieldLabel>
-        <Input id="field-demo-name" placeholder="Ada Lovelace" />
-        <FieldDescription>The name shown on your profile.</FieldDescription>
+        <FieldLabel htmlFor="fd-project">Project</FieldLabel>
+        <Input id="fd-project" placeholder="acrylic-ui" />
       </Field>
       <Field>
-        <FieldLabel htmlFor="field-demo-email">Email</FieldLabel>
-        <Input id="field-demo-email" type="email" placeholder="ada@example.com" />
-        <FieldDescription>We&apos;ll never share your email.</FieldDescription>
-      </Field>
-      <Field data-invalid>
-        <FieldLabel htmlFor="field-demo-password">Password</FieldLabel>
-        <Input
-          id="field-demo-password"
-          type="password"
-          defaultValue="123"
-          aria-invalid
-        />
-        <FieldError errors={[{ message: "Must be at least 8 characters." }]} />
+        <FieldLabel htmlFor="fd-email">Email address</FieldLabel>
+        <Input id="fd-email" type="email" placeholder="you@example.com" />
+        <FieldDescription>Used for sign-in and receipts.</FieldDescription>
       </Field>
     </FieldGroup>
   )

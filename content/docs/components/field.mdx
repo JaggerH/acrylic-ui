@@ -17,8 +17,8 @@ npx shadcn add @acrylic/field
 
 ## Usage
 
-A `FieldGroup` of vertical `Field`s, each a `FieldLabel` + control + `FieldDescription`,
-with the last one in an invalid state showing a `FieldError`:
+macOS rows — label leading, control filling the right, caption below — stacked in
+a `FieldGroup`, with the last one invalid showing a `FieldError`:
 
 <ComponentPreview name="field-demo" />
 
@@ -42,9 +42,9 @@ import {
 
 ## Examples
 
-A vertical field, a horizontal field (label leading, control trailing), a
-`FieldSeparator` inside a group, a `FieldSet` + `FieldLegend`, and an invalid
-field with a `FieldError`:
+The macOS "settings card" (Mode 2): a `GlassCard`-wrapped `FieldGroup` of rows,
+each label-left / trailing-control-right (`grid-cols-[1fr_auto]`) divided by
+hairlines, with a range of trailing accessories:
 
 <ComponentPreview name="field-showcase" />
 
@@ -52,11 +52,14 @@ field with a `FieldError`:
 
 - Exports `Field`, `FieldLabel`, `FieldTitle`, `FieldDescription`, `FieldError`,
   `FieldContent`, `FieldGroup`, `FieldSet`, `FieldLegend`, `FieldSeparator`.
-- **Orientation** — `Field` takes `orientation`: `vertical` (default, label over
-  control), `horizontal` (label leading, control trailing on one baseline), or
-  `responsive` (vertical until the enclosing `FieldGroup` is ≥ ~28rem wide, then
-  horizontal — via container queries, so it adapts to its container, not the
-  viewport).
+- **Orientation** — `Field` takes `orientation`: `horizontal` (**default**, the
+  macOS row — label hugs the left, the control fills the right, and the
+  description/error sit *below the control, aligned under it*), `vertical` (label over
+  control — use for wide controls / textareas), or `responsive` (vertical until
+  the enclosing `FieldGroup` is ≥ ~28rem wide, then the macOS row — via container
+  queries, so it adapts to its container, not the viewport). For a control row
+  (title + subtitle on the left, control hugging the right) wrap the text in
+  `FieldContent` and add `className="grid-cols-[1fr_auto]"` to the `Field`.
 - **Errors** — `FieldError` accepts an `errors` array of `{ message }` objects or
   plain `children`, and renders nothing when there's neither. Set `data-invalid`
   on the `Field` to tint its label/control toward the destructive color.
@@ -66,3 +69,8 @@ field with a `FieldError`:
 - **Grouping** — `FieldContent` stacks a control with its title/description for
   horizontal rows; `FieldSet` + `FieldLegend` group related fields (`FieldLegend`
   `variant`: `legend` default, or `label` for a smaller heading).
+- **Label alignment** — `FieldGroup` takes `variant`: `rows` (**default**, macOS
+  settings rows — each label hugs the left of its own row) or `aligned` (the
+  classic macOS dialog form — one **shared label column**, labels right-aligned to
+  the widest so every control starts at the same x and the inputs are equal width;
+  implemented with a CSS subgrid).

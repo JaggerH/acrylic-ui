@@ -17,20 +17,22 @@ import { cn } from "@/lib/utils"
 // FieldSeparator). Most pieces are presentational; only FieldError holds derived
 // state and stays a plain function component (no hooks needed).
 
-const fieldVariants = cva("group/field flex data-[invalid=true]:text-destructive", {
+const fieldVariants = cva("group/field data-[invalid=true]:text-destructive", {
   variants: {
     orientation: {
-      // vertical = label over control (the default macOS subtitle stack).
-      vertical: "flex-col gap-1.5",
-      // horizontal = label leading, control trailing on one baseline.
-      horizontal: "flex-row items-center justify-between gap-4",
-      // responsive = vertical by default, horizontal once the FieldGroup
-      // container is wide enough (~28rem) via container queries.
+      // horizontal (the macOS standard, default) = label hugs the left, control
+      // fills the right, and the description/error sit BELOW the control, aligned
+      // under it (col 2). A 2-col grid handles a full-width Input (w-full) cleanly.
+      horizontal:
+        "grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-1 [&>[data-slot=field-description]]:col-start-2 [&>[data-slot=field-error]]:col-start-2",
+      // vertical = label over control (use for wide controls / textareas).
+      vertical: "flex flex-col gap-1.5",
+      // responsive = vertical on a narrow FieldGroup, the macOS row once wide.
       responsive:
-        "flex-col gap-1.5 @md/field-group:flex-row @md/field-group:items-center @md/field-group:justify-between @md/field-group:gap-4",
+        "flex flex-col gap-1.5 @md/field-group:grid @md/field-group:grid-cols-[auto_1fr] @md/field-group:items-center @md/field-group:gap-x-4 @md/field-group:gap-y-1 @md/field-group:[&>[data-slot=field-description]]:col-start-2 @md/field-group:[&>[data-slot=field-error]]:col-start-2",
     },
   },
-  defaultVariants: { orientation: "vertical" },
+  defaultVariants: { orientation: "horizontal" },
 })
 
 function Field({
@@ -42,7 +44,7 @@ function Field({
     <div
       role="group"
       data-slot="field"
-      data-orientation={orientation ?? "vertical"}
+      data-orientation={orientation ?? "horizontal"}
       className={cn(fieldVariants({ orientation, className }))}
       {...props}
     />
@@ -156,13 +158,40 @@ function FieldError({
   )
 }
 
-function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
+const fieldGroupVariants = cva("@container/field-group", {
+  variants: {
+    variant: {
+      // rows (default) = macOS settings rows: each Field is its own row, the
+      // label hugs the left of THAT row (column widths are per-field).
+      rows: "flex flex-col gap-5",
+      // aligned = the classic macOS dialog form: ONE shared label column across
+      // all rows — labels right-aligned to the widest, so every control starts at
+      // the same x and the inputs are equal width. Achieved with a 2-col grid
+      // whose Fields become column subgrids, so col 1 (max-content) sizes to the
+      // widest label across the whole group.
+      aligned: cn(
+        "grid grid-cols-[max-content_1fr] gap-x-4 gap-y-5",
+        "[&>[data-slot=field]]:col-span-2 [&>[data-slot=field]]:grid [&>[data-slot=field]]:grid-cols-subgrid [&>[data-slot=field]]:items-center [&>[data-slot=field]]:gap-y-1",
+        "[&_[data-slot=field-label]]:justify-self-end [&_[data-slot=field-label]]:text-right",
+        "[&>[data-slot=field-separator]]:col-span-2"
+      ),
+    },
+  },
+  defaultVariants: { variant: "rows" },
+})
+
+function FieldGroup({
+  className,
+  variant,
+  ...props
+}: React.ComponentProps<"div"> & VariantProps<typeof fieldGroupVariants>) {
   return (
     <div
       data-slot="field-group"
+      data-variant={variant ?? "rows"}
       // Stacks Field rows with the kit row rhythm (~21px) and opens a container
       // query context so `responsive` Fields can flip to horizontal.
-      className={cn("@container/field-group flex flex-col gap-5", className)}
+      className={cn(fieldGroupVariants({ variant, className }))}
       {...props}
     />
   )
@@ -240,4 +269,5 @@ export {
   FieldLegend,
   FieldSeparator,
   fieldVariants,
+  fieldGroupVariants,
 }
