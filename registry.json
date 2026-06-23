@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "acrylic",
-  "homepage": "https://github.com/jaggerh/acrylic-ui",
+  "homepage": "https://acrylic-ui.vercel.app",
   "items": [
     {
       "name": "glass-card",
