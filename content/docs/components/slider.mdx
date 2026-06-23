@@ -1,14 +1,15 @@
 ---
 title: Slider
-description: macOS 26 slider — a capsule translucent rail with an accent range and a frosted-white knob, on Radix Slider.
+description: macOS 26 slider — a capsule rail with an accent range and a frosted-white pill knob, in standard & center-biased variants, with optional tick marks.
 ---
 
 The macOS 26 slider, aligned onto the Radix Slider primitive: a capsule
-translucent rail, an accent-blue filled range, and a soft frosted-white knob.
-Geometry (track height, knob diameter, capsule radii) is lifted from the Apple
-macOS 26 UI Kit; colors flip light/dark via the Acrylic theme tokens. Supports
-single value, range (two thumbs), stepping, and disabled — with a shadcn-compatible
-API.
+translucent rail, an accent-blue filled range, and a soft frosted-white pill
+knob. Geometry (track height, knob pill, capsule radii) is lifted from the Apple
+macOS 26 UI Kit "Sliders and Dials" page; colors flip light/dark via the Acrylic
+theme tokens. The kit's two orthogonal axes are exposed as props — `variant`
+(fill origin) and `marks` (the Ticked add-on) — and compose with five `size`s,
+single/range values, and both orientations.
 
 ## Installation
 
@@ -26,10 +27,37 @@ import { Slider } from "@/components/acrylic/slider"
 <Slider defaultValue={[60]} max={100} step={1} />
 ```
 
+## Variants
+
+The kit's `Sliders` family is two orthogonal axes: **fill origin**
+(`standard` vs `center`) × **ticked** (the `marks` add-on). All four combinations:
+
+<ComponentPreview name="slider-variants" />
+
+| variant | kit name | fill | use for |
+| --- | --- | --- | --- |
+| `standard` | Standard | from the start edge to the thumb | one-directional values (volume, opacity) |
+| `center` | Center-biased | from the track midpoint to the thumb | bipolar values (balance/pan, EQ, −100…+100) |
+
+```tsx
+<Slider variant="center" min={-100} max={100} defaultValue={[0]} />   {/* center-biased */}
+<Slider marks defaultValue={[50]} step={12.5} />                       {/* ticked */}
+<Slider marks={[0, 25, 50, 75, 100]} defaultValue={[50]} />            {/* explicit marks */}
+```
+
+## Sizes
+
+Five control sizes (kit `1 Mn … 5 XL`). The track is `4px` for `mini`/`small`
+and `6px` for `medium`/`large`/`xl`; the pill knob grows `16×12 → 24×20`.
+
+<ComponentPreview name="slider-sizes" />
+
+`mini` · `small` · `medium` (default) · `large` · `xl`.
+
 ## Examples
 
-A single value, a two-thumb range, a stepped slider with tick marks, and a
-disabled one.
+Volume, a bipolar balance (center-biased), a ticked brightness scale, a two-thumb
+price range, plus vertical and disabled — each with a live readout.
 
 <ComponentPreview name="slider-showcase" />
 
@@ -39,20 +67,28 @@ disabled one.
   filled with `--acr-chip` — the kit's translucent black/white rail (≈6% in the
   kit), so it flips light/dark for free.
 - **Range (filled):** capsule, `bg-primary` — the kit's `#0088FF` accent (dark
-  `#0091FF`) maps exactly onto `--primary`.
-- **Thumb (knob):** circular white knob (`--acr-control`) with a hairline border
-  (`--acr-control-border`) and a soft ambient shadow, mirroring the kit's frosted
-  rounded-pill knob. Diameter follows `size` — the kit's knob heights are
-  `12 / 14 / 16 / 20 / 20` px for `mini / small / medium / large / xl`. Focus
-  shows an accent ring (`ring-ring/25`); disabled dims to 50%.
-- **Ticks:** the kit's "linear slider with ticks" variant draws 9 small
-  `2×2` black-25% capsule dots beneath the track (see the stepped example).
-- **Props:** `defaultValue`, `value`, `min` (0), `max` (100), `step`,
-  `onValueChange`, `orientation` (`horizontal` | `vertical`), `disabled`, and
-  `size` (`mini` · `small` · `medium` (default) · `large` · `xl`). Pass an array
-  with two entries to get a range slider.
+  `#0091FF`) maps exactly onto `--primary`. For `variant="center"` the range fills
+  from the track midpoint toward the thumb instead of from the start edge.
+- **Thumb (knob):** frosted-white pill (`--acr-control`) with a hairline border
+  (`--acr-control-border`) and a soft ambient shadow, mirroring the kit's rounded
+  pill knob (`16×12 / 18×14 / 20×16 / 24×20`, radius = height/2; the long axis runs
+  perpendicular to the track, so it swaps on vertical sliders). Focus shows an
+  accent ring (`ring-ring/25`); disabled dims to 50%.
+- **Marks (Ticked):** the kit's "linear slider with ticks" add-on — small `2×2`
+  capsule dots at `foreground/25` laid under the track. `marks` accepts `true`
+  (derive positions from `step`, capped at 40, else 9 even dots) or an explicit
+  array of values.
+- **Over-glass:** the kit also ships an "Over-glass" material set for sliders
+  placed on a glass surface — its tokens are identical to the standard set, so
+  it is **not** a separate variant here.
+- **Props:** `defaultValue`, `value`, `min` (0), `max` (100), `step` (1),
+  `onValueChange`, `variant` (`standard` | `center`), `marks` (`boolean | number[]`),
+  `size` (`mini` · `small` · `medium` · `large` · `xl`), `orientation`
+  (`horizontal` | `vertical`), and `disabled`. Pass an array with two entries to
+  get a range slider.
+
 ```tsx
 <Slider defaultValue={[25, 75]} max={100} step={1} />        {/* range */}
-<Slider defaultValue={[50]} max={100} step={10} />           {/* stepped */}
+<Slider variant="center" min={-100} max={100} marks step={25} />  {/* center + ticks */}
 <Slider defaultValue={[40]} orientation="vertical" />        {/* vertical */}
 ```

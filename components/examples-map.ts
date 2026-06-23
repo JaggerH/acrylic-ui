@@ -22,12 +22,14 @@ import C18 from "./examples/select-demo"
 import C19 from "./examples/select-showcase"
 import C20 from "./examples/slider-demo"
 import C21 from "./examples/slider-showcase"
-import C22 from "./examples/stepper-demo"
-import C23 from "./examples/stepper-showcase"
-import C24 from "./examples/switch-demo"
-import C25 from "./examples/switch-showcase"
-import C26 from "./examples/toaster-demo"
-import C27 from "./examples/toaster-showcase"
+import C22 from "./examples/slider-sizes"
+import C23 from "./examples/slider-variants"
+import C24 from "./examples/stepper-demo"
+import C25 from "./examples/stepper-showcase"
+import C26 from "./examples/switch-demo"
+import C27 from "./examples/switch-showcase"
+import C28 from "./examples/toaster-demo"
+import C29 from "./examples/toaster-showcase"
 
 export const examples: Record<string, ComponentType> = {
   "alert-dialog-demo": C0,
@@ -52,10 +54,12 @@ export const examples: Record<string, ComponentType> = {
   "select-showcase": C19,
   "slider-demo": C20,
   "slider-showcase": C21,
-  "stepper-demo": C22,
-  "stepper-showcase": C23,
-  "switch-demo": C24,
-  "switch-showcase": C25,
-  "toaster-demo": C26,
-  "toaster-showcase": C27,
+  "slider-sizes": C22,
+  "slider-variants": C23,
+  "stepper-demo": C24,
+  "stepper-showcase": C25,
+  "switch-demo": C26,
+  "switch-showcase": C27,
+  "toaster-demo": C28,
+  "toaster-showcase": C29,
 }

@@ -87,8 +87,8 @@
       "name": "toaster",
       "type": "registry:ui",
       "title": "Acrylic Toaster",
-      "description": "Sonner toast theme as a translucent dark pill (zinc-900/95 + backdrop-blur). Mount once near the app root, then call toast() from sonner.",
-      "dependencies": ["sonner"],
+      "description": "Sonner toasts restyled as the macOS 26 notification banner: a 344px frosted-acrylic card (--acr-toast + backdrop-blur), 16px radius, SFPro-Bold/13 title, top-center. Follows the app theme via next-themes. Mount once near the app root, then call toast() from sonner.",
+      "dependencies": ["sonner", "next-themes"],
       "files": [
         {
           "path": "registry/acrylic/toaster.tsx",
@@ -172,7 +172,7 @@
       "name": "slider",
       "type": "registry:ui",
       "title": "Acrylic Slider",
-      "description": "Radix Slider aligned to the macOS 26 Sliders page: a capsule translucent rail, an accent-blue filled range, and a white knob with a hairline border + soft shadow, in five control sizes. Supports range (two-thumb), stepping, vertical orientation, and disabled. Colors flip light/dark via the Acrylic theme tokens.",
+      "description": "Radix Slider aligned to the macOS 26 Sliders page: a capsule translucent rail, an accent-blue filled range, and a frosted-white pill knob with a hairline border + soft shadow, in five control sizes. Two kit variants — standard and center-biased fill — plus the Ticked add-on (marks), range (two-thumb), stepping, vertical orientation, and disabled. Colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": ["@radix-ui/react-slider"],
       "files": [
         {
