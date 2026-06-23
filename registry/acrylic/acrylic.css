@@ -47,7 +47,7 @@
   --acr-panel: rgba(255, 255, 255, 0.62);
   --acr-overlay: rgba(236, 236, 236, 0.45);
   --acr-field-strong: rgba(255, 255, 255, 0.60);
-  --acr-toast: rgba(255, 255, 255, 0.92);
+  --acr-toast: rgba(255, 255, 255, 0.72);
   --acr-solid: #1c1c1e;
   --acr-solid-fg: #fafafa;
   --acr-scrollbar: rgba(0, 0, 0, 0.28);
@@ -82,7 +82,7 @@
   --acr-panel: rgba(255, 255, 255, 0.08);
   --acr-overlay: rgba(9, 9, 11, 0.55);
   --acr-field-strong: rgba(255, 255, 255, 0.18);
-  --acr-toast: rgba(28, 28, 30, 0.95);
+  --acr-toast: rgba(44, 44, 46, 0.68);
   --acr-solid: #ffffff;
   --acr-solid-fg: #1c1c1e;
   --acr-scrollbar: rgba(255, 255, 255, 0.28);
