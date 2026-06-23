@@ -5,7 +5,7 @@
   "description": "Acrylic — a dark frosted-glass shadcn/ui registry + Fumadocs docs site.",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "shadcn build && next build",
     "start": "next start",
     "registry:build": "shadcn build",
     "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
