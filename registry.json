@@ -34,6 +34,18 @@
           "destructive": "#ff383c",
           "ring": "#0088ff",
           "border": "rgba(60, 60, 67, 0.29)",
+          "acr-red": "#ff383c",
+          "acr-orange": "#ff8d28",
+          "acr-yellow": "#ffcc00",
+          "acr-green": "#34c759",
+          "acr-mint": "#00c8b3",
+          "acr-teal": "#00c3d0",
+          "acr-cyan": "#00c0e8",
+          "acr-blue": "#0088ff",
+          "acr-indigo": "#6155f5",
+          "acr-purple": "#cb30e0",
+          "acr-pink": "#ff2d55",
+          "acr-brown": "#ac7f5e",
           "acr-chip": "rgba(0, 0, 0, 0.10)",
           "acr-chip-hover": "rgba(0, 0, 0, 0.14)",
           "acr-field": "rgba(0, 0, 0, 0.05)",
@@ -74,6 +86,18 @@
           "destructive": "#ff4245",
           "ring": "#0091ff",
           "border": "rgba(255, 255, 255, 0.12)",
+          "acr-red": "#ff4245",
+          "acr-orange": "#ff9230",
+          "acr-yellow": "#ffd600",
+          "acr-green": "#30d158",
+          "acr-mint": "#00dac3",
+          "acr-teal": "#00d2e0",
+          "acr-cyan": "#3cd3fe",
+          "acr-blue": "#0091ff",
+          "acr-indigo": "#6d7cff",
+          "acr-purple": "#db34f2",
+          "acr-pink": "#ff375f",
+          "acr-brown": "#b78a66",
           "acr-chip": "rgba(255, 255, 255, 0.10)",
           "acr-chip-hover": "rgba(255, 255, 255, 0.14)",
           "acr-field": "rgba(255, 255, 255, 0.05)",
@@ -120,15 +144,15 @@
       }
     },
     {
-      "name": "glass-card",
+      "name": "card",
       "type": "registry:component",
-      "title": "GlassCard",
-      "description": "Dark frosted-glass (acrylic) surface card \u2014 a charcoal translucent pane over a blurred backdrop. Flat at rest, soft float shadow + lift on hover (interactive).",
+      "title": "Card",
+      "description": "Dark frosted-glass (acrylic) surface card \u2014 a charcoal translucent pane over a blurred backdrop. Flat at rest, soft float shadow + lift on hover (interactive). Composes into list rows, tiles, and panels.",
       "files": [
         {
-          "path": "registry/acrylic/glass-card.tsx",
+          "path": "registry/acrylic/card.tsx",
           "type": "registry:component",
-          "target": "components/acrylic/glass-card.tsx"
+          "target": "components/acrylic/card.tsx"
         }
       ],
       "registryDependencies": [
@@ -224,19 +248,19 @@
       ]
     },
     {
-      "name": "toaster",
+      "name": "sonner",
       "type": "registry:ui",
-      "title": "Acrylic Toaster",
-      "description": "Sonner toasts restyled as the macOS 26 notification banner: a 344px frosted-acrylic card (--acr-toast + backdrop-blur), 16px radius, SFPro-Bold/13 title, top-center. Follows the app theme via next-themes. Mount once near the app root, then call toast() from sonner.",
+      "title": "Acrylic Sonner",
+      "description": "Sonner toasts restyled as the macOS 26 notification banner: a 344px frosted-acrylic card (--acr-toast + backdrop-blur), 16px radius, SFPro-Bold/13 title, top-center. Follows the app theme via next-themes and inherits the host font. Mount the <Toaster /> once near the app root, then call toast() from sonner.",
       "dependencies": [
         "sonner",
         "next-themes"
       ],
       "files": [
         {
-          "path": "registry/acrylic/toaster.tsx",
+          "path": "registry/acrylic/sonner.tsx",
           "type": "registry:ui",
-          "target": "components/acrylic/toaster.tsx"
+          "target": "components/acrylic/sonner.tsx"
         }
       ],
       "registryDependencies": [

@@ -1,6 +1,6 @@
 ---
-title: Toaster
-description: Sonner toast theme styled as a macOS notification banner — mount once, call toast() anywhere.
+title: Sonner
+description: Sonner toast theme styled as a macOS notification banner — mount the Toaster once, call toast() anywhere.
 ---
 
 A [Sonner](https://sonner.emilkowal.ski/) toast theme aligned to the **macOS
@@ -11,28 +11,41 @@ and auto-dismisses.
 ## Installation
 
 ```bash
-npx shadcn add https://acrylic-ui.vercel.app/r/toaster.json
+npx shadcn add https://acrylic-ui.vercel.app/r/sonner.json
 ```
 
 ## Usage
 
-<ComponentPreview name="toaster-demo" />
+<ComponentPreview name="sonner-demo" />
 
 ## macOS notification alignment
 
 The theme is lifted verbatim from the kit's Notifications page (banner master
 `Notifications/Light/Single`):
 
-- **Card** — 344px wide, `16px` corner radius, padding `12 / 14 / 12 / 10`.
+- **Card** — 344px wide, `16px` corner radius, padding `12 / 14 / 12 / 10`, with a
+  `16px` gap from the app-icon to the text column (text starts at x≈58).
 - **Material** — frosted translucent surface via `--acr-toast`
   (white 92% in light, dark 95% in dark) over `backdrop-blur`, so the glass
   flips with the theme. A soft hairline border + lifted shadow match the banner.
 - **App-icon slot** — 32×32 leading glyph.
-- **Title** — SF Pro Bold, 13px.
-- **Body** — SF Pro Regular, 13px, muted.
+- **Title** — SF Pro **Bold**, 13px, ink `rgba(26,26,26)` light / `rgba(245,245,245)` dark.
+- **Body** — SF Pro **Regular**, 13px, **same ink as the title** — not muted; the
+  hierarchy is weight only.
+- **Timestamp** — SF Pro Regular, 11px, gray `rgba(114,114,114)` light /
+  `rgba(138,138,138)` dark, top-right.
 - **Action** — accent-fill capsule (the kit's prominent control).
 - **Close** — the kit banner has no persistent X (banners auto-dismiss / swipe),
   so Sonner's `closeButton` is opt-in and styled as a subtle ghost affordance.
+
+## Examples
+
+A range of banners — a plain message, one with inline actions, and one with a
+trailing image attachment — rendered through the same acrylic `<Toaster />` theme.
+They're shown statically over a wallpaper so the frosted material reads, and the
+buttons below fire the real toasts (sliding in from the top).
+
+<ComponentPreview name="sonner-showcase" />
 
 ## Notes
 

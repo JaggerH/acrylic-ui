@@ -6,7 +6,7 @@ import { Info, MoreHorizontal } from "lucide-react"
 import { Input } from "@/registry/acrylic/input"
 import { Button } from "@/registry/acrylic/button"
 import { Combobox } from "@/registry/acrylic/combobox"
-import { GlassCard } from "@/registry/acrylic/glass-card"
+import { Card } from "@/registry/acrylic/card"
 import { Switch } from "@/registry/acrylic/switch"
 import { Stepper } from "@/registry/acrylic/stepper"
 import { RadioGroup, RadioGroupItem } from "@/registry/acrylic/radio-group"
@@ -40,7 +40,7 @@ export default function FieldShowcase() {
   return (
     <div className="w-full max-w-md">
       <p className="mb-3 px-1 text-[15px] font-semibold text-foreground">Trailing accessory options</p>
-      <GlassCard className="overflow-hidden bg-[var(--acr-control)]">
+      <Card className="overflow-hidden bg-[var(--acr-control)]">
         <FieldGroup className="gap-0 divide-y divide-[var(--acr-border-soft)]">
           <Row label="Label">
             <span className="text-[13px] text-muted-foreground">Label</span>
@@ -127,7 +127,7 @@ export default function FieldShowcase() {
             <Button variant="neutral" size="small">Advanced…</Button>
           </Row>
         </FieldGroup>
-      </GlassCard>
+      </Card>
     </div>
   )
 }

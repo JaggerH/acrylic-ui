@@ -1,0 +1,34 @@
+---
+title: Card
+description: Dark frosted-glass surface card — flat at rest, soft float + lift on hover.
+---
+
+A charcoal translucent pane over a blurred backdrop. Flat at rest (no shadow, no
+border); `interactive` adds a hover lift + a soft float shadow. It's a surface
+primitive — compose list rows, tiles, and panels on top of it.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/card.json
+```
+
+## Usage
+
+<ComponentPreview name="card-demo" />
+
+## Example — session list
+
+A real composition: a list of session rows (a 2×2 thumbnail tile with a count
+badge, a title / path / date stack, and a trailing trash button that fades in on
+hover). `interactive` gives each row the Card's hover lift.
+
+<ComponentPreview name="card-tasklist" />
+
+## Props
+
+| prop | type | default | description |
+| --- | --- | --- | --- |
+| `interactive` | `boolean` | `false` | hover lift + float shadow for clickable cards |
+
+Plus all native `<div>` props.

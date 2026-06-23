@@ -51,6 +51,21 @@ html > body[data-scroll-locked] {
   --ring: #0088ff;
   --border: rgba(60, 60, 67, 0.29);
 
+  /* System colors — the macOS 26 palette (Light). --primary/--destructive are the
+     semantic aliases of --acr-blue / --acr-red. Use via bg-[var(--acr-green)] etc. */
+  --acr-red: #ff383c;
+  --acr-orange: #ff8d28;
+  --acr-yellow: #ffcc00;
+  --acr-green: #34c759;
+  --acr-mint: #00c8b3;
+  --acr-teal: #00c3d0;
+  --acr-cyan: #00c0e8;
+  --acr-blue: #0088ff;
+  --acr-indigo: #6155f5;
+  --acr-purple: #cb30e0;
+  --acr-pink: #ff2d55;
+  --acr-brown: #ac7f5e;
+
   --acr-chip: rgba(0, 0, 0, 0.10);
   --acr-chip-hover: rgba(0, 0, 0, 0.14);
   --acr-field: rgba(0, 0, 0, 0.05);
@@ -85,6 +100,20 @@ html > body[data-scroll-locked] {
   --destructive: #ff4245;
   --ring: #0091ff;
   --border: rgba(255, 255, 255, 0.12);
+
+  /* System colors — the macOS 26 palette (Dark). */
+  --acr-red: #ff4245;
+  --acr-orange: #ff9230;
+  --acr-yellow: #ffd600;
+  --acr-green: #30d158;
+  --acr-mint: #00dac3;
+  --acr-teal: #00d2e0;
+  --acr-cyan: #3cd3fe;
+  --acr-blue: #0091ff;
+  --acr-indigo: #6d7cff;
+  --acr-purple: #db34f2;
+  --acr-pink: #ff375f;
+  --acr-brown: #b78a66;
 
   --acr-chip: rgba(255, 255, 255, 0.10);
   --acr-chip-hover: rgba(255, 255, 255, 0.14);
@@ -124,6 +153,13 @@ html > body[data-scroll-locked] {
 .scrollbar-mac::-webkit-scrollbar-thumb:hover {
   background-color: var(--acr-scrollbar-hover);
   background-clip: content-box;
+}
+
+/* Sonner hard-codes a system font-family on the toaster via a zero-specificity
+   :where([data-sonner-toaster]) rule. Override it with a real selector so toasts
+   inherit the host app's font and match the rest of the UI. */
+[data-sonner-toaster] {
+  font-family: inherit;
 }
 
 /* macOS / SF Pro type scale (px) — reference for text-heavy components. */

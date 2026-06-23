@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, type ReactNode } from "react"
+import { DynamicCodeBlock } from "fumadocs-ui/components/dynamic-codeblock"
 
 /** Preview / Code tabbed block. Preview renders the live example; Code shows its
  *  source. Chrome uses Fumadocs `fd-*` tokens so it matches the docs UI. */
@@ -25,9 +26,11 @@ export function PreviewTabs({ source, children }: { source: string; children: Re
       {tab === "preview" ? (
         <div className="flex min-h-44 items-center justify-center p-10">{children}</div>
       ) : (
-        <pre className="m-0 overflow-x-auto bg-fd-secondary/30 p-4 text-[13px] leading-relaxed">
-          <code>{source}</code>
-        </pre>
+        <DynamicCodeBlock
+          lang="tsx"
+          code={source}
+          codeblock={{ className: "my-0 rounded-none border-0" }}
+        />
       )}
     </div>
   )
