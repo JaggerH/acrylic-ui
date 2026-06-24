@@ -456,7 +456,7 @@ function SidebarMenu({ className, ...props }: React.ComponentProps<"ul">) {
     <ul
       data-slot="sidebar-menu"
       data-sidebar="menu"
-      className={cn("flex w-full min-w-0 flex-col gap-0.5", className)}
+      className={cn("flex w-full min-w-0 flex-col gap-0", className)}
       {...props}
     />
   )
@@ -473,8 +473,10 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
   )
 }
 
+// Selection follows the macOS 26 kit: a NEUTRAL gray pill (--acr-chip ≈ black 11%),
+// radius 8, NOT the accent — only the leading icon turns System Blue when active.
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-lg px-2 text-left text-[13px] ring-[var(--ring)] outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-[var(--acr-hover)] focus-visible:ring-2 active:bg-[var(--acr-chip)] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-[var(--primary)] data-[active=true]:font-medium data-[active=true]:text-[var(--primary-foreground)] data-[state=open]:hover:bg-[var(--acr-hover)] [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-lg px-2 text-left text-[13px] ring-[var(--ring)] outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-[var(--acr-hover)] focus-visible:ring-2 active:bg-[var(--acr-chip)] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-[var(--acr-chip)] data-[active=true]:font-medium data-[active=true]:[&>svg]:text-[var(--primary)] data-[state=open]:hover:bg-[var(--acr-hover)] [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -584,7 +586,7 @@ function SidebarMenuBadge({ className, ...props }: React.ComponentProps<"div">) 
       data-sidebar="menu-badge"
       className={cn(
         "pointer-events-none absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-[11px] font-medium text-[var(--muted-foreground)] tabular-nums select-none",
-        "peer-data-[active=true]/menu-button:text-[var(--primary-foreground)]",
+        "peer-data-[active=true]/menu-button:text-foreground",
         "peer-data-[size=sm]/menu-button:top-1",
         "peer-data-[size=default]/menu-button:top-1.5",
         "peer-data-[size=lg]/menu-button:top-2.5",
@@ -640,7 +642,9 @@ function SidebarMenuSub({ className, ...props }: React.ComponentProps<"ul">) {
       data-slot="sidebar-menu-sub"
       data-sidebar="menu-sub"
       className={cn(
-        "mx-3.5 flex min-w-0 translate-x-px flex-col gap-0.5 border-l border-[var(--acr-border)] px-2.5 py-0.5",
+        // macOS keeps the selection highlight full-width at every nesting level —
+        // only the row CONTENT indents (no left rail, no narrowed pill).
+        "flex w-full min-w-0 flex-col gap-0",
         "group-data-[collapsible=icon]:hidden",
         className
       )}
@@ -683,8 +687,10 @@ function SidebarMenuSubButton({
       data-size={size}
       data-active={isActive}
       className={cn(
-        "flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-lg px-2 text-foreground ring-[var(--ring)] outline-hidden hover:bg-[var(--acr-hover)] focus-visible:ring-2 active:bg-[var(--acr-chip)] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
-        "data-[active=true]:bg-[var(--primary)] data-[active=true]:text-[var(--primary-foreground)]",
+        // Full-width row, gray-pill selection like top level; content indented via
+        // pl so the highlight stays edge-to-edge (matches the kit's nested rows).
+        "flex h-8 min-w-0 items-center gap-2 overflow-hidden rounded-lg pr-2 pl-8 text-foreground ring-[var(--ring)] outline-hidden hover:bg-[var(--acr-hover)] focus-visible:ring-2 active:bg-[var(--acr-chip)] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+        "data-[active=true]:bg-[var(--acr-chip)] data-[active=true]:font-medium data-[active=true]:[&>svg]:text-[var(--primary)]",
         size === "sm" && "text-[11px]",
         size === "md" && "text-[13px]",
         "group-data-[collapsible=icon]:hidden",

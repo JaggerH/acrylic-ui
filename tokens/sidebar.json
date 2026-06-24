@@ -2,7 +2,16 @@
   "source": "Apple macOS 26 UI Kit.sketch",
   "component": "sidebar",
   "width": 240,
-  "note": "macOS sidebar. 240px wide (all sizes). 3 density sizes drive row height + font: large 40/15, medium 32/13, small 24/11. Rows: Items (leaf, icon lead) and Folders (group, disclosure+icon lead, deeper). Header = section label (black 50%, smaller). Label text black 85% (small 77%). Selection fill is NOT in the kit master (painted on a sub-layer) -> wire Selected to --primary pill + white text; hover to --acr-hover. Per-level indent grows ~ one step; folderLeading/itemLeading are the text x-offsets read off the kit.",
+  "note": "macOS sidebar. 240px wide (all sizes). 3 density sizes drive row height + font: large 40/15, medium 32/13, small 24/11. Rows: Items (leaf, icon lead) and Folders (group, disclosure+icon lead, deeper). Header = section label (black 50%, smaller). Label text black 85% (small 77%). SELECTION (dug from the sub-layer 'Background' rect): a NEUTRAL gray pill rgba(0,0,0,0.11) light (≈ --acr-chip), radius 8 fixed, inset 10px horizontally (x10/w220 of 240), height = row height; only the leading ICON turns System Blue. Nested rows keep the SAME full-width pill (x10/w220) - only content indents. Rows are flush (gap 0); the assembled example has 8px outer padding (256 = 240 + 8*2). hover = --acr-hover.",
+  "selection": {
+    "fill_light": "rgba(0, 0, 0, 0.11)",
+    "fill_dark": "rgba(255, 255, 255, 0.11)",
+    "radius": 8,
+    "insetX": 10,
+    "iconColor": "system-blue (--primary)",
+    "rowGap": 0,
+    "outerPadding": 8
+  },
   "bySize": {
     "large": {
       "rowHeight": 40,
