@@ -21,8 +21,9 @@ const Card = React.forwardRef<
 >(({ className, interactive = false, ...props }, ref) => (
   <div
     ref={ref}
+    data-slot="card"
     className={cn(
-      "relative rounded-xl bg-[var(--acr-surface)] backdrop-blur-xl",
+      "acr-frosted relative rounded-xl bg-[var(--acr-surface)] backdrop-blur-xl",
       "transition-[transform,background-color] duration-200",
       interactive &&
         "hover:-translate-y-px hover:bg-[var(--acr-surface-hover)] " +

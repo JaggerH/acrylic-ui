@@ -37,6 +37,7 @@
           "acr-control-border": "rgba(0, 0, 0, 0.13)",
           "acr-surface": "rgba(255, 255, 255, 0.55)",
           "acr-surface-hover": "rgba(255, 255, 255, 0.75)",
+          "acr-card-nested": "rgba(0, 0, 0, 0.07)",
           "acr-panel": "rgba(255, 255, 255, 0.62)",
           "acr-overlay": "rgba(236, 236, 236, 0.45)",
           "acr-field-strong": "rgba(255, 255, 255, 0.60)",
@@ -79,6 +80,7 @@
           "acr-control-border": "rgba(255, 255, 255, 0.12)",
           "acr-surface": "rgba(9, 9, 11, 0.40)",
           "acr-surface-hover": "rgba(28, 28, 30, 0.55)",
+          "acr-card-nested": "rgba(0, 0, 0, 0.22)",
           "acr-panel": "rgba(255, 255, 255, 0.08)",
           "acr-overlay": "rgba(9, 9, 11, 0.55)",
           "acr-field-strong": "rgba(255, 255, 255, 0.18)",
@@ -241,10 +243,9 @@
       "name": "sonner",
       "type": "registry:ui",
       "title": "Acrylic Sonner",
-      "description": "Sonner toasts restyled as the macOS 26 notification banner: a 344px frosted-acrylic card (--acr-toast + backdrop-blur), 16px radius, SFPro-Bold/13 title, top-center. Follows the app theme via next-themes and inherits the host font. Mount the <Toaster /> once near the app root, then call toast() from sonner.",
+      "description": "Sonner toasts restyled as the macOS 26 notification banner: a 344px frosted-acrylic card (--acr-toast + backdrop-blur), 16px radius, SFPro-Bold/13 title, top-center. Theme-provider-agnostic — reads the active theme from the `.dark` class on <html> (works with next-themes, shadcn's Vite ThemeProvider, or a single-theme app) so there's no next-themes dependency or import swap. Inherits the host font. Mount the <Toaster /> once near the app root, then call toast() from sonner.",
       "dependencies": [
-        "sonner",
-        "next-themes"
+        "sonner"
       ],
       "files": [
         {

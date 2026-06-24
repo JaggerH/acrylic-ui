@@ -78,6 +78,7 @@ html > body[data-scroll-locked] {
 
   --acr-surface: rgba(255, 255, 255, 0.55);
   --acr-surface-hover: rgba(255, 255, 255, 0.75);
+  --acr-card-nested: rgba(0, 0, 0, 0.07); /* fill for a Card nested in a frosted surface */
   --acr-panel: rgba(255, 255, 255, 0.62);
   --acr-overlay: rgba(236, 236, 236, 0.45);
   --acr-field-strong: rgba(255, 255, 255, 0.60);
@@ -127,6 +128,7 @@ html > body[data-scroll-locked] {
 
   --acr-surface: rgba(9, 9, 11, 0.40);
   --acr-surface-hover: rgba(28, 28, 30, 0.55);
+  --acr-card-nested: rgba(0, 0, 0, 0.22); /* fill for a Card nested in a frosted surface */
   --acr-panel: rgba(255, 255, 255, 0.08);
   --acr-overlay: rgba(9, 9, 11, 0.55);
   --acr-field-strong: rgba(255, 255, 255, 0.18);
@@ -135,6 +137,23 @@ html > body[data-scroll-locked] {
   --acr-solid-fg: #1c1c1e;
   --acr-scrollbar: rgba(255, 255, 255, 0.28);
   --acr-scrollbar-hover: rgba(255, 255, 255, 0.45);
+}
+
+/* Nested frosted Card. A Card inside any frosted surface — Card carries
+   `.acr-frosted` itself, so Card-in-Card is automatic; other frosted containers
+   (e.g. a sidebar inset) opt in by adding the class. The inner Card can't
+   usefully re-blur an already-blurred backdrop (no high-frequency detail left to
+   soften), so it drops its own blur and becomes a translucent tint that lets the
+   outer frost show through. Each nesting level darkens by one step, and that
+   step IS the visible layer boundary — no border required. */
+.acr-frosted [data-slot="card"] {
+  background-color: var(--acr-card-nested);
+  /* Drop the inherited blur by zeroing Tailwind's blur variable rather than
+     writing `backdrop-filter: none` — lightningcss collapses a none/`-webkit-`
+     pair down to the webkit-only property, which no longer overrides the
+     standard `backdrop-filter` the `backdrop-blur-xl` utility set. Resetting the
+     custom property is immune to that vendor-prefix collapsing. */
+  --tw-backdrop-blur: ;
 }
 
 /* macOS-style thin overlay scrollbar — add className="scrollbar-mac". */
