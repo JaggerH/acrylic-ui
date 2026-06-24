@@ -52,10 +52,10 @@ function ImageThumbCard({
         </div>
       </div>
 
-      {/* trailing action — a red acrylic ghost icon button (large), fades in on hover */}
+      {/* trailing action — a red acrylic ghost icon button (xl), fades in on hover */}
       <Button
         icon
-        size="large"
+        size="xl"
         variant="ghost"
         aria-label={`Delete ${title}`}
         onClick={(e) => e.stopPropagation()}
