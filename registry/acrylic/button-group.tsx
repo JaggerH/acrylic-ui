@@ -31,6 +31,87 @@ import { cn } from "@/lib/utils"
 // concentric. Every color resolves through the acrylic theme vars so the whole
 // group flips light/dark for free.
 
+// ── Size scale ────────────────────────────────────────────────────────────────
+// The kit's Segmented Controls ship five sizes (1 Mn … 5 XL), the same scale as
+// Button/Select: height 16/20/24/28/36, well radius 4/5/6/14/18 (the pill/segment
+// radius = well − the uniform 2px inset), font 10/11/13/13/13. Set `size` ONCE on
+// <ButtonGroup>; it flows through context to the well, segments, pill and dividers.
+type ButtonGroupSize = "mini" | "small" | "medium" | "large" | "xl"
+
+const SIZE: Record<
+  ButtonGroupSize,
+  {
+    well: string
+    childrenL: string
+    childrenR: string
+    childrenAll: string
+    pill: string
+    item: string
+    divider: string
+    text: string
+  }
+> = {
+  mini: {
+    well: "rounded-[4px] p-0.5",
+    childrenL: "[&>*:first-child]:rounded-l-[2px]",
+    childrenR: "[&>*:last-child]:rounded-r-[2px]",
+    childrenAll: "[&>*]:rounded-[2px]",
+    pill: "rounded-[2px]",
+    item: "h-4 gap-1 rounded-[2px] px-2 text-[10px] [&_svg]:size-3",
+    divider: "inset-y-0.5",
+    text: "px-2 text-[10px]",
+  },
+  small: {
+    well: "rounded-[5px] p-0.5",
+    childrenL: "[&>*:first-child]:rounded-l-[3px]",
+    childrenR: "[&>*:last-child]:rounded-r-[3px]",
+    childrenAll: "[&>*]:rounded-[3px]",
+    pill: "rounded-[3px]",
+    item: "h-5 gap-1 rounded-[3px] px-2.5 text-[11px] [&_svg]:size-3",
+    divider: "inset-y-0.5",
+    text: "px-2.5 text-[11px]",
+  },
+  medium: {
+    well: "rounded-[6px] p-0.5",
+    childrenL: "[&>*:first-child]:rounded-l-[4px]",
+    childrenR: "[&>*:last-child]:rounded-r-[4px]",
+    childrenAll: "[&>*]:rounded-[4px]",
+    pill: "rounded-[4px]",
+    item: "h-6 gap-1.5 rounded-[4px] px-4 text-[13px] [&_svg]:size-3.5",
+    divider: "inset-y-1",
+    text: "px-3 text-[13px]",
+  },
+  // large/xl: the kit radius (14 / 18) equals half the segment height (28 / 36),
+  // i.e. a FULL capsule — so the well and pill are rounded-full (concentric capsules
+  // across the 2px inset), not a 12 / 16px not-quite-round rect.
+  large: {
+    well: "rounded-full p-0.5",
+    childrenL: "[&>*:first-child]:rounded-l-full",
+    childrenR: "[&>*:last-child]:rounded-r-full",
+    childrenAll: "[&>*]:rounded-full",
+    pill: "rounded-full",
+    item: "h-7 gap-1.5 rounded-full px-4 text-[13px] [&_svg]:size-4",
+    divider: "inset-y-1.5",
+    text: "px-3.5 text-[13px]",
+  },
+  xl: {
+    well: "rounded-full p-0.5",
+    childrenL: "[&>*:first-child]:rounded-l-full",
+    childrenR: "[&>*:last-child]:rounded-r-full",
+    childrenAll: "[&>*]:rounded-full",
+    pill: "rounded-full",
+    item: "h-9 gap-2 rounded-full px-5 text-[13px] [&_svg]:size-4",
+    divider: "inset-y-2",
+    text: "px-4 text-[13px]",
+  },
+}
+
+const ButtonGroupSizeContext = React.createContext<ButtonGroupSize>("medium")
+const useButtonGroupSize = () => React.useContext(ButtonGroupSizeContext)
+
+// The well structure per variant — fill, inset behaviour, child-fill stripping. The
+// radius/inset come from SIZE (applied at render), so the cva no longer hard-codes
+// the medium-only radii.
 const buttonGroupVariants = cva(
   "inline-flex isolate text-foreground",
   {
@@ -39,7 +120,7 @@ const buttonGroupVariants = cva(
         // One shared gray well; uniform 2px inset; children flush with collapsed
         // inner radii and outer corners rounded to the inner (6 − 2) radius.
         attached: cn(
-          "items-stretch rounded-[6px] bg-[var(--acr-field)] p-0.5",
+          "items-stretch bg-[var(--acr-field)]",
           // Items sit FLAT on the shared well: strip any per-button fill/shadow so
           // the single gray surface (and the hairline separators between items) show
           // through instead of a second gray slab stacked on top; foreground text +
@@ -48,10 +129,9 @@ const buttonGroupVariants = cva(
           // wins regardless of which variant the caller passes.
           "[&>[data-slot=button]]:bg-transparent [&>[data-slot=button]]:text-foreground [&>[data-slot=button]]:shadow-none",
           "[&>[data-slot=button]:hover]:bg-[var(--acr-hover)]",
-          // outer corners follow the inner well radius; inner corners go square so
-          // adjacent children read as one continuous capsule.
-          "[&>*]:rounded-none",
-          "[&>*:first-child]:rounded-l-[4px] [&>*:last-child]:rounded-r-[4px]"
+          // inner corners go square so adjacent children read as one continuous
+          // capsule; the outer corners (SIZE.childrenL/R) follow the well radius.
+          "[&>*]:rounded-none"
         ),
         // Selectable segmented control: gray well + active item = white raised pill.
         // Uniform 2px inset; pill radius 4 (= 6 − 2) stays concentric with the well.
@@ -59,8 +139,8 @@ const buttonGroupVariants = cva(
         // controlled via value/ButtonGroupItem the sliding indicator is rendered
         // instead (see ButtonGroup below).
         segmented: cn(
-          "items-stretch gap-px rounded-[6px] bg-[var(--acr-field)] p-0.5",
-          "[&>*]:rounded-[4px] [&>*]:shadow-none [&>*]:bg-transparent",
+          "items-stretch gap-px bg-[var(--acr-field)]",
+          "[&>*]:shadow-none [&>*]:bg-transparent",
           // the active item (data-active or aria-pressed) becomes the white pill.
           "[&>[data-active=true]]:bg-[var(--acr-control)] [&>[aria-pressed=true]]:bg-[var(--acr-control)]",
           "[&>[data-active=true]]:shadow-[0_1px_2px_rgba(0,0,0,0.16),0_0_0_0.5px_rgba(0,0,0,0.04)]",
@@ -102,7 +182,20 @@ type ButtonGroupBaseProps = Omit<
   React.ComponentProps<"div">,
   "defaultValue" | "onChange"
 > &
-  VariantProps<typeof buttonGroupVariants>
+  VariantProps<typeof buttonGroupVariants> & {
+    /** One of the five kit sizes — scales the well, segments, pill and dividers. */
+    size?: ButtonGroupSize
+  }
+
+// Well radius/inset for the uncontrolled (non-sliding) paths. `split` has no shared
+// well, so no radius/inset; attached/multi round their outer children; segmented
+// (uncontrolled fallback) rounds every child.
+function wellClasses(variant: "attached" | "segmented" | "split", size: ButtonGroupSize) {
+  const s = SIZE[size]
+  if (variant === "split") return ""
+  if (variant === "segmented") return cn(s.well, s.childrenAll)
+  return cn(s.well, s.childrenL, s.childrenR)
+}
 
 // Single-select (default): segmented radio with the sliding white pill.
 type ButtonGroupSingleProps = ButtonGroupBaseProps & {
@@ -132,11 +225,12 @@ type ButtonGroupProps = ButtonGroupSingleProps | ButtonGroupMultipleProps
 function ButtonGroup(props: ButtonGroupProps) {
   // Multi-select toggle group (type="multiple").
   if (props.type === "multiple") {
-    const { className, value, defaultValue, onValueChange, children, ...rest } =
+    const { className, size, value, defaultValue, onValueChange, children, ...rest } =
       props
     return (
       <MultiToggleGroup
         className={className}
+        size={size}
         value={value}
         defaultValue={defaultValue}
         onValueChange={onValueChange}
@@ -150,6 +244,7 @@ function ButtonGroup(props: ButtonGroupProps) {
   const {
     className,
     variant,
+    size = "medium",
     value,
     defaultValue,
     onValueChange,
@@ -170,6 +265,7 @@ function ButtonGroup(props: ButtonGroupProps) {
     return (
       <SegmentedSlider
         className={className}
+        size={size}
         value={value}
         defaultValue={defaultValue}
         onValueChange={onValueChange}
@@ -181,15 +277,18 @@ function ButtonGroup(props: ButtonGroupProps) {
   }
 
   return (
-    <div
-      role="group"
-      data-slot="button-group"
-      data-variant={variant ?? "attached"}
-      className={cn(buttonGroupVariants({ variant }), className)}
-      {...rest}
-    >
-      {children}
-    </div>
+    <ButtonGroupSizeContext.Provider value={size}>
+      <div
+        role="group"
+        data-slot="button-group"
+        data-variant={variant ?? "attached"}
+        data-size={size}
+        className={cn(buttonGroupVariants({ variant }), wellClasses(variant ?? "attached", size), className)}
+        {...rest}
+      >
+        {children}
+      </div>
+    </ButtonGroupSizeContext.Provider>
   )
 }
 
@@ -198,12 +297,14 @@ function ButtonGroup(props: ButtonGroupProps) {
 // Controlled via value/defaultValue/onValueChange (an array, shadcn-style).
 function MultiToggleGroup({
   className,
+  size = "medium",
   value: valueProp,
   defaultValue,
   onValueChange,
   children,
   ...props
 }: Omit<ButtonGroupMultipleProps, "type">) {
+  const s = SIZE[size]
   const [uncontrolled, setUncontrolled] = React.useState<string[]>(
     defaultValue ?? []
   )
@@ -226,18 +327,24 @@ function MultiToggleGroup({
       role="group"
       data-slot="button-group"
       data-variant="multiple"
+      data-size={size}
       className={cn(
-        // Same shared gray well as the attached variant, with flush items + the
-        // outer corners rounded to the inner (6 − 2) radius.
-        "inline-flex isolate items-stretch rounded-[6px] bg-[var(--acr-field)] p-0.5 text-foreground",
-        "[&>*]:rounded-none [&>*:first-child]:rounded-l-[4px] [&>*:last-child]:rounded-r-[4px]",
+        // Same shared gray well as the attached variant; flush items with the outer
+        // corners rounded to the well's inner radius (well − 2px inset), per size.
+        "inline-flex isolate items-stretch bg-[var(--acr-field)] text-foreground",
+        "[&>*]:rounded-none",
+        s.well,
+        s.childrenL,
+        s.childrenR,
         className
       )}
       {...props}
     >
-      <MultiSelectContext.Provider value={{ value, toggle }}>
-        {children}
-      </MultiSelectContext.Provider>
+      <ButtonGroupSizeContext.Provider value={size}>
+        <MultiSelectContext.Provider value={{ value, toggle }}>
+          {children}
+        </MultiSelectContext.Provider>
+      </ButtonGroupSizeContext.Provider>
     </div>
   )
 }
@@ -248,12 +355,14 @@ function MultiToggleGroup({
 // it under prefers-reduced-motion. role="radiogroup" + arrow-key navigation.
 function SegmentedSlider({
   className,
+  size = "medium",
   value: valueProp,
   defaultValue,
   onValueChange,
   children,
   ...props
 }: Omit<ButtonGroupSingleProps, "type" | "variant">) {
+  const s = SIZE[size]
   const items = React.useMemo(
     () =>
       React.Children.toArray(children).filter(
@@ -307,10 +416,13 @@ function SegmentedSlider({
       role="radiogroup"
       data-slot="button-group"
       data-variant="segmented"
+      data-size={size}
       onKeyDown={onKeyDown}
       className={cn(
-        // The well: gray track with a uniform 2px inset on all four sides.
-        "inline-flex isolate rounded-[6px] bg-[var(--acr-field)] p-0.5 text-foreground",
+        // The well: gray track with a uniform 2px inset on all four sides (radius
+        // per size).
+        "inline-flex isolate bg-[var(--acr-field)] text-foreground",
+        s.well,
         className
       )}
       {...props}
@@ -333,7 +445,8 @@ function SegmentedSlider({
           aria-hidden
           data-slot="button-group-indicator"
           className={cn(
-            "pointer-events-none absolute left-0 top-0 z-0 h-full rounded-[4px] bg-[var(--acr-control)]",
+            "pointer-events-none absolute left-0 top-0 z-0 h-full bg-[var(--acr-control)]",
+            s.pill,
             "shadow-[0_1px_2px_rgba(0,0,0,0.16),0_0_0_0.5px_rgba(0,0,0,0.04)]",
             "transition-[transform,width] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)]",
             "motion-reduce:transition-none"
@@ -357,7 +470,8 @@ function SegmentedSlider({
                 aria-hidden
                 data-slot="button-group-divider"
                 className={cn(
-                  "pointer-events-none absolute inset-y-1 z-[1] w-px -translate-x-1/2 bg-[var(--acr-border-soft)]",
+                  "pointer-events-none absolute z-[1] w-px -translate-x-1/2 bg-[var(--acr-border-soft)]",
+                  s.divider,
                   "transition-opacity duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none",
                   hidden && "opacity-0"
                 )}
@@ -365,9 +479,11 @@ function SegmentedSlider({
               />
             )
           })}
-        <SegmentedContext.Provider value={{ value, setValue }}>
-          {children}
-        </SegmentedContext.Provider>
+        <ButtonGroupSizeContext.Provider value={size}>
+          <SegmentedContext.Provider value={{ value, setValue }}>
+            {children}
+          </SegmentedContext.Provider>
+        </ButtonGroupSizeContext.Provider>
       </div>
     </div>
   )
@@ -390,6 +506,7 @@ function ButtonGroupItem({
   ...props
 }: ButtonGroupItemProps) {
   const ctx = React.useContext(SegmentedContext)
+  const size = useButtonGroupSize()
   const selected = ctx?.value === value
   const Comp = asChild ? Slot : "button"
   return (
@@ -408,12 +525,13 @@ function ButtonGroupItem({
       }}
       className={cn(
         "relative z-10 inline-flex flex-1 select-none items-center justify-center whitespace-nowrap",
-        "h-6 gap-1.5 rounded-[4px] px-4 text-[13px] font-medium outline-none transition-colors",
+        SIZE[size].item,
+        "font-medium outline-none transition-colors",
         "bg-transparent text-foreground focus-visible:ring-2 focus-visible:ring-ring/50",
         // Disabled: clearly dimmed + inert, so an unavailable segment reads as
         // unavailable next to its live neighbours.
         "disabled:pointer-events-none disabled:opacity-40",
-        "[&_svg]:pointer-events-none [&_svg]:size-3.5 [&_svg]:shrink-0",
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0",
         className
       )}
       {...props}
@@ -444,6 +562,7 @@ function ButtonGroupToggle({
   ...props
 }: ButtonGroupToggleProps) {
   const ctx = React.useContext(MultiSelectContext)
+  const size = useButtonGroupSize()
   const on = ctx?.value.includes(value) ?? false
   const Comp = asChild ? Slot : "button"
   return (
@@ -458,14 +577,15 @@ function ButtonGroupToggle({
       }}
       className={cn(
         "relative z-10 inline-flex flex-1 select-none items-center justify-center whitespace-nowrap",
-        "h-6 gap-1.5 rounded-[4px] px-4 text-[13px] font-medium outline-none transition-colors",
+        SIZE[size].item,
+        "font-medium outline-none transition-colors",
         // Flat on the well; ON tints the label/glyph to the accent (no fill — the
         // color change is the selection hint), with a faint neutral hover.
         "bg-transparent text-foreground hover:bg-[var(--acr-hover)]",
         "data-[state=on]:text-primary data-[state=on]:font-semibold",
         "disabled:pointer-events-none disabled:opacity-40",
         "focus-visible:ring-2 focus-visible:ring-ring/50",
-        "[&_svg]:pointer-events-none [&_svg]:size-3.5 [&_svg]:shrink-0",
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0",
         className
       )}
       {...props}
@@ -483,6 +603,11 @@ function ButtonGroupSeparator({
 }: React.ComponentProps<"div"> & {
   orientation?: "horizontal" | "vertical"
 }) {
+  const size = useButtonGroupSize()
+  // Literal class maps (no string interpolation — Tailwind's scanner needs whole
+  // class names to generate the utilities).
+  const vert = { mini: "my-0.5 w-px", small: "my-0.5 w-px", medium: "my-1 w-px", large: "my-1.5 w-px", xl: "my-2 w-px" }
+  const horiz = { mini: "mx-0.5 h-px", small: "mx-0.5 h-px", medium: "mx-1 h-px", large: "mx-1.5 h-px", xl: "mx-2 h-px" }
   return (
     <div
       role="separator"
@@ -490,7 +615,7 @@ function ButtonGroupSeparator({
       data-slot="button-group-separator"
       className={cn(
         "shrink-0 self-stretch bg-[var(--acr-border-soft)]",
-        orientation === "vertical" ? "my-1 w-px" : "mx-1 h-px",
+        orientation === "vertical" ? vert[size] : horiz[size],
         className
       )}
       {...props}
@@ -506,6 +631,7 @@ function ButtonGroupText({
   ...props
 }: React.ComponentProps<"div"> & { asChild?: boolean }) {
   const Comp = asChild ? Slot : "div"
+  const size = useButtonGroupSize()
   return (
     <Comp
       data-slot="button-group-text"
@@ -513,7 +639,8 @@ function ButtonGroupText({
         // leading-none pins the text line box so an inherited (e.g. prose)
         // line-height can't inflate this auto-height slot past the fixed-height
         // buttons — which under items-stretch would top-align them and leave a gap.
-        "inline-flex items-center justify-center whitespace-nowrap px-3 text-[13px] leading-none font-medium text-foreground select-none",
+        "inline-flex items-center justify-center whitespace-nowrap leading-none font-medium text-foreground select-none",
+        SIZE[size].text,
         className
       )}
       {...props}
