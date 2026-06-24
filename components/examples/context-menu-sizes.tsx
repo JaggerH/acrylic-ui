@@ -8,6 +8,7 @@ import {
   type ContextMenuSize,
 } from "@/registry/acrylic/context-menu"
 
+import { Badge } from "@/registry/acrylic/badge"
 import { ExampleBackdrop } from "@/components/example-backdrop"
 import { cn } from "@/lib/utils"
 
@@ -46,9 +47,9 @@ export default function ContextMenuSizes() {
   return (
     <ExampleBackdrop className="!flex-row flex-wrap items-start justify-center gap-6">
       {SIZES.map(({ size, label }) => (
-        <div key={size} className="flex flex-col items-center gap-2">
+        <div key={size} className="flex flex-col items-center gap-2.5">
+          <Badge variant="secondary">{label}</Badge>
           <SizedMenu size={size} />
-          <span className="text-[11px] text-white/80">{label}</span>
         </div>
       ))}
     </ExampleBackdrop>

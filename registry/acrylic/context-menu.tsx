@@ -8,8 +8,8 @@ import { cva } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 // Acrylic Context Menu — the macOS 26 Menu (right-click / control-click). The panel
-// reuses the frosted Popover material (translucent --acr-panel + backdrop-blur), so
-// it reads as the same glass as Combobox/Select. Geometry is lifted from the kit's
+// uses the shared frosted acrylic material (--acr-surface + backdrop-blur), the same
+// glass as Card and Sidebar. Geometry is lifted from the kit's
 // Menu page: SF-Medium rows, a leading icon column, a 6px-radius highlight bar, a
 // constant 10pt section Header, a faint hairline Separator, a trailing submenu
 // chevron (kit 􀆊), and a muted keyboard-shortcut column.
@@ -32,10 +32,12 @@ const ContextMenuRadioGroup = ContextMenuPrimitive.RadioGroup
 type ContextMenuSize = "default" | "sm" | "xs"
 const ContextMenuSizeContext = React.createContext<ContextMenuSize>("default")
 
-// Frosted Popover material — shared with Combobox / Select / Popover content. No
+// Frosted acrylic material — the SAME --acr-surface + backdrop-blur as Card and
+// Sidebar, so all acrylic surfaces read consistently (and the menu stays legibly
+// frosted in dark mode, where --acr-panel was nearly clear at 0.08). No
 // `overflow-hidden`: submenus portal out and must not be clipped by the panel.
 const menuSurface =
-  "z-50 min-w-[10rem] rounded-[12px] border border-[var(--acr-border)] bg-[var(--acr-panel)] p-1.5 text-foreground backdrop-blur-xl shadow-[0_0_0_1px_rgba(190,190,190,0.16),0_16px_48px_rgba(0,0,0,0.45)] outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+  "z-50 min-w-[10rem] rounded-[12px] border border-[var(--acr-border-soft)] bg-[var(--acr-surface)] p-1.5 text-foreground backdrop-blur-xl shadow-[0_8px_28px_rgba(0,0,0,0.18)] outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
 
 // A menu row. `inset` reserves the leading icon column for icon-less rows; `group/mi`
 // lets the shortcut column flip to white when the row is highlighted. The pinned

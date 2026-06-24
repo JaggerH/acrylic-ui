@@ -16,6 +16,7 @@ import {
   contextMenuSurfaceClass,
 } from "@/registry/acrylic/context-menu"
 
+import { ExampleBackdrop } from "@/components/example-backdrop"
 import { cn } from "@/lib/utils"
 
 // 1:1 of the kit's "Menus / Examples / 13pt" — a Finder desktop menu.
@@ -25,13 +26,13 @@ import { cn } from "@/lib/utils"
 //   • left pane  = the same items as a still "full form"
 // Radix can't render a contained, always-open ContextMenu (it positions in the
 // viewport and has no declarative `open`), so the left pane re-renders the items —
-// but from the SAME data, reusing the component's own surface/row classes
-// (`contextMenuSurfaceClass` / `contextMenuItemClass`). One definition, no drift.
+// from the SAME data, reusing the component's own surface/row classes. The open
+// submenu is rendered as a SIBLING layer (not nested inside the panel) so it
+// composites like the live portal — otherwise two nested translucent panels let the
+// main menu show through the submenu.
 
-type MenuEntry =
-  | { sep: true }
-  | { header: string }
-  | { icon?: LucideIcon; label: string; inset?: boolean; sub?: string[] }
+type MenuItem = { icon?: LucideIcon; label: string; inset?: boolean; sub?: string[] }
+type MenuEntry = { sep: true } | { header: string } | MenuItem
 
 const FINDER: MenuEntry[] = [
   { icon: Folder, label: "New Folder" },
@@ -83,75 +84,82 @@ function LiveMenu({ items }: { items: MenuEntry[] }) {
 const surface = contextMenuSurfaceClass
 const row = contextMenuItemVariants({ size: "default" })
 
+const useIsoLayoutEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect
+
 function StaticMenu({ items }: { items: MenuEntry[] }) {
+  const wrapRef = React.useRef<HTMLDivElement>(null)
+  const subTriggerRef = React.useRef<HTMLDivElement>(null)
+  const [subTop, setSubTop] = React.useState(0)
+  const subEntry = items.find((e): e is MenuItem => "sub" in e && !!e.sub)
+
+  // Anchor the open submenu to the "Clean Up By" row by measuring it, so "Name"
+  // lines up with the trigger without a magic offset.
+  useIsoLayoutEffect(() => {
+    if (wrapRef.current && subTriggerRef.current) {
+      const r = subTriggerRef.current.getBoundingClientRect()
+      const w = wrapRef.current.getBoundingClientRect()
+      setSubTop(r.top - w.top)
+    }
+  }, [])
+
   return (
-    <div className={cn(surface, "w-[230px]")}>
-      {items.map((e, i) => {
-        if ("sep" in e) return <div key={i} className="-mx-1 my-1 h-px bg-black/10 dark:bg-white/10" />
-        if ("header" in e)
-          return (
-            <div key={i} className="px-2 pb-1 pt-1.5 text-[11px] font-semibold text-muted-foreground">
-              {e.header}
-            </div>
-          )
-        const Icon = e.icon
-        if (e.sub)
-          return (
-            // submenu trigger (open ⇒ gray) + its open submenu, anchored to this row
-            // so "Name" lines up with the trigger automatically
-            <div key={i} className="relative">
-              <div className={cn(row, "bg-[var(--acr-chip)]", e.inset && "pl-8")}>
+    // wrapper reserves room for the submenu (panel 230 + sub 150 − 7 overlap)
+    <div ref={wrapRef} className="relative w-[373px]">
+      <div className={cn(surface, "w-[230px]")}>
+        {items.map((e, i) => {
+          if ("sep" in e) return <div key={i} className="-mx-1 my-1 h-px bg-black/10 dark:bg-white/10" />
+          if ("header" in e)
+            return (
+              <div key={i} className="px-2 pb-1 pt-1.5 text-[11px] font-semibold text-muted-foreground">
+                {e.header}
+              </div>
+            )
+          const Icon = e.icon
+          if (e.sub)
+            return (
+              <div key={i} ref={subTriggerRef} className={cn(row, "bg-[var(--acr-chip)]", e.inset && "pl-8")}>
                 {Icon && <Icon />}
                 {e.label}
                 <ChevronRight className="ml-auto !size-3 opacity-60" />
               </div>
-              <div className={cn(surface, "absolute left-full top-0 w-[150px]")}>
-                {e.sub.map((s, j) => (
-                  <div key={s} className={cn(row, j === 0 && "bg-[var(--primary)] text-primary-foreground")}>
-                    {s}
-                  </div>
-                ))}
-              </div>
+            )
+          return (
+            <div key={i} className={cn(row, e.inset && "pl-8")}>
+              {Icon && <Icon />}
+              {e.label}
             </div>
           )
-        return (
-          <div key={i} className={cn(row, e.inset && "pl-8")}>
-            {Icon && <Icon />}
-            {e.label}
-          </div>
-        )
-      })}
+        })}
+      </div>
+
+      {/* open submenu — a sibling layer (like the live portal), 7px overlap.
+          "Name" is the accent-highlighted leaf. */}
+      {subEntry?.sub && (
+        <div className={cn(surface, "absolute left-[223px] w-[150px]")} style={{ top: subTop }}>
+          {subEntry.sub.map((s, j) => (
+            <div key={s} className={cn(row, j === 0 && "bg-[var(--primary)] text-primary-foreground")}>
+              {s}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
 
-function Wallpaper({
-  label,
-  className,
-  contentClassName,
-  children,
-}: {
-  label: string
-  className?: string
-  contentClassName?: string
-  children: React.ReactNode
-}) {
-  return (
-    <div className={cn("relative min-h-[32rem] overflow-hidden rounded-[14px]", className)}>
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-[#c4b5fd] via-[#a5b4fc] to-[#93c5fd]" />
-      <span className="absolute left-3 top-3 z-10 text-[11px] font-medium text-black/40">{label}</span>
-      <div className={cn("relative flex h-full min-h-[32rem] justify-center p-5", contentClassName)}>{children}</div>
-    </div>
-  )
+function Caption({ children }: { children: React.ReactNode }) {
+  return <span className="text-[11px] font-medium text-white/80">{children}</span>
 }
 
 export default function ContextMenuFinder() {
   return (
-    <div className="-m-10 flex w-[calc(100%+5rem)] flex-col gap-3 self-stretch p-3 sm:flex-row">
-      <Wallpaper label="Full form" className="sm:flex-[3]" contentClassName="items-start justify-start pt-5 pl-7">
+    <ExampleBackdrop className="items-start justify-center gap-10 pt-20 min-h-[34rem]">
+      <div className="flex flex-col gap-2">
+        <Caption>Full form</Caption>
         <StaticMenu items={FINDER} />
-      </Wallpaper>
-      <Wallpaper label="Right-click ↓" className="sm:flex-[2]" contentClassName="items-center">
+      </div>
+      <div className="flex flex-col gap-2">
+        <Caption>Right-click ↓</Caption>
         <ContextMenu>
           <ContextMenuTrigger asChild>
             <div className="flex h-44 w-64 select-none items-center justify-center rounded-[12px] border border-dashed border-white/50 bg-white/10 text-[13px] text-black/50 backdrop-blur-sm">
@@ -160,7 +168,7 @@ export default function ContextMenuFinder() {
           </ContextMenuTrigger>
           <LiveMenu items={FINDER} />
         </ContextMenu>
-      </Wallpaper>
-    </div>
+      </div>
+    </ExampleBackdrop>
   )
 }
