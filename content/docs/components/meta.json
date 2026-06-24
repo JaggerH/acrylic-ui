@@ -1,4 +1,4 @@
 {
   "title": "Components",
-  "pages": ["alert-dialog", "button", "button-group", "card", "combobox", "dialog", "field", "input", "input-group", "radio-group", "select", "slider", "sonner", "stepper", "switch"]
+  "pages": ["alert-dialog", "badge", "button", "button-group", "card", "combobox", "context-menu", "dialog", "field", "input", "input-group", "radio-group", "select", "slider", "sonner", "stepper", "switch"]
 }

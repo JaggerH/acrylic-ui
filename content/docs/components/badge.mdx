@@ -1,0 +1,44 @@
+---
+title: Badge
+description: A small pill label — shadcn's Badge with the base styling untouched, recolored to the Acrylic theme tokens (accent default, neutral-chip secondary).
+---
+
+The shadcn Badge, recolored to the Acrylic palette. The base styling (shape,
+sizing, focus ring, the six variants) is copied verbatim from shadcn; only the
+colors are swapped to the theme tokens, so `default` is the accent, `secondary`
+the neutral chip, and everything flips light/dark with the theme.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/badge.json
+```
+
+## Usage
+
+<ComponentPreview name="badge-demo" />
+
+```tsx
+import { Badge } from "@/components/acrylic/badge"
+
+<Badge>Default</Badge>
+<Badge variant="secondary">Secondary</Badge>
+```
+
+## Variants
+
+`variant`:
+
+- **`default`** — solid accent fill (`--primary`), white label.
+- **`secondary`** — the neutral chip fill (`--acr-chip`), foreground label.
+- **`destructive`** — the system red (`--destructive`), white label.
+- **`outline`** — a hairline border (`--acr-border`), no fill.
+- **`ghost`** — no fill or border; a hover tint only when used as a link.
+- **`link`** — accent text with a hover underline.
+
+## Notes
+
+- Render as a link with `asChild`: `<Badge asChild><a href="…">New</a></Badge>` — the
+  `[a&]:hover:*` styles activate for the anchor.
+- It's a pill (`rounded-full`) at the kit's caption size; pass `className` for layout
+  only, not to override its colors.

@@ -130,6 +130,26 @@
       ]
     },
     {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "Acrylic Badge",
+      "description": "A small pill label — shadcn's Badge with its base styling copied verbatim (shape, sizing, focus ring, the six variants), recolored to the Acrylic theme tokens: accent default, neutral-chip secondary, system-red destructive, hairline outline. Flips light/dark via the theme.",
+      "dependencies": [
+        "@radix-ui/react-slot",
+        "class-variance-authority"
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/badge.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/badge.tsx"
+        }
+      ]
+    },
+    {
       "name": "dialog",
       "type": "registry:ui",
       "title": "Acrylic Dialog",
@@ -454,6 +474,26 @@
           "type": "registry:ui",
           "target": "components/acrylic/button-group.tsx"
         }
+      ]
+    },
+    {
+      "name": "context-menu",
+      "type": "registry:ui",
+      "title": "Acrylic Context Menu",
+      "description": "The macOS 26 Menu (right-click / control-click) on the frosted Popover material — the same glass as Combobox/Select. 13px SF-Medium rows lifted from the kit's 13pt Menu: a 6px-radius highlight bar, a section header, checkbox + radio items, submenus with a trailing chevron, a hairline separator, a muted keyboard-shortcut column, and a destructive row. Radix Context Menu; colors flip light/dark via the Acrylic theme tokens.",
+      "dependencies": [
+        "@radix-ui/react-context-menu",
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/context-menu.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/context-menu.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
       ]
     }
   ]

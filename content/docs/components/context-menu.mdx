@@ -1,0 +1,92 @@
+---
+title: Context Menu
+description: The macOS 26 right-click menu — frosted glass panel, 13pt rows, submenus, checkboxes, shortcuts.
+---
+
+A control- / right-click menu rendered on the same frosted Popover material as
+Combobox and Select — a translucent `--acr-panel` pane over a backdrop blur. The
+row geometry is lifted from the kit's 13pt Menu: 13px SF-Medium labels, a 6px-radius
+highlight bar, a section header, a hairline separator, a muted keyboard-shortcut
+column, submenus with a trailing chevron, and a red destructive row. Built on Radix
+Context Menu, so it's fully keyboard-navigable.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/context-menu.json
+```
+
+## Usage
+
+<ComponentPreview name="context-menu-demo" />
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuTrigger,
+} from "@/components/acrylic/context-menu"
+
+<ContextMenu>
+  <ContextMenuTrigger>Right-click here</ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem>
+      Back
+      <ContextMenuShortcut>⌘[</ContextMenuShortcut>
+    </ContextMenuItem>
+    <ContextMenuSeparator />
+    <ContextMenuItem variant="destructive">Delete</ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>
+```
+
+## Example — Finder desktop menu
+
+A 1:1 of the kit's _Menus / Examples / 13pt_ artboard. **Left** is the menu in its
+full open form (including the open submenu, with the accent-highlighted leaf);
+**right** is the same menu live — right-click to open it and hover into _Clean Up By_.
+
+<ComponentPreview name="context-menu-finder" />
+
+## Example — full vocabulary
+
+Section header, checkbox + radio groups, a submenu, a shortcut column, and a
+destructive row — the complete vocabulary on the frosted panel.
+
+<ComponentPreview name="context-menu-showcase" />
+
+## Anatomy
+
+| part | role |
+| --- | --- |
+| `ContextMenuTrigger` | the area that opens the menu on right- / control-click |
+| `ContextMenuContent` | the frosted panel |
+| `ContextMenuItem` | a row; `inset` reserves the leading icon column, `variant="destructive"` makes it red |
+| `ContextMenuCheckboxItem` | a row with a leading checkmark indicator |
+| `ContextMenuRadioGroup` / `ContextMenuRadioItem` | single-choice rows with a dot indicator |
+| `ContextMenuLabel` | a section header (kit's 10pt gray label); `inset` aligns it to the rows |
+| `ContextMenuSeparator` | a hairline divider |
+| `ContextMenuShortcut` | the right-aligned, muted keyboard-shortcut column |
+| `ContextMenuSub` / `ContextMenuSubTrigger` / `ContextMenuSubContent` | a nested submenu with a trailing chevron |
+
+## Notes
+
+- The panel uses the shared frosted material (`--acr-panel` + `backdrop-blur-xl`),
+  identical to Combobox / Select / Popover — overlay it on busy content to read as glass.
+- The highlight bar is **System Blue + white text** (the macOS accent), as in the
+  kit's rendered menu. A submenu trigger whose child is open drops to a neutral gray,
+  so focus reads as having moved into the child.
+- All colors resolve through the Acrylic theme tokens, so the menu flips light / dark
+  with the theme.
+
+### Size
+
+The kit ships three menu sizes — **13pt**, 11pt, and 10pt. Acrylic implements the
+**13pt** menu only: it's the standard system context menu (Finder, right-click
+everywhere). The 11/10pt menus are for dense, secondary surfaces (menu-bar extras,
+compact inspectors) and are rarely used as context menus — adding them would triple
+the API surface for little real benefit. If you need a denser menu, scale it locally
+by overriding the row classes rather than reaching for a size variant.
