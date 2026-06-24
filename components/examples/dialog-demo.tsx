@@ -20,7 +20,7 @@ export default function DialogDemo() {
         <DialogHeader>
           <DialogTitle>Acrylic Dialog</DialogTitle>
           <DialogDescription>
-            A 72px frosted overlay blurs the page; the panel is a translucent tint.
+            A 20px frosted overlay blurs the page; the panel is a translucent tint.
           </DialogDescription>
         </DialogHeader>
       </DialogContent>

@@ -6,7 +6,7 @@ import { buttonVariants } from "./button"
 import { useModalAcrylicBody } from "./use-modal-acrylic"
 
 // Frosted confirm dialog — the AlertDialog counterpart of the acrylic Dialog:
-// a 72px blur+saturate overlay and a translucent white-tint panel. Modeled on the
+// a 20px blur+saturate overlay and a translucent white-tint panel. Modeled on the
 // macOS 26 UI Kit Alerts page: 26px panel radius, and action/cancel buttons that
 // reuse the acrylic Button (via buttonVariants) defaulting to the `large` size
 // (28px) — the size the kit uses for alert buttons. Shares the Dialog's
@@ -29,7 +29,7 @@ const AlertDialogOverlay = React.forwardRef<
       className
     )}
     {...props}
-    style={{ backdropFilter: 'blur(72px) saturate(1.3)', WebkitBackdropFilter: 'blur(72px) saturate(1.3)' }}
+    style={{ backdropFilter: 'blur(20px) saturate(1.3)', WebkitBackdropFilter: 'blur(20px) saturate(1.3)' }}
   />
 ))
 AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName

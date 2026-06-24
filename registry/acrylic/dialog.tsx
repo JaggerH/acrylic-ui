@@ -25,7 +25,7 @@ const DialogOverlay = React.forwardRef<
       className
     )}
     {...props}
-    style={{ backdropFilter: 'blur(72px) saturate(1.3)', WebkitBackdropFilter: 'blur(72px) saturate(1.3)' }}
+    style={{ backdropFilter: 'blur(20px) saturate(1.3)', WebkitBackdropFilter: 'blur(20px) saturate(1.3)' }}
   />
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
