@@ -6,7 +6,7 @@ import C2 from "./examples/button-group-demo"
 import C3 from "./examples/button-group-showcase"
 import C4 from "./examples/button-showcase"
 import C5 from "./examples/card-demo"
-import C6 from "./examples/card-tasklist"
+import C6 from "./examples/card-image-thumb"
 import C7 from "./examples/combobox-demo"
 import C8 from "./examples/combobox-showcase"
 import C9 from "./examples/dialog-demo"
@@ -39,7 +39,7 @@ export const examples: Record<string, ComponentType> = {
   "button-group-showcase": C3,
   "button-showcase": C4,
   "card-demo": C5,
-  "card-tasklist": C6,
+  "card-image-thumb": C6,
   "combobox-demo": C7,
   "combobox-showcase": C8,
   "dialog-demo": C9,
