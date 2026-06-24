@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ChevronRight, Folder, Info, Image as ImageIcon, Smartphone } from "lucide-react"
+import { ChevronRight, Folder, Info, Image as ImageIcon, Smartphone, type LucideIcon } from "lucide-react"
 import {
   ContextMenu,
   ContextMenuContent,
@@ -12,110 +12,116 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
   ContextMenuTrigger,
-  contextMenuItemClass,
+  contextMenuItemVariants,
   contextMenuSurfaceClass,
 } from "@/registry/acrylic/context-menu"
 
 import { cn } from "@/lib/utils"
 
-// 1:1 of the kit's "Menus / Examples / 13pt" — a Finder desktop menu. Left pane:
-// the menu in its full open form (a static mock, including the open submenu with the
-// accent-highlighted leaf). Right pane: the same menu, live, on right-click.
+// 1:1 of the kit's "Menus / Examples / 13pt" — a Finder desktop menu.
 //
-// The static mock reuses the component's own `contextMenuSurfaceClass` /
-// `contextMenuItemClass`, so the surface + row geometry is identical to the live
-// menu (no hand-tuned padding that could drift). `animate-in`-style state classes in
-// those strings are inert here (no data-state), which is fine for a still mock.
+// The menu is defined ONCE as `FINDER`. Both panes render from it:
+//   • right pane = the live <ContextMenu> (open it on right-click)
+//   • left pane  = the same items as a still "full form"
+// Radix can't render a contained, always-open ContextMenu (it positions in the
+// viewport and has no declarative `open`), so the left pane re-renders the items —
+// but from the SAME data, reusing the component's own surface/row classes
+// (`contextMenuSurfaceClass` / `contextMenuItemClass`). One definition, no drift.
 
-// ----- static mock primitives, sharing the component's exact classes -----
-const surface = contextMenuSurfaceClass
-const row = contextMenuItemClass
+type MenuEntry =
+  | { sep: true }
+  | { header: string }
+  | { icon?: LucideIcon; label: string; inset?: boolean; sub?: string[] }
 
-function Sep() {
-  return <div className="-mx-1 my-1 h-px bg-black/10 dark:bg-white/10" />
-}
-function Header({ children }: { children: React.ReactNode }) {
-  return <div className="px-2 pb-1 pt-1.5 text-[11px] font-semibold text-muted-foreground">{children}</div>
-}
+const FINDER: MenuEntry[] = [
+  { icon: Folder, label: "New Folder" },
+  { sep: true },
+  { icon: Info, label: "Get Info" },
+  { icon: ImageIcon, label: "Change Wallpaper…" },
+  { sep: true },
+  { header: "Desktop Stacks" },
+  { label: "Use Stacks", inset: true },
+  { label: "Clean Up By", inset: true, sub: ["Name", "Kind", "Date Modified", "Date Created", "Size", "Tags"] },
+  { sep: true },
+  { icon: Smartphone, label: "Import from iPhone" },
+]
 
-function StaticFinderMenu() {
+// ----- live menu (the real component) -----
+function LiveMenu({ items }: { items: MenuEntry[] }) {
   return (
-    <div className={cn(surface, "w-[230px]")}>
-      <div className={row}>
-        <Folder /> New Folder
-      </div>
-      <Sep />
-      <div className={row}>
-        <Info /> Get Info
-      </div>
-      <div className={row}>
-        <ImageIcon /> Change Wallpaper…
-      </div>
-      <Sep />
-      <Header>Desktop Stacks</Header>
-      <div className={cn(row, "pl-8")}>Use Stacks</div>
-
-      {/* submenu trigger (open ⇒ neutral gray) + its open submenu, absolutely
-          anchored to this row so "Name" lines up with "Clean Up By" automatically */}
-      <div className="relative">
-        <div className={cn(row, "bg-[var(--acr-chip)] pl-8")}>
-          Clean Up By
-          <ChevronRight className="ml-auto !size-3 opacity-60" />
-        </div>
-        <div className={cn(surface, "absolute left-full top-0 ml-1 w-[150px]")}>
-          <div className={cn(row, "bg-[var(--primary)] text-primary-foreground")}>Name</div>
-          <div className={row}>Kind</div>
-          <div className={row}>Date Modified</div>
-          <div className={row}>Date Created</div>
-          <div className={row}>Size</div>
-          <div className={row}>Tags</div>
-        </div>
-      </div>
-
-      <Sep />
-      <div className={row}>
-        <Smartphone /> Import from iPhone
-      </div>
-    </div>
+    <ContextMenuContent className="w-[230px]">
+      {items.map((e, i) => {
+        if ("sep" in e) return <ContextMenuSeparator key={i} />
+        if ("header" in e) return <ContextMenuLabel key={i}>{e.header}</ContextMenuLabel>
+        const Icon = e.icon
+        if (e.sub)
+          return (
+            <ContextMenuSub key={i}>
+              <ContextMenuSubTrigger inset={e.inset}>
+                {Icon && <Icon />}
+                {e.label}
+              </ContextMenuSubTrigger>
+              <ContextMenuSubContent className="w-[150px]">
+                {e.sub.map((s) => (
+                  <ContextMenuItem key={s}>{s}</ContextMenuItem>
+                ))}
+              </ContextMenuSubContent>
+            </ContextMenuSub>
+          )
+        return (
+          <ContextMenuItem key={i} inset={e.inset}>
+            {Icon && <Icon />}
+            {e.label}
+          </ContextMenuItem>
+        )
+      })}
+    </ContextMenuContent>
   )
 }
 
-// ----- live menu (shared item set) -----
-function LiveFinderMenu({ children }: { children: React.ReactNode }) {
+// ----- static "full form": same data, same classes, plain elements -----
+const surface = contextMenuSurfaceClass
+const row = contextMenuItemVariants({ size: "default" })
+
+function StaticMenu({ items }: { items: MenuEntry[] }) {
   return (
-    <ContextMenu>
-      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
-      <ContextMenuContent className="w-[230px]">
-        <ContextMenuItem>
-          <Folder /> New Folder
-        </ContextMenuItem>
-        <ContextMenuSeparator />
-        <ContextMenuItem>
-          <Info /> Get Info
-        </ContextMenuItem>
-        <ContextMenuItem>
-          <ImageIcon /> Change Wallpaper…
-        </ContextMenuItem>
-        <ContextMenuSeparator />
-        <ContextMenuLabel>Desktop Stacks</ContextMenuLabel>
-        <ContextMenuItem inset>Use Stacks</ContextMenuItem>
-        <ContextMenuSub>
-          <ContextMenuSubTrigger inset>Clean Up By</ContextMenuSubTrigger>
-          <ContextMenuSubContent className="w-[150px]">
-            <ContextMenuItem>Name</ContextMenuItem>
-            <ContextMenuItem>Kind</ContextMenuItem>
-            <ContextMenuItem>Date Modified</ContextMenuItem>
-            <ContextMenuItem>Date Created</ContextMenuItem>
-            <ContextMenuItem>Size</ContextMenuItem>
-            <ContextMenuItem>Tags</ContextMenuItem>
-          </ContextMenuSubContent>
-        </ContextMenuSub>
-        <ContextMenuSeparator />
-        <ContextMenuItem>
-          <Smartphone /> Import from iPhone
-        </ContextMenuItem>
-      </ContextMenuContent>
-    </ContextMenu>
+    <div className={cn(surface, "w-[230px]")}>
+      {items.map((e, i) => {
+        if ("sep" in e) return <div key={i} className="-mx-1 my-1 h-px bg-black/10 dark:bg-white/10" />
+        if ("header" in e)
+          return (
+            <div key={i} className="px-2 pb-1 pt-1.5 text-[11px] font-semibold text-muted-foreground">
+              {e.header}
+            </div>
+          )
+        const Icon = e.icon
+        if (e.sub)
+          return (
+            // submenu trigger (open ⇒ gray) + its open submenu, anchored to this row
+            // so "Name" lines up with the trigger automatically
+            <div key={i} className="relative">
+              <div className={cn(row, "bg-[var(--acr-chip)]", e.inset && "pl-8")}>
+                {Icon && <Icon />}
+                {e.label}
+                <ChevronRight className="ml-auto !size-3 opacity-60" />
+              </div>
+              <div className={cn(surface, "absolute left-full top-0 w-[150px]")}>
+                {e.sub.map((s, j) => (
+                  <div key={s} className={cn(row, j === 0 && "bg-[var(--primary)] text-primary-foreground")}>
+                    {s}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        return (
+          <div key={i} className={cn(row, e.inset && "pl-8")}>
+            {Icon && <Icon />}
+            {e.label}
+          </div>
+        )
+      })}
+    </div>
   )
 }
 
@@ -143,14 +149,17 @@ export default function ContextMenuFinder() {
   return (
     <div className="-m-10 flex w-[calc(100%+5rem)] flex-col gap-3 self-stretch p-3 sm:flex-row">
       <Wallpaper label="Full form" className="sm:flex-[3]" contentClassName="items-start justify-start pt-5 pl-7">
-        <StaticFinderMenu />
+        <StaticMenu items={FINDER} />
       </Wallpaper>
       <Wallpaper label="Right-click ↓" className="sm:flex-[2]" contentClassName="items-center">
-        <LiveFinderMenu>
-          <div className="flex h-44 w-64 select-none items-center justify-center rounded-[12px] border border-dashed border-white/50 bg-white/10 text-[13px] text-black/50 backdrop-blur-sm">
-            Right-click the desktop
-          </div>
-        </LiveFinderMenu>
+        <ContextMenu>
+          <ContextMenuTrigger asChild>
+            <div className="flex h-44 w-64 select-none items-center justify-center rounded-[12px] border border-dashed border-white/50 bg-white/10 text-[13px] text-black/50 backdrop-blur-sm">
+              Right-click the desktop
+            </div>
+          </ContextMenuTrigger>
+          <LiveMenu items={FINDER} />
+        </ContextMenu>
       </Wallpaper>
     </div>
   )

@@ -495,6 +495,131 @@
       "registryDependencies": [
         "https://acrylic-ui.vercel.app/r/acrylic.json"
       ]
+    },
+    {
+      "name": "avatar",
+      "type": "registry:ui",
+      "title": "Acrylic Avatar",
+      "description": "shadcn's Avatar copied verbatim (Radix, with its built-in image-load / initials-fallback handling), recolored to the Acrylic tokens — the fallback sits on the neutral chip. Default circular (macOS user pictures); pass rounded-lg for the squircle. Powers the Sidebar footer user item.",
+      "dependencies": [
+        "@radix-ui/react-avatar"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/avatar.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/avatar.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "title": "Acrylic Separator",
+      "description": "A hairline divider on the Acrylic border token (--acr-border). Radix Separator; horizontal or vertical. Used by Sidebar and form layouts.",
+      "dependencies": [
+        "@radix-ui/react-separator"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/separator.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/separator.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ]
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "title": "Acrylic Skeleton",
+      "description": "A pulsing placeholder block on the neutral-chip token (--acr-chip) for loading states.",
+      "files": [
+        {
+          "path": "registry/acrylic/skeleton.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/skeleton.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ]
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Acrylic Tooltip",
+      "description": "A small frosted-acrylic tooltip (--acr-panel + backdrop-blur), 11px label, hairline ring + soft shadow. Radix Tooltip; powers the Sidebar's collapsed-icon labels.",
+      "dependencies": [
+        "@radix-ui/react-tooltip"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/tooltip.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/tooltip.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ]
+    },
+    {
+      "name": "sheet",
+      "type": "registry:ui",
+      "title": "Acrylic Sheet",
+      "description": "A frosted-acrylic side drawer (--acr-panel + backdrop-blur) sliding from any edge, over a blurred overlay. Radix Dialog under the hood; used by the Sidebar's mobile off-canvas mode.",
+      "dependencies": [
+        "@radix-ui/react-dialog",
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/sheet.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/sheet.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ]
+    },
+    {
+      "name": "sidebar",
+      "type": "registry:ui",
+      "title": "Acrylic Sidebar",
+      "description": "The macOS 26 sidebar — shadcn's Sidebar composition (Provider with cookie state + ⌘B toggle, off-canvas/icon/none collapse, mobile Sheet, groups, menu/sub-menu, rail, inset) restyled to the kit: a 240px frosted-vibrancy panel (--acr-surface + backdrop-blur), three densities (Small 24/11, Medium 32/13, Large 40/15) on the menu-button sm/default/lg sizes, and an accent-pill selected row. Colors flip light/dark via the Acrylic theme tokens.",
+      "dependencies": [
+        "@radix-ui/react-slot",
+        "class-variance-authority",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json",
+        "https://acrylic-ui.vercel.app/r/button.json",
+        "https://acrylic-ui.vercel.app/r/input.json",
+        "https://acrylic-ui.vercel.app/r/separator.json",
+        "https://acrylic-ui.vercel.app/r/sheet.json",
+        "https://acrylic-ui.vercel.app/r/tooltip.json",
+        "https://acrylic-ui.vercel.app/r/skeleton.json"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/sidebar.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/sidebar.tsx"
+        },
+        {
+          "path": "registry/acrylic/use-mobile.ts",
+          "type": "registry:hook",
+          "target": "components/acrylic/use-mobile.ts"
+        }
+      ]
     }
   ]
 }

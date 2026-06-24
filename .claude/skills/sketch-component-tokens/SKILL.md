@@ -127,6 +127,16 @@ the kit and shipped to `registry/acrylic/` with showcases in the docs;
   Button `medium` (vs Alert's large). `dialog.tsx` now: close = ghost-icon Button
   (not auto-focused on open, matching macOS), `showCloseButton` prop. Shaper:
   `scripts/shape_dialog.py`.
+- Sidebar — 106 masters (page `Sidebars`) → taxonomy `Sidebar/{Size}/{Area}/{Level
+  - State}`: 3 densities (large 40/15, medium 32/13, small 24/11), 240px wide, areas
+  Items/Folders/Header, states Default/Selected/Disabled. Selection fill is NOT in
+  the flattened master (kit paints it on a sub-layer) → wired Selected to the accent
+  pill (`--primary` + white). Shaper: `scripts/shape_sidebar.py` → `tokens/sidebar.json`.
+  Built on shadcn's Sidebar composition (Provider/cookie/⌘B, off-canvas/icon/none,
+  mobile Sheet, groups, menu/sub, rail, inset), restyled to the frosted `--acr-surface`
+  vibrancy panel. Composite → needed NEW primitives first: `separator`, `skeleton`,
+  `tooltip` (@radix-ui/react-tooltip), `sheet` (@radix-ui/react-dialog) + `use-mobile`
+  hook — all registered as their own items and referenced as registryDependencies.
 
 Each new component gets its own `shape_<component>.py` (copy the nearest existing
 one and adjust the taxonomy parsing + resting-state pick). Composite components

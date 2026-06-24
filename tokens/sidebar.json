@@ -1,0 +1,71 @@
+{
+  "source": "Apple macOS 26 UI Kit.sketch",
+  "component": "sidebar",
+  "width": 240,
+  "note": "macOS sidebar. 240px wide (all sizes). 3 density sizes drive row height + font: large 40/15, medium 32/13, small 24/11. Rows: Items (leaf, icon lead) and Folders (group, disclosure+icon lead, deeper). Header = section label (black 50%, smaller). Label text black 85% (small 77%). Selection fill is NOT in the kit master (painted on a sub-layer) -> wire Selected to --primary pill + white text; hover to --acr-hover. Per-level indent grows ~ one step; folderLeading/itemLeading are the text x-offsets read off the kit.",
+  "bySize": {
+    "large": {
+      "rowHeight": 40,
+      "fontSize": 15,
+      "font": "SFPro-Medium",
+      "labelColor": {
+        "light": "rgba(0, 0, 0, 0.85)",
+        "dark": "rgba(255, 255, 255, 0.85)"
+      },
+      "itemLeading": 28,
+      "folderLeading": 46,
+      "indentStep": 2,
+      "header": {
+        "height": 43,
+        "fontSize": 13,
+        "color": {
+          "light": "rgba(0, 0, 0, 0.5)",
+          "dark": "rgba(255, 255, 255, 0.5)"
+        },
+        "leading": 18
+      }
+    },
+    "medium": {
+      "rowHeight": 32,
+      "fontSize": 13,
+      "font": "SFPro-Medium",
+      "labelColor": {
+        "light": "rgba(0, 0, 0, 0.85)",
+        "dark": "rgba(255, 255, 255, 0.85)"
+      },
+      "itemLeading": 26,
+      "folderLeading": 44,
+      "indentStep": 2,
+      "header": {
+        "height": 39,
+        "fontSize": 11,
+        "color": {
+          "light": "rgba(0, 0, 0, 0.5)",
+          "dark": "rgba(255, 255, 255, 0.5)"
+        },
+        "leading": 18
+      }
+    },
+    "small": {
+      "rowHeight": 24,
+      "fontSize": 11,
+      "font": "SFPro-Medium",
+      "labelColor": {
+        "light": "rgba(0, 0, 0, 0.77)",
+        "dark": "rgba(255, 255, 255, 0.77)"
+      },
+      "itemLeading": 22,
+      "folderLeading": 40,
+      "indentStep": 4,
+      "header": {
+        "height": 34,
+        "fontSize": 11,
+        "color": {
+          "light": "rgba(0, 0, 0, 0.5)",
+          "dark": "rgba(255, 255, 255, 0.5)"
+        },
+        "leading": 18
+      }
+    }
+  }
+}

@@ -58,6 +58,23 @@ destructive row — the complete vocabulary on the frosted panel.
 
 <ComponentPreview name="context-menu-showcase" />
 
+## Sizes
+
+The kit ships three menus — **13pt** (`default`), **11pt** (`sm`), **10pt** (`xs`).
+The number is the **text point size**; the row height scales with it (24 / 22 / 19px).
+Set `size` **once** on `ContextMenuContent` — it flows through to every row and
+submenu, so the whole menu scales without sizing each item. `default` is the standard
+system menu. (The section header stays 10pt across sizes, matching the kit.)
+
+<ComponentPreview name="context-menu-sizes" />
+
+```tsx
+<ContextMenuContent size="sm">
+  <ContextMenuItem>Copy</ContextMenuItem>
+  <ContextMenuItem>Cut</ContextMenuItem>
+</ContextMenuContent>
+```
+
 ## Anatomy
 
 | part | role |
@@ -81,12 +98,5 @@ destructive row — the complete vocabulary on the frosted panel.
   so focus reads as having moved into the child.
 - All colors resolve through the Acrylic theme tokens, so the menu flips light / dark
   with the theme.
-
-### Size
-
-The kit ships three menu sizes — **13pt**, 11pt, and 10pt. Acrylic implements the
-**13pt** menu only: it's the standard system context menu (Finder, right-click
-everywhere). The 11/10pt menus are for dense, secondary surfaces (menu-bar extras,
-compact inspectors) and are rarely used as context menus — adding them would triple
-the API surface for little real benefit. If you need a denser menu, scale it locally
-by overriding the row classes rather than reaching for a size variant.
+- `size` is set on `ContextMenuContent` and propagates via React context — see
+  [Sizes](#sizes).
