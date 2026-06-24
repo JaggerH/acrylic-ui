@@ -49,7 +49,10 @@ export default function SidebarApp() {
     <ExampleBackdrop>
       <div className="flex h-[30rem] w-full max-w-3xl overflow-hidden rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.28)]">
         <SidebarProvider className="h-full w-full min-h-0">
-          <Sidebar collapsible="none" className="rounded-l-xl">
+          {/* collapsible="icon": the SidebarTrigger in the header collapses the rail
+              to icons and back — works inside this contained box with no extra CSS
+              (the Sidebar positions itself within the provider). */}
+          <Sidebar collapsible="icon" className="rounded-l-xl">
             {/* Header — team / workspace switcher */}
             <SidebarHeader>
               <SidebarMenu>
