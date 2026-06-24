@@ -139,7 +139,10 @@ function SidebarProvider({
             } as React.CSSProperties
           }
           className={cn(
-            "group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-[var(--acr-surface)]",
+            // `relative` so the sidebar's absolutely-positioned container is scoped
+            // to THIS wrapper (full-page or a contained box alike) instead of needing
+            // the consumer to set up a fixed-positioning containing block.
+            "group/sidebar-wrapper relative flex min-h-svh w-full has-data-[variant=inset]:bg-[var(--acr-surface)]",
             className
           )}
           {...props}
@@ -170,7 +173,10 @@ function Sidebar({
       <div
         data-slot="sidebar"
         className={cn(
-          "flex h-full w-(--sidebar-width) flex-col bg-[var(--acr-surface)] text-foreground backdrop-blur-xl",
+          // shrink-0: the sidebar keeps its width and is never compressed by the
+          // flex row — the content pane gives way instead. Width stays flexible via
+          // --sidebar-width.
+          "flex h-full w-(--sidebar-width) shrink-0 flex-col bg-[var(--acr-surface)] text-foreground backdrop-blur-xl",
           className
         )}
         {...props}
@@ -207,7 +213,7 @@ function Sidebar({
 
   return (
     <div
-      className="group peer hidden text-foreground md:block"
+      className="group peer hidden shrink-0 text-foreground md:block"
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}
@@ -229,14 +235,18 @@ function Sidebar({
       <div
         data-slot="sidebar-container"
         className={cn(
-          "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
+          // `absolute` (not `fixed`) + `inset-y-0` (no h-svh): the rail is scoped to
+          // the SidebarProvider wrapper and its height follows the wrapper, so it
+          // works inside a contained box without any consumer CSS — no transform
+          // containing-block trick, no height override.
+          "absolute inset-y-0 z-10 hidden w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
           side === "left"
             ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
             : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
           // Adjust the padding for floating and inset variants.
           variant === "floating" || variant === "inset"
             ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
-            : "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l group-data-[side=left]:border-[var(--acr-border)] group-data-[side=right]:border-[var(--acr-border)]",
+            : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
           className
         )}
         {...props}
@@ -244,7 +254,11 @@ function Sidebar({
         <div
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          className="flex h-full w-full flex-col bg-[var(--acr-surface)] backdrop-blur-xl group-data-[variant=floating]:rounded-xl group-data-[variant=floating]:border group-data-[variant=floating]:border-[var(--acr-border)] group-data-[variant=floating]:shadow-[0_8px_28px_rgba(0,0,0,0.18)]"
+          // rounded-[inherit]: the surface inherits whatever radius the consumer
+          // puts on the Sidebar, so rounding the sidebar clips the frosted fill too
+          // (no square corner poking out) without an overflow-hidden that would clip
+          // the rail.
+          className="flex h-full w-full flex-col rounded-[inherit] bg-[var(--acr-surface)] backdrop-blur-xl group-data-[variant=floating]:rounded-xl group-data-[variant=floating]:border group-data-[variant=floating]:border-[var(--acr-border)] group-data-[variant=floating]:shadow-[0_8px_28px_rgba(0,0,0,0.18)]"
         >
           {children}
         </div>
