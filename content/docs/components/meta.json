@@ -1,4 +1,5 @@
 {
   "title": "Components",
+  "defaultOpen": true,
   "pages": ["alert-dialog", "badge", "button", "button-group", "card", "combobox", "context-menu", "dialog", "field", "input", "input-group", "radio-group", "select", "sidebar", "slider", "sonner", "stepper", "switch"]
 }
