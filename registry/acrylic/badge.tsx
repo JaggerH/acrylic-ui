@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
 // neutral chip fill, accent hovers map to --acr-hover. All flip light/dark via
 // the theme, so no manual dark: overrides are needed.
 const badgeVariants = cva(
-  "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 [&>svg]:pointer-events-none [&>svg]:size-3",
+  "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border border-transparent px-2 py-0.5 text-xs font-medium leading-none whitespace-nowrap transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 [&>svg]:pointer-events-none [&>svg]:size-3",
   {
     variants: {
       variant: {
@@ -24,9 +24,20 @@ const badgeVariants = cva(
         ghost: "[a&]:hover:bg-[var(--acr-hover)]",
         link: "text-primary underline-offset-4 [a&]:hover:underline",
       },
+      // `sm` keeps the font-size and line-height in ONE place: a consumer who
+      // overrides text size with a `text-[Npx]` className strips the base
+      // `leading-none` (tailwind-merge drops the earlier line-height), so the badge
+      // would inherit a tall prose line-height and balloon into an oval. Sizing via
+      // this prop instead keeps `leading-none` glued to the size — no override, no
+      // balloon. Use `sm` for compact count/status pills.
+      size: {
+        default: "",
+        sm: "px-1.5 text-[11px] leading-none",
+      },
     },
     defaultVariants: {
       variant: "default",
+      size: "default",
     },
   }
 )
@@ -34,6 +45,7 @@ const badgeVariants = cva(
 function Badge({
   className,
   variant = "default",
+  size = "default",
   asChild = false,
   ...props
 }: React.ComponentProps<"span"> &
@@ -44,7 +56,7 @@ function Badge({
     <Comp
       data-slot="badge"
       data-variant={variant}
-      className={cn(badgeVariants({ variant }), className)}
+      className={cn(badgeVariants({ variant, size }), className)}
       {...props}
     />
   )
