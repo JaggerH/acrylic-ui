@@ -30,7 +30,7 @@ export default function SonnerDemo() {
       {/* …and live: click to slide the same banner in from the top */}
       <Toaster />
       <Button
-        variant="secondary"
+        variant="default"
         onClick={() =>
           toast("New message", {
             description: "Alex sent you a photo.",

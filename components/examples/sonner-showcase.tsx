@@ -99,7 +99,7 @@ export default function SonnerShowcase() {
           <Toaster /> (the one in the Usage demo above). Each reproduces its card. */}
       <div className="flex flex-wrap items-center justify-center gap-3">
         <Button
-          variant="secondary"
+          variant="default"
           onClick={() =>
             toast("Messages", { description: "Alex sent you a photo.", icon: messagesIcon })
           }
@@ -107,7 +107,7 @@ export default function SonnerShowcase() {
           Messages
         </Button>
         <Button
-          variant="secondary"
+          variant="default"
           onClick={() =>
             toast("Update available", {
               description: "Version 2.1 is ready to install.",
@@ -120,13 +120,13 @@ export default function SonnerShowcase() {
           Update
         </Button>
         <Button
-          variant="secondary"
+          variant="default"
           onClick={() => toast("Reminder", { description: "Stand-up meeting starts in 10 minutes." })}
         >
           Reminder
         </Button>
         <Button
-          variant="secondary"
+          variant="default"
           onClick={() =>
             toast.success("Saved", { description: "Your changes are synced.", icon: successIcon })
           }
@@ -134,7 +134,7 @@ export default function SonnerShowcase() {
           Success
         </Button>
         <Button
-          variant="secondary"
+          variant="default"
           onClick={() =>
             toast.error("Upload failed", { description: "Check your connection.", icon: errorIcon })
           }
