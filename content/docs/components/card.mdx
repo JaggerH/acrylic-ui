@@ -26,6 +26,17 @@ own thumbnails and fields.
 
 <ComponentPreview name="card-image-thumb" />
 
+## Example — card in card
+
+A nested composition (the iOS grouped-list pattern): an outer frosted Card holds
+a recessed inner card. The inner surface is **not** a second blurred Card —
+stacking another `backdrop-blur` over the already-translucent glass double-samples
+it and leaves a darkened seam. Instead it's a flat black wash that recesses the
+surface (darker than the outer glass in both themes), reading as a secondary
+surface on the same pane.
+
+<ComponentPreview name="card-nested" />
+
 ## Example — cover image card
 
 The shadcn/ui `Card · Image` example, restyled on the acrylic Card: a flush cover
