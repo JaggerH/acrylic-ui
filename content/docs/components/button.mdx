@@ -5,8 +5,8 @@ description: macOS 26 Push Button — 5 variants × 5 sizes (heights 16/20/24/28
 
 macOS-style push buttons lifted from the Apple macOS 26 UI Kit: a prominent
 solid `default`, three low-emphasis tinted colors (`secondary`, `destructive`,
-`neutral`), and a borderless `ghost`. Per-size corner radius and a round `icon`
-size, theme-aware via the Acrylic token set (colors flip light/dark).
+`neutral`), and a borderless `ghost`. Per-size corner radius and an orthogonal
+`icon` shape, theme-aware via the Acrylic token set (colors flip light/dark).
 
 ## Installation
 
@@ -36,7 +36,7 @@ import { Button } from "@/components/acrylic/button"
 
 ## Sizes
 
-`mini` (16px) · `small` (20) · `medium` (24, default) · `large` (28) · `xl` (36) · `icon` (round).
+`mini` (16px) · `small` (20) · `medium` (24, default) · `large` (28) · `xl` (36).
 Corner radius is taken straight from the kit and is **not** a single formula —
 mini/small/medium stay quarter-height rounded rectangles while large/xl snap to a
 full capsule:
@@ -45,11 +45,20 @@ full capsule:
 | --- | --- | --- | --- | --- | --- |
 | radius | 4 | 5 | 6 | **14** | **18** |
 
-`size="icon"` is a square, full-circle button (the kit's Arrow Button) and pairs
-with any variant.
+## Icon buttons
+
+`icon` is an **orthogonal boolean** — not a size. It turns any `size` × `variant`
+into the kit's round Arrow Button: square (diameter = the size's height), full-circle
+radius, no padding, with the glyph scaled to the size. So it composes freely:
+
+```tsx
+<Button icon aria-label="Next"><ArrowRight /></Button>            {/* medium, default */}
+<Button icon size="large" variant="ghost"><Trash2 /></Button>     {/* large round ghost */}
+<Button icon size="mini" variant="destructive"><X /></Button>     {/* mini round red */}
+```
 
 ## Showcase
 
-Every variant in every size (plus the round `icon`):
+Every variant in every size (plus a round `icon` button per variant):
 
 <ComponentPreview name="button-showcase" />

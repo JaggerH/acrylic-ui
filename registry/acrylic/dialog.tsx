@@ -56,7 +56,7 @@ const DialogContent = React.forwardRef<
         <DialogPrimitive.Close asChild>
           <Button
             variant="ghost"
-            size="icon"
+            icon
             aria-label="Close"
             className="absolute right-3 top-3 text-muted-foreground"
           >
