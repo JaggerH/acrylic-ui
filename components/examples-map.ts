@@ -21,33 +21,34 @@ import C17 from "./examples/context-menu-showcase"
 import C18 from "./examples/context-menu-sizes"
 import C19 from "./examples/dialog-demo"
 import C20 from "./examples/dialog-showcase"
-import C21 from "./examples/field-demo"
-import C22 from "./examples/field-showcase"
-import C23 from "./examples/hover-card-demo"
-import C24 from "./examples/input-demo"
-import C25 from "./examples/input-group-demo"
-import C26 from "./examples/input-group-showcase"
-import C27 from "./examples/input-showcase"
-import C28 from "./examples/popover-demo"
-import C29 from "./examples/radio-group-demo"
-import C30 from "./examples/radio-group-showcase"
-import C31 from "./examples/select-demo"
-import C32 from "./examples/select-showcase"
-import C33 from "./examples/sheet-demo"
-import C34 from "./examples/sheet-showcase"
-import C35 from "./examples/sidebar-app"
-import C36 from "./examples/sidebar-demo"
-import C37 from "./examples/sidebar-sizes"
-import C38 from "./examples/slider-demo"
-import C39 from "./examples/slider-showcase"
-import C40 from "./examples/slider-sizes"
-import C41 from "./examples/slider-variants"
-import C42 from "./examples/sonner-demo"
-import C43 from "./examples/sonner-showcase"
-import C44 from "./examples/stepper-demo"
-import C45 from "./examples/stepper-showcase"
-import C46 from "./examples/switch-demo"
-import C47 from "./examples/switch-showcase"
+import C21 from "./examples/dropdown-menu-demo"
+import C22 from "./examples/field-demo"
+import C23 from "./examples/field-showcase"
+import C24 from "./examples/hover-card-demo"
+import C25 from "./examples/input-demo"
+import C26 from "./examples/input-group-demo"
+import C27 from "./examples/input-group-showcase"
+import C28 from "./examples/input-showcase"
+import C29 from "./examples/popover-demo"
+import C30 from "./examples/radio-group-demo"
+import C31 from "./examples/radio-group-showcase"
+import C32 from "./examples/select-demo"
+import C33 from "./examples/select-showcase"
+import C34 from "./examples/sheet-demo"
+import C35 from "./examples/sheet-showcase"
+import C36 from "./examples/sidebar-app"
+import C37 from "./examples/sidebar-demo"
+import C38 from "./examples/sidebar-sizes"
+import C39 from "./examples/slider-demo"
+import C40 from "./examples/slider-showcase"
+import C41 from "./examples/slider-sizes"
+import C42 from "./examples/slider-variants"
+import C43 from "./examples/sonner-demo"
+import C44 from "./examples/sonner-showcase"
+import C45 from "./examples/stepper-demo"
+import C46 from "./examples/stepper-showcase"
+import C47 from "./examples/switch-demo"
+import C48 from "./examples/switch-showcase"
 
 export const examples: Record<string, ComponentType> = {
   "alert-dialog-demo": C0,
@@ -71,31 +72,32 @@ export const examples: Record<string, ComponentType> = {
   "context-menu-sizes": C18,
   "dialog-demo": C19,
   "dialog-showcase": C20,
-  "field-demo": C21,
-  "field-showcase": C22,
-  "hover-card-demo": C23,
-  "input-demo": C24,
-  "input-group-demo": C25,
-  "input-group-showcase": C26,
-  "input-showcase": C27,
-  "popover-demo": C28,
-  "radio-group-demo": C29,
-  "radio-group-showcase": C30,
-  "select-demo": C31,
-  "select-showcase": C32,
-  "sheet-demo": C33,
-  "sheet-showcase": C34,
-  "sidebar-app": C35,
-  "sidebar-demo": C36,
-  "sidebar-sizes": C37,
-  "slider-demo": C38,
-  "slider-showcase": C39,
-  "slider-sizes": C40,
-  "slider-variants": C41,
-  "sonner-demo": C42,
-  "sonner-showcase": C43,
-  "stepper-demo": C44,
-  "stepper-showcase": C45,
-  "switch-demo": C46,
-  "switch-showcase": C47,
+  "dropdown-menu-demo": C21,
+  "field-demo": C22,
+  "field-showcase": C23,
+  "hover-card-demo": C24,
+  "input-demo": C25,
+  "input-group-demo": C26,
+  "input-group-showcase": C27,
+  "input-showcase": C28,
+  "popover-demo": C29,
+  "radio-group-demo": C30,
+  "radio-group-showcase": C31,
+  "select-demo": C32,
+  "select-showcase": C33,
+  "sheet-demo": C34,
+  "sheet-showcase": C35,
+  "sidebar-app": C36,
+  "sidebar-demo": C37,
+  "sidebar-sizes": C38,
+  "slider-demo": C39,
+  "slider-showcase": C40,
+  "slider-sizes": C41,
+  "slider-variants": C42,
+  "sonner-demo": C43,
+  "sonner-showcase": C44,
+  "stepper-demo": C45,
+  "stepper-showcase": C46,
+  "switch-demo": C47,
+  "switch-showcase": C48,
 }

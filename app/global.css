@@ -83,6 +83,8 @@
   --acr-control: #ffffff;
   --acr-control-hover: #f4f4f5;
   --acr-control-border: rgba(0, 0, 0, 0.12);
+  --acr-input: #ffffff;            /* Input fill — Content Area (opaque) */
+  --acr-input-border: rgba(0, 0, 0, 0.13);
 
   --acr-surface: #ffffff;
   --acr-surface-hover: #f7f7f8;
@@ -147,6 +149,8 @@
   --acr-control: #1c1c1e;
   --acr-control-hover: #252527;
   --acr-control-border: rgba(255, 255, 255, 0.14);
+  --acr-input: #1c1c1e;            /* Input fill — Content Area (opaque) */
+  --acr-input-border: rgba(255, 255, 255, 0.14);
 
   --acr-surface: #161618;
   --acr-surface-hover: #1d1d1f;
@@ -194,6 +198,13 @@
   --acr-control: #ffffff;
   --acr-control-hover: #f4f4f5;
   --acr-control-border: rgba(0, 0, 0, 0.13);
+  /* Input fill — "Over-glass": a translucent tint + no border. This dark tint
+     recesses on the light glass page; the `.acrylic [data-slot=sidebar]` rule below
+     flips it to a light tint on the dark sidebar material. (A --foreground-relative
+     color-mix can't do this in one token: a custom property's var() is substituted
+     where it's DECLARED, not where used, so it wouldn't re-resolve per surface.) */
+  --acr-input: rgba(0, 0, 0, 0.07);
+  --acr-input-border: transparent;
 
   --acr-surface: rgba(255, 255, 255, 0.55);
   --acr-surface-hover: rgba(255, 255, 255, 0.75);

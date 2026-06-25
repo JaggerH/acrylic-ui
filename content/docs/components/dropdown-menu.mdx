@@ -1,0 +1,82 @@
+---
+title: Dropdown Menu
+description: The macOS 26 click-triggered menu — frosted glass panel, accent-highlighted rows, shortcuts, and destructive variants.
+---
+
+A click-triggered popup menu rendered on the same frosted acrylic material as
+Context Menu, Combobox, and Select — a translucent `--acr-surface` pane over
+backdrop blur. Shares the identical row geometry, macOS accent highlight, size
+variants, and shortcut column as Context Menu — just triggered by click instead
+of right-click. Built on Radix Dropdown Menu.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/dropdown-menu.json
+```
+
+## Usage
+
+<ComponentPreview name="dropdown-menu-demo" />
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/acrylic/dropdown-menu"
+
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="ghost" size="icon"><MoreHorizontal /></Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuItem>
+      <Copy /> Copy ID
+      <DropdownMenuShortcut>abc123</DropdownMenuShortcut>
+    </DropdownMenuItem>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem variant="destructive">
+      <Trash2 /> Delete
+    </DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+## Anatomy
+
+| part | role |
+| --- | --- |
+| `DropdownMenuTrigger` | the element that opens the menu on click; wrap with `asChild` to use a Button |
+| `DropdownMenuContent` | the frosted panel; set `size` here ("default" / "sm" / "xs") |
+| `DropdownMenuItem` | a row; `inset` reserves the leading icon column, `variant="destructive"` makes it red |
+| `DropdownMenuCheckboxItem` | a row with a leading checkmark indicator |
+| `DropdownMenuRadioGroup` / `DropdownMenuRadioItem` | single-choice rows with a dot indicator |
+| `DropdownMenuLabel` | a 10pt section header; `inset` aligns it to the rows |
+| `DropdownMenuSeparator` | a hairline divider |
+| `DropdownMenuShortcut` | the right-aligned, muted keyboard-shortcut column |
+| `DropdownMenuSub` / `DropdownMenuSubTrigger` / `DropdownMenuSubContent` | a nested submenu with a trailing chevron |
+
+## Sizes
+
+Same three sizes as Context Menu — **13pt** (`default`), **11pt** (`sm`), **10pt** (`xs`).
+Set `size` once on `DropdownMenuContent` — it propagates via React context to every row
+and submenu.
+
+```tsx
+<DropdownMenuContent size="sm">
+  <DropdownMenuItem>Copy</DropdownMenuItem>
+  <DropdownMenuItem>Cut</DropdownMenuItem>
+</DropdownMenuContent>
+```
+
+## Notes
+
+- The panel uses the shared frosted material (`--acr-surface` + `backdrop-blur-xl`),
+  identical to Card / Sidebar / ContextMenu.
+- The highlight bar is **System Blue + white text** (the macOS accent).
+- All colors resolve through the Acrylic theme tokens — light / dark with the theme.
+- `size` propagates via React context — see [Sizes](#sizes).
