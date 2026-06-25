@@ -104,6 +104,7 @@
      white-text material below. The component points its own --foreground / --acr-*
      interaction tokens at this --sidebar-* set, so descendants flip with it. */
   --sidebar: #eeeef0;
+  --sidebar-input: #ffffff;        /* Input on the light sidebar — Content Area */
   --sidebar-foreground: rgba(0, 0, 0, 0.88);
   --sidebar-muted-foreground: rgba(0, 0, 0, 0.52);
   --sidebar-hover: rgba(0, 0, 0, 0.05);
@@ -167,6 +168,7 @@
   /* Sidebar — solid dark + white text (a touch lighter than the #0a0a0a main panel
      so the two panes read as distinct). */
   --sidebar: #161618;
+  --sidebar-input: #1c1c1e;        /* Input on the dark sidebar — Content Area */
   --sidebar-foreground: #ffffff;
   --sidebar-muted-foreground: rgba(255, 255, 255, 0.55);
   --sidebar-hover: rgba(255, 255, 255, 0.08);
@@ -221,6 +223,7 @@
   /* Sidebar — translucent dark + white text so the component's backdrop-blur frosts
      it; under Tauri vibrancy the native material shows through. */
   --sidebar: rgba(28, 28, 31, 0.55);
+  --sidebar-input: rgba(255, 255, 255, 0.10);  /* Input on the dark glass sidebar — Over-glass (light tint) */
   --sidebar-foreground: #ffffff;
   --sidebar-muted-foreground: rgba(255, 255, 255, 0.55);
   --sidebar-hover: rgba(255, 255, 255, 0.08);

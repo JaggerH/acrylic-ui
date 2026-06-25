@@ -181,7 +181,7 @@ function Sidebar({
           // Acrylic so backdrop-blur frosts it). It re-points --foreground/
           // --muted-foreground and the --acr-* interaction tokens at the per-theme
           // --sidebar-* set, so all descendants flip with it — no per-child overrides.
-          "flex h-full w-(--sidebar-width) shrink-0 flex-col bg-[var(--sidebar)] text-[var(--sidebar-foreground)] [--foreground:var(--sidebar-foreground)] [--muted-foreground:var(--sidebar-muted-foreground)] [--acr-hover:var(--sidebar-hover)] [--acr-chip:var(--sidebar-active)] [--acr-chip-hover:var(--sidebar-active)] [--acr-control:var(--sidebar-control)] [--acr-border:var(--sidebar-border)] backdrop-blur-2xl",
+          "flex h-full w-(--sidebar-width) shrink-0 flex-col bg-[var(--sidebar)] text-[var(--sidebar-foreground)] [--foreground:var(--sidebar-foreground)] [--muted-foreground:var(--sidebar-muted-foreground)] [--acr-hover:var(--sidebar-hover)] [--acr-chip:var(--sidebar-active)] [--acr-chip-hover:var(--sidebar-active)] [--acr-control:var(--sidebar-control)] [--acr-input:var(--sidebar-input)] [--acr-border:var(--sidebar-border)] backdrop-blur-2xl",
           className
         )}
         {...props}
@@ -263,7 +263,7 @@ function Sidebar({
           // puts on the Sidebar, so rounding the sidebar clips the frosted fill too
           // (no square corner poking out) without an overflow-hidden that would clip
           // the rail.
-          className="flex h-full w-full flex-col rounded-[inherit] bg-[var(--sidebar)] text-[var(--sidebar-foreground)] [--foreground:var(--sidebar-foreground)] [--muted-foreground:var(--sidebar-muted-foreground)] [--acr-hover:var(--sidebar-hover)] [--acr-chip:var(--sidebar-active)] [--acr-chip-hover:var(--sidebar-active)] [--acr-control:var(--sidebar-control)] [--acr-border:var(--sidebar-border)] backdrop-blur-2xl group-data-[variant=floating]:rounded-xl group-data-[variant=floating]:border group-data-[variant=floating]:border-[var(--acr-border)] group-data-[variant=floating]:shadow-[0_8px_28px_rgba(0,0,0,0.18)]"
+          className="flex h-full w-full flex-col rounded-[inherit] bg-[var(--sidebar)] text-[var(--sidebar-foreground)] [--foreground:var(--sidebar-foreground)] [--muted-foreground:var(--sidebar-muted-foreground)] [--acr-hover:var(--sidebar-hover)] [--acr-chip:var(--sidebar-active)] [--acr-chip-hover:var(--sidebar-active)] [--acr-control:var(--sidebar-control)] [--acr-input:var(--sidebar-input)] [--acr-border:var(--sidebar-border)] backdrop-blur-2xl group-data-[variant=floating]:rounded-xl group-data-[variant=floating]:border group-data-[variant=floating]:border-[var(--acr-border)] group-data-[variant=floating]:shadow-[0_8px_28px_rgba(0,0,0,0.18)]"
         >
           {children}
         </div>
