@@ -1,4 +1,5 @@
 import ReactDOM from "react-dom/client"
+import "@fontsource-variable/inter" // match the docs site (fumadocs loads Inter) so text metrics align
 import App from "./App"
 import "./index.css"
 
