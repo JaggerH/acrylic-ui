@@ -2,102 +2,100 @@
 import type { ComponentType } from "react"
 import C0 from "./examples/alert-dialog-demo"
 import C1 from "./examples/audio-player-demo"
-import C2 from "./examples/audio-playlist-demo"
-import C3 from "./examples/badge-demo"
-import C4 from "./examples/button-demo"
-import C5 from "./examples/button-group-demo"
-import C6 from "./examples/button-group-showcase"
-import C7 from "./examples/button-group-sizes"
-import C8 from "./examples/button-icon-text"
-import C9 from "./examples/button-showcase"
-import C10 from "./examples/card-cover"
-import C11 from "./examples/card-demo"
-import C12 from "./examples/card-image-thumb"
-import C13 from "./examples/card-nested"
-import C14 from "./examples/combobox-demo"
-import C15 from "./examples/combobox-showcase"
-import C16 from "./examples/context-menu-demo"
-import C17 from "./examples/context-menu-finder"
-import C18 from "./examples/context-menu-showcase"
-import C19 from "./examples/context-menu-sizes"
-import C20 from "./examples/dialog-demo"
-import C21 from "./examples/dialog-showcase"
-import C22 from "./examples/field-demo"
-import C23 from "./examples/field-showcase"
-import C24 from "./examples/hover-card-demo"
-import C25 from "./examples/input-demo"
-import C26 from "./examples/input-group-demo"
-import C27 from "./examples/input-group-showcase"
-import C28 from "./examples/input-showcase"
-import C29 from "./examples/popover-demo"
-import C30 from "./examples/radio-group-demo"
-import C31 from "./examples/radio-group-showcase"
-import C32 from "./examples/select-demo"
-import C33 from "./examples/select-showcase"
-import C34 from "./examples/sheet-demo"
-import C35 from "./examples/sheet-showcase"
-import C36 from "./examples/sidebar-app"
-import C37 from "./examples/sidebar-demo"
-import C38 from "./examples/sidebar-sizes"
-import C39 from "./examples/slider-demo"
-import C40 from "./examples/slider-showcase"
-import C41 from "./examples/slider-sizes"
-import C42 from "./examples/slider-variants"
-import C43 from "./examples/sonner-demo"
-import C44 from "./examples/sonner-showcase"
-import C45 from "./examples/stepper-demo"
-import C46 from "./examples/stepper-showcase"
-import C47 from "./examples/switch-demo"
-import C48 from "./examples/switch-showcase"
+import C2 from "./examples/badge-demo"
+import C3 from "./examples/button-demo"
+import C4 from "./examples/button-group-demo"
+import C5 from "./examples/button-group-showcase"
+import C6 from "./examples/button-group-sizes"
+import C7 from "./examples/button-icon-text"
+import C8 from "./examples/button-showcase"
+import C9 from "./examples/card-cover"
+import C10 from "./examples/card-demo"
+import C11 from "./examples/card-image-thumb"
+import C12 from "./examples/card-nested"
+import C13 from "./examples/combobox-demo"
+import C14 from "./examples/combobox-showcase"
+import C15 from "./examples/context-menu-demo"
+import C16 from "./examples/context-menu-finder"
+import C17 from "./examples/context-menu-showcase"
+import C18 from "./examples/context-menu-sizes"
+import C19 from "./examples/dialog-demo"
+import C20 from "./examples/dialog-showcase"
+import C21 from "./examples/field-demo"
+import C22 from "./examples/field-showcase"
+import C23 from "./examples/hover-card-demo"
+import C24 from "./examples/input-demo"
+import C25 from "./examples/input-group-demo"
+import C26 from "./examples/input-group-showcase"
+import C27 from "./examples/input-showcase"
+import C28 from "./examples/popover-demo"
+import C29 from "./examples/radio-group-demo"
+import C30 from "./examples/radio-group-showcase"
+import C31 from "./examples/select-demo"
+import C32 from "./examples/select-showcase"
+import C33 from "./examples/sheet-demo"
+import C34 from "./examples/sheet-showcase"
+import C35 from "./examples/sidebar-app"
+import C36 from "./examples/sidebar-demo"
+import C37 from "./examples/sidebar-sizes"
+import C38 from "./examples/slider-demo"
+import C39 from "./examples/slider-showcase"
+import C40 from "./examples/slider-sizes"
+import C41 from "./examples/slider-variants"
+import C42 from "./examples/sonner-demo"
+import C43 from "./examples/sonner-showcase"
+import C44 from "./examples/stepper-demo"
+import C45 from "./examples/stepper-showcase"
+import C46 from "./examples/switch-demo"
+import C47 from "./examples/switch-showcase"
 
 export const examples: Record<string, ComponentType> = {
   "alert-dialog-demo": C0,
   "audio-player-demo": C1,
-  "audio-playlist-demo": C2,
-  "badge-demo": C3,
-  "button-demo": C4,
-  "button-group-demo": C5,
-  "button-group-showcase": C6,
-  "button-group-sizes": C7,
-  "button-icon-text": C8,
-  "button-showcase": C9,
-  "card-cover": C10,
-  "card-demo": C11,
-  "card-image-thumb": C12,
-  "card-nested": C13,
-  "combobox-demo": C14,
-  "combobox-showcase": C15,
-  "context-menu-demo": C16,
-  "context-menu-finder": C17,
-  "context-menu-showcase": C18,
-  "context-menu-sizes": C19,
-  "dialog-demo": C20,
-  "dialog-showcase": C21,
-  "field-demo": C22,
-  "field-showcase": C23,
-  "hover-card-demo": C24,
-  "input-demo": C25,
-  "input-group-demo": C26,
-  "input-group-showcase": C27,
-  "input-showcase": C28,
-  "popover-demo": C29,
-  "radio-group-demo": C30,
-  "radio-group-showcase": C31,
-  "select-demo": C32,
-  "select-showcase": C33,
-  "sheet-demo": C34,
-  "sheet-showcase": C35,
-  "sidebar-app": C36,
-  "sidebar-demo": C37,
-  "sidebar-sizes": C38,
-  "slider-demo": C39,
-  "slider-showcase": C40,
-  "slider-sizes": C41,
-  "slider-variants": C42,
-  "sonner-demo": C43,
-  "sonner-showcase": C44,
-  "stepper-demo": C45,
-  "stepper-showcase": C46,
-  "switch-demo": C47,
-  "switch-showcase": C48,
+  "badge-demo": C2,
+  "button-demo": C3,
+  "button-group-demo": C4,
+  "button-group-showcase": C5,
+  "button-group-sizes": C6,
+  "button-icon-text": C7,
+  "button-showcase": C8,
+  "card-cover": C9,
+  "card-demo": C10,
+  "card-image-thumb": C11,
+  "card-nested": C12,
+  "combobox-demo": C13,
+  "combobox-showcase": C14,
+  "context-menu-demo": C15,
+  "context-menu-finder": C16,
+  "context-menu-showcase": C17,
+  "context-menu-sizes": C18,
+  "dialog-demo": C19,
+  "dialog-showcase": C20,
+  "field-demo": C21,
+  "field-showcase": C22,
+  "hover-card-demo": C23,
+  "input-demo": C24,
+  "input-group-demo": C25,
+  "input-group-showcase": C26,
+  "input-showcase": C27,
+  "popover-demo": C28,
+  "radio-group-demo": C29,
+  "radio-group-showcase": C30,
+  "select-demo": C31,
+  "select-showcase": C32,
+  "sheet-demo": C33,
+  "sheet-showcase": C34,
+  "sidebar-app": C35,
+  "sidebar-demo": C36,
+  "sidebar-sizes": C37,
+  "slider-demo": C38,
+  "slider-showcase": C39,
+  "slider-sizes": C40,
+  "slider-variants": C41,
+  "sonner-demo": C42,
+  "sonner-showcase": C43,
+  "stepper-demo": C44,
+  "stepper-showcase": C45,
+  "switch-demo": C46,
+  "switch-showcase": C47,
 }
