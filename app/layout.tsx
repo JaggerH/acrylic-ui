@@ -20,7 +20,18 @@ export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
-        <RootProvider>{children}</RootProvider>
+        {/* Three themes — the showcase defaults to Acrylic; light/dark are the
+            plain (non-frosted) baselines. next-themes writes the theme name as a
+            class on <html>, which the scopes in global.css key off. */}
+        <RootProvider
+          theme={{
+            themes: ['light', 'dark', 'acrylic'],
+            defaultTheme: 'acrylic',
+            enableSystem: false,
+          }}
+        >
+          {children}
+        </RootProvider>
       </body>
     </html>
   );

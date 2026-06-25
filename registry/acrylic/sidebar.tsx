@@ -176,13 +176,12 @@ function Sidebar({
           // shrink-0: the sidebar keeps its width and is never compressed by the
           // flex row — the content pane gives way instead. Width stays flexible via
           // --sidebar-width.
-          // Frost fill is a LITERAL rgba, not a --acr-* token, on purpose: Tailwind v4
-          // + lightningcss tree-shake any custom property referenced only by arbitrary
-          // bg-[var(--x)] utilities, which silently dropped the tint (→ transparent →
-          // frost rendered far darker). A literal can't be tree-shaken. Same for the
-          // inset below. backdrop-filter order (blur→saturate→brightness) is pinned via
-          // arbitrary props so it matches the tuned values exactly.
-          "flex h-full w-(--sidebar-width) shrink-0 flex-col bg-[rgba(197,197,197,0.58)] dark:bg-transparent text-foreground [--foreground:#ffffff] [--muted-foreground:#ffffff8c] [backdrop-filter:blur(72px)_saturate(3)_brightness(.35)] [-webkit-backdrop-filter:blur(72px)_saturate(3)_brightness(.35)]",
+          // bg-[var(--sidebar)] follows the theme: a white, dark-text sidebar in plain
+          // Light; a dark, white-text material in Dark and Acrylic (translucent in
+          // Acrylic so backdrop-blur frosts it). It re-points --foreground/
+          // --muted-foreground and the --acr-* interaction tokens at the per-theme
+          // --sidebar-* set, so all descendants flip with it — no per-child overrides.
+          "flex h-full w-(--sidebar-width) shrink-0 flex-col bg-[var(--sidebar)] text-[var(--sidebar-foreground)] [--foreground:var(--sidebar-foreground)] [--muted-foreground:var(--sidebar-muted-foreground)] [--acr-hover:var(--sidebar-hover)] [--acr-chip:var(--sidebar-active)] [--acr-chip-hover:var(--sidebar-active)] [--acr-control:var(--sidebar-control)] [--acr-border:var(--sidebar-border)] backdrop-blur-2xl",
           className
         )}
         {...props}
@@ -264,7 +263,7 @@ function Sidebar({
           // puts on the Sidebar, so rounding the sidebar clips the frosted fill too
           // (no square corner poking out) without an overflow-hidden that would clip
           // the rail.
-          className="flex h-full w-full flex-col rounded-[inherit] bg-[rgba(197,197,197,0.58)] dark:bg-transparent text-foreground [--foreground:#ffffff] [--muted-foreground:#ffffff8c] [backdrop-filter:blur(72px)_saturate(3)_brightness(.35)] [-webkit-backdrop-filter:blur(72px)_saturate(3)_brightness(.35)] group-data-[variant=floating]:rounded-xl group-data-[variant=floating]:border group-data-[variant=floating]:border-[var(--acr-border)] group-data-[variant=floating]:shadow-[0_8px_28px_rgba(0,0,0,0.18)]"
+          className="flex h-full w-full flex-col rounded-[inherit] bg-[var(--sidebar)] text-[var(--sidebar-foreground)] [--foreground:var(--sidebar-foreground)] [--muted-foreground:var(--sidebar-muted-foreground)] [--acr-hover:var(--sidebar-hover)] [--acr-chip:var(--sidebar-active)] [--acr-chip-hover:var(--sidebar-active)] [--acr-control:var(--sidebar-control)] [--acr-border:var(--sidebar-border)] backdrop-blur-2xl group-data-[variant=floating]:rounded-xl group-data-[variant=floating]:border group-data-[variant=floating]:border-[var(--acr-border)] group-data-[variant=floating]:shadow-[0_8px_28px_rgba(0,0,0,0.18)]"
         >
           {children}
         </div>
@@ -329,17 +328,12 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
     <main
       data-slot="sidebar-inset"
       className={cn(
-        // Frosted by default (the acrylic glass theme): a LITERAL translucent fill +
-        // blur, whiter/denser than the sidebar (239 vs 197) so a sidebar+inset shell
-        // reads as two distinct panes. Two modes: light keeps the tint; `dark:` drops
-        // it for a darker, untinted glass — white body text in both. Pass `bg-background`
-        // to opt back into a solid content pane (tailwind-merge overrides the fill).
-        //
-        // Rounding is consumer-controlled (e.g. `rounded-r-xl` to mirror the sidebar's
-        // `rounded-l-xl`): a backdrop-filter on a square box leaks a square corner past
-        // a rounded ancestor's overflow clip, so the element needs its OWN matching
-        // radius to clip the frost — no square poking out.
-        "relative flex w-full flex-1 flex-col bg-[rgba(239,239,239,0.58)] dark:bg-transparent text-foreground [--foreground:#ffffff] [--muted-foreground:#ffffff8c] [backdrop-filter:blur(72px)_saturate(2.3)_brightness(.6)] [-webkit-backdrop-filter:blur(72px)_saturate(2.3)_brightness(.6)]",
+        // The main panel is the THEME-FOLLOWING variable (the sidebar is the fixed
+        // dark skeleton). bg-[var(--background)] makes it opaque white in light,
+        // opaque near-black in dark, and #ececec in acrylic — which flips to
+        // transparent under Tauri vibrancy (html.vibrancy) so the native OS material
+        // shows through. Pass a custom bg to override (tailwind-merge wins).
+        "relative flex w-full flex-1 flex-col bg-[var(--background)] text-foreground",
         "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2",
         className
       )}

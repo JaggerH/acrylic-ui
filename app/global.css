@@ -12,10 +12,11 @@
 /* ===== Acrylic tokens (macOS 26) — mirrored from registry/acrylic/acrylic.css ===== */
 
 /* ---------------------------------------------------------------------------
-   Acrylic theme tokens — values lifted from the official Apple macOS 26 UI Kit.
-   Standard shadcn/next-themes structure: :root = light, .dark = dark (the dark
-   class is toggled by next-themes / the theme switcher). Components reference
-   `var(--acr-*)` + the semantic color vars, so they flip with the theme.
+   Theme tokens. next-themes toggles one of three mutually-exclusive classes on
+   <html>: light (:root), dark (.dark), or acrylic (.acrylic). The first two are
+   plain (standard, non-frosted); .acrylic carries the macOS-26 frosted material
+   (values lifted from the official Apple macOS 26 UI Kit). Components reference
+   `var(--acr-*)` + the semantic color vars, so they re-skin per theme.
    Source mapping: Label→foreground/muted; Fills→--acr-chip/field/hover;
    System Blue→--primary; System Red→--destructive; Separator→--border. */
 @theme inline {
@@ -30,21 +31,35 @@
   --color-border: var(--border);
 }
 
-/* ---- Light (default) ---- */
+/* ===========================================================================
+   THREE THEMES (mutually exclusive, toggled by next-themes class on <html>):
+     :root      → plain Light  (standard, non-frosted)   — class "light" / none
+     .dark      → plain Dark   (standard, non-frosted)   — class "dark"
+     .acrylic   → Acrylic      (macOS-26 frosted, single appearance) — class "acrylic"
+
+   Components reference the same token NAMES in every theme; only the VALUES
+   differ. In the plain themes the --acr-* material tokens carry OPAQUE fallbacks
+   (the component's `backdrop-blur` then becomes a no-op), so plain Light/Dark
+   render as ordinary solid surfaces. .acrylic supplies the translucent values
+   that make `backdrop-blur` frost. The system-color palette (--acr-red … brown)
+   is shared from :root and only re-tinted for .dark. */
+
+/* ---- Light (plain, default) ---- */
 :root {
-  --background: #ececec;
-  --foreground: rgba(0, 0, 0, 0.85);
-  --muted-foreground: rgba(0, 0, 0, 0.50);
-  --label-tertiary: rgba(0, 0, 0, 0.25);
+  --background: #ffffff;
+  --foreground: rgba(0, 0, 0, 0.88);
+  --muted-foreground: rgba(0, 0, 0, 0.52);
+  --label-tertiary: rgba(0, 0, 0, 0.28);
   --accent: #8e8e93;
   --primary: #0088ff;
   --primary-foreground: #ffffff;
   --destructive: #ff383c;
   --ring: #0088ff;
-  --border: rgba(60, 60, 67, 0.29);
+  --border: #e3e3e6;
 
   /* System colors — the macOS 26 palette (Light). --primary/--destructive are the
-     semantic aliases of --acr-blue / --acr-red. Use via bg-[var(--acr-green)] etc. */
+     semantic aliases of --acr-blue / --acr-red. Use via bg-[var(--acr-green)] etc.
+     Shared by plain Light and Acrylic; .dark re-tints below. */
   --acr-red: #ff383c;
   --acr-orange: #ff8d28;
   --acr-yellow: #ffcc00;
@@ -58,6 +73,118 @@
   --acr-pink: #ff2d55;
   --acr-brown: #ac7f5e;
 
+  /* Material tokens — OPAQUE fallbacks for the plain theme (no frost). */
+  --acr-chip: rgba(0, 0, 0, 0.06);
+  --acr-chip-hover: rgba(0, 0, 0, 0.10);
+  --acr-field: rgba(0, 0, 0, 0.04);
+  --acr-hover: rgba(0, 0, 0, 0.04);
+  --acr-border: #e3e3e6;
+  --acr-border-soft: #ececef;
+  --acr-control: #ffffff;
+  --acr-control-hover: #f4f4f5;
+  --acr-control-border: rgba(0, 0, 0, 0.12);
+
+  --acr-surface: #ffffff;
+  --acr-surface-hover: #f7f7f8;
+  --acr-card-nested: rgba(0, 0, 0, 0.04); /* fill for a Card nested in a surface */
+  --acr-panel: #ffffff;
+  --acr-overlay: rgba(0, 0, 0, 0.32);
+  --acr-field-strong: #ffffff;
+  --acr-toast: var(--acr-surface); /* Sonner banner = the Card surface material */
+  --acr-solid: #1c1c1e;
+  --acr-solid-fg: #fafafa;
+  --acr-scrollbar: rgba(0, 0, 0, 0.28);
+  --acr-scrollbar-hover: rgba(0, 0, 0, 0.45);
+
+  /* Sidebar — follows the theme. In the plain Light presentation it is a light-gray,
+     dark-text sidebar, recessed a step from the white main panel so the two panes
+     read as distinct (the macOS pattern); .dark and .acrylic re-tint it to a dark,
+     white-text material below. The component points its own --foreground / --acr-*
+     interaction tokens at this --sidebar-* set, so descendants flip with it. */
+  --sidebar: #eeeef0;
+  --sidebar-foreground: rgba(0, 0, 0, 0.88);
+  --sidebar-muted-foreground: rgba(0, 0, 0, 0.52);
+  --sidebar-hover: rgba(0, 0, 0, 0.05);
+  --sidebar-active: rgba(0, 0, 0, 0.09);
+  --sidebar-control: #ffffff;
+  --sidebar-border: #e3e3e6;
+}
+
+/* ---- Dark (plain) ---- */
+.dark {
+  --background: #0a0a0a;
+  --foreground: rgba(255, 255, 255, 0.92);
+  --muted-foreground: rgba(255, 255, 255, 0.55);
+  --label-tertiary: rgba(255, 255, 255, 0.28);
+  --accent: #98989d;
+  --primary: #0091ff;
+  --primary-foreground: #ffffff;
+  --destructive: #ff4245;
+  --ring: #0091ff;
+  --border: #2a2a2c;
+
+  /* System colors — the macOS 26 palette (Dark). */
+  --acr-red: #ff4245;
+  --acr-orange: #ff9230;
+  --acr-yellow: #ffd600;
+  --acr-green: #30d158;
+  --acr-mint: #00dac3;
+  --acr-teal: #00d2e0;
+  --acr-cyan: #3cd3fe;
+  --acr-blue: #0091ff;
+  --acr-indigo: #6d7cff;
+  --acr-purple: #db34f2;
+  --acr-pink: #ff375f;
+  --acr-brown: #b78a66;
+
+  /* Material tokens — OPAQUE fallbacks for the plain dark theme (no frost). */
+  --acr-chip: rgba(255, 255, 255, 0.08);
+  --acr-chip-hover: rgba(255, 255, 255, 0.12);
+  --acr-field: rgba(255, 255, 255, 0.05);
+  --acr-hover: rgba(255, 255, 255, 0.05);
+  --acr-border: #2a2a2c;
+  --acr-border-soft: #232325;
+  --acr-control: #1c1c1e;
+  --acr-control-hover: #252527;
+  --acr-control-border: rgba(255, 255, 255, 0.14);
+
+  --acr-surface: #161618;
+  --acr-surface-hover: #1d1d1f;
+  --acr-card-nested: rgba(255, 255, 255, 0.05); /* fill for a Card nested in a surface */
+  --acr-panel: #1c1c1e;
+  --acr-overlay: rgba(0, 0, 0, 0.60);
+  --acr-field-strong: #161618;
+  --acr-toast: var(--acr-surface); /* Sonner banner = the Card surface material */
+  --acr-solid: #ffffff;
+  --acr-solid-fg: #1c1c1e;
+  --acr-scrollbar: rgba(255, 255, 255, 0.28);
+  --acr-scrollbar-hover: rgba(255, 255, 255, 0.45);
+
+  /* Sidebar — solid dark + white text (a touch lighter than the #0a0a0a main panel
+     so the two panes read as distinct). */
+  --sidebar: #161618;
+  --sidebar-foreground: #ffffff;
+  --sidebar-muted-foreground: rgba(255, 255, 255, 0.55);
+  --sidebar-hover: rgba(255, 255, 255, 0.08);
+  --sidebar-active: rgba(255, 255, 255, 0.14);
+  --sidebar-control: rgba(255, 255, 255, 0.10);
+  --sidebar-border: rgba(255, 255, 255, 0.12);
+}
+
+/* ---- Acrylic (macOS-26 frosted — single appearance) ---- */
+.acrylic {
+  --background: #ececec;
+  --foreground: rgba(0, 0, 0, 0.85);
+  --muted-foreground: rgba(0, 0, 0, 0.50);
+  --label-tertiary: rgba(0, 0, 0, 0.25);
+  --accent: #8e8e93;
+  --primary: #0088ff;
+  --primary-foreground: #ffffff;
+  --destructive: #ff383c;
+  --ring: #0088ff;
+  --border: rgba(60, 60, 67, 0.29);
+
+  /* Translucent material — these make `backdrop-blur` actually frost. */
   --acr-chip: rgba(0, 0, 0, 0.10);
   --acr-chip-hover: rgba(0, 0, 0, 0.14);
   --acr-field: rgba(0, 0, 0, 0.05);
@@ -79,56 +206,16 @@
   --acr-solid-fg: #fafafa;
   --acr-scrollbar: rgba(0, 0, 0, 0.28);
   --acr-scrollbar-hover: rgba(0, 0, 0, 0.45);
-}
 
-/* ---- Dark ---- */
-.dark {
-  --background: #1e1e1e;
-  --foreground: rgba(255, 255, 255, 1);
-  --muted-foreground: rgba(255, 255, 255, 0.55);
-  --label-tertiary: rgba(255, 255, 255, 0.25);
-  --accent: #98989d;
-  --primary: #0091ff;
-  --primary-foreground: #ffffff;
-  --destructive: #ff4245;
-  --ring: #0091ff;
-  --border: rgba(255, 255, 255, 0.12);
-
-  /* System colors — the macOS 26 palette (Dark). */
-  --acr-red: #ff4245;
-  --acr-orange: #ff9230;
-  --acr-yellow: #ffd600;
-  --acr-green: #30d158;
-  --acr-mint: #00dac3;
-  --acr-teal: #00d2e0;
-  --acr-cyan: #3cd3fe;
-  --acr-blue: #0091ff;
-  --acr-indigo: #6d7cff;
-  --acr-purple: #db34f2;
-  --acr-pink: #ff375f;
-  --acr-brown: #b78a66;
-
-  --acr-chip: rgba(255, 255, 255, 0.10);
-  --acr-chip-hover: rgba(255, 255, 255, 0.14);
-  --acr-field: rgba(255, 255, 255, 0.05);
-  --acr-hover: rgba(255, 255, 255, 0.03);
-  --acr-border: rgba(255, 255, 255, 0.12);
-  --acr-border-soft: rgba(255, 255, 255, 0.08);
-  --acr-control: rgba(255, 255, 255, 0.09);
-  --acr-control-hover: rgba(255, 255, 255, 0.13);
-  --acr-control-border: rgba(255, 255, 255, 0.12);
-
-  --acr-surface: rgba(9, 9, 11, 0.40);
-  --acr-surface-hover: rgba(28, 28, 30, 0.55);
-  --acr-card-nested: rgba(0, 0, 0, 0.22); /* fill for a Card nested in a frosted surface */
-  --acr-panel: rgba(255, 255, 255, 0.08);
-  --acr-overlay: rgba(9, 9, 11, 0.55);
-  --acr-field-strong: rgba(255, 255, 255, 0.18);
-  --acr-toast: var(--acr-surface); /* Sonner banner = the Card surface material */
-  --acr-solid: #ffffff;
-  --acr-solid-fg: #1c1c1e;
-  --acr-scrollbar: rgba(255, 255, 255, 0.28);
-  --acr-scrollbar-hover: rgba(255, 255, 255, 0.45);
+  /* Sidebar — translucent dark + white text so the component's backdrop-blur frosts
+     it; under Tauri vibrancy the native material shows through. */
+  --sidebar: rgba(28, 28, 31, 0.55);
+  --sidebar-foreground: #ffffff;
+  --sidebar-muted-foreground: rgba(255, 255, 255, 0.55);
+  --sidebar-hover: rgba(255, 255, 255, 0.08);
+  --sidebar-active: rgba(255, 255, 255, 0.14);
+  --sidebar-control: rgba(255, 255, 255, 0.10);
+  --sidebar-border: rgba(255, 255, 255, 0.12);
 }
 
 /* Nested frosted Card. A Card inside any frosted surface — Card carries
