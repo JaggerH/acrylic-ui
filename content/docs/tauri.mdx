@@ -9,8 +9,36 @@ better: a *transparent* window over the real desktop, with the OS compositing
 native vibrancy (macOS) / acrylic (Windows) behind your UI — exactly like a native
 macOS sheet. This guide wires that up.
 
-A complete, runnable reference lives in [`examples/tauri/`](https://github.com/) —
-copy it, or follow the steps below.
+A complete, runnable reference lives in
+[`examples/tauri/`](https://github.com/JaggerH/acrylic-ui/tree/master/examples/tauri) —
+scaffold it in one command (below), or follow the from-scratch steps further down.
+
+## Quick start
+
+Fastest path: run the bundled example as-is, then swap in your own UI.
+
+```bash
+# scaffold just the example folder (no full-repo clone)
+pnpm dlx degit JaggerH/acrylic-ui/examples/tauri my-acrylic-app
+cd my-acrylic-app
+pnpm install
+
+pnpm tauri dev     # native window with real OS vibrancy
+# — or just the web frontend, no Rust toolchain needed:
+pnpm dev           # http://localhost:5180
+```
+
+**Prerequisites:** Node + pnpm for both; `pnpm tauri dev` additionally needs the
+[Rust toolchain](https://rustup.rs) and your platform's
+[Tauri system deps](https://tauri.app/start/prerequisites/). On Windows, turn on
+**Settings → Personalization → Colors → Transparency effects** or the window stays
+opaque (see [Platform support](#platform-support)).
+
+The example already wires up everything in the rest of this guide — transparent
+window, native vibrancy, the `html.vibrancy` flip, the `useModalAcrylicBody`
+overlay paint, and the Inter font (so text matches this docs site). Read on only
+if you're adding vibrancy to an **existing** app instead of starting from the
+example.
 
 ## The gotcha (read this first)
 
