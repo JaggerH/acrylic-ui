@@ -39,6 +39,19 @@ body {
    it by baking the light/dark difference into `background-color` instead — the
    only thing that actually renders over the native acrylic. Sidebar = darker,
    more solid rail; inset = brighter, glassier content (mirrors the homepage). */
+/* The sidebar/inset hard-code white text (--foreground:#fff) for their assumed-DARK
+   panel — correct on web and in dark mode, but in LIGHT vibrancy the panels stay
+   light (the brightness(.35/.6) darkening is a backdrop-filter no-op over the
+   transparent body), so white text is unreadable and the segmented control's white
+   active pill swallows its white label entirely. Restore the theme's dark
+   foreground here — light vibrancy only; web and dark mode keep their white text. */
+.vibrancy:not(.dark) [data-slot="sidebar"],
+.vibrancy:not(.dark) [data-slot="sidebar-inner"],
+.vibrancy:not(.dark) [data-slot="sidebar-inset"] {
+  --foreground: rgba(0, 0, 0, 0.85);
+  --muted-foreground: rgba(0, 0, 0, 0.5);
+}
+
 .vibrancy [data-slot="sidebar-inner"] {
   background-color: rgba(0, 0, 0, 0.45);
 }

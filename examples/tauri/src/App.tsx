@@ -6,6 +6,7 @@ import {
   GalleryVerticalEnd,
   Home,
   Inbox,
+  LayoutGrid,
   Plus,
   Search,
   Settings2,
@@ -20,6 +21,8 @@ import { ButtonGroup, ButtonGroupItem } from "@/registry/acrylic/button-group"
 import { Card } from "@/registry/acrylic/card"
 import { Input } from "@/registry/acrylic/input"
 import { Separator } from "@/registry/acrylic/separator"
+import { Toaster } from "@/registry/acrylic/sonner"
+import ComponentsGallery from "./ComponentsGallery"
 import {
   Dialog,
   DialogTrigger,
@@ -49,8 +52,11 @@ import {
   SidebarTrigger,
 } from "@/registry/acrylic/sidebar"
 
-const NAV = [
-  { title: "Home", icon: Home, isActive: true },
+type View = "home" | "components"
+
+const NAV: { title: string; icon: typeof Home; view?: View }[] = [
+  { title: "Home", icon: Home, view: "home" },
+  { title: "Components", icon: LayoutGrid, view: "components" },
   { title: "Inbox", icon: Inbox },
   { title: "Calendar", icon: Calendar },
   { title: "Search", icon: Search },
@@ -159,6 +165,7 @@ function NewLoanDialog() {
 
 export default function App() {
   const [dark, setDark] = useState(true)
+  const [view, setView] = useState<View>("home")
   function setTheme(d: boolean) {
     setDark(d)
     document.documentElement.classList.toggle("dark", d)
@@ -191,7 +198,10 @@ export default function App() {
               <SidebarMenu>
                 {NAV.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton isActive={item.isActive}>
+                    <SidebarMenuButton
+                      isActive={item.view ? item.view === view : false}
+                      onClick={() => item.view && setView(item.view)}
+                    >
                       <item.icon />
                       <span>{item.title}</span>
                     </SidebarMenuButton>
@@ -245,10 +255,13 @@ export default function App() {
       </Sidebar>
 
       <SidebarInset className="acr-frosted min-w-0">
+        <Toaster />
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-[var(--acr-border)] px-4">
           <SidebarTrigger />
           <Separator orientation="vertical" className="mr-1 !h-4 data-[orientation=vertical]:!h-4" />
-          <span className="text-[15px] font-semibold text-foreground">Loans</span>
+          <span className="text-[15px] font-semibold text-foreground">
+            {view === "components" ? "Components" : "Loans"}
+          </span>
           <ButtonGroup
             variant="segmented"
             size="medium"
@@ -259,13 +272,19 @@ export default function App() {
             <ButtonGroupItem value="light">Light</ButtonGroupItem>
             <ButtonGroupItem value="dark">Dark</ButtonGroupItem>
           </ButtonGroup>
-          <NewLoanDialog />
+          {view === "home" && <NewLoanDialog />}
         </header>
-        <div className="flex items-start gap-4 overflow-x-auto p-4 scrollbar-mac">
-          {COLUMNS.map((col) => (
-            <LoanColumn key={col.name} name={col.name} loans={col.loans} />
-          ))}
-        </div>
+        {view === "components" ? (
+          <div className="flex-1 overflow-y-auto scrollbar-mac">
+            <ComponentsGallery />
+          </div>
+        ) : (
+          <div className="flex items-start gap-4 overflow-x-auto p-4 scrollbar-mac">
+            {COLUMNS.map((col) => (
+              <LoanColumn key={col.name} name={col.name} loans={col.loans} />
+            ))}
+          </div>
+        )}
       </SidebarInset>
     </SidebarProvider>
   )
