@@ -25,6 +25,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/registry/acrylic/sidebar"
+import { ThemeSwitcher } from "@/components/theme-switcher"
 
 /** Docs nav rendered with the Acrylic Sidebar (dogfooding). Plugs into Fumadocs'
  *  `slots.sidebar.root`; the page tree comes from Fumadocs' TreeContext, active
@@ -120,7 +121,6 @@ export function DocsSidebar(props: React.ComponentProps<"aside">) {
   const { collapsed } = useFumadocsSidebar()
   const NavTitle = slots.navTitle
   const SearchTrigger = slots.searchTrigger
-  const ThemeSwitch = slots.themeSwitch
   const iconLinks = menuItems.filter((item) => item.type === "icon")
 
   return (
@@ -208,7 +208,7 @@ export function DocsSidebar(props: React.ComponentProps<"aside">) {
                   {"icon" in item ? item.icon : null}
                 </a>
               ))}
-              {ThemeSwitch ? <ThemeSwitch className="ms-auto" /> : null}
+              <ThemeSwitcher className="ms-auto" />
             </div>
           </SidebarFooter>
         </Sidebar>
