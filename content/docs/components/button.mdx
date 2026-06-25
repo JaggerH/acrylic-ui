@@ -57,6 +57,15 @@ radius, no padding, with the glyph scaled to the size. So it composes freely:
 <Button icon size="mini" variant="destructive"><X /></Button>     {/* mini round red */}
 ```
 
+## Icon + label
+
+A leading or trailing icon sits inline with the label (flex, `items-center`,
+`gap-1`). The kit renders icon + label as a single SF run — glyph + one space —
+so the gap is ~one SF Pro space (≈4px), not a looser 6–8px. The glyph scales with
+the control size and stays optically centered with the text:
+
+<ComponentPreview name="button-icon-text" />
+
 ## Showcase
 
 Every variant in every size (plus a round `icon` button per variant):

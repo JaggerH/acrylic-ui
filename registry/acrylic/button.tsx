@@ -35,12 +35,16 @@ const buttonVariants = cva(
           "bg-transparent text-primary hover:bg-[var(--acr-chip)] active:bg-[var(--acr-chip-hover)]",
       },
       // The five macOS control sizes (heights 16/20/24/28/36 from the kit).
+      // gap = the icon↔label spacing: the kit renders icon+label as inline SF text
+      // (glyph + a single space), so the gap is ~one SF Pro space (~0.25em ≈ 4px at
+      // 13px) — gap-1, NOT the looser 6/8px we had. Padding (px-[7]/[10]/4) is lifted
+      // verbatim from the kit's text-layer insets.
       size: {
         mini: "h-4 gap-1 rounded-[4px] px-[7px] text-[10px] [&_svg]:size-3",
         small: "h-5 gap-1 rounded-[5px] px-[10px] text-[11px] [&_svg]:size-3",
-        medium: "h-6 gap-1.5 rounded-[6px] px-4 text-[13px] [&_svg]:size-3.5",
-        large: "h-7 gap-1.5 rounded-[14px] px-4 text-[13px] [&_svg]:size-4",
-        xl: "h-9 gap-2 rounded-[18px] px-4 text-[13px] [&_svg]:size-[18px]",
+        medium: "h-6 gap-1 rounded-[6px] px-4 text-[13px] [&_svg]:size-3.5",
+        large: "h-7 gap-1 rounded-[14px] px-4 text-[13px] [&_svg]:size-4",
+        xl: "h-9 gap-1 rounded-[18px] px-4 text-[13px] [&_svg]:size-[18px]",
       },
       // Icon shape — orthogonal to size/variant; the per-size geometry is set in
       // compoundVariants below (square diameter = the size's height, glyph scaled).

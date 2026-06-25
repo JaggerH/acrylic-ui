@@ -171,13 +171,10 @@ function LoanColumn({ name, loans }: { name: string; loans: Loan[] }) {
           <LoanCard key={loan.name} loan={loan} />
         ))}
       </div>
-      <button
-        type="button"
-        className="flex items-center gap-1.5 rounded-lg px-1 py-0.5 text-[13px] font-medium text-foreground transition-colors hover:text-muted-foreground"
-      >
-        <Plus className="size-4" strokeWidth={2.5} />
+      <Button variant="ghost" size="medium" className="-ms-3 justify-start">
+        <Plus strokeWidth={2.5} />
         Add new loan
-      </button>
+      </Button>
     </Card>
   )
 }
