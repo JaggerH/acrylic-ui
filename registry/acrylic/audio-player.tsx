@@ -101,11 +101,12 @@ function AudioPlayer({
     <div
       data-slot="audio-player"
       className={cn(
-        // capsule frosted pill (Card surface material) with a soft float shadow
+        // capsule frosted pill — the HoverCard panel material (`--acr-panel`): a lighter
+        // frosted glass that lifts off the backdrop (vs `--acr-surface`, which darkens and
+        // blends on a dark page), with the same hairline ring + soft float shadow.
         "relative inline-flex w-full max-w-3xl items-center gap-1.5 rounded-full",
-        "bg-[var(--acr-surface)] px-3 py-2 backdrop-blur-xl",
-        "before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-full",
-        "before:shadow-[0_16px_44px_rgba(0,0,0,0.5)]",
+        "bg-[var(--acr-panel)] px-3 py-2 backdrop-blur-xl",
+        "shadow-[0_0_0_1px_rgba(190,190,190,0.16),0_16px_48px_rgba(0,0,0,0.45)]",
         className
       )}
       {...props}
@@ -188,7 +189,7 @@ function AudioPlayer({
             <HoverCardPrimitive.Content
               side="top"
               sideOffset={10}
-              className="z-50 flex h-32 w-9 flex-col items-center rounded-2xl border border-[var(--acr-border-soft)] bg-[var(--acr-surface)] px-2 py-2.5 shadow-[0_12px_28px_rgba(0,0,0,0.5)] outline-none backdrop-blur-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+              className="z-50 flex h-32 w-9 flex-col items-center rounded-2xl bg-[var(--acr-panel)] px-2 py-2.5 shadow-[0_0_0_1px_rgba(190,190,190,0.16),0_16px_48px_rgba(0,0,0,0.45)] outline-none backdrop-blur-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
             >
               <Slider
                 orientation="vertical"
