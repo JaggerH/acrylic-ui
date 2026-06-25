@@ -1,4 +1,8 @@
 @import "tailwindcss";
+/* Entrance/exit animations (animate-in / slide-in-from-* / zoom-in-* / fade-*)
+   used by Dialog, AlertDialog, Sheet, Popover, Select, etc. Without it those
+   classes are dead and overlays appear/disappear with no transition. */
+@import "tw-animate-css";
 
 /* ---------------------------------------------------------------------------
    Acrylic theme tokens — values lifted from the official Apple macOS 26 UI Kit.
