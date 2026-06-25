@@ -1,6 +1,6 @@
 "use client"
 
-import { useTheme } from "next-themes"
+import * as React from "react"
 import { Toaster as Sonner } from "sonner"
 
 import { cn } from "@/lib/utils"
@@ -24,11 +24,41 @@ type ToasterProps = React.ComponentProps<typeof Sonner>
 // material, --normal-border = transparent (no edge — Apple uses the shadow alone,
 // which also kills the dark-mode hairline), --border-radius/--width = kit metrics.
 // Only props with no Sonner variable (padding, box-shadow) need `!` on a class.
+
+// Resolve the active theme from the `.dark` class on <html> — the substrate EVERY
+// shadcn theme setup writes to: next-themes (`attribute="class"`), shadcn's Vite
+// custom ThemeProvider, or a single-theme app that just pins the class. Reading it
+// directly keeps this Toaster theme-PROVIDER-agnostic — no `next-themes` (or any)
+// dependency to install, no per-consumer import swap (the manual step shadcn's Vite
+// users do), and it still reacts live to a toggle (the class mutates → the observer
+// re-reads). Pass an explicit `theme` prop to override.
+function useDocumentTheme(): "light" | "dark" {
+  const read = React.useCallback(
+    () =>
+      typeof document !== "undefined" &&
+      document.documentElement.classList.contains("dark")
+        ? "dark"
+        : "light",
+    []
+  )
+  const [theme, setTheme] = React.useState<"light" | "dark">(read)
+  React.useEffect(() => {
+    setTheme(read())
+    const observer = new MutationObserver(() => setTheme(read()))
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    })
+    return () => observer.disconnect()
+  }, [read])
+  return theme
+}
+
 export function Toaster({ className, toastOptions, ...props }: ToasterProps) {
-  const { theme = "system" } = useTheme()
+  const theme = useDocumentTheme()
   return (
     <Sonner
-      theme={theme as ToasterProps["theme"]}
+      theme={theme}
       position="top-center"
       offset={56}
       className={cn("toaster group", className)}
