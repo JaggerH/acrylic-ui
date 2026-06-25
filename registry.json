@@ -419,6 +419,25 @@
       ]
     },
     {
+      "name": "audio-playlist",
+      "type": "registry:component",
+      "title": "Audio Playlist",
+      "description": "The 'current playlist' panel (NetEase-style): a header with a track count and 收藏全部 / 清空 actions over a scrollable list of rows — cover with a hover ▶ (persistent on the playing track), a title (accent-red while playing) + a meta line of quality / MV / VIP badges + artist, and a trailing duration. Fully controlled; drop it inside a Sheet (or any panel) and wire the callbacks to your queue.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/audio-playlist.tsx",
+          "type": "registry:component",
+          "target": "components/acrylic/audio-playlist.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ]
+    },
+    {
       "name": "switch",
       "type": "registry:ui",
       "title": "Acrylic Switch",
