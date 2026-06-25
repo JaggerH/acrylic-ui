@@ -16,7 +16,7 @@ import {
 import { cn } from "@/lib/utils"
 import { Slider } from "./slider"
 
-// Now-Playing Bar — a floating capsule transport, Apple-Music "mini player" style, on
+// Audio Player — a floating capsule transport, Apple-Music "mini player" style, on
 // the acrylic frosted material (the Card surface: `bg-[var(--acr-surface)] backdrop-blur-xl`).
 // Fully presentational and controlled — wire it to your own audio engine via the callbacks.
 //
@@ -38,7 +38,7 @@ function fmtClock(s: number): string {
   return `${m}:${r.toString().padStart(2, "0")}`
 }
 
-export interface NowPlayingTrack {
+export interface AudioPlayerTrack {
   title: string
   artist?: string
   /** cover art URL; a music glyph is shown when absent */
@@ -48,10 +48,10 @@ export interface NowPlayingTrack {
 const TOOL =
   "flex size-9 shrink-0 items-center justify-center rounded-full text-foreground/70 transition-colors hover:bg-[var(--acr-hover)] hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
 
-export interface NowPlayingBarProps
+export interface AudioPlayerProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onVolumeChange"> {
   /** the loaded track; `null`/`undefined` = idle (transport stays, info group hides) */
-  track?: NowPlayingTrack | null
+  track?: AudioPlayerTrack | null
   playing?: boolean
   /** elapsed / total seconds, for the time readout + seek rail */
   currentTime?: number
@@ -70,7 +70,7 @@ export interface NowPlayingBarProps
   actions?: React.ReactNode
 }
 
-function NowPlayingBar({
+function AudioPlayer({
   track,
   playing = false,
   currentTime = 0,
@@ -86,7 +86,7 @@ function NowPlayingBar({
   actions,
   className,
   ...props
-}: NowPlayingBarProps) {
+}: AudioPlayerProps) {
   const pct = track && duration ? (currentTime / duration) * 100 : 0
   const seek = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!track || !duration || !onSeek) return
@@ -98,7 +98,7 @@ function NowPlayingBar({
 
   return (
     <div
-      data-slot="now-playing-bar"
+      data-slot="audio-player"
       className={cn(
         // capsule frosted pill (Card surface material) with a soft float shadow
         "relative inline-flex w-full max-w-3xl items-center gap-1.5 rounded-full",
@@ -201,4 +201,4 @@ function NowPlayingBar({
   )
 }
 
-export { NowPlayingBar, fmtClock }
+export { AudioPlayer, fmtClock }

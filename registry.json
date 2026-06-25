@@ -398,18 +398,18 @@
       ]
     },
     {
-      "name": "now-playing-bar",
+      "name": "audio-player",
       "type": "registry:component",
-      "title": "Now-Playing Bar",
+      "title": "Audio Player",
       "description": "A floating capsule transport (Apple-Music mini-player) on the acrylic frosted surface. Two groups: an always-on transport (prev/play/next + your own right-side tools) and a now-playing info group (cover + title + artist + seek rail) that appears only while a track is loaded, with the seek bar along the group's bottom edge. Fully controlled via callbacks; an optional volume control reveals a vertical Slider on hover. Flips light/dark via the Acrylic theme tokens.",
       "dependencies": [
         "lucide-react"
       ],
       "files": [
         {
-          "path": "registry/acrylic/now-playing-bar.tsx",
+          "path": "registry/acrylic/audio-player.tsx",
           "type": "registry:component",
-          "target": "components/acrylic/now-playing-bar.tsx"
+          "target": "components/acrylic/audio-player.tsx"
         }
       ],
       "registryDependencies": [

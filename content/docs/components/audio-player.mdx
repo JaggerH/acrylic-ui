@@ -1,0 +1,60 @@
+---
+title: Audio Player
+description: A floating capsule transport (Apple-Music mini-player) on the acrylic frosted surface.
+---
+
+A frosted capsule "now playing" bar. Two groups: an always-on **transport** (prev /
+play-pause / next, plus any right-side tools you pass) and a **now-playing info** group
+(cover + title + artist + a bottom seek rail) that appears only while a track is loaded.
+Fully controlled — wire the callbacks to your own audio engine. The optional volume
+control reveals a vertical [Slider](/docs/components/slider) on hover.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/audio-player.json
+```
+
+## Usage
+
+<ComponentPreview name="audio-player-demo" />
+
+```tsx
+import { AudioPlayer } from "@/components/acrylic/audio-player"
+
+<AudioPlayer
+  track={{ title, artist, cover }}
+  playing={playing}
+  currentTime={time}
+  duration={duration}
+  volume={volume}
+  hasPrev
+  hasNext
+  onToggle={toggle}
+  onPrev={prev}
+  onNext={next}
+  onSeek={seek}
+  onVolumeChange={setVolume}
+/>
+```
+
+Pass `track={null}` (or omit it) for the idle state — the transport stays visible and the
+info group collapses. Drop the `volume`/`onVolumeChange` pair to hide the volume control.
+
+## Props
+
+| prop | type | default | description |
+| --- | --- | --- | --- |
+| `track` | `AudioPlayerTrack \| null` | — | `{ title, artist?, cover? }`; `null`/omitted = idle (info group hidden) |
+| `playing` | `boolean` | `false` | play/pause icon state |
+| `currentTime` | `number` | `0` | elapsed seconds (time readout + seek fill) |
+| `duration` | `number` | `0` | total seconds |
+| `volume` | `number` | — | `0..1`; pass with `onVolumeChange` to show the hover volume slider |
+| `hasPrev` / `hasNext` | `boolean` | `false` | enable the prev / next buttons |
+| `onToggle` | `() => void` | — | play/pause clicked |
+| `onPrev` / `onNext` | `() => void` | — | skip clicked |
+| `onSeek` | `(seconds: number) => void` | — | seek rail clicked |
+| `onVolumeChange` | `(volume: number) => void` | — | volume slider dragged (0..1) |
+| `actions` | `ReactNode` | — | extra tool buttons at the right end of the transport |
+
+Plus all native `<div>` props.
