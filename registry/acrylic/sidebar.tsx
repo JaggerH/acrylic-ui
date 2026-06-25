@@ -176,7 +176,13 @@ function Sidebar({
           // shrink-0: the sidebar keeps its width and is never compressed by the
           // flex row — the content pane gives way instead. Width stays flexible via
           // --sidebar-width.
-          "flex h-full w-(--sidebar-width) shrink-0 flex-col bg-[var(--acr-surface)] text-foreground backdrop-blur-xl",
+          // Frost fill is a LITERAL rgba, not a --acr-* token, on purpose: Tailwind v4
+          // + lightningcss tree-shake any custom property referenced only by arbitrary
+          // bg-[var(--x)] utilities, which silently dropped the tint (→ transparent →
+          // frost rendered far darker). A literal can't be tree-shaken. Same for the
+          // inset below. backdrop-filter order (blur→saturate→brightness) is pinned via
+          // arbitrary props so it matches the tuned values exactly.
+          "flex h-full w-(--sidebar-width) shrink-0 flex-col bg-[rgba(197,197,197,0.58)] dark:bg-transparent text-foreground [--foreground:#ffffff] [--muted-foreground:#ffffff8c] [backdrop-filter:blur(72px)_saturate(3)_brightness(.35)] [-webkit-backdrop-filter:blur(72px)_saturate(3)_brightness(.35)]",
           className
         )}
         {...props}
@@ -258,7 +264,7 @@ function Sidebar({
           // puts on the Sidebar, so rounding the sidebar clips the frosted fill too
           // (no square corner poking out) without an overflow-hidden that would clip
           // the rail.
-          className="flex h-full w-full flex-col rounded-[inherit] bg-[var(--acr-surface)] backdrop-blur-xl group-data-[variant=floating]:rounded-xl group-data-[variant=floating]:border group-data-[variant=floating]:border-[var(--acr-border)] group-data-[variant=floating]:shadow-[0_8px_28px_rgba(0,0,0,0.18)]"
+          className="flex h-full w-full flex-col rounded-[inherit] bg-[rgba(197,197,197,0.58)] dark:bg-transparent text-foreground [--foreground:#ffffff] [--muted-foreground:#ffffff8c] [backdrop-filter:blur(72px)_saturate(3)_brightness(.35)] [-webkit-backdrop-filter:blur(72px)_saturate(3)_brightness(.35)] group-data-[variant=floating]:rounded-xl group-data-[variant=floating]:border group-data-[variant=floating]:border-[var(--acr-border)] group-data-[variant=floating]:shadow-[0_8px_28px_rgba(0,0,0,0.18)]"
         >
           {children}
         </div>
@@ -280,7 +286,7 @@ function SidebarTrigger({
       data-slot="sidebar-trigger"
       variant="ghost"
       icon
-      className={cn("size-7", className)}
+      className={cn("size-7 text-muted-foreground hover:text-foreground", className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
@@ -323,7 +329,17 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
     <main
       data-slot="sidebar-inset"
       className={cn(
-        "relative flex w-full flex-1 flex-col bg-background",
+        // Frosted by default (the acrylic glass theme): a LITERAL translucent fill +
+        // blur, whiter/denser than the sidebar (239 vs 197) so a sidebar+inset shell
+        // reads as two distinct panes. Two modes: light keeps the tint; `dark:` drops
+        // it for a darker, untinted glass — white body text in both. Pass `bg-background`
+        // to opt back into a solid content pane (tailwind-merge overrides the fill).
+        //
+        // Rounding is consumer-controlled (e.g. `rounded-r-xl` to mirror the sidebar's
+        // `rounded-l-xl`): a backdrop-filter on a square box leaks a square corner past
+        // a rounded ancestor's overflow clip, so the element needs its OWN matching
+        // radius to clip the frost — no square poking out.
+        "relative flex w-full flex-1 flex-col bg-[rgba(239,239,239,0.58)] dark:bg-transparent text-foreground [--foreground:#ffffff] [--muted-foreground:#ffffff8c] [backdrop-filter:blur(72px)_saturate(2.3)_brightness(.6)] [-webkit-backdrop-filter:blur(72px)_saturate(2.3)_brightness(.6)]",
         "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2",
         className
       )}
@@ -488,9 +504,10 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
 }
 
 // Selection follows the macOS 26 kit: a NEUTRAL gray pill (--acr-chip ≈ black 11%),
-// radius 8, NOT the accent — only the leading icon turns System Blue when active.
+// radius 8, NOT the accent. The icon stays the system label color too (Apple keeps
+// the selected row monochrome) — no System Blue tint.
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-lg px-2 text-left text-[13px] ring-[var(--ring)] outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-[var(--acr-hover)] focus-visible:ring-2 active:bg-[var(--acr-chip)] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-[var(--acr-chip)] data-[active=true]:font-medium data-[active=true]:[&>svg]:text-[var(--primary)] data-[state=open]:hover:bg-[var(--acr-hover)] [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-lg px-2 text-left text-[13px] ring-[var(--ring)] outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-[var(--acr-hover)] focus-visible:ring-2 active:bg-[var(--acr-chip)] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-[var(--acr-chip)] data-[active=true]:font-medium data-[state=open]:hover:bg-[var(--acr-hover)] [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -704,7 +721,7 @@ function SidebarMenuSubButton({
         // Full-width row, gray-pill selection like top level; content indented via
         // pl so the highlight stays edge-to-edge (matches the kit's nested rows).
         "flex h-8 min-w-0 items-center gap-2 overflow-hidden rounded-lg pr-2 pl-8 text-foreground ring-[var(--ring)] outline-hidden hover:bg-[var(--acr-hover)] focus-visible:ring-2 active:bg-[var(--acr-chip)] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
-        "data-[active=true]:bg-[var(--acr-chip)] data-[active=true]:font-medium data-[active=true]:[&>svg]:text-[var(--primary)]",
+        "data-[active=true]:bg-[var(--acr-chip)] data-[active=true]:font-medium",
         size === "sm" && "text-[11px]",
         size === "md" && "text-[13px]",
         "group-data-[collapsible=icon]:hidden",
