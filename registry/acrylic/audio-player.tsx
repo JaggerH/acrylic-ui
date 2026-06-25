@@ -178,8 +178,8 @@ function AudioPlayer({
           <button aria-label="音量" className={TOOL}>
             <VolIcon className="size-4" />
           </button>
-          <div className="pointer-events-none absolute bottom-full left-1/2 z-30 -translate-x-1/2 pb-2 opacity-0 transition-opacity duration-150 group-hover/vol:pointer-events-auto group-hover/vol:opacity-100">
-            <div className="flex h-32 w-10 flex-col items-center rounded-2xl bg-[var(--acr-surface)] px-2 py-3 shadow-[0_12px_28px_rgba(0,0,0,0.4)] backdrop-blur-xl">
+          <div className="pointer-events-none absolute bottom-full left-1/2 z-30 -translate-x-1/2 pb-3 opacity-0 transition-opacity duration-150 group-hover/vol:pointer-events-auto group-hover/vol:opacity-100">
+            <div className="flex h-32 w-9 flex-col items-center rounded-2xl border border-[var(--acr-border-soft)] bg-[var(--acr-surface)] px-2 py-2.5 shadow-[0_12px_28px_rgba(0,0,0,0.5)] backdrop-blur-xl">
               <Slider
                 orientation="vertical"
                 size="small"
@@ -188,7 +188,8 @@ function AudioPlayer({
                 value={[Math.round((volume ?? 0) * 100)]}
                 onValueChange={(v) => onVolumeChange?.(v[0] / 100)}
                 aria-label="音量"
-                className="min-h-0 flex-1"
+                style={{ minHeight: 0 }}
+                className="h-full"
               />
             </div>
           </div>
