@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import * as HoverCardPrimitive from "@radix-ui/react-hover-card"
 import {
   ListMusic,
   MoreHorizontal,
@@ -172,14 +173,23 @@ function AudioPlayer({
         <div className="mx-1.5 flex-1" />
       )}
 
-      {/* optional volume — vertical acrylic Slider revealed on hover */}
+      {/* optional volume — vertical Slider revealed on hover. Uses the Radix HoverCard
+          primitive so the panel renders through a Portal: it escapes any `overflow:hidden`
+          / clipping ancestor (and isn't bounded by the bar's stacking context), the way a
+          plain absolutely-positioned child never could. */}
       {showVolume && (
-        <div className="group/vol relative">
-          <button aria-label="音量" className={TOOL}>
-            <VolIcon className="size-4" />
-          </button>
-          <div className="pointer-events-none absolute bottom-full left-1/2 z-30 -translate-x-1/2 pb-3 opacity-0 transition-opacity duration-150 group-hover/vol:pointer-events-auto group-hover/vol:opacity-100">
-            <div className="flex h-32 w-9 flex-col items-center rounded-2xl border border-[var(--acr-border-soft)] bg-[var(--acr-surface)] px-2 py-2.5 shadow-[0_12px_28px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+        <HoverCardPrimitive.Root openDelay={60} closeDelay={120}>
+          <HoverCardPrimitive.Trigger asChild>
+            <button aria-label="音量" className={TOOL}>
+              <VolIcon className="size-4" />
+            </button>
+          </HoverCardPrimitive.Trigger>
+          <HoverCardPrimitive.Portal>
+            <HoverCardPrimitive.Content
+              side="top"
+              sideOffset={10}
+              className="z-50 flex h-32 w-9 flex-col items-center rounded-2xl border border-[var(--acr-border-soft)] bg-[var(--acr-surface)] px-2 py-2.5 shadow-[0_12px_28px_rgba(0,0,0,0.5)] outline-none backdrop-blur-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+            >
               <Slider
                 orientation="vertical"
                 size="small"
@@ -191,9 +201,9 @@ function AudioPlayer({
                 style={{ minHeight: 0 }}
                 className="h-full"
               />
-            </div>
-          </div>
-        </div>
+            </HoverCardPrimitive.Content>
+          </HoverCardPrimitive.Portal>
+        </HoverCardPrimitive.Root>
       )}
 
       {/* caller-supplied right-side tools (歌词 / 队列 / more …) */}

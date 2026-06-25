@@ -401,9 +401,10 @@
       "name": "audio-player",
       "type": "registry:component",
       "title": "Audio Player",
-      "description": "A floating capsule transport (Apple-Music mini-player) on the acrylic frosted surface. Two groups: an always-on transport (prev/play/next + your own right-side tools) and a now-playing info group (cover + title + artist + seek rail) that appears only while a track is loaded, with the seek bar along the group's bottom edge. Fully controlled via callbacks; an optional volume control reveals a vertical Slider on hover. Flips light/dark via the Acrylic theme tokens.",
+      "description": "A floating capsule transport (Apple-Music mini-player) on the acrylic frosted surface. Two groups: an always-on transport (prev/play/next + your own right-side tools) and a now-playing info group (cover + title + artist + seek rail) that appears only while a track is loaded, with the seek bar along the group's bottom edge. Fully controlled via callbacks; an optional volume control reveals a vertical Slider on hover (portaled via HoverCard so it escapes clipping containers). Flips light/dark via the Acrylic theme tokens.",
       "dependencies": [
-        "lucide-react"
+        "lucide-react",
+        "@radix-ui/react-hover-card"
       ],
       "files": [
         {
