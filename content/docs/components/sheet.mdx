@@ -1,0 +1,72 @@
+---
+title: Sheet
+description: Radix Dialog as an edge-anchored panel — a frosted acrylic surface that slides in over a blurred overlay.
+---
+
+A [Radix Dialog](https://www.radix-ui.com/primitives/docs/components/dialog)
+dressed as a slide-in panel: a translucent acrylic surface anchored to any edge,
+over an 8px-blur overlay. Drop-in API-compatible with the shadcn Sheet — pass
+`side` to choose which edge it enters from.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/sheet.json
+```
+
+## Usage
+
+<ComponentPreview name="sheet-demo" />
+
+```tsx
+import { Button } from "@/registry/acrylic/button"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/registry/acrylic/sheet"
+
+<Sheet>
+  <SheetTrigger asChild>
+    <Button variant="neutral">Open</Button>
+  </SheetTrigger>
+  <SheetContent>
+    <SheetHeader>
+      <SheetTitle>Edit profile</SheetTitle>
+      <SheetDescription>Make changes to your profile here.</SheetDescription>
+    </SheetHeader>
+    {/* form body — add px-4, SheetContent only sets gap-4 */}
+    <SheetFooter>
+      <Button type="submit">Save changes</Button>
+      <SheetClose asChild>
+        <Button variant="neutral">Close</Button>
+      </SheetClose>
+    </SheetFooter>
+  </SheetContent>
+</Sheet>
+```
+
+## Sides
+
+The `side` prop on `SheetContent` anchors the panel to any edge —
+`top` · `right` (default) · `bottom` · `left` — each with its own slide-in
+direction.
+
+<ComponentPreview name="sheet-showcase" />
+
+## Notes
+
+- Built on `@radix-ui/react-dialog`, the same primitive as Dialog, so focus
+  trapping, scroll locking, and `Escape`-to-close come for free.
+- Exports `Sheet`, `SheetTrigger`, `SheetClose`, `SheetContent`, `SheetHeader`,
+  `SheetFooter`, `SheetTitle`, and `SheetDescription` — a faithful mirror of the
+  shadcn API.
+- The panel is the frosted acrylic material (translucent tint + `backdrop-blur`)
+  over an 8px-blur overlay; a built-in X sits in the top-right corner.
+- `SheetContent` only sets `gap-4`, so give any form body its own horizontal
+  padding (e.g. `px-4`) to align it with the header and footer.

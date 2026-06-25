@@ -278,6 +278,25 @@
       ]
     },
     {
+      "name": "hover-card",
+      "type": "registry:ui",
+      "title": "Acrylic Hover Card",
+      "description": "Frosted floating card revealed on hover (translucent material + backdrop-blur) — a peek panel for previews and rich link cards. Radix HoverCard under the hood.",
+      "dependencies": [
+        "@radix-ui/react-hover-card"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/hover-card.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/hover-card.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ]
+    },
+    {
       "name": "command",
       "type": "registry:ui",
       "title": "Acrylic Command",

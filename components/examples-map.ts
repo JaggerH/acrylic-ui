@@ -21,27 +21,31 @@ import C17 from "./examples/dialog-demo"
 import C18 from "./examples/dialog-showcase"
 import C19 from "./examples/field-demo"
 import C20 from "./examples/field-showcase"
-import C21 from "./examples/input-demo"
-import C22 from "./examples/input-group-demo"
-import C23 from "./examples/input-group-showcase"
-import C24 from "./examples/input-showcase"
-import C25 from "./examples/radio-group-demo"
-import C26 from "./examples/radio-group-showcase"
-import C27 from "./examples/select-demo"
-import C28 from "./examples/select-showcase"
-import C29 from "./examples/sidebar-app"
-import C30 from "./examples/sidebar-demo"
-import C31 from "./examples/sidebar-sizes"
-import C32 from "./examples/slider-demo"
-import C33 from "./examples/slider-showcase"
-import C34 from "./examples/slider-sizes"
-import C35 from "./examples/slider-variants"
-import C36 from "./examples/sonner-demo"
-import C37 from "./examples/sonner-showcase"
-import C38 from "./examples/stepper-demo"
-import C39 from "./examples/stepper-showcase"
-import C40 from "./examples/switch-demo"
-import C41 from "./examples/switch-showcase"
+import C21 from "./examples/hover-card-demo"
+import C22 from "./examples/input-demo"
+import C23 from "./examples/input-group-demo"
+import C24 from "./examples/input-group-showcase"
+import C25 from "./examples/input-showcase"
+import C26 from "./examples/popover-demo"
+import C27 from "./examples/radio-group-demo"
+import C28 from "./examples/radio-group-showcase"
+import C29 from "./examples/select-demo"
+import C30 from "./examples/select-showcase"
+import C31 from "./examples/sheet-demo"
+import C32 from "./examples/sheet-showcase"
+import C33 from "./examples/sidebar-app"
+import C34 from "./examples/sidebar-demo"
+import C35 from "./examples/sidebar-sizes"
+import C36 from "./examples/slider-demo"
+import C37 from "./examples/slider-showcase"
+import C38 from "./examples/slider-sizes"
+import C39 from "./examples/slider-variants"
+import C40 from "./examples/sonner-demo"
+import C41 from "./examples/sonner-showcase"
+import C42 from "./examples/stepper-demo"
+import C43 from "./examples/stepper-showcase"
+import C44 from "./examples/switch-demo"
+import C45 from "./examples/switch-showcase"
 
 export const examples: Record<string, ComponentType> = {
   "alert-dialog-demo": C0,
@@ -65,25 +69,29 @@ export const examples: Record<string, ComponentType> = {
   "dialog-showcase": C18,
   "field-demo": C19,
   "field-showcase": C20,
-  "input-demo": C21,
-  "input-group-demo": C22,
-  "input-group-showcase": C23,
-  "input-showcase": C24,
-  "radio-group-demo": C25,
-  "radio-group-showcase": C26,
-  "select-demo": C27,
-  "select-showcase": C28,
-  "sidebar-app": C29,
-  "sidebar-demo": C30,
-  "sidebar-sizes": C31,
-  "slider-demo": C32,
-  "slider-showcase": C33,
-  "slider-sizes": C34,
-  "slider-variants": C35,
-  "sonner-demo": C36,
-  "sonner-showcase": C37,
-  "stepper-demo": C38,
-  "stepper-showcase": C39,
-  "switch-demo": C40,
-  "switch-showcase": C41,
+  "hover-card-demo": C21,
+  "input-demo": C22,
+  "input-group-demo": C23,
+  "input-group-showcase": C24,
+  "input-showcase": C25,
+  "popover-demo": C26,
+  "radio-group-demo": C27,
+  "radio-group-showcase": C28,
+  "select-demo": C29,
+  "select-showcase": C30,
+  "sheet-demo": C31,
+  "sheet-showcase": C32,
+  "sidebar-app": C33,
+  "sidebar-demo": C34,
+  "sidebar-sizes": C35,
+  "slider-demo": C36,
+  "slider-showcase": C37,
+  "slider-sizes": C38,
+  "slider-variants": C39,
+  "sonner-demo": C40,
+  "sonner-showcase": C41,
+  "stepper-demo": C42,
+  "stepper-showcase": C43,
+  "switch-demo": C44,
+  "switch-showcase": C45,
 }

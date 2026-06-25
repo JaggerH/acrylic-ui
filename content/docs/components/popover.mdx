@@ -1,0 +1,47 @@
+---
+title: Popover
+description: Radix Popover as a frosted-acrylic floating panel — translucent tint + backdrop blur.
+---
+
+A [Radix Popover](https://www.radix-ui.com/primitives/docs/components/popover) restyled
+as the macOS 26 frosted panel: a translucent tint with a hairline border and a soft
+drop shadow over a `backdrop-blur`. Drop-in API-compatible with the shadcn Popover —
+same primitives, only the material changes.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/popover.json
+```
+
+## Usage
+
+<ComponentPreview name="popover-demo" />
+
+```tsx
+import { Button } from "@/components/acrylic/button"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/acrylic/popover"
+
+<Popover>
+  <PopoverTrigger asChild>
+    <Button variant="neutral">Open popover</Button>
+  </PopoverTrigger>
+  <PopoverContent className="w-80">Place content here.</PopoverContent>
+</Popover>
+```
+
+## Notes
+
+- Built on `@radix-ui/react-popover`, so positioning, focus management, and keyboard
+  dismissal match the shadcn Popover exactly — only the surface is restyled.
+- The content uses the canonical frosted material (translucent `--acr-panel` tint,
+  `--acr-border` hairline, `backdrop-blur-xl`, soft shadow) with Radix
+  enter/exit zoom + fade animations and the content transform-origin.
+- Default content padding is `p-4` and width `w-72`; both override cleanly via
+  `className` (tailwind-merge). The Combobox dropdown passes `p-0` to reuse the same
+  surface flush for its Command list.
+- Exports `Popover`, `PopoverTrigger`, `PopoverContent`, and `PopoverAnchor`.

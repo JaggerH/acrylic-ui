@@ -1,0 +1,43 @@
+---
+title: Hover Card
+description: Radix Hover Card on the frosted-acrylic material — a translucent preview panel that opens on pointer hover.
+---
+
+A [Radix Hover Card](https://www.radix-ui.com/primitives/docs/components/hover-card)
+restyled with the acrylic frosted material: a translucent, blurred panel that floats
+in on hover to preview the content behind a link. Drop-in API-compatible with the
+shadcn Hover Card.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/hover-card.json
+```
+
+## Usage
+
+<ComponentPreview name="hover-card-demo" />
+
+```tsx
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/registry/acrylic/hover-card"
+
+<HoverCard>
+  <HoverCardTrigger>@nextjs</HoverCardTrigger>
+  <HoverCardContent>
+    The React Framework – created and maintained by @vercel.
+  </HoverCardContent>
+</HoverCard>
+```
+
+## Notes
+
+- Built on `@radix-ui/react-hover-card` for accessible pointer/focus handling — the
+  root forwards `openDelay` / `closeDelay`.
+- Exports `HoverCard`, `HoverCardTrigger`, `HoverCardContent`, mirroring shadcn's API.
+- `HoverCardContent` renders in a `Portal` on the frosted material (`w-64`, `p-4`,
+  `backdrop-blur-xl`) and accepts `align` (default `"center"`) and `sideOffset`
+  (default `4`).
