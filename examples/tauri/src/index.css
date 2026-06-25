@@ -1,0 +1,71 @@
+/* Pulls in Tailwind v4 + the acrylic theme tokens (and the upstream
+   `.vibrancy`/`.modal-acrylic` body-paint rules) from the registry — single
+   source of truth. `@source` makes Tailwind scan the registry component sources
+   so their utility classes are emitted into this app's stylesheet. */
+@import "../../../registry/acrylic/acrylic.css";
+@source "../../../registry/acrylic";
+@source ".";
+
+/* App-level surface. The `background: var(--background)` application is the
+   consumer's responsibility (the registry only flips the *token* under
+   `.vibrancy`). In a normal browser --background is the opaque theme color; in a
+   Tauri vibrancy window the upstream rule flips it to transparent so the native
+   OS acrylic shows through. */
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
+    system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+#root {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Vibrancy panel differentiation (experiment, playground-local) ──
+   Under native acrylic the body is transparent, so a panel's `backdrop-filter`
+   (blur / saturate / brightness) has no webview pixels to act on → it is a no-op.
+   The homepage separates the sidebar (brightness .35) from the inset (brightness
+   .6) purely through those filters, so that contrast VANISHES here. We re-create
+   it by baking the light/dark difference into `background-color` instead — the
+   only thing that actually renders over the native acrylic. Sidebar = darker,
+   more solid rail; inset = brighter, glassier content (mirrors the homepage). */
+.vibrancy [data-slot="sidebar-inner"] {
+  background-color: rgba(0, 0, 0, 0.45);
+}
+.vibrancy [data-slot="sidebar-inset"] {
+  background-color: rgba(200, 200, 200, 0.30);
+}
+
+/* Depth-overlay strength, RE-TUNED per (context × mode) by overriding the shared
+   --acr-card-nested token only inside vibrancy. Its default LIGHT step (0.07) is
+   too faint over the bright vibrancy material — bump it; keep the dark step. Web
+   (:root / .dark) is untouched, so this is a Tauri-only re-tune. Both the sidebar
+   selection AND any nested Card read this token, so they stay consistent. */
+.vibrancy:not(.dark) {
+  --acr-card-nested: rgba(0, 0, 0, 0.16); /* tauri light — deeper than web's 0.07 */
+}
+.dark.vibrancy {
+  --acr-card-nested: rgba(0, 0, 0, 0.22); /* tauri dark — the value you liked */
+}
+
+/* Sidebar selection via the card-nesting DEPTH overlay (reused). The selected item
+   sits "one layer deeper" than the rail, exactly like a nested Card — using the
+   same --acr-card-nested token (now re-tuned above per mode). Hover = a half step;
+   hover rule first so the persistent selected state wins while hovering it.
+   Vibrancy-only; the web look is untouched. */
+.vibrancy [data-slot="sidebar-menu-button"]:hover,
+.vibrancy [data-slot="sidebar-menu-sub-button"]:hover {
+  background-color: color-mix(in srgb, var(--acr-card-nested) 55%, transparent);
+}
+.vibrancy [data-slot="sidebar-menu-button"][data-active="true"],
+.vibrancy [data-slot="sidebar-menu-sub-button"][data-active="true"] {
+  background-color: var(--acr-card-nested);
+}

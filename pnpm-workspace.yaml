@@ -1,3 +1,6 @@
+packages:
+  - "examples/*"
+
 # Build scripts: sharp (Next image), esbuild allowed; msw (shadcn transitive) declined.
 allowBuilds:
   sharp: true

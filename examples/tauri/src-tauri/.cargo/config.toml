@@ -1,0 +1,7 @@
+# WSL → Windows cross-compile: use the mingw-w64 toolchain as the linker/ar for
+# the gnu target so `cargo build --target x86_64-pc-windows-gnu` produces a real
+# .exe from Linux. Mirrors snapick's proven setup. Install on Debian/Ubuntu with
+# `apt install gcc-mingw-w64-x86-64` (provides x86_64-w64-mingw32-gcc/-ar).
+[target.x86_64-pc-windows-gnu]
+linker = "x86_64-w64-mingw32-gcc"
+ar = "x86_64-w64-mingw32-ar"

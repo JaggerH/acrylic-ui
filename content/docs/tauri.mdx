@@ -1,0 +1,183 @@
+---
+title: Tauri (vibrancy)
+description: Run acrylic-ui inside a Tauri transparent-vibrancy window so the frosted components frost against the real OS acrylic.
+---
+
+acrylic-ui's frosted look comes from CSS `backdrop-filter`. In a **browser** that
+blurs the page behind the element. In a **Tauri** app you usually want something
+better: a *transparent* window over the real desktop, with the OS compositing
+native vibrancy (macOS) / acrylic (Windows) behind your UI — exactly like a native
+macOS sheet. This guide wires that up.
+
+A complete, runnable reference lives in [`examples/tauri/`](https://github.com/) —
+copy it, or follow the steps below.
+
+## The gotcha (read this first)
+
+CSS `backdrop-filter` only blurs pixels the **web page** paints. Under a
+transparent vibrancy window the page body is `transparent` — the OS acrylic is
+composited *outside* the webview — so a full-screen overlay's blur has nothing to
+sample and becomes a no-op (text behind stays sharp, only the tint shows).
+
+The fix is a per-state toggle. While any Dialog/AlertDialog is open, acrylic-ui's
+shipped `useModalAcrylicBody` hook adds `html.modal-acrylic`; a CSS rule then
+paints the body opaque so the overlay's blur has real pixels to frost — reverting
+to transparent (native acrylic) when it closes. **acrylic-ui ships both the hook
+and that CSS rule** (in `acrylic.css`); your app only has to provide the
+transparent window + native vibrancy and flip `html.vibrancy` on.
+
+## 1. Transparent window
+
+`src-tauri/tauri.conf.json`:
+
+```json
+{
+  "app": {
+    "windows": [{ "label": "main", "transparent": true }]
+  }
+}
+```
+
+## 2. Native vibrancy (Rust)
+
+Add [`window-vibrancy`](https://crates.io/crates/window-vibrancy):
+
+```toml
+# src-tauri/Cargo.toml
+[target.'cfg(target_os = "windows")'.dependencies]
+window-vibrancy = "0.7"
+windows-sys = { version = "0.60", features = [
+  "Win32_Foundation", "Win32_UI_WindowsAndMessaging", "Win32_System_Registry",
+] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+window-vibrancy = "0.7"
+```
+
+Apply it on setup and expose whether it succeeded to the frontend. Windows only
+blurs when the user's "Transparency effects" is on, and Win11 22H2+ stops blurring
+unfocused windows unless you keep the window reported as active:
+
+```rust
+// src-tauri/src/lib.rs
+use std::sync::atomic::AtomicBool;
+use tauri::Manager;
+
+struct Translucent(AtomicBool);
+
+#[tauri::command]
+fn window_translucent(state: tauri::State<'_, Translucent>) -> bool {
+    state.0.load(std::sync::atomic::Ordering::Relaxed)
+}
+
+pub fn run() {
+    tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![window_translucent])
+        .setup(|app| {
+            let translucent = detect_and_apply_translucency(app);
+            app.manage(Translucent(AtomicBool::new(translucent)));
+            Ok(())
+        })
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+
+fn detect_and_apply_translucency(app: &tauri::App) -> bool {
+    #[cfg(target_os = "macos")]
+    {
+        use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
+        let Some(w) = app.get_webview_window("main") else { return false };
+        apply_vibrancy(&w, NSVisualEffectMaterial::HudWindow, None, None).is_ok()
+    }
+    #[cfg(target_os = "windows")]
+    {
+        use window_vibrancy::apply_acrylic;
+        let Some(w) = app.get_webview_window("main") else { return false };
+        if !transparency_effects_enabled() { return false; } // opaque fallback
+        match apply_acrylic(&w, None) {
+            Ok(()) => { install_always_active_subclass(&w); true }
+            Err(_) => false,
+        }
+    }
+    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+    { let _ = app; false } // Linux: no support → opaque fallback
+}
+```
+
+See `examples/tauri/src-tauri/src/lib.rs` for the full Windows helpers
+(`transparency_effects_enabled` reads the registry flag;
+`install_always_active_subclass` intercepts `WM_NCACTIVATE`).
+
+## 3. Flip `html.vibrancy` (frontend)
+
+Ask the Rust side whether vibrancy was applied; only then mark `<html>`. A
+harmless no-op in a plain browser:
+
+```ts
+// src/main.tsx
+import { invoke } from "@tauri-apps/api/core"
+
+invoke<boolean>("window_translucent")
+  .then((active) => active && document.documentElement.classList.add("vibrancy"))
+  .catch(() => {}) // not under Tauri → stay opaque
+```
+
+## 4. CSS
+
+acrylic-ui's `acrylic.css` already ships the token flips (inert until
+`html.vibrancy` is present):
+
+```css
+html.vibrancy { --background: transparent; }
+html.vibrancy.modal-acrylic { --background: rgba(24, 24, 27, 0.92); }
+```
+
+Your app applies that token to the surfaces — this part is app-level because only
+your app knows its mount node (`#root`, `#app`, …):
+
+```css
+html, body, #root { background: var(--background); }
+```
+
+That's it. When `--background` is `transparent` the native acrylic shows through;
+when a Dialog opens, `useModalAcrylicBody` adds `.modal-acrylic`, the body goes
+opaque, and the overlay frosts.
+
+## 5. Build for Windows from WSL (optional)
+
+The playground cross-compiles from WSL with mingw-w64 (no Windows toolchain):
+
+```toml
+# src-tauri/.cargo/config.toml
+[target.x86_64-pc-windows-gnu]
+linker = "x86_64-w64-mingw32-gcc"
+ar = "x86_64-w64-mingw32-ar"
+```
+
+```bash
+rustup target add x86_64-pc-windows-gnu
+sudo apt install gcc-mingw-w64-x86-64      # provides the linker/ar
+pnpm --filter tauri-playground tauri dev --target x86_64-pc-windows-gnu
+```
+
+Tauri's `[lib] crate-type` must be `["staticlib", "rlib"]` (not `cdylib`) — the
+mingw BFD linker can't handle Tauri's export count. The desktop binary links via
+`rlib`.
+
+## Platform support
+
+| Platform | Backdrop | Notes |
+| --- | --- | --- |
+| macOS | NSVisualEffect vibrancy | Always available (Metal-backed). |
+| Windows 10/11 | Acrylic (`apply_acrylic`) | Only when **Settings → Personalization → Colors → Transparency effects** is on; otherwise falls back to an opaque window. |
+| Linux | — | No native vibrancy; the app stays opaque (`window_translucent` returns `false`). |
+
+## Which components frost under vibrancy
+
+**Dialog** and **AlertDialog** ship `useModalAcrylicBody`, so their full-screen
+overlay frosts correctly. **Card** / **Sidebar** / **Sonner** are persistent
+translucent surfaces that simply tint the native acrylic — they work without the
+hook. Other overlays (**Sheet**, **Popover**, **ContextMenu**, **Select**) do not
+currently paint the body, so under a transparent window their `backdrop-filter`
+may not frost the way it does in a browser. Run the playground on your target OS
+to see the real result before relying on it.

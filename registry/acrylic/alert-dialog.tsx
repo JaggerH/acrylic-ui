@@ -3,7 +3,7 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "./button"
-import { useModalAcrylicBody } from "./use-modal-acrylic"
+import { ModalAcrylicBody } from "./use-modal-acrylic"
 
 // Frosted confirm dialog — the AlertDialog counterpart of the acrylic Dialog:
 // a 20px blur+saturate overlay and a translucent white-tint panel. Modeled on the
@@ -37,8 +37,7 @@ AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName
 const AlertDialogContent = React.forwardRef<
   React.ComponentRef<typeof AlertDialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
->(({ className, ...props }, ref) => {
-  useModalAcrylicBody()
+>(({ className, children, ...props }, ref) => {
   return (
     <AlertDialogPortal>
       <AlertDialogOverlay />
@@ -49,7 +48,10 @@ const AlertDialogContent = React.forwardRef<
           className
         )}
         {...props}
-      />
+      >
+        <ModalAcrylicBody />
+        {children}
+      </AlertDialogPrimitive.Content>
     </AlertDialogPortal>
   )
 })

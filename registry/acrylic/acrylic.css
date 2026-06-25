@@ -45,8 +45,6 @@
   --acr-surface: rgba(255, 255, 255, 0.55);
   --acr-surface-hover: rgba(255, 255, 255, 0.75);
   --acr-card-nested: rgba(0, 0, 0, 0.07); /* fill for a Card nested in a frosted surface */
-  --acr-sidebar: rgba(197, 197, 197, 0.58); /* sidebar frosted fill — theme-agnostic; brightness/saturate carry the tone */
-  --acr-inset: rgba(239, 239, 239, 0.58); /* SidebarInset frosted fill — whiter/denser than the sidebar */
   --acr-panel: rgba(255, 255, 255, 0.62);
   --acr-overlay: rgba(236, 236, 236, 0.45);
   --acr-field-strong: rgba(255, 255, 255, 0.60);
@@ -90,6 +88,29 @@
   --acr-solid-fg: #1c1c1e;
   --acr-scrollbar: rgba(255, 255, 255, 0.28);
   --acr-scrollbar-hover: rgba(255, 255, 255, 0.45);
+}
+
+/* ---------------------------------------------------------------------------
+   Tauri / Electron transparent-vibrancy support (opt-in). INERT on a normal web
+   page — these rules only take effect once the host app adds `html.vibrancy`
+   (after it has applied native OS vibrancy to a transparent window). See the
+   Tauri guide at /docs/tauri.
+
+   `--background` flips to transparent so the native OS acrylic (DWM/compositor-
+   rendered OUTSIDE the webview) shows through. While a Dialog/AlertDialog is
+   open the shipped `useModalAcrylicBody` hook adds `.modal-acrylic`; we repaint
+   the body opaque so the overlay's `backdrop-filter` has real pixels to frost —
+   reverting to transparent (native acrylic) on close. The host app applies
+   `background: var(--background)` to html/body; the registry only owns these
+   token flips. */
+html.vibrancy {
+  --background: transparent;
+}
+html.vibrancy.modal-acrylic {
+  --background: rgba(24, 24, 27, 0.92);
+}
+html.vibrancy body {
+  transition: background-color 0.18s ease;
 }
 
 /* Nested frosted Card. A Card inside any frosted surface — Card carries

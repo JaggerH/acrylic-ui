@@ -4,7 +4,7 @@ import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "./button"
-import { useModalAcrylicBody } from "./use-modal-acrylic"
+import { ModalAcrylicBody } from "./use-modal-acrylic"
 
 const Dialog = DialogPrimitive.Root
 
@@ -36,7 +36,6 @@ const DialogContent = React.forwardRef<
     showCloseButton?: boolean
   }
 >(({ className, children, showCloseButton = true, ...props }, ref) => {
-  useModalAcrylicBody()
   return (
   <DialogPortal>
     <DialogOverlay />
@@ -51,6 +50,7 @@ const DialogContent = React.forwardRef<
       )}
       {...props}
     >
+      <ModalAcrylicBody />
       {children}
       {showCloseButton && (
         <DialogPrimitive.Close asChild>
