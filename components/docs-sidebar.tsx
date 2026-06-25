@@ -154,25 +154,44 @@ export function DocsSidebar(props: React.ComponentProps<"aside">) {
           </SidebarHeader>
 
           <SidebarContent className="scrollbar-mac">
-            {root.children.map((node, i) => {
-              if (node.type === "folder") {
-                return <FolderGroup key={i} node={node} pathname={pathname} />
-              }
-              if (node.type === "separator") {
-                return (
-                  <SidebarGroupLabel key={i} className="mt-1">
-                    {node.name}
-                  </SidebarGroupLabel>
+            {(() => {
+              // Group CONSECUTIVE top-level page links into one menu so they pack
+              // tightly (gap-0), instead of each becoming its own SidebarGroup —
+              // which adds py-1 + the SidebarContent gap-2 between them (~16px, too
+              // airy once two top-level pages sit next to each other). Folders and
+              // separators break the run.
+              const out: React.ReactNode[] = []
+              let run: PageTree.Node[] = []
+              const flush = (key: string) => {
+                if (!run.length) return
+                const nodes = run
+                run = []
+                out.push(
+                  <SidebarGroup key={key} className="py-1">
+                    <SidebarGroupContent>
+                      <Pages nodes={nodes} pathname={pathname} />
+                    </SidebarGroupContent>
+                  </SidebarGroup>
                 )
               }
-              return (
-                <SidebarGroup key={i} className="py-1">
-                  <SidebarGroupContent>
-                    <Pages nodes={[node]} pathname={pathname} />
-                  </SidebarGroupContent>
-                </SidebarGroup>
-              )
-            })}
+              root.children.forEach((node, i) => {
+                if (node.type === "folder") {
+                  flush(`run-${i}`)
+                  out.push(<FolderGroup key={i} node={node} pathname={pathname} />)
+                } else if (node.type === "separator") {
+                  flush(`run-${i}`)
+                  out.push(
+                    <SidebarGroupLabel key={i} className="mt-1">
+                      {node.name}
+                    </SidebarGroupLabel>
+                  )
+                } else {
+                  run.push(node)
+                }
+              })
+              flush("run-tail")
+              return out
+            })()}
           </SidebarContent>
 
           <SidebarFooter>
