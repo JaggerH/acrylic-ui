@@ -28,6 +28,11 @@ export default function Layout({ children }: LayoutProps<'/'>) {
             themes: ['light', 'dark', 'acrylic'],
             defaultTheme: 'acrylic',
             enableSystem: false,
+            // Fumadocs defaults this to true, which injects `* { transition: none }`
+            // on theme change — that also kills the segmented switcher's sliding-pill
+            // transition. Keep transitions on so the pill slides (the page colors
+            // cross-fade on switch as a side effect).
+            disableTransitionOnChange: false,
           }}
         >
           {children}
