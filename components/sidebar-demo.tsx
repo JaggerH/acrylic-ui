@@ -1,6 +1,6 @@
 "use client"
 
-import { useDeferredValue, useState } from "react"
+import { useDeferredValue, useState, type ReactNode } from "react"
 import {
   Blocks,
   Calendar,
@@ -208,11 +208,21 @@ function LoansBoard() {
 export function SidebarDemo({
   framed = false,
   showThemeSwitcher = true,
+  frameClassName,
+  headerControls,
+  windowControls,
 }: {
   framed?: boolean
+  frameClassName?: string
   /** Web showcase shows the 3-way theme switcher; the Tauri app is always Acrylic
    *  (native vibrancy), so it hides the switcher and shows the pane title instead. */
   showThemeSwitcher?: boolean
+  /** Host-provided controls for the inset header's right edge. */
+  headerControls?: ReactNode
+  /** Tauri-only: window control buttons (min/max/close). When provided, the inset
+   *  header becomes the window drag region and hosts these at its right edge
+   *  (replacing the New Loan button). Omitted on the web — keep it host-agnostic. */
+  windowControls?: ReactNode
 }) {
   // Nav selection swaps the inset pane live. Only Home/Components map to a view;
   // the others are decorative. Switching to Components mounts the whole gallery
@@ -223,7 +233,7 @@ export function SidebarDemo({
   const pane = useDeferredValue(view)
 
   const shell = (
-    <SidebarProvider className={framed ? "min-h-0 w-full" : "h-screen w-screen"}>
+    <SidebarProvider className={framed ? "min-h-0 w-full" : "h-full w-full"}>
       <Sidebar collapsible="icon" className={framed ? "rounded-l-xl" : undefined}>
         <SidebarHeader>
           <SidebarMenu>
@@ -322,7 +332,13 @@ export function SidebarDemo({
         )}
       >
         <Toaster />
-        <header className="flex h-12 shrink-0 items-center gap-2 border-b border-[var(--acr-border)] px-4">
+        <header
+          // Tauri only: the header IS the titlebar, so make its empty space draggable.
+          // data-tauri-drag-region acts only on the element it's set on; the child
+          // buttons/inputs stay interactive.
+          {...(windowControls ? { "data-tauri-drag-region": "" } : {})}
+          className="flex h-12 shrink-0 items-center gap-2 border-b border-[var(--acr-border)] px-4"
+        >
           <SidebarTrigger />
           <Separator
             orientation="vertical"
@@ -339,7 +355,18 @@ export function SidebarDemo({
               {pane === "components" ? "Components" : "Loans"}
             </span>
           )}
-          {pane === "home" && <NewLoanDialog />}
+          {/* Host controls take over the header's right edge. Tauri uses native window
+              buttons; the web landing page uses a fullscreen toggle. Without either,
+              the web demo keeps its New Loan action there. */}
+          {windowControls ? (
+            <div className="ml-auto flex items-stretch self-stretch">
+              {windowControls}
+            </div>
+          ) : headerControls ? (
+            <div className="ml-auto flex items-center">{headerControls}</div>
+          ) : (
+            pane === "home" && <NewLoanDialog />
+          )}
         </header>
         {pane === "components" ? (
           <div className="min-h-0 flex-1 overflow-y-auto scrollbar-mac">
@@ -357,7 +384,12 @@ export function SidebarDemo({
   return (
     // Separation via box-shadow, not a border. The drop shadow reads on
     // light/acrylic; in dark it vanishes, so add a 1px light ring there.
-    <div className="flex h-[36rem] w-full overflow-hidden rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.28)] dark:shadow-[0_12px_32px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.08)]">
+    <div
+      className={cn(
+        "flex h-[36rem] w-full overflow-hidden rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.28)] dark:shadow-[0_12px_32px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.08)]",
+        frameClassName
+      )}
+    >
       {shell}
     </div>
   )
