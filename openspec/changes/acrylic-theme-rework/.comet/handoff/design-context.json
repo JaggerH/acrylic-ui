@@ -1,0 +1,14 @@
+{
+  "change": "acrylic-theme-rework",
+  "phase": "design",
+  "mode": "compact",
+  "canonical_spec": "openspec",
+  "generated_by": "comet-handoff.sh",
+  "context_hash": "3b1383ddc89b34fe1eb385443f8d252b2e7efd0f14a9a7fde5251c80bc47c743",
+  "files": [
+    { "path": "openspec/changes/acrylic-theme-rework/proposal.md", "sha256": "f5e33458306baa0aadb74d9e87a33cee9687f86d2853bb7afda653fcfe941fb1" },
+    { "path": "openspec/changes/acrylic-theme-rework/design.md", "sha256": "93ca7ea938be9ac83ec59c299044ce17897b78ee298079e16516b8b678541350" },
+    { "path": "openspec/changes/acrylic-theme-rework/tasks.md", "sha256": "76fee5ac04ac485bb240ffa7f3d4c41134b16c679db16bad894931cb121ed9e4" },
+    { "path": "openspec/changes/acrylic-theme-rework/specs/acrylic-theme/spec.md", "sha256": "a69a8390eb79a6ece9752d730e742c15f5740b851e35b2ebb8d1ae7352440d71" }
+  ]
+}
