@@ -102,3 +102,19 @@ Delete, in both CSS files + components:
 Breaking visual change (light→dark glass); docs prose readability (mitigated by
 region composition — docs main can stay light); multiple blur layers (acceptable);
 SSR flash (region classes static).
+
+## Implementation Divergence (recorded at verify)
+
+- **Sidebar is NOT force-`.acrylic`.** Design §1 said `Sidebar` would put `.acrylic`
+  on its own subtree. In build I left the sidebar following the global theme instead:
+  forcing it would push the (display-gated) Backdrop onto a plain *light* app's sidebar.
+  The region-class *mechanism* still delivers composition (verified by DOM probe: a
+  `.light`/`.dark` region under `html.acrylic` re-scopes independently) — composition
+  is opt-in by the consumer, not forced.
+- **Fumadocs token bridge added.** Not in the original design: under `.acrylic`,
+  `app/global.css` points Fumadocs' own `--color-fd-*` tokens at the acrylic dark-glass
+  palette so docs prose/chrome read white-on-dark (our `--foreground` doesn't reach
+  Fumadocs-painted text). Docs-app wiring only; not part of the registry theme.
+- **`#nd-page` rule re-added via `--background`** (not the removed `--acr-content`):
+  the docs main follows the theme background like any region — theme wiring, consistent
+  with "no content material/token".
