@@ -3,13 +3,28 @@ import { getCurrentWindow } from "@tauri-apps/api/window"
 
 import { cn } from "@/lib/utils"
 
-// Custom window chrome for the frameless (decorations:false) Tauri window. There is
-// NO dedicated titlebar strip — the app's own inset header doubles as the titlebar
-// (drag region), and these controls are injected into it. We follow the HOST OS
-// convention: macOS → traffic lights, Windows/Linux → min/max/close. Detection is by
-// webview UA (WebView2 reports "Windows", WKWebView "Macintosh") — no extra plugin.
+// Custom window chrome for the frameless (decorations:false) Tauri window. We render
+// our OWN controls and follow the HOST OS convention:
+//   • Windows/Linux → min/max/close caption buttons, injected into the app header
+//     (which doubles as the drag region) at the top-right.
+//   • macOS        → traffic lights at the top-left in a thin draggable strip above
+//     the content (the Finder/Mail pattern).
+// Platform is the webview UA (WebView2 → "Windows", WKWebView → "Macintosh"), with a
+// `localStorage["acrylic-os"] = "mac" | "win"` override so the other platform's chrome
+// can be previewed on this machine (set it in the devtools console, then reload).
 const appWindow = getCurrentWindow()
-const isMac = /mac/i.test(navigator.userAgent)
+
+function detectOS(): "mac" | "win" {
+  try {
+    const forced = localStorage.getItem("acrylic-os")
+    if (forced === "mac" || forced === "win") return forced
+  } catch {
+    /* localStorage unavailable — fall through to UA */
+  }
+  return /mac/i.test(navigator.userAgent) ? "mac" : "win"
+}
+
+export const isMacOS = detectOS() === "mac"
 
 // Shared maximize state: drives the Windows restore icon and hides the resize
 // handles while maximized.
@@ -67,7 +82,9 @@ function WinGlyph({ kind, maximized }: { kind: "min" | "max" | "close"; maximize
 }
 
 // ── macOS traffic lights ──────────────────────────────────────────────────────
-function MacControls() {
+// Injected into the SIDEBAR's top-left (the native macOS placement) — NOT a separate
+// titlebar. The host row it sits in carries data-tauri-drag-region.
+export function MacTrafficLights() {
   const lights = [
     { kind: "close" as const, bg: "#ff5f57", ring: "#e0443e", action: () => appWindow.close() },
     { kind: "min" as const, bg: "#febc2e", ring: "#dea123", action: () => appWindow.minimize() },
@@ -92,7 +109,7 @@ function MacControls() {
   )
 }
 
-// ── Windows controls ──────────────────────────────────────────────────────────
+// ── Windows caption buttons (injected into the app header) ─────────────────────
 function WinControls({ maximized }: { maximized: boolean }) {
   const base =
     "flex h-full w-[46px] items-center justify-center text-foreground/80 transition-colors"
@@ -112,12 +129,10 @@ function WinControls({ maximized }: { maximized: boolean }) {
   )
 }
 
-// The platform-appropriate control cluster, injected into the app header (which acts
-// as the drag region). On Windows the cluster sits flush in the header's top-right
-// corner; on macOS it renders traffic lights.
+// Windows control cluster, injected into the app header's right edge (Tauri host).
 export function WindowControls() {
   const maximized = useWindowMaximized()
-  return isMac ? <MacControls /> : <WinControls maximized={maximized} />
+  return <WinControls maximized={maximized} />
 }
 
 // ── Invisible resize handles ──────────────────────────────────────────────────

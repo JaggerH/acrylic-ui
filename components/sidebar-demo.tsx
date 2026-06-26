@@ -211,6 +211,7 @@ export function SidebarDemo({
   frameClassName,
   headerControls,
   windowControls,
+  sidebarControls,
 }: {
   framed?: boolean
   frameClassName?: string
@@ -223,6 +224,9 @@ export function SidebarDemo({
    *  header becomes the window drag region and hosts these at its right edge
    *  (replacing the New Loan button). Omitted on the web — keep it host-agnostic. */
   windowControls?: ReactNode
+  /** Tauri/macOS-only: traffic lights rendered at the SIDEBAR's top-left (the native
+   *  mac placement — no separate titlebar). The row they sit in is the drag region. */
+  sidebarControls?: ReactNode
 }) {
   // Nav selection swaps the inset pane live. Only Home/Components map to a view;
   // the others are decorative. Switching to Components mounts the whole gallery
@@ -235,6 +239,16 @@ export function SidebarDemo({
   const shell = (
     <SidebarProvider className={framed ? "min-h-0 w-full" : "h-full w-full"}>
       <Sidebar collapsible="icon" className={framed ? "rounded-l-xl" : undefined}>
+        {/* macOS traffic lights sit at the sidebar's top-left (native placement); the
+            row is the window drag region. Tauri/mac only — omitted everywhere else. */}
+        {sidebarControls && (
+          <div
+            {...{ "data-tauri-drag-region": "" }}
+            className="flex h-7 shrink-0 items-center px-3"
+          >
+            {sidebarControls}
+          </div>
+        )}
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
