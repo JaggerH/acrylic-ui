@@ -2,6 +2,7 @@ import { ThemeProvider } from "next-themes"
 
 import { SidebarDemo } from "@/components/sidebar-demo"
 import { Backdrop } from "@/registry/acrylic/backdrop"
+import { WindowControls, WindowResizeHandles } from "./window-chrome"
 
 // The Tauri playground is now just a thin host around the SAME shared SidebarDemo
 // the web landing page renders — no forked shell, no forked gallery. The ONLY
@@ -17,7 +18,14 @@ export default function App() {
   return (
     <ThemeProvider attribute="class" forcedTheme="acrylic" enableSystem={false}>
       <Backdrop />
-      <SidebarDemo showThemeSwitcher={false} />
+      {/* h-screen w-screen are EXPLICIT (not flex-grow): #root is display:flex, so a
+          child without an intrinsic size collapses to its content width. */}
+      <div className="h-screen w-screen overflow-hidden">
+        {/* No dedicated titlebar — the app header doubles as the drag region and
+            hosts the window controls (injected here, Tauri-only). */}
+        <SidebarDemo showThemeSwitcher={false} windowControls={<WindowControls />} />
+      </div>
+      <WindowResizeHandles />
     </ThemeProvider>
   )
 }
