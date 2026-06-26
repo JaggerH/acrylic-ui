@@ -222,6 +222,14 @@ html.vibrancy.modal-acrylic {
 html.vibrancy body {
   transition: background-color 0.18s ease;
 }
+/* Modal overlays (Dialog / AlertDialog / Sheet) read --acr-overlay-blur in their
+   inline backdrop-filter (default 20px). Under native vibrancy the modal-acrylic
+   body repaint gives that blur real pixels to work on, so push it to a heavy
+   macOS-style 72px — vibrancy-only, because over the plain-web Backdrop 72px would
+   smear the wallpaper into a near-black mask. */
+html.vibrancy {
+  --acr-overlay-blur: 72px;
+}
 
 /* ===== Acrylic Backdrop =====
    The Backdrop is the body-level base layer the frosted chrome blurs over. It shows

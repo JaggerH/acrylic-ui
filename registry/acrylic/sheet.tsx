@@ -40,7 +40,7 @@ function SheetOverlay({
         "fixed inset-0 z-50 bg-[var(--acr-overlay)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         className
       )}
-      style={{ backdropFilter: "blur(20px) saturate(1.3)", WebkitBackdropFilter: "blur(20px) saturate(1.3)" }}
+      style={{ backdropFilter: "blur(var(--acr-overlay-blur, 20px)) saturate(1.3)", WebkitBackdropFilter: "blur(var(--acr-overlay-blur, 20px)) saturate(1.3)" }}
       {...props}
     />
   )
