@@ -281,10 +281,11 @@
    frosted window. The sidebar floats on top with its own (denser) glass; the article
    #nd-page stays transparent so it shows this single frosted plane (no double frost). */
 .acrylic #nd-docs-layout {
+  /* Veil only — NO backdrop-filter. A filter on this tall, page-scrolling container
+     produces a Chromium edge artifact (the Backdrop's pink glow fringes at the top on
+     scroll). The dark veil covers the whole main panel and the Backdrop is already
+     soft (blur-3xl), so it still reads frosted. See docs-layout.tsx. */
   background-color: var(--background);
-  /* blur is applied via the Tailwind `backdrop-blur-2xl` utility on the layout's
-     containerProps (docs-layout.tsx) — lightningcss mangles a hand-written
-     backdrop-filter pair here, dropping the standard property. */
 }
 
 /* Shiki code highlighting: Fumadocs swaps light/dark syntax colors on the `.dark`

@@ -33,12 +33,14 @@ export function AcrylicDocsLayout({
       // sets --fd-sidebar-width; our custom root doesn't). 15rem = the kit width;
       // collapse it on mobile where our desktop aside is hidden.
       containerProps={{
-        // backdrop-blur-2xl frosts the whole #nd-docs-layout over the Backdrop under
-        // acrylic (paired with the .acrylic #nd-docs-layout --background veil in CSS).
-        // No-op in light/dark (the layout bg is transparent there). Applied as a
-        // Tailwind utility because a raw backdrop-filter is mangled by lightningcss.
+        // NOTE: deliberately NO backdrop-blur here. A backdrop-filter on this very tall,
+        // page-scrolling container produces a Chromium edge artifact (a colored fringe
+        // — the Backdrop's pink glow bleeding at the top on scroll). The .acrylic
+        // #nd-docs-layout --background veil (CSS) covers the whole main panel, and the
+        // Backdrop is already softly blurred (blur-3xl), so it still reads frosted
+        // without a filter on the scroll container.
         className:
-          "backdrop-blur-2xl [--fd-layout-width:100%] [--fd-sidebar-width:15rem] max-md:[--fd-sidebar-width:0px]",
+          "[--fd-layout-width:100%] [--fd-sidebar-width:15rem] max-md:[--fd-sidebar-width:0px]",
       }}
       slots={{
         sidebar: {

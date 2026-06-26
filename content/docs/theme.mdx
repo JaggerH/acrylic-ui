@@ -63,6 +63,31 @@ etc. `--primary` and `--destructive` are the semantic aliases of `--acr-blue` an
 | `--acr-panel` | Dialog panel | material approximation |
 | `--acr-overlay` | Dialog overlay tint | material approximation |
 
+## Frosting & the Backdrop
+
+Under the `acrylic` theme, frosted surfaces blur over a body-level `Backdrop`
+(a soft, already-blurred wallpaper; transparent under native vibrancy so the OS
+material shows). One hard rule keeps the frost artifact-free:
+
+> **`backdrop-filter` belongs only on BOUNDED or viewport-ANCHORED elements —
+> never on a tall element that scrolls with the page.**
+
+A `backdrop-filter` on a tall, page-scrolling container makes Chromium re-sample
+the colourful Backdrop at the element's edges every scroll frame, producing a
+coloured fringe at the top on scroll.
+
+| element | technique | safe? |
+| --- | --- | --- |
+| Dialog · Popover · Card (bounded) | `backdrop-filter` | ✓ |
+| sticky / fixed header, toolbar, sidebar (viewport-anchored) | `backdrop-filter` | ✓ |
+| the main content panel (tall, page-scrolling) | **veil only** — a translucent `--background` fill, no filter | ✓ |
+
+The main panel needs no filter: it sits over the static, pre-blurred Backdrop, so
+a translucent `--background` veil already reads as frosted (there is nothing
+high-frequency behind it to blur). If you ever need a genuinely blurred plane
+across a scrolling area, use a **`fixed` frosted layer** (anchored to the
+viewport, so it never scrolls) instead of filtering the scroll container.
+
 ## Spacing & radius
 
 Spacing is the native 8pt grid (Tailwind `p-2` = 8px, `p-4` = 16px…). Control

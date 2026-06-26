@@ -45,7 +45,7 @@ import {
 } from "@/registry/acrylic/sidebar"
 
 const NAV = [
-  { title: "Home", icon: Home, isActive: true },
+  { title: "Home", icon: Home },
   { title: "Inbox", icon: Inbox },
   { title: "Calendar", icon: Calendar },
   { title: "Search", icon: Search },
