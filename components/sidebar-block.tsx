@@ -206,16 +206,9 @@ export function SidebarBlock() {
         </div>
       </div>
 
-      <div className="relative overflow-hidden rounded-2xl shadow-[0_16px_48px_rgba(0,0,0,0.32)]">
-        {/* Wallpaper — same palette as the docs ExampleBackdrop */}
-        <div aria-hidden className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#312e81] via-[#6d28d9] to-[#9d174d]" />
-          <div className="absolute -left-12 -top-16 size-64 rounded-full bg-[#ff375f] opacity-90" />
-          <div className="absolute right-6 -top-10 size-52 rounded-full bg-[#0a84ff] opacity-90" />
-          <div className="absolute -bottom-20 left-1/3 size-64 rounded-full bg-[#ffd60a] opacity-80" />
-          <div className="absolute -bottom-6 right-16 size-44 rounded-full bg-[#30d158] opacity-90" />
-        </div>
-
+      {/* The shell frosts over the REAL global Backdrop (acrylic) — no faked
+          wallpaper — so the demo tracks the live theme as the user switches. */}
+      <div className="relative overflow-hidden rounded-2xl">
         {/* Application shell */}
         <div className="relative p-6 sm:p-12">
           <div className="flex w-full overflow-hidden rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.28)]">
