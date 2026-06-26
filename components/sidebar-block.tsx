@@ -1,8 +1,10 @@
 "use client"
 
+import * as React from "react"
 import Link from "next/link"
 import {
   ArrowRight,
+  Blocks,
   Calendar,
   ChevronRight,
   ChevronsUpDown,
@@ -15,6 +17,8 @@ import {
   Trash2,
 } from "lucide-react"
 
+import { ThemeSwitcher } from "@/components/theme-switcher"
+
 import { cn } from "@/lib/utils"
 import {
   Avatar,
@@ -24,7 +28,35 @@ import {
 import { Badge } from "@/registry/acrylic/badge"
 import { Button } from "@/registry/acrylic/button"
 import { Card } from "@/registry/acrylic/card"
+import { Combobox } from "@/registry/acrylic/combobox"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/registry/acrylic/dialog"
+import { Input } from "@/registry/acrylic/input"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/registry/acrylic/popover"
+import { RadioGroup, RadioGroupItem } from "@/registry/acrylic/radio-group"
 import { Separator } from "@/registry/acrylic/separator"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/registry/acrylic/sheet"
+import { Slider } from "@/registry/acrylic/slider"
+import { Switch } from "@/registry/acrylic/switch"
 import {
   Sidebar,
   SidebarContent,
@@ -49,6 +81,7 @@ const NAV = [
   { title: "Inbox", icon: Inbox },
   { title: "Calendar", icon: Calendar },
   { title: "Search", icon: Search },
+  { title: "Components", icon: Blocks },
 ]
 
 type Loan = {
@@ -171,11 +204,200 @@ function LoanColumn({ name, loans }: { name: string; loans: Loan[] }) {
           <LoanCard key={loan.name} loan={loan} />
         ))}
       </div>
-      <Button variant="ghost" size="medium" className="-ms-3 justify-start">
-        <Plus strokeWidth={2.5} />
+      {/* Mirrors the card-nested example's "add" affordance: a plain text button,
+          foreground label dimming to muted on hover — no fill to spill past the
+          card padding, no negative margin. */}
+      <button
+        type="button"
+        className="flex items-center gap-1.5 rounded-lg px-1 py-0.5 text-[13px] font-medium text-foreground transition-colors hover:text-muted-foreground"
+      >
+        <Plus className="size-4" strokeWidth={2.5} />
         Add new loan
-      </Button>
+      </button>
     </Card>
+  )
+}
+
+/** One labelled tile in the Components gallery. */
+function GalleryCard({
+  label,
+  children,
+}: {
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <Card className="flex flex-col gap-3 p-4">
+      <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        {label}
+      </span>
+      {children}
+    </Card>
+  )
+}
+
+const FRAMEWORKS = [
+  { value: "next", label: "Next.js" },
+  { value: "remix", label: "Remix" },
+  { value: "astro", label: "Astro" },
+  { value: "vite", label: "Vite" },
+]
+
+/** The "Components" pane — a compact, live gallery of the library's main
+ *  components, so the demo doubles as a showcase. Built to grow: drop more
+ *  GalleryCards in. The whole sidebar shell (this included) is the unit the
+ *  Tauri app reuses, so the switchable panes live here, not in the app. */
+function ComponentsGallery() {
+  const [framework, setFramework] = React.useState("")
+
+  return (
+    <div className="min-h-0 flex-1 overflow-y-auto p-4 scrollbar-mac">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <GalleryCard label="Buttons">
+          <div className="flex flex-wrap items-center gap-2">
+            <Button size="medium">Primary</Button>
+            <Button size="medium" variant="secondary">
+              Secondary
+            </Button>
+            <Button size="medium" variant="neutral">
+              Neutral
+            </Button>
+            <Button size="medium" variant="ghost">
+              Ghost
+            </Button>
+          </div>
+        </GalleryCard>
+
+        <GalleryCard label="Badges">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge>Default</Badge>
+            <Badge variant="secondary">Secondary</Badge>
+            <Badge variant="outline">Outline</Badge>
+            <Badge variant="destructive">Destructive</Badge>
+          </div>
+        </GalleryCard>
+
+        <GalleryCard label="Input">
+          <Input placeholder="you@acrylic.dev" />
+        </GalleryCard>
+
+        <GalleryCard label="Toggles">
+          <div className="flex items-center gap-5">
+            <Switch defaultChecked />
+            <Switch />
+            <Slider defaultValue={[60]} className="flex-1" />
+          </div>
+        </GalleryCard>
+
+        <GalleryCard label="Choice">
+          <RadioGroup defaultValue="comfortable" className="flex gap-4">
+            {["Default", "Comfortable", "Compact"].map((opt) => {
+              const value = opt.toLowerCase()
+              return (
+                <label
+                  key={value}
+                  className="flex items-center gap-2 text-[13px]"
+                >
+                  <RadioGroupItem value={value} />
+                  {opt}
+                </label>
+              )
+            })}
+          </RadioGroup>
+        </GalleryCard>
+
+        <GalleryCard label="Avatars">
+          <div className="flex -space-x-2">
+            {["jagger", "emily", "drew", "olivia"].map((u) => (
+              <Avatar
+                key={u}
+                className="size-8 ring-2 ring-[var(--background)]"
+              >
+                <AvatarImage src={`https://avatar.vercel.sh/${u}`} alt={u} />
+                <AvatarFallback>{u.slice(0, 2).toUpperCase()}</AvatarFallback>
+              </Avatar>
+            ))}
+          </div>
+        </GalleryCard>
+
+        <GalleryCard label="Overlays">
+          <div className="flex flex-wrap items-center gap-2">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="medium" variant="neutral">
+                  Dialog
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Frosted dialog</DialogTitle>
+                  <DialogDescription>
+                    A bounded overlay — safe to blur over the Backdrop.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="ghost" size="medium">
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Button size="medium">Confirm</Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button size="medium" variant="neutral">
+                  Sheet
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Side sheet</SheetTitle>
+                  <SheetDescription>
+                    Slides in from the edge, frosted over the desktop.
+                  </SheetDescription>
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button size="medium" variant="neutral">
+                  Popover
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="text-[13px]">
+                A small floating panel anchored to its trigger.
+              </PopoverContent>
+            </Popover>
+          </div>
+        </GalleryCard>
+
+        <GalleryCard label="Combobox">
+          <Combobox
+            options={FRAMEWORKS}
+            value={framework}
+            onValueChange={setFramework}
+            placeholder="Pick a framework…"
+          />
+        </GalleryCard>
+      </div>
+    </div>
+  )
+}
+
+/** The Loans board — the demo's default "app view". */
+function LoansBoard() {
+  return (
+    <div className="flex min-h-0 flex-1 items-start gap-4 overflow-auto p-4 scrollbar-mac">
+      {COLUMNS.map((col) => (
+        <LoanColumn key={col.name} name={col.name} loans={col.loans} />
+      ))}
+    </div>
   )
 }
 
@@ -186,6 +408,15 @@ function LoanColumn({ name, loans }: { name: string; loans: Loan[] }) {
  *  home page rather than fill the viewport. The shell itself is copied from the
  *  `sidebar-app` example. */
 export function SidebarBlock() {
+  // The demo is stateful so nav selection swaps the main pane live — same as the
+  // Tauri app. "Components" shows the gallery; everything else shows the board.
+  const [active, setActive] = React.useState("Home")
+  // Switching to the gallery mounts cmdk + the overlay primitives — a ~60ms first
+  // render that would jank the click frame. Drive the heavy pane off a deferred
+  // value so the nav highlight responds instantly while the pane render runs as a
+  // non-blocking transition.
+  const pane = React.useDeferredValue(active)
+
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-16">
       <div className="mb-8 text-center">
@@ -214,7 +445,7 @@ export function SidebarBlock() {
           {/* Separation via box-shadow, not a border (no layout edge, more refined).
               The drop shadow alone reads on light/acrylic; in dark it vanishes, so add
               a 1px light ring (0 0 0 1px) only there to outline the window. */}
-          <div className="flex w-full overflow-hidden rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.28)] dark:shadow-[0_12px_32px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.08)]">
+          <div className="flex h-[36rem] w-full overflow-hidden rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.28)] dark:shadow-[0_12px_32px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.08)]">
             <SidebarProvider className="min-h-0 w-full">
               <Sidebar collapsible="icon" className="rounded-l-xl">
                 {/* Header — team / workspace switcher */}
@@ -246,7 +477,18 @@ export function SidebarBlock() {
                       <SidebarMenu>
                         {NAV.map((item) => (
                           <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton isActive={item.isActive}>
+                            <SidebarMenuButton
+                              isActive={active === item.title}
+                              // Select on press (macOS source-list behaviour): the
+                              // row's press-feedback bg is the same --acr-chip as the
+                              // selected bg, so if selection waited for onClick
+                              // (pointer-up) the just-pressed row and the still-
+                              // selected row would both show the highlight for the
+                              // press duration. onClick stays for keyboard (Enter/
+                              // Space fire click, not pointerdown).
+                              onPointerDown={() => setActive(item.title)}
+                              onClick={() => setActive(item.title)}
+                            >
                               <item.icon />
                               <span>{item.title}</span>
                             </SidebarMenuButton>
@@ -268,7 +510,7 @@ export function SidebarBlock() {
                           </SidebarMenuButton>
                           <SidebarMenuSub>
                             <SidebarMenuSubItem>
-                              <SidebarMenuSubButton isActive>
+                              <SidebarMenuSubButton>
                                 Tokens
                               </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
@@ -323,19 +565,17 @@ export function SidebarBlock() {
                     orientation="vertical"
                     className="mr-1 !h-4 data-[orientation=vertical]:!h-4"
                   />
-                  <span className="text-[15px] font-semibold text-foreground">
-                    Loans
-                  </span>
-                  <Button size="medium" className="ms-auto">
-                    <Plus className="size-4" strokeWidth={2.5} />
-                    New loan
-                  </Button>
+                  {/* The demo dogfoods its own theme control: flip Light/Dark/Acrylic
+                      here and watch the glass shell react live. */}
+                  <ThemeSwitcher />
+                  {pane !== "Components" && (
+                    <Button size="medium" className="ms-auto">
+                      <Plus className="size-4" strokeWidth={2.5} />
+                      New loan
+                    </Button>
+                  )}
                 </header>
-                <div className="flex items-start gap-4 overflow-x-auto p-4 scrollbar-mac">
-                  {COLUMNS.map((col) => (
-                    <LoanColumn key={col.name} name={col.name} loans={col.loans} />
-                  ))}
-                </div>
+                {pane === "Components" ? <ComponentsGallery /> : <LoansBoard />}
               </SidebarInset>
             </SidebarProvider>
           </div>
