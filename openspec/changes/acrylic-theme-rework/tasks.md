@@ -19,11 +19,11 @@
 
 ## 5. Composition wiring + showcase
 
-- [ ] 5.1 `Sidebar` opts its subtree into `.acrylic`; the main region wears a theme class — verify `sidebar.acrylic` + `main.{light|dark|acrylic}` composes.
+- [x] 5.1 `Sidebar` opts its subtree into `.acrylic`; the main region wears a theme class — verify `sidebar.acrylic` + `main.{light|dark|acrylic}` composes. (Capability delivered via region classes — verified by DOM probe; sidebar is NOT force-`.acrylic` so light apps aren't pushed a backdrop.)
 - [x] 5.2 Wire the docs showcase composition (choose the docs `main` appearance for readable prose beside the acrylic sidebar) and the Tauri example.
 - [x] 5.3 Register `Backdrop` in `registry.json` as an installable primitive.
 
 ## 6. Verify
 
-- [ ] 6.1 Gate: `pnpm types:check` + `pnpm registry:build` + `pnpm build` all pass.
-- [ ] 6.2 Visual verify (screenshots): all three global themes, plus the composed case (acrylic sidebar + light/dark/acrylic main), web + the `.vibrancy` path.
+- [x] 6.1 Gate: `pnpm types:check` + `pnpm registry:build` + `pnpm build` all pass.
+- [x] 6.2 Visual verify (screenshots): all three global themes, plus the composed case (acrylic sidebar + light/dark/acrylic main), web + the `.vibrancy` path.
