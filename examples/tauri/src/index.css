@@ -82,15 +82,27 @@ body {
 }
 /* Acrylic keeps its shared token (white 0.06) — no black overlay re-tune. */
 
-/* ── Acrylic + native vibrancy: darken the content panel ──
-   Under vibrancy `--background` is transparent, so the inset shows the raw OS
-   acrylic — which reads too light and under-frosted for the main panel. The
-   webview can't add real blur over a transparent body (backdrop-filter no-op), so
-   the only lever is veil DENSITY: lay a dark tint over the native material so the
-   panel reads as dark frosted glass like the web. STARTING VALUE — tune the alpha
-   in the live window. (Sidebar already carries its own --sidebar dark tint.) */
+/* ── Acrylic + native vibrancy: inset differentiation ──
+   Base opacity (killing the see-through) is now owned by the native acrylic TINT
+   we bake in Rust (`apply_acrylic(Some((24,24,28,175)))` in lib.rs) — that darkens
+   the whole window's material so the desktop behind no longer bleeds through. This
+   veil therefore no longer has to create the dark frosted look on its own; it only
+   adds a slight deepening so the inset still reads as a distinct pane. Keep it well
+   BELOW the sidebar's --sidebar tint (0.55) so the inset stays the glassier content
+   pane, and low overall so it doesn't compound with the OS tint into a flat opaque
+   panel. STARTING VALUE — tune alongside ACRYLIC_TINT in the live window. */
 .acrylic.vibrancy [data-slot="sidebar-inset"] {
-  background-color: rgba(24, 24, 28, 0.42);
+  background-color: rgba(24, 24, 28, 0.76);
+}
+
+/* Deepen the sidebar rail under vibrancy. The inset veil (0.50) is dense enough to
+   kill bleed-through, which leaves it at nearly the same tone as the default
+   --sidebar (0.55) — so the sidebar/content boundary washes out. Rather than draw a
+   border, push the sidebar token darker + more opaque so the rail reads as the
+   distinctly darker pane (macOS source-list) and the boundary returns from tonal
+   contrast. STARTING VALUE — tune in the live window. */
+.acrylic.vibrancy {
+  --sidebar: rgba(18, 18, 22, 0.88);
 }
 
 /* Sidebar selection via the card-nesting DEPTH overlay (reused). The selected item

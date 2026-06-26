@@ -202,7 +202,9 @@ fn detect_and_apply_translucency(app: &tauri::App) -> bool {
         use window_vibrancy::apply_acrylic;
         let Some(w) = app.get_webview_window("main") else { return false };
         if !transparency_effects_enabled() { return false; } // opaque fallback
-        match apply_acrylic(&w, None) {
+        // Best-effort tint — but on Win11 this is largely ignored (see the pitfall
+        // below); the real bleed-through fix is a CSS veil on the panels.
+        match apply_acrylic(&w, Some((24, 24, 28, 200))) {
             Ok(()) => { install_always_active_subclass(&w); true }
             Err(_) => false,
         }
@@ -215,6 +217,31 @@ fn detect_and_apply_translucency(app: &tauri::App) -> bool {
 See `examples/tauri/src-tauri/src/lib.rs` for the full Windows helpers
 (`transparency_effects_enabled` reads the registry flag;
 `install_always_active_subclass` intercepts `WM_NCACTIVATE`).
+
+> **Pitfall — over a light background the window bleeds through, and on Win11 you
+> fix it from CSS, not the tint.** Under vibrancy `--background` is `transparent`, so
+> the panels show the raw OS acrylic. Over a sharp white desktop DWM's blur radius
+> isn't enough to dissolve it and you read the UI *edges* behind your window —
+> nothing like macOS, whose `NSVisualEffectView` carries a heavy built-in tint so you
+> only ever see soft colour. The obvious lever, `apply_acrylic`'s tint
+> `Some((r,g,b,a))`, *should* darken the material as alpha rises — but Win11's legacy
+> acrylic API largely **ignores** it (window-vibrancy warns the API is degraded on
+> 22000+), so on modern Windows varying the alpha does nothing visible. Fix it on the
+> webview side instead: paint a semi-opaque dark `background-color` on the panels
+> under `.acrylic.vibrancy`. A `background-color` veil *does* render over a
+> transparent body (unlike `backdrop-filter`, which is a no-op), and its alpha is the
+> real opacity knob. Tune two values — the content pane (inset) and the sidebar rail —
+> keeping the rail darker so the two panes stay distinct without needing a border:
+>
+> ```css
+> /* examples/tauri/src/index.css */
+> .acrylic.vibrancy [data-slot="sidebar-inset"] {
+>   background-color: rgba(24, 24, 28, 0.76); /* main panel */
+> }
+> .acrylic.vibrancy {
+>   --sidebar: rgba(18, 18, 22, 0.88);        /* darker rail */
+> }
+> ```
 
 ## 3. Flip `html.vibrancy` (frontend)
 

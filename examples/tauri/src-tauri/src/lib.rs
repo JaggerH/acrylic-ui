@@ -65,7 +65,18 @@ fn detect_and_apply_translucency(app: &tauri::App) -> bool {
             eprintln!("Windows 'Transparency effects' is off — opaque fallback");
             return false;
         }
-        match apply_acrylic(&window, None) {
+        // Best-effort dark tint for the native acrylic material. In THEORY higher
+        // alpha = less see-through; in practice Win11's legacy acrylic API
+        // (SetWindowCompositionAttribute) largely IGNORES this tint — window-vibrancy
+        // itself warns the API is degraded on Win11 22000+ — so varying the alpha
+        // produced no visible change on test hardware. The bleed-through is therefore
+        // killed on the WEBVIEW side instead: the `.acrylic.vibrancy` veils in
+        // examples/tauri/src/index.css paint a semi-opaque dark over the panels (a
+        // background-color veil DOES render over a transparent body, unlike
+        // backdrop-filter). That CSS is the real lever; this tint stays as a harmless
+        // best-effort for platforms/builds where it does take effect.
+        const ACRYLIC_TINT: (u8, u8, u8, u8) = (24, 24, 28, 200);
+        match apply_acrylic(&window, Some(ACRYLIC_TINT)) {
             Ok(()) => {
                 install_always_active_subclass(&window);
                 true
