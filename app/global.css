@@ -45,7 +45,10 @@
    is shared from :root and only re-tinted for .dark. */
 
 /* ---- Light (plain, default) ---- */
-:root {
+/* `:root, .light` so the light token block works both as the document default AND
+   as a region class (e.g. a `.light` main pane under an `.acrylic` document root). */
+:root,
+.light {
   --background: #ffffff;
   --foreground: rgba(0, 0, 0, 0.88);
   --muted-foreground: rgba(0, 0, 0, 0.52);
@@ -177,48 +180,50 @@
   --sidebar-border: rgba(255, 255, 255, 0.12);
 }
 
-/* ---- Acrylic (macOS-26 frosted — single appearance) ---- */
+/* ---- Acrylic (macOS-26 frosted — a DARK-based appearance) ---- */
+/* acrylic is a peer of light/dark: it reuses the dark foreground set (white text)
+   and makes every surface a DARK translucent material that frosts the Backdrop
+   behind it. `--background` is a dark frosted veil (translucent, not a flat color),
+   so a region that follows the theme background reads white-on-dark over the
+   Backdrop. There is no separate "content" material — the main pane just follows
+   --background like any themed region. */
 .acrylic {
-  --background: #ececec;
-  --foreground: rgba(0, 0, 0, 0.85);
-  --muted-foreground: rgba(0, 0, 0, 0.50);
-  --label-tertiary: rgba(0, 0, 0, 0.25);
-  --accent: #8e8e93;
-  --primary: #0088ff;
+  --background: rgba(24, 24, 28, 0.52);
+  --foreground: rgba(255, 255, 255, 0.92);
+  --muted-foreground: rgba(255, 255, 255, 0.55);
+  --label-tertiary: rgba(255, 255, 255, 0.28);
+  --accent: #98989d;
+  --primary: #0091ff;
   --primary-foreground: #ffffff;
-  --destructive: #ff383c;
-  --ring: #0088ff;
-  --border: rgba(60, 60, 67, 0.29);
+  --destructive: #ff4245;
+  --ring: #0091ff;
+  --border: rgba(255, 255, 255, 0.16);
 
-  /* Translucent material — these make `backdrop-blur` actually frost. */
-  --acr-chip: rgba(0, 0, 0, 0.10);
-  --acr-chip-hover: rgba(0, 0, 0, 0.14);
-  --acr-field: rgba(0, 0, 0, 0.05);
-  --acr-hover: rgba(0, 0, 0, 0.03);
-  --acr-border: rgba(60, 60, 67, 0.29);
-  --acr-border-soft: rgba(60, 60, 67, 0.18);
-  --acr-control: #ffffff;
-  --acr-control-hover: #f4f4f5;
-  --acr-control-border: rgba(0, 0, 0, 0.13);
-  /* Input fill — "Over-glass": a translucent tint + no border. This dark tint
-     recesses on the light glass page; the `.acrylic [data-slot=sidebar]` rule below
-     flips it to a light tint on the dark sidebar material. (A --foreground-relative
-     color-mix can't do this in one token: a custom property's var() is substituted
-     where it's DECLARED, not where used, so it wouldn't re-resolve per surface.) */
-  --acr-input: rgba(0, 0, 0, 0.07);
+  /* Dark translucent material — these make `backdrop-blur` frost over the Backdrop. */
+  --acr-chip: rgba(255, 255, 255, 0.10);
+  --acr-chip-hover: rgba(255, 255, 255, 0.14);
+  --acr-field: rgba(255, 255, 255, 0.06);
+  --acr-hover: rgba(255, 255, 255, 0.06);
+  --acr-border: rgba(255, 255, 255, 0.16);
+  --acr-border-soft: rgba(255, 255, 255, 0.10);
+  --acr-control: rgba(255, 255, 255, 0.14);
+  --acr-control-hover: rgba(255, 255, 255, 0.20);
+  --acr-control-border: rgba(255, 255, 255, 0.18);
+  /* Input fill — over-glass on the dark material: a light translucent tint, no border. */
+  --acr-input: rgba(255, 255, 255, 0.10);
   --acr-input-border: transparent;
 
-  --acr-surface: rgba(255, 255, 255, 0.55);
-  --acr-surface-hover: rgba(255, 255, 255, 0.75);
-  --acr-card-nested: rgba(0, 0, 0, 0.07); /* fill for a Card nested in a frosted surface */
-  --acr-panel: rgba(255, 255, 255, 0.62);
-  --acr-overlay: rgba(236, 236, 236, 0.45);
-  --acr-field-strong: rgba(255, 255, 255, 0.60);
+  --acr-surface: rgba(44, 44, 48, 0.55);
+  --acr-surface-hover: rgba(58, 58, 62, 0.60);
+  --acr-card-nested: rgba(255, 255, 255, 0.06); /* fill for a Card nested in a frosted surface */
+  --acr-panel: rgba(40, 40, 44, 0.60);
+  --acr-overlay: rgba(0, 0, 0, 0.50);
+  --acr-field-strong: rgba(255, 255, 255, 0.14);
   --acr-toast: var(--acr-surface); /* Sonner banner = the Card surface material */
-  --acr-solid: #1c1c1e;
-  --acr-solid-fg: #fafafa;
-  --acr-scrollbar: rgba(0, 0, 0, 0.28);
-  --acr-scrollbar-hover: rgba(0, 0, 0, 0.45);
+  --acr-solid: #f5f5f7;
+  --acr-solid-fg: #1c1c1e;
+  --acr-scrollbar: rgba(255, 255, 255, 0.28);
+  --acr-scrollbar-hover: rgba(255, 255, 255, 0.45);
 
   /* Sidebar — translucent dark + white text so the component's backdrop-blur frosts
      it; under Tauri vibrancy the native material shows through. */
@@ -230,6 +235,48 @@
   --sidebar-active: rgba(255, 255, 255, 0.14);
   --sidebar-control: rgba(255, 255, 255, 0.10);
   --sidebar-border: rgba(255, 255, 255, 0.12);
+}
+
+/* ===== Acrylic Backdrop =====
+   The Backdrop is the body-level base layer the frosted chrome blurs over. It shows
+   ONLY under the Acrylic theme on the web; hidden in plain themes; hidden again under
+   native vibrancy (the OS material shows instead). Acrylic regions are translucent
+   (reveal it); light/dark regions are opaque (cover it) — no per-region backdrop. */
+[data-slot="backdrop"] { display: none; }
+.acrylic [data-slot="backdrop"] { display: block; }
+.acrylic.vibrancy [data-slot="backdrop"] { display: none; }
+
+/* Under Acrylic the page base goes transparent so the Backdrop (or, under vibrancy,
+   the native OS material) shows through the frosted chrome. */
+.acrylic body { background: transparent; }
+
+/* Docs (Fumadocs) under Acrylic — Fumadocs paints prose + chrome with its OWN
+   --color-fd-* tokens (our --foreground doesn't reach them), so point them at the
+   acrylic dark-glass palette for white-on-dark prose and matching chrome. App-specific
+   (Fumadocs), not part of the registry theme. */
+.acrylic {
+  --color-fd-background: transparent;
+  --color-fd-foreground: rgba(255, 255, 255, 0.92);
+  --color-fd-muted: rgba(255, 255, 255, 0.08);
+  --color-fd-muted-foreground: rgba(255, 255, 255, 0.55);
+  --color-fd-border: rgba(255, 255, 255, 0.14);
+  --color-fd-card: var(--acr-surface);
+  --color-fd-popover: var(--acr-panel);
+  --color-fd-accent: rgba(255, 255, 255, 0.10);
+  --color-fd-accent-foreground: rgba(255, 255, 255, 0.92);
+  --color-fd-secondary: rgba(255, 255, 255, 0.10);
+  --color-fd-primary: var(--primary);
+}
+
+/* Docs showcase: the main article column is Fumadocs' #nd-page (not one of our
+   components). Under Acrylic it follows the theme `--background` (the dark frosted
+   veil) so it frosts the Backdrop like any SidebarInset region — this is theme
+   wiring, NOT a content material. To compose the other way (readable dark-on-light
+   prose beside the acrylic sidebar), give this region a `.light` class instead. */
+.acrylic #nd-page {
+  background-color: var(--background);
+  backdrop-filter: blur(40px) saturate(1.4);
+  -webkit-backdrop-filter: blur(40px) saturate(1.4);
 }
 
 /* Nested frosted Card. A Card inside any frosted surface — Card carries
