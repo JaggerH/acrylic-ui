@@ -8,6 +8,11 @@ import { Slot } from "@radix-ui/react-slot"
 import { cn } from "@/lib/utils"
 import { useIsMobile } from "./use-mobile"
 import { Button } from "./button"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "./hover-card"
 import { Input } from "./input"
 import { Separator } from "./separator"
 import {
@@ -486,14 +491,60 @@ function SidebarMenu({ className, ...props }: React.ComponentProps<"ul">) {
   )
 }
 
-function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
+function SidebarMenuItem({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<"li">) {
+  const { state, isMobile } = useSidebar()
+  const collapsed = state === "collapsed" && !isMobile
+
+  // Collapsed icon rail: the inline SidebarMenuSub is `hidden`, which would strand
+  // every nested route. If this item pairs a button with a sub-menu, surface that
+  // sub-menu as a flyout HoverCard anchored to the button so the sub-items stay
+  // reachable on hover. The flyout renders the SAME SidebarMenuSub/SubButton the
+  // expanded rail uses, so it reads identically — only the left indent is dropped
+  // (no nesting context inside the popover).
+  const items = React.Children.toArray(children)
+  const sub = items.find(
+    (child) => React.isValidElement(child) && child.type === SidebarMenuSub
+  )
+  const button = items.find(
+    (child) => React.isValidElement(child) && child.type === SidebarMenuButton
+  )
+
+  if (collapsed && sub && button) {
+    return (
+      <li
+        data-slot="sidebar-menu-item"
+        data-sidebar="menu-item"
+        className={cn("group/menu-item relative", className)}
+        {...props}
+      >
+        <HoverCard openDelay={100} closeDelay={150}>
+          <HoverCardTrigger asChild>{button}</HoverCardTrigger>
+          <HoverCardContent
+            side="right"
+            align="start"
+            sideOffset={8}
+            className="w-48 p-1 [&_[data-slot=sidebar-menu-sub-button]]:pl-2"
+          >
+            {sub}
+          </HoverCardContent>
+        </HoverCard>
+      </li>
+    )
+  }
+
   return (
     <li
       data-slot="sidebar-menu-item"
       data-sidebar="menu-item"
       className={cn("group/menu-item relative", className)}
       {...props}
-    />
+    >
+      {children}
+    </li>
   )
 }
 

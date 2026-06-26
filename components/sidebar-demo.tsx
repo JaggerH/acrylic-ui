@@ -277,6 +277,8 @@ export function SidebarDemo({
                     <span>Design System</span>
                     <ChevronRight className="ml-auto" />
                   </SidebarMenuButton>
+                  {/* Collapsed-rail flyout is automatic — SidebarMenuItem surfaces
+                      this sub-menu in a HoverCard when the sidebar is icon-only. */}
                   <SidebarMenuSub>
                     <SidebarMenuSubItem>
                       <SidebarMenuSubButton>Tokens</SidebarMenuSubButton>
@@ -310,7 +312,15 @@ export function SidebarDemo({
         </SidebarFooter>
       </Sidebar>
 
-      <SidebarInset className={cn("acr-frosted min-w-0", framed && "rounded-r-xl")}>
+      {/* `backdrop-brightness-150` lifts the frosted main panel — over the dark
+          Backdrop the `--background` veil alone reads too dim; brightening the
+          backdrop the blur samples makes the glass read lighter/airier. */}
+      <SidebarInset
+        className={cn(
+          "acr-frosted min-w-0 backdrop-brightness-150",
+          framed && "rounded-r-xl"
+        )}
+      >
         <Toaster />
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-[var(--acr-border)] px-4">
           <SidebarTrigger />

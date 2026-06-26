@@ -379,6 +379,25 @@
       ]
     },
     {
+      "name": "item",
+      "type": "registry:ui",
+      "title": "Acrylic Item",
+      "description": "A flexible shadcn Item row for settings, files, people, notifications, and compact object summaries. Preserves the upstream Item composition API (Item/ItemMedia/ItemHeader/ItemContent/ItemTitle/ItemDescription/ItemActions/ItemFooter/ItemGroup/ItemSeparator) and maps row surfaces, borders, and compact typography to the Acrylic token language.",
+      "dependencies": [
+        "@radix-ui/react-slot"
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/item.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/item.tsx"
+        }
+      ]
+    },
+    {
       "name": "slider",
       "type": "registry:ui",
       "title": "Acrylic Slider",
@@ -643,6 +662,7 @@
       "registryDependencies": [
         "https://acrylic-ui.vercel.app/r/acrylic.json",
         "https://acrylic-ui.vercel.app/r/button.json",
+        "https://acrylic-ui.vercel.app/r/hover-card.json",
         "https://acrylic-ui.vercel.app/r/input.json",
         "https://acrylic-ui.vercel.app/r/separator.json",
         "https://acrylic-ui.vercel.app/r/sheet.json",

@@ -1,0 +1,280 @@
+---
+title: Item
+description: A versatile component for displaying content with media, title, description, and actions.
+---
+
+A versatile component for displaying content with media, title, description,
+and actions.
+
+<ComponentPreview name="item-demo" />
+
+The `Item` component is a straightforward flex container that can house nearly
+any type of content. Use it to display a title, description, and actions. Group
+it with the `ItemGroup` component to create a list of items.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/item.json
+```
+
+## Usage
+
+```tsx
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/acrylic/item"
+import { Button } from "@/components/acrylic/button"
+
+<Item>
+  <ItemMedia variant="icon">
+    <Icon />
+  </ItemMedia>
+  <ItemContent>
+    <ItemTitle>Title</ItemTitle>
+    <ItemDescription>Description</ItemDescription>
+  </ItemContent>
+  <ItemActions>
+    <Button>Action</Button>
+  </ItemActions>
+</Item>
+```
+
+## Composition
+
+Use the following components to compose an item.
+
+```txt
+ItemGroup
+└── Item
+    ├── ItemHeader
+    ├── ItemMedia
+    ├── ItemContent
+    │   ├── ItemTitle
+    │   └── ItemDescription
+    ├── ItemActions
+    └── ItemFooter
+```
+
+## Item vs Field
+
+Use `Field` if you need to display a form input such as a checkbox, input,
+radio, or select.
+
+If you only need to display content such as a title, description, and actions,
+use `Item`.
+
+## Variant
+
+Use the `variant` prop to change the visual style of the item.
+
+<ComponentPreview name="item-variants" />
+
+## Size
+
+Use the `size` prop to change the size of the item.
+
+<ComponentPreview name="item-sizes" />
+
+## Examples
+
+### Icon
+
+Use `ItemMedia` with `variant="icon"` to display an icon.
+
+<ComponentPreview name="item-actions" />
+
+### Avatar
+
+Use `ItemMedia` with `variant="avatar"` to display an avatar.
+
+<ComponentPreview name="item-avatar" />
+
+### Image
+
+Use `ItemMedia` with `variant="image"` to display an image.
+
+<ComponentPreview name="item-image" />
+
+### Group
+
+Use `ItemGroup` to group items together.
+
+<ComponentPreview name="item-group" />
+
+### Header
+
+Use `ItemHeader` to add a header to an item.
+
+<ComponentPreview name="item-header" />
+
+### Link
+
+Use the `asChild` prop to render the item as a link. The focus state will be
+applied to the anchor element.
+
+<ComponentPreview name="item-link" />
+
+```tsx
+<Item asChild>
+  <a href="/dashboard">
+    <ItemMedia variant="icon">
+      <HomeIcon />
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>Dashboard</ItemTitle>
+      <ItemDescription>Overview of your account and activity.</ItemDescription>
+    </ItemContent>
+  </a>
+</Item>
+```
+
+### Dropdown
+
+Use `ItemActions` to render a dropdown menu.
+
+<ComponentPreview name="item-dropdown" />
+
+## RTL
+
+To enable RTL support, add `dir="rtl"` to the item or item group.
+
+<ComponentPreview name="item-rtl" />
+
+## API Reference
+
+### Item
+
+The main item component.
+
+| Prop | Type | Default |
+| --- | --- | --- |
+| `variant` | `"default" \| "outline" \| "muted"` | `"default"` |
+| `size` | `"default" \| "sm" \| "xs"` | `"default"` |
+| `asChild` | `boolean` | `false` |
+
+```tsx
+<Item>
+  <ItemContent>
+    <ItemTitle>Item</ItemTitle>
+    <ItemDescription>Item description</ItemDescription>
+  </ItemContent>
+</Item>
+```
+
+### ItemGroup
+
+Use `ItemGroup` to group items together.
+
+```tsx
+<ItemGroup>
+  <Item />
+  <Item />
+</ItemGroup>
+```
+
+### ItemSeparator
+
+Use `ItemSeparator` to add a separator between items.
+
+```tsx
+<ItemGroup>
+  <Item />
+  <ItemSeparator />
+  <Item />
+</ItemGroup>
+```
+
+### ItemMedia
+
+Use `ItemMedia` to display media content such as icons, images, or avatars.
+
+| Prop | Type | Default |
+| --- | --- | --- |
+| `variant` | `"default" \| "icon" \| "image" \| "avatar"` | `"default"` |
+
+```tsx
+<ItemMedia variant="icon">
+  <Icon />
+</ItemMedia>
+```
+
+```tsx
+<ItemMedia variant="image">
+  <img src="..." alt="..." />
+</ItemMedia>
+```
+
+### ItemContent
+
+Use `ItemContent` to wrap the title and description.
+
+```tsx
+<ItemContent>
+  <ItemTitle>Title</ItemTitle>
+  <ItemDescription>Description</ItemDescription>
+</ItemContent>
+```
+
+### ItemTitle
+
+Use `ItemTitle` to display the title.
+
+```tsx
+<ItemTitle>Item Title</ItemTitle>
+```
+
+### ItemDescription
+
+Use `ItemDescription` to display the description.
+
+```tsx
+<ItemDescription>Item description</ItemDescription>
+```
+
+### ItemActions
+
+Use `ItemActions` to display actions.
+
+```tsx
+<ItemActions>
+  <Button>Action</Button>
+</ItemActions>
+```
+
+### ItemHeader
+
+Use `ItemHeader` to display a header.
+
+```tsx
+<Item>
+  <ItemHeader>Header</ItemHeader>
+  <ItemContent>...</ItemContent>
+</Item>
+```
+
+### ItemFooter
+
+Use `ItemFooter` to display a footer.
+
+```tsx
+<Item>
+  <ItemContent>...</ItemContent>
+  <ItemFooter>Footer</ItemFooter>
+</Item>
+```
+
+## Acrylic differences
+
+- Installation uses the Acrylic registry URL instead of
+  `pnpm dlx shadcn@latest add item`.
+- Imports use `@/components/acrylic/item` instead of `@/components/ui/item`.
+- The structure, examples, and API reference follow the shadcn/ui Item docs.
+- The component is styled with Acrylic tokens: `outline` uses
+  the same `acr-frosted` / `--acr-surface` surface as Card; nested, muted, and
+  media surfaces use `--acr-card-nested`.

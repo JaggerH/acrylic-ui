@@ -117,8 +117,10 @@
   --acr-input: #1c1c1e;            /* Input fill — Content Area (opaque) */
   --acr-input-border: rgba(255, 255, 255, 0.14);
 
-  --acr-surface: #161618;
-  --acr-surface-hover: #1d1d1f;
+  /* Lifted a step above --background (#0a0a0a) so a Card reads as a distinct
+     surface on a plain dark page — at #161618 it merged into the background. */
+  --acr-surface: #222226;
+  --acr-surface-hover: #2a2a2e;
   --acr-card-nested: rgba(255, 255, 255, 0.05); /* fill for a Card nested in a surface */
   --acr-panel: #1c1c1e;
   --acr-overlay: rgba(0, 0, 0, 0.60);
@@ -234,14 +236,16 @@ html.vibrancy body {
    the native OS material) shows through the frosted chrome. */
 .acrylic body { background: transparent; }
 
-/* Nested frosted Card. A Card inside any frosted surface — Card carries
-   `.acr-frosted` itself, so Card-in-Card is automatic; other frosted containers
-   (e.g. a sidebar inset) opt in by adding the class. The inner Card can't
+/* Nested frosted surfaces. A Card or Item inside any frosted surface — Card and
+   outline Item carry `.acr-frosted` themselves, so nested surfaces are automatic;
+   other frosted containers (e.g. a sidebar inset) opt in by adding the class.
+   The inner surface can't
    usefully re-blur an already-blurred backdrop (no high-frequency detail left to
    soften), so it drops its own blur and becomes a translucent tint that lets the
    outer frost show through. Each nesting level darkens by one step, and that
    step IS the visible layer boundary — no border required. */
-.acr-frosted [data-slot="card"] {
+.acr-frosted [data-slot="card"],
+.acr-frosted [data-slot="item"] {
   background-color: var(--acr-card-nested);
   /* Drop the inherited blur by zeroing Tailwind's blur variable rather than
      writing `backdrop-filter: none` — lightningcss collapses a none/`-webkit-`
