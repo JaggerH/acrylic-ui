@@ -222,14 +222,6 @@ html.vibrancy.modal-acrylic {
 html.vibrancy body {
   transition: background-color 0.18s ease;
 }
-/* Modal overlays (Dialog / AlertDialog / Sheet) read --acr-overlay-blur in their
-   inline backdrop-filter (default 20px). Under native vibrancy the modal-acrylic
-   body repaint gives that blur real pixels to work on, so push it to a heavy
-   macOS-style 72px — vibrancy-only, because over the plain-web Backdrop 72px would
-   smear the wallpaper into a near-black mask. */
-html.vibrancy {
-  --acr-overlay-blur: 72px;
-}
 
 /* ===== Acrylic Backdrop =====
    The Backdrop is the body-level base layer the frosted chrome blurs over. It shows
@@ -243,6 +235,16 @@ html.vibrancy {
 /* Under Acrylic the page base goes transparent so the Backdrop (or, under vibrancy,
    the native OS material) shows through the frosted chrome. */
 .acrylic body { background: transparent; }
+
+/* …EXCEPT while a modal is open under native vibrancy. The modal-acrylic hook flips
+   the --background token opaque (html.vibrancy.modal-acrylic, above) so the overlay's
+   backdrop-filter has real pixels to frost and the sharp app UI behind is occluded —
+   but the rule just above (`.acrylic body { transparent }`, specificity 0,1,1) would
+   otherwise win over the only rule that applies the token to the body
+   (`body { background: var(--background) }`, 0,0,1), keeping the body transparent and
+   the repaint dead. Re-assert it here at higher specificity (0,3,1). Vibrancy-gated,
+   so this is inert on the web — a Tauri-only fix. */
+.acrylic.vibrancy.modal-acrylic body { background: var(--background); }
 
 /* Nested frosted surfaces. A Card or Item inside any frosted surface — Card and
    outline Item carry `.acr-frosted` themselves, so nested surfaces are automatic;
