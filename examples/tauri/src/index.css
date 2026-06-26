@@ -4,6 +4,11 @@
    so their utility classes are emitted into this app's stylesheet. */
 @import "../../../registry/acrylic/acrylic.css";
 @source "../../../registry/acrylic";
+/* The shared demo (sidebar shell + gallery) lives in the repo's `components/` dir,
+   imported via the `@` alias. Tailwind must scan it too, or utility classes used
+   ONLY there (the avatar accent fills, demo-specific spacing, …) are never emitted
+   into this app's stylesheet and those elements render unstyled. */
+@source "../../../components";
 @source ".";
 
 /* App-level surface. The `background: var(--background)` application is the
@@ -39,23 +44,28 @@ body {
    it by baking the light/dark difference into `background-color` instead — the
    only thing that actually renders over the native acrylic. Sidebar = darker,
    more solid rail; inset = brighter, glassier content (mirrors the homepage). */
-/* The sidebar/inset hard-code white text (--foreground:#fff) for their assumed-DARK
-   panel — correct on web and in dark mode, but in LIGHT vibrancy the panels stay
-   light (the brightness(.35/.6) darkening is a backdrop-filter no-op over the
-   transparent body), so white text is unreadable and the segmented control's white
-   active pill swallows its white label entirely. Restore the theme's dark
-   foreground here — light vibrancy only; web and dark mode keep their white text. */
-.vibrancy:not(.dark) [data-slot="sidebar"],
-.vibrancy:not(.dark) [data-slot="sidebar-inner"],
-.vibrancy:not(.dark) [data-slot="sidebar-inset"] {
+/* The sidebar/inset hard-code white text for their assumed-DARK panel — correct on
+   web and in dark mode, but in LIGHT vibrancy the panels stay light (the
+   brightness(.35/.6) darkening is a backdrop-filter no-op over the transparent
+   body), so white text is unreadable. Restore the theme's dark foreground here.
+   `.light` ONLY — NOT `:not(.dark)`: Acrylic is now a dark-based theme (white text
+   over the native dark material), so it must be excluded or its text gets forced
+   dark and stops flipping when you switch into it. */
+.vibrancy.light [data-slot="sidebar"],
+.vibrancy.light [data-slot="sidebar-inner"],
+.vibrancy.light [data-slot="sidebar-inset"] {
   --foreground: rgba(0, 0, 0, 0.85);
   --muted-foreground: rgba(0, 0, 0, 0.5);
 }
 
-.vibrancy [data-slot="sidebar-inner"] {
+/* Bake the sidebar/inset brightness difference into background-color (the
+   backdrop-filter no-op workaround) — light & dark ONLY. Under Acrylic the shared
+   translucent tokens (`--sidebar`, transparent `--background`) already frost the
+   native material, so leave those panels alone. */
+.vibrancy:not(.acrylic) [data-slot="sidebar-inner"] {
   background-color: rgba(0, 0, 0, 0.45);
 }
-.vibrancy [data-slot="sidebar-inset"] {
+.vibrancy:not(.acrylic) [data-slot="sidebar-inset"] {
   background-color: rgba(200, 200, 200, 0.30);
 }
 
@@ -64,12 +74,13 @@ body {
    too faint over the bright vibrancy material — bump it; keep the dark step. Web
    (:root / .dark) is untouched, so this is a Tauri-only re-tune. Both the sidebar
    selection AND any nested Card read this token, so they stay consistent. */
-.vibrancy:not(.dark) {
+.vibrancy.light {
   --acr-card-nested: rgba(0, 0, 0, 0.16); /* tauri light — deeper than web's 0.07 */
 }
 .dark.vibrancy {
   --acr-card-nested: rgba(0, 0, 0, 0.22); /* tauri dark — the value you liked */
 }
+/* Acrylic keeps its shared token (white 0.06) — no black overlay re-tune. */
 
 /* Sidebar selection via the card-nesting DEPTH overlay (reused). The selected item
    sits "one layer deeper" than the rail, exactly like a nested Card — using the

@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, type ReactNode } from "react"
 import { Bell, Copy, MoreHorizontal, Plus, Scissors, Trash2 } from "lucide-react"
 import { toast } from "sonner"
@@ -14,21 +16,6 @@ import { Input } from "@/registry/acrylic/input"
 import { Switch } from "@/registry/acrylic/switch"
 import { Slider } from "@/registry/acrylic/slider"
 import { RadioGroup, RadioGroupItem } from "@/registry/acrylic/radio-group"
-import { Separator } from "@/registry/acrylic/separator"
-import { Avatar, AvatarFallback } from "@/registry/acrylic/avatar"
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/registry/acrylic/card"
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  TooltipProvider,
-} from "@/registry/acrylic/tooltip"
 import {
   Dialog,
   DialogTrigger,
@@ -79,6 +66,11 @@ import {
   ContextMenuLabel,
 } from "@/registry/acrylic/context-menu"
 
+// Shared, single-source component gallery — the "Components" pane of the sidebar
+// demo. Rendered verbatim by the web landing demo and the Tauri playground (the
+// only difference between those hosts is the Backdrop: web paints a wallpaper,
+// Tauri goes transparent for native vibrancy). Built to grow: drop more Sections in.
+
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="space-y-3">
@@ -90,12 +82,11 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   )
 }
 
-export default function ComponentsGallery() {
+export function ComponentsGallery() {
   const [seg, setSeg] = useState("week")
 
   return (
-    <TooltipProvider>
-      <div className="flex max-w-4xl flex-col gap-8 p-6">
+    <div className="flex max-w-4xl flex-col gap-8 p-6">
         <Section title="Buttons">
           <Button>Default</Button>
           <Button variant="neutral">Neutral</Button>
@@ -109,7 +100,7 @@ export default function ComponentsGallery() {
           <Button size="large">Large</Button>
         </Section>
 
-        <Section title="Button Group — segmented (active state ← the one we debugged)">
+        <Section title="Button Group — segmented">
           <ButtonGroup variant="segmented" value={seg} onValueChange={setSeg}>
             <ButtonGroupItem value="day">Day</ButtonGroupItem>
             <ButtonGroupItem value="week">Week</ButtonGroupItem>
@@ -254,34 +245,6 @@ export default function ComponentsGallery() {
           </ContextMenu>
         </Section>
 
-        <Section title="Display">
-          <Card className="flex w-56 flex-col gap-2 py-4">
-            <CardHeader>
-              <CardTitle>Frosted card</CardTitle>
-              <CardDescription>A translucent surface.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Card className="flex flex-col gap-1 py-3">
-                <CardHeader>
-                  <CardTitle className="text-[13px]">Nested card</CardTitle>
-                </CardHeader>
-              </Card>
-            </CardContent>
-          </Card>
-          <div className="flex items-center gap-3">
-            <Avatar className="size-9">
-              <AvatarFallback>JH</AvatarFallback>
-            </Avatar>
-            <Separator orientation="vertical" className="!h-8" />
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="neutral">Hover me</Button>
-              </TooltipTrigger>
-              <TooltipContent>Tooltip content</TooltipContent>
-            </Tooltip>
-          </div>
-        </Section>
-
         <Section title="Feedback">
           <Button
             variant="neutral"
@@ -296,6 +259,7 @@ export default function ComponentsGallery() {
           </Button>
         </Section>
       </div>
-    </TooltipProvider>
   )
 }
+
+export default ComponentsGallery

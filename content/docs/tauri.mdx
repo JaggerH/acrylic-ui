@@ -40,6 +40,86 @@ overlay paint, and the Inter font (so text matches this docs site). Read on only
 if you're adding vibrancy to an **existing** app instead of starting from the
 example.
 
+## Sharing the components (single source of truth)
+
+The playground does **not** copy or re-fork any component — it renders the *same*
+files the web docs render. The whole app is just a thin host whose only job is the
+Backdrop/vibrancy wiring; everything else (the sidebar demo, the gallery, the
+tokens) is shared. Three things make that work, and two of them bit us — read the
+pitfalls.
+
+**1. Alias `@` to the repo root** so the app imports the real registry + shared
+demo components, not copies:
+
+```ts
+// vite.config.ts
+const repoRoot = fileURLToPath(new URL("../../", import.meta.url))
+export default defineConfig({
+  resolve: { alias: { "@": repoRoot }, dedupe: ["react", "react-dom"] },
+  server: { fs: { allow: [repoRoot] } }, // let Vite read out-of-project sources
+})
+```
+
+Now `@/registry/acrylic/*`, `@/components/*`, and `@/lib/utils` all resolve to the
+one source of truth. `dedupe` keeps a single React instance even though the
+imported files live in the root package.
+
+**2. `@import` the registry CSS and `@source` *every* dir you render from:**
+
+```css
+/* src/index.css */
+@import "../../../registry/acrylic/acrylic.css";  /* tokens + .vibrancy flips */
+@source "../../../registry/acrylic";              /* component class usage */
+@source "../../../components";                     /* the SHARED demo lives here */
+@source ".";                                       /* this app's own files */
+```
+
+> **Pitfall — the missing `@source` silently drops classes.** Tailwind v4 only
+> emits a utility class if it appears in a **scanned** file. A class used *only* in
+> a file outside every `@source` (e.g. an avatar accent fill that lives just in the
+> shared demo) is never generated, and that element renders unstyled — no error, no
+> warning. When we moved the demo into the repo's `components/` dir, its
+> demo-specific classes vanished from the Tauri build until we added
+> `@source "../../../components"`. **Whenever you import a component from a new
+> directory, add that directory to `@source`.**
+
+**3. Lock the theme to Acrylic.** `next-themes` is framework-agnostic despite the
+name — it works in a plain Vite app. But the app is **always Acrylic**: that is the
+entire point of running over native vibrancy, so a Light/Dark switch would only
+cover the OS material. Use `forcedTheme="acrylic"` and tell the shared demo to hide
+its switcher:
+
+```tsx
+// src/App.tsx
+import { ThemeProvider } from "next-themes"
+import { Backdrop } from "@/registry/acrylic/backdrop"
+import { SidebarDemo } from "@/components/sidebar-demo"
+
+export default function App() {
+  return (
+    <ThemeProvider attribute="class" forcedTheme="acrylic" enableSystem={false}>
+      <Backdrop />                          {/* CSS-gated: wallpaper on web, hidden under vibrancy */}
+      <SidebarDemo showThemeSwitcher={false} />
+    </ThemeProvider>
+  )
+}
+```
+
+`<Backdrop>` is the single host-specific concern: on the web it paints the
+wallpaper the chrome frosts over; under vibrancy the registry CSS hides it so the
+native OS material shows instead. Everything above it is identical to the web — the
+web showcase keeps the 3-way switcher (to demo all three themes); the app drops it.
+
+> **Pitfall — vibrancy compensation must exclude the Acrylic theme.** Acrylic is a
+> **dark-based** theme (white text over the native dark material). Any Tauri-local
+> readability fix written as `.vibrancy:not(.dark) { … }` — e.g. restoring a dark
+> `--foreground` because *light* panels stay light under vibrancy — will *also*
+> catch Acrylic and force its text dark, so it stops flipping when you switch into
+> it. Scope those rules to `.vibrancy.light` (light only), not `:not(.dark)`, and
+> let Acrylic render through the shared dark tokens. The symptom is telltale: *some*
+> text changes on theme switch (anything keyed off `--sidebar-foreground`) and some
+> does not (anything keyed off `--foreground`).
+
 ## The gotcha (read this first)
 
 CSS `backdrop-filter` only blurs pixels the **web page** paints. Under a
