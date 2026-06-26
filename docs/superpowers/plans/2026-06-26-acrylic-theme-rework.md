@@ -2,6 +2,7 @@
 change: acrylic-theme-rework
 design-doc: docs/superpowers/specs/2026-06-26-acrylic-theme-rework-design.md
 base-ref: 479370802d2a5ab374e775ba95e3295d57fb7d8d
+archived-with: 2026-06-26-acrylic-theme-rework
 ---
 
 # Implementation plan — acrylic theme rework

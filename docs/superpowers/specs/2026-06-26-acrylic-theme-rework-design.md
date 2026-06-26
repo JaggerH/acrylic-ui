@@ -6,6 +6,8 @@ canonical_spec: openspec
 change: acrylic-theme-rework
 openspec-design: openspec/changes/acrylic-theme-rework/design.md
 date: 2026-06-26
+archived-with: 2026-06-26-acrylic-theme-rework
+status: final
 ---
 
 # Acrylic theme rework — technical design
