@@ -30,12 +30,12 @@ function Backdrop({
         // colour gives the frost something to blur (the macOS "vibrancy over wallpaper"
         // read). Override via `children` for a brand wallpaper.
         <>
-          <div className="absolute inset-0 bg-[#0c0c10]" />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#241d52] via-[#0c0c10] to-[#3a1133]" />
-          <div className="absolute -left-32 -top-32 size-[40rem] rounded-full bg-[#5b3df0] opacity-30 blur-3xl" />
-          <div className="absolute -right-24 -top-24 size-[34rem] rounded-full bg-[#0a84ff] opacity-25 blur-3xl" />
-          <div className="absolute bottom-[-12rem] left-1/4 size-[40rem] rounded-full bg-[#c2185b] opacity-25 blur-3xl" />
-          <div className="absolute -bottom-24 right-1/4 size-[30rem] rounded-full bg-[#1f7a4d] opacity-25 blur-3xl" />
+          <div className="absolute inset-0 bg-[#15122a]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#3a2f86] via-[#241b48] to-[#7a2a5c]" />
+          <div className="absolute -left-32 -top-32 size-[40rem] rounded-full bg-[#7c6bff] opacity-45 blur-3xl" />
+          <div className="absolute -right-24 -top-24 size-[34rem] rounded-full bg-[#2b9dff] opacity-40 blur-3xl" />
+          <div className="absolute bottom-[-12rem] left-1/4 size-[40rem] rounded-full bg-[#ff5c93] opacity-38 blur-3xl" />
+          <div className="absolute -bottom-24 right-1/4 size-[30rem] rounded-full bg-[#34d57e] opacity-33 blur-3xl" />
         </>
       )}
     </div>
