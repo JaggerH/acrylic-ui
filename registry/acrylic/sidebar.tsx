@@ -328,12 +328,12 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
     <main
       data-slot="sidebar-inset"
       className={cn(
-        // The main panel is the THEME-FOLLOWING variable (the sidebar is the fixed
-        // dark skeleton). bg-[var(--background)] makes it opaque white in light,
-        // opaque near-black in dark, and #ececec in acrylic — which flips to
-        // transparent under Tauri vibrancy (html.vibrancy) so the native OS material
-        // shows through. Pass a custom bg to override (tailwind-merge wins).
-        "relative flex w-full flex-1 flex-col bg-[var(--background)] text-foreground",
+        // The main panel just follows the theme background — no dedicated content
+        // material. Opaque in plain light/dark (the backdrop-blur is a no-op); in
+        // Acrylic `--background` is a dark translucent veil, so it frosts the Backdrop
+        // and reads white-on-dark. Under Tauri vibrancy the native OS material shows
+        // through instead. Pass a custom bg to override (tailwind-merge wins).
+        "relative flex w-full flex-1 flex-col bg-[var(--background)] text-foreground backdrop-blur-2xl",
         "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2",
         className
       )}

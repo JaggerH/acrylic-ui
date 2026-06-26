@@ -3,6 +3,7 @@ import './global.css';
 import { Inter } from 'next/font/google';
 import type { Metadata } from 'next';
 import { appName } from '@/lib/shared';
+import { Backdrop } from '@/registry/acrylic/backdrop';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -20,6 +21,9 @@ export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
+        {/* Backdrop wallpaper — paints only under the Acrylic theme on the web
+            (CSS-gated); the frosted chrome blurs over it. */}
+        <Backdrop />
         {/* Three themes — the showcase defaults to Acrylic; light/dark are the
             plain (non-frosted) baselines. next-themes writes the theme name as a
             class on <html>, which the scopes in global.css key off. */}

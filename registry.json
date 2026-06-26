@@ -135,7 +135,7 @@
       "name": "badge",
       "type": "registry:ui",
       "title": "Acrylic Badge",
-      "description": "A small pill label — shadcn's Badge with its base styling copied verbatim (shape, sizing, focus ring, the six variants), recolored to the Acrylic theme tokens: accent default, neutral-chip secondary, system-red destructive, hairline outline. Flips light/dark via the theme.",
+      "description": "A small pill label \u2014 shadcn's Badge with its base styling copied verbatim (shape, sizing, focus ring, the six variants), recolored to the Acrylic theme tokens: accent default, neutral-chip secondary, system-red destructive, hairline outline. Flips light/dark via the theme.",
       "dependencies": [
         "@radix-ui/react-slot",
         "class-variance-authority"
@@ -243,7 +243,7 @@
       "name": "sonner",
       "type": "registry:ui",
       "title": "Acrylic Sonner",
-      "description": "Sonner toasts restyled as the macOS 26 notification banner: a 344px frosted-acrylic card (--acr-toast + backdrop-blur), 16px radius, SFPro-Bold/13 title, top-center. Theme-provider-agnostic — reads the active theme from the `.dark` class on <html> (works with next-themes, shadcn's Vite ThemeProvider, or a single-theme app) so there's no next-themes dependency or import swap. Inherits the host font. Mount the <Toaster /> once near the app root, then call toast() from sonner.",
+      "description": "Sonner toasts restyled as the macOS 26 notification banner: a 344px frosted-acrylic card (--acr-toast + backdrop-blur), 16px radius, SFPro-Bold/13 title, top-center. Theme-provider-agnostic \u2014 reads the active theme from the `.dark` class on <html> (works with next-themes, shadcn's Vite ThemeProvider, or a single-theme app) so there's no next-themes dependency or import swap. Inherits the host font. Mount the <Toaster /> once near the app root, then call toast() from sonner.",
       "dependencies": [
         "sonner"
       ],
@@ -281,7 +281,7 @@
       "name": "hover-card",
       "type": "registry:ui",
       "title": "Acrylic Hover Card",
-      "description": "Frosted floating card revealed on hover (translucent material + backdrop-blur) — a peek panel for previews and rich link cards. Radix HoverCard under the hood.",
+      "description": "Frosted floating card revealed on hover (translucent material + backdrop-blur) \u2014 a peek panel for previews and rich link cards. Radix HoverCard under the hood.",
       "dependencies": [
         "@radix-ui/react-hover-card"
       ],
@@ -521,7 +521,7 @@
       "name": "context-menu",
       "type": "registry:ui",
       "title": "Acrylic Context Menu",
-      "description": "The macOS 26 Menu (right-click / control-click) on the frosted Popover material — the same glass as Combobox/Select. 13px SF-Medium rows lifted from the kit's 13pt Menu: a 6px-radius highlight bar, a section header, checkbox + radio items, submenus with a trailing chevron, a hairline separator, a muted keyboard-shortcut column, and a destructive row. Radix Context Menu; colors flip light/dark via the Acrylic theme tokens.",
+      "description": "The macOS 26 Menu (right-click / control-click) on the frosted Popover material \u2014 the same glass as Combobox/Select. 13px SF-Medium rows lifted from the kit's 13pt Menu: a 6px-radius highlight bar, a section header, checkbox + radio items, submenus with a trailing chevron, a hairline separator, a muted keyboard-shortcut column, and a destructive row. Radix Context Menu; colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": [
         "@radix-ui/react-context-menu",
         "lucide-react"
@@ -541,7 +541,7 @@
       "name": "avatar",
       "type": "registry:ui",
       "title": "Acrylic Avatar",
-      "description": "shadcn's Avatar copied verbatim (Radix, with its built-in image-load / initials-fallback handling), recolored to the Acrylic tokens — the fallback sits on the neutral chip. Default circular (macOS user pictures); pass rounded-lg for the squircle. Powers the Sidebar footer user item.",
+      "description": "shadcn's Avatar copied verbatim (Radix, with its built-in image-load / initials-fallback handling), recolored to the Acrylic tokens \u2014 the fallback sits on the neutral chip. Default circular (macOS user pictures); pass rounded-lg for the squircle. Powers the Sidebar footer user item.",
       "dependencies": [
         "@radix-ui/react-avatar"
       ],
@@ -634,7 +634,7 @@
       "name": "sidebar",
       "type": "registry:ui",
       "title": "Acrylic Sidebar",
-      "description": "The macOS 26 sidebar — shadcn's Sidebar composition (Provider with cookie state + ⌘B toggle, off-canvas/icon/none collapse, mobile Sheet, groups, menu/sub-menu, rail, inset) restyled to the kit: a 240px frosted-vibrancy panel (--acr-surface + backdrop-blur), three densities (Small 24/11, Medium 32/13, Large 40/15) on the menu-button sm/default/lg sizes, and an accent-pill selected row. Colors flip light/dark via the Acrylic theme tokens.",
+      "description": "The macOS 26 sidebar \u2014 shadcn's Sidebar composition (Provider with cookie state + \u2318B toggle, off-canvas/icon/none collapse, mobile Sheet, groups, menu/sub-menu, rail, inset) restyled to the kit: a 240px frosted-vibrancy panel (--acr-surface + backdrop-blur), three densities (Small 24/11, Medium 32/13, Large 40/15) on the menu-button sm/default/lg sizes, and an accent-pill selected row. Colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": [
         "@radix-ui/react-slot",
         "class-variance-authority",
@@ -659,6 +659,22 @@
           "path": "registry/acrylic/use-mobile.ts",
           "type": "registry:hook",
           "target": "components/acrylic/use-mobile.ts"
+        }
+      ]
+    },
+    {
+      "name": "backdrop",
+      "type": "registry:ui",
+      "title": "Acrylic Backdrop",
+      "description": "The body-level base layer the frosted acrylic chrome blurs over. A fixed, full-bleed wallpaper that paints only under the Acrylic theme on the web; hidden in plain light/dark, and hidden again under native (Tauri) vibrancy so the OS material shows instead. Acrylic regions are translucent and reveal it; light/dark regions are opaque and cover it. Pass children for a custom wallpaper.",
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/backdrop.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/backdrop.tsx"
         }
       ]
     }
