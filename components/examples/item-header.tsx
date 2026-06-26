@@ -31,7 +31,7 @@ const models = [
 
 export default function ItemHeaderDemo() {
   return (
-    <ItemGroup className="w-full max-w-md">
+    <ItemGroup className="grid w-full max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
       {models.map((model) => (
         <Item key={model.name} variant="outline">
           <ItemHeader>
