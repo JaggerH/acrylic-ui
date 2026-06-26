@@ -211,9 +211,10 @@ export function SidebarBlock() {
       <div className="relative overflow-hidden rounded-2xl">
         {/* Application shell */}
         <div className="relative p-6 sm:p-12">
-          {/* Hairline border (theme-following --border) frames the window so it
-              separates from the page even in dark, where the drop shadow vanishes. */}
-          <div className="flex w-full overflow-hidden rounded-xl border border-[var(--border)] shadow-[0_8px_24px_rgba(0,0,0,0.28)]">
+          {/* Separation via box-shadow, not a border (no layout edge, more refined).
+              The drop shadow alone reads on light/acrylic; in dark it vanishes, so add
+              a 1px light ring (0 0 0 1px) only there to outline the window. */}
+          <div className="flex w-full overflow-hidden rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.28)] dark:shadow-[0_12px_32px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.08)]">
             <SidebarProvider className="min-h-0 w-full">
               <Sidebar collapsible="icon" className="rounded-l-xl">
                 {/* Header — team / workspace switcher */}

@@ -255,28 +255,49 @@
    acrylic dark-glass palette for white-on-dark prose and matching chrome. App-specific
    (Fumadocs), not part of the registry theme. */
 .acrylic {
+  /* Foreground/text tokens MATCH Fumadocs' dark values exactly (acrylic is dark-based),
+     so docs prose/chrome/TOC read identically to dark mode. Surface tokens stay acrylic
+     (translucent) so the docs frost the Backdrop. */
   --color-fd-background: transparent;
-  --color-fd-foreground: rgba(255, 255, 255, 0.92);
+  --color-fd-foreground: hsl(0, 0%, 92%);
   --color-fd-muted: rgba(255, 255, 255, 0.08);
-  --color-fd-muted-foreground: rgba(255, 255, 255, 0.55);
+  --color-fd-muted-foreground: hsla(0, 0%, 70%, 0.8);
   --color-fd-border: rgba(255, 255, 255, 0.14);
   --color-fd-card: var(--acr-surface);
+  --color-fd-card-foreground: hsl(0, 0%, 98%);
   --color-fd-popover: var(--acr-panel);
+  --color-fd-popover-foreground: hsl(0, 0%, 86.9%);
   --color-fd-accent: rgba(255, 255, 255, 0.10);
-  --color-fd-accent-foreground: rgba(255, 255, 255, 0.92);
+  --color-fd-accent-foreground: hsl(0, 0%, 90%);
   --color-fd-secondary: rgba(255, 255, 255, 0.10);
-  --color-fd-primary: var(--primary);
+  --color-fd-secondary-foreground: hsl(0, 0%, 92%);
+  --color-fd-primary: hsl(0, 0%, 98%);
+  --color-fd-ring: hsl(0, 0%, 54.9%);
 }
 
-/* Docs showcase: the main article column is Fumadocs' #nd-page (not one of our
-   components). Under Acrylic it follows the theme `--background` (the dark frosted
-   veil) so it frosts the Backdrop like any SidebarInset region — this is theme
-   wiring, NOT a content material. To compose the other way (readable dark-on-light
-   prose beside the acrylic sidebar), give this region a `.light` class instead. */
-.acrylic #nd-page {
+/* The WHOLE docs content area (#nd-docs-layout grid) wears the demo main-panel
+   material — the dark `--background` veil + blur(40px) (= SidebarInset's
+   `bg-[var(--background)] backdrop-blur-2xl`) — so the entire main panel reads as one
+   frosted window. The sidebar floats on top with its own (denser) glass; the article
+   #nd-page stays transparent so it shows this single frosted plane (no double frost). */
+.acrylic #nd-docs-layout {
   background-color: var(--background);
-  backdrop-filter: blur(40px) saturate(1.4);
-  -webkit-backdrop-filter: blur(40px) saturate(1.4);
+  /* blur is applied via the Tailwind `backdrop-blur-2xl` utility on the layout's
+     containerProps (docs-layout.tsx) — lightningcss mangles a hand-written
+     backdrop-filter pair here, dropping the standard property. */
+}
+
+/* Shiki code highlighting: Fumadocs swaps light/dark syntax colors on the `.dark`
+   class. Acrylic is dark-based, so apply the DARK syntax palette under `.acrylic`
+   too — otherwise code blocks render the light theme (dark text) on the dark frosted
+   box and look wrong. Mirrors Fumadocs' own `.dark .shiki` rules. */
+.acrylic .shiki:not(.not-fumadocs-codeblock *) code span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style);
+}
+.acrylic code.shiki:not(.not-fumadocs-code *) span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style);
 }
 
 /* Nested frosted Card. A Card inside any frosted surface — Card carries

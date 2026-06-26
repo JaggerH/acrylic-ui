@@ -33,8 +33,12 @@ export function AcrylicDocsLayout({
       // sets --fd-sidebar-width; our custom root doesn't). 15rem = the kit width;
       // collapse it on mobile where our desktop aside is hidden.
       containerProps={{
+        // backdrop-blur-2xl frosts the whole #nd-docs-layout over the Backdrop under
+        // acrylic (paired with the .acrylic #nd-docs-layout --background veil in CSS).
+        // No-op in light/dark (the layout bg is transparent there). Applied as a
+        // Tailwind utility because a raw backdrop-filter is mangled by lightningcss.
         className:
-          "[--fd-layout-width:100%] [--fd-sidebar-width:15rem] max-md:[--fd-sidebar-width:0px]",
+          "backdrop-blur-2xl [--fd-layout-width:100%] [--fd-sidebar-width:15rem] max-md:[--fd-sidebar-width:0px]",
       }}
       slots={{
         sidebar: {
