@@ -1,12 +1,13 @@
 ---
 title: Button
-description: macOS 26 Push Button — 5 variants × 5 sizes (heights 16/20/24/28/36) × states.
+description: macOS 26 Push Button — 6 variants × 5 sizes (heights 16/20/24/28/36) × states.
 ---
 
 macOS-style push buttons lifted from the Apple macOS 26 UI Kit: a prominent
 solid `default`, three low-emphasis tinted colors (`secondary`, `destructive`,
-`neutral`), and a borderless `ghost`. Per-size corner radius and an orthogonal
-`icon` shape, theme-aware via the Acrylic token set (colors flip light/dark).
+`neutral`), a borderless neutral `ghost`, and a borderless accent `link`.
+Per-size corner radius and an orthogonal `icon` shape, theme-aware via the
+Acrylic token set (colors flip light/dark).
 
 ## Installation
 
@@ -32,7 +33,8 @@ import { Button } from "@/components/acrylic/button"
 | `secondary` | Bordered Secondary | 10% accent tint, accent label | low |
 | `destructive` | Bordered Destructive | 25% red tint, red label (System Red) | low |
 | `neutral` | Neutral | translucent gray fill, foreground label | low |
-| `ghost` | Borderless | text only, no fill at rest | low |
+| `ghost` | Borderless Neutral | foreground label/glyph, no fill at rest | low |
+| `link` | Borderless Accent | accent label, no button chrome | low |
 
 ## Sizes
 

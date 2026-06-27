@@ -11,6 +11,7 @@ export default function ButtonDemo() {
       <Button variant="destructive">Destructive</Button>
       <Button variant="neutral">Neutral</Button>
       <Button variant="ghost">Ghost</Button>
+      <Button variant="link">Link</Button>
       <Button icon variant="neutral" aria-label="Next">
         <ArrowRight />
       </Button>

@@ -3,7 +3,7 @@
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/registry/acrylic/button"
 
-const variants = ["default", "secondary", "destructive", "neutral", "ghost"] as const
+const variants = ["default", "secondary", "destructive", "neutral", "ghost", "link"] as const
 const sizes = ["mini", "small", "medium", "large", "xl"] as const
 
 // The full matrix: every variant (rows) in every macOS control size (columns),

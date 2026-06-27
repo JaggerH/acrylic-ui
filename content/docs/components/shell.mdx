@@ -8,11 +8,11 @@ geometry of the app frame: source-list columns, split panes, toolbars, and
 scrollable content. Sidebar primitives can be used inside that frame for
 source-list content and styling, but Shell remains the layout owner.
 
-This boundary matters: `Sidebar`'s full collapsible app-layout mode uses gap
-reservation, absolute positioning, mobile sheets, cookie state, and keyboard
-shortcuts. Those are correct for standalone app navigation, but they should not
-silently change a pixel-level Shell window. In Shell, collapse is a Shell geometry
-concern; Sidebar contributes the menu vocabulary and visual surface.
+This boundary matters: `Sidebar`'s collapsible layout reads `--sidebar-width`
+and `--sidebar-width-icon` to size both its layout reservation and visible rail.
+Inside Shell, those geometry tokens should come from Shell, not ad-hoc width
+classes on the Sidebar itself. That keeps the sidebar gap, visible surface, and
+collapsed icon rail aligned.
 
 ## Installation
 
@@ -45,8 +45,8 @@ import {
   SidebarMenuItem,
 } from "@/components/acrylic/sidebar"
 
-<Shell>
-  <Sidebar collapsible="none" className="w-[150px]">
+<Shell sidebarWidth={150} sidebarCollapsedWidth={48}>
+  <Sidebar collapsible="icon">
     <SidebarHeader>{/* source list header */}</SidebarHeader>
     <SidebarContent>
       <SidebarMenu>
@@ -89,7 +89,7 @@ import {
 
 ```txt
 Shell
-├── Sidebar (content/surface vocabulary; Shell owns the column geometry)
+├── Sidebar (source-list region; width tokens owned by Shell)
 │   ├── SidebarHeader
 │   └── SidebarContent
 └── ShellInset
@@ -122,7 +122,7 @@ Use the same structure for a Notes-style source list, note list, and editor.
 | part | role |
 | --- | --- |
 | `Shell` | the outer app frame and geometry owner; pass `variant="inset"` for a rounded preview/window surface |
-| `Sidebar` | source-list content and surface vocabulary inside the shell; use the static pane path (`collapsible="none"`) unless Shell explicitly adapts collapse |
+| `Sidebar` | source-list region inside the shell; may use `collapsible`, but Shell owns `sidebarWidth` and `sidebarCollapsedWidth` |
 | `ShellInset` | the main region beside the sidebar |
 | `ShellNavbar` | an inset-level navigation/toolbar row that can span multiple panels |
 | `ShellBody` | the horizontal region below an inset-level navbar |
@@ -136,11 +136,12 @@ Use the same structure for a Notes-style source list, note list, and editor.
 ## Notes
 
 - `Shell` owns pane geometry. Source-list width, collapsed width, and adjacent
-  panel flow should be decided at the Shell layer, not by a child sidebar
-  inserting layout gaps or absolute-positioned containers.
-- Use Sidebar's full `collapsible="icon"` / `offcanvas` behavior for standalone
-  app navigation. Inside a pixel-level Shell window, prefer `collapsible="none"`
-  plus Shell-controlled width/collapse so the source list remains a real pane.
+  panel flow should be decided at the Shell layer. Pass `sidebarWidth` and
+  `sidebarCollapsedWidth` to Shell so Sidebar's gap reservation and visible rail
+  read the same geometry source.
+- Avoid setting source-list width only with `className` on `Sidebar` inside Shell:
+  that can resize the visible rail without updating Sidebar's internal gap
+  reservation.
 - Sidebar content primitives (`SidebarHeader`, `SidebarContent`,
   `SidebarMenuButton`, badges, groups) are still the right vocabulary for
   source-list rows inside Shell.

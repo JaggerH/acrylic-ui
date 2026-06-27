@@ -39,47 +39,32 @@ import { cn } from "@/lib/utils"
 // radius = well − the uniform 2px inset), font 10/11/13/13/13. Set `size` ONCE on
 // <ButtonGroup>; it flows through context to the well, segments, pill and dividers.
 type ButtonGroupSize = "mini" | "small" | "medium" | "large" | "xl"
+type ButtonGroupShape = "auto" | "rect" | "capsule"
 
 const SIZE: Record<
   ButtonGroupSize,
   {
     well: string
-    childrenL: string
-    childrenR: string
-    childrenAll: string
-    pill: string
     item: string
     divider: string
     text: string
   }
 > = {
   mini: {
-    well: "rounded-[4px] p-0.5",
-    childrenL: "[&>*:first-child]:rounded-l-[2px]",
-    childrenR: "[&>*:last-child]:rounded-r-[2px]",
-    childrenAll: "[&>*]:rounded-[2px]",
-    pill: "rounded-[2px]",
-    item: "h-4 gap-1 rounded-[2px] px-2 text-[10px] [&_svg]:size-3",
+    well: "p-0.5",
+    item: "h-4 gap-1 px-2 text-[10px] [&_svg]:size-3",
     divider: "inset-y-0.5",
     text: "px-2 text-[10px]",
   },
   small: {
-    well: "rounded-[5px] p-0.5",
-    childrenL: "[&>*:first-child]:rounded-l-[3px]",
-    childrenR: "[&>*:last-child]:rounded-r-[3px]",
-    childrenAll: "[&>*]:rounded-[3px]",
-    pill: "rounded-[3px]",
-    item: "h-5 gap-1 rounded-[3px] px-2.5 text-[11px] [&_svg]:size-3",
+    well: "p-0.5",
+    item: "h-5 gap-1 px-2.5 text-[11px] [&_svg]:size-3",
     divider: "inset-y-0.5",
     text: "px-2.5 text-[11px]",
   },
   medium: {
-    well: "rounded-[6px] p-0.5",
-    childrenL: "[&>*:first-child]:rounded-l-[4px]",
-    childrenR: "[&>*:last-child]:rounded-r-[4px]",
-    childrenAll: "[&>*]:rounded-[4px]",
-    pill: "rounded-[4px]",
-    item: "h-6 gap-1.5 rounded-[4px] px-4 text-[13px] [&_svg]:size-3.5",
+    well: "p-0.5",
+    item: "h-6 gap-1.5 px-4 text-[13px] [&_svg]:size-3.5",
     divider: "inset-y-1",
     text: "px-3 text-[13px]",
   },
@@ -87,29 +72,167 @@ const SIZE: Record<
   // i.e. a FULL capsule — so the well and pill are rounded-full (concentric capsules
   // across the 2px inset), not a 12 / 16px not-quite-round rect.
   large: {
-    well: "rounded-full p-0.5",
-    childrenL: "[&>*:first-child]:rounded-l-full",
-    childrenR: "[&>*:last-child]:rounded-r-full",
-    childrenAll: "[&>*]:rounded-full",
-    pill: "rounded-full",
-    item: "h-7 gap-1.5 rounded-full px-4 text-[13px] [&_svg]:size-4",
+    well: "p-0.5",
+    item: "h-7 gap-1.5 px-4 text-[13px] [&_svg]:size-4",
     divider: "inset-y-1.5",
     text: "px-3.5 text-[13px]",
   },
   xl: {
-    well: "rounded-full p-0.5",
-    childrenL: "[&>*:first-child]:rounded-l-full",
-    childrenR: "[&>*:last-child]:rounded-r-full",
-    childrenAll: "[&>*]:rounded-full",
-    pill: "rounded-full",
-    item: "h-9 gap-2 rounded-full px-5 text-[13px] [&_svg]:size-4",
+    well: "p-0.5",
+    item: "h-9 gap-2 px-5 text-[13px] [&_svg]:size-4",
     divider: "inset-y-2",
     text: "px-4 text-[13px]",
   },
 }
 
+const SHAPE: Record<
+  ButtonGroupShape,
+  Record<
+    ButtonGroupSize,
+    {
+      well: string
+      childrenL: string
+      childrenR: string
+      childrenAll: string
+      pill: string
+      item: string
+    }
+  >
+> = {
+  auto: {
+    mini: {
+      well: "rounded-[4px]",
+      childrenL: "[&>*:first-child]:rounded-l-[2px]",
+      childrenR: "[&>*:last-child]:rounded-r-[2px]",
+      childrenAll: "[&>*]:rounded-[2px]",
+      pill: "rounded-[2px]",
+      item: "rounded-[2px]",
+    },
+    small: {
+      well: "rounded-[5px]",
+      childrenL: "[&>*:first-child]:rounded-l-[3px]",
+      childrenR: "[&>*:last-child]:rounded-r-[3px]",
+      childrenAll: "[&>*]:rounded-[3px]",
+      pill: "rounded-[3px]",
+      item: "rounded-[3px]",
+    },
+    medium: {
+      well: "rounded-[6px]",
+      childrenL: "[&>*:first-child]:rounded-l-[4px]",
+      childrenR: "[&>*:last-child]:rounded-r-[4px]",
+      childrenAll: "[&>*]:rounded-[4px]",
+      pill: "rounded-[4px]",
+      item: "rounded-[4px]",
+    },
+    large: {
+      well: "rounded-full",
+      childrenL: "[&>*:first-child]:rounded-l-full",
+      childrenR: "[&>*:last-child]:rounded-r-full",
+      childrenAll: "[&>*]:rounded-full",
+      pill: "rounded-full",
+      item: "rounded-full",
+    },
+    xl: {
+      well: "rounded-full",
+      childrenL: "[&>*:first-child]:rounded-l-full",
+      childrenR: "[&>*:last-child]:rounded-r-full",
+      childrenAll: "[&>*]:rounded-full",
+      pill: "rounded-full",
+      item: "rounded-full",
+    },
+  },
+  rect: {
+    mini: {
+      well: "rounded-[4px]",
+      childrenL: "[&>*:first-child]:rounded-l-[2px]",
+      childrenR: "[&>*:last-child]:rounded-r-[2px]",
+      childrenAll: "[&>*]:rounded-[2px]",
+      pill: "rounded-[2px]",
+      item: "rounded-[2px]",
+    },
+    small: {
+      well: "rounded-[5px]",
+      childrenL: "[&>*:first-child]:rounded-l-[3px]",
+      childrenR: "[&>*:last-child]:rounded-r-[3px]",
+      childrenAll: "[&>*]:rounded-[3px]",
+      pill: "rounded-[3px]",
+      item: "rounded-[3px]",
+    },
+    medium: {
+      well: "rounded-[6px]",
+      childrenL: "[&>*:first-child]:rounded-l-[4px]",
+      childrenR: "[&>*:last-child]:rounded-r-[4px]",
+      childrenAll: "[&>*]:rounded-[4px]",
+      pill: "rounded-[4px]",
+      item: "rounded-[4px]",
+    },
+    large: {
+      well: "rounded-[8px]",
+      childrenL: "[&>*:first-child]:rounded-l-[6px]",
+      childrenR: "[&>*:last-child]:rounded-r-[6px]",
+      childrenAll: "[&>*]:rounded-[6px]",
+      pill: "rounded-[6px]",
+      item: "rounded-[6px]",
+    },
+    xl: {
+      well: "rounded-[10px]",
+      childrenL: "[&>*:first-child]:rounded-l-[8px]",
+      childrenR: "[&>*:last-child]:rounded-r-[8px]",
+      childrenAll: "[&>*]:rounded-[8px]",
+      pill: "rounded-[8px]",
+      item: "rounded-[8px]",
+    },
+  },
+  capsule: {
+    mini: {
+      well: "rounded-full",
+      childrenL: "[&>*:first-child]:rounded-l-full",
+      childrenR: "[&>*:last-child]:rounded-r-full",
+      childrenAll: "[&>*]:rounded-full",
+      pill: "rounded-full",
+      item: "rounded-full",
+    },
+    small: {
+      well: "rounded-full",
+      childrenL: "[&>*:first-child]:rounded-l-full",
+      childrenR: "[&>*:last-child]:rounded-r-full",
+      childrenAll: "[&>*]:rounded-full",
+      pill: "rounded-full",
+      item: "rounded-full",
+    },
+    medium: {
+      well: "rounded-full",
+      childrenL: "[&>*:first-child]:rounded-l-full",
+      childrenR: "[&>*:last-child]:rounded-r-full",
+      childrenAll: "[&>*]:rounded-full",
+      pill: "rounded-full",
+      item: "rounded-full",
+    },
+    large: {
+      well: "rounded-full",
+      childrenL: "[&>*:first-child]:rounded-l-full",
+      childrenR: "[&>*:last-child]:rounded-r-full",
+      childrenAll: "[&>*]:rounded-full",
+      pill: "rounded-full",
+      item: "rounded-full",
+    },
+    xl: {
+      well: "rounded-full",
+      childrenL: "[&>*:first-child]:rounded-l-full",
+      childrenR: "[&>*:last-child]:rounded-r-full",
+      childrenAll: "[&>*]:rounded-full",
+      pill: "rounded-full",
+      item: "rounded-full",
+    },
+  },
+}
+
 const ButtonGroupSizeContext = React.createContext<ButtonGroupSize>("medium")
+const ButtonGroupShapeContext = React.createContext<ButtonGroupShape>("auto")
 const useButtonGroupSize = () => React.useContext(ButtonGroupSizeContext)
+const useButtonGroupShape = () => React.useContext(ButtonGroupShapeContext)
+const shapeClasses = (shape: ButtonGroupShape, size: ButtonGroupSize) =>
+  SHAPE[shape][size]
 
 // The well structure per variant — fill, inset behaviour, child-fill stripping. The
 // radius/inset come from SIZE (applied at render), so the cva no longer hard-codes
@@ -196,16 +319,23 @@ type ButtonGroupBaseProps = Omit<
   VariantProps<typeof buttonGroupVariants> & {
     /** One of the five kit sizes — scales the well, segments, pill and dividers. */
     size?: ButtonGroupSize
+    /** Corner geometry. `auto` follows the kit; `rect` keeps large toolbars square-ish. */
+    shape?: ButtonGroupShape
   }
 
 // Well radius/inset for the uncontrolled (non-sliding) paths. `split` has no shared
 // well, so no radius/inset; attached/multi round their outer children; segmented
 // (uncontrolled fallback) rounds every child.
-function wellClasses(variant: "attached" | "segmented" | "ghost" | "split", size: ButtonGroupSize) {
+function wellClasses(
+  variant: "attached" | "segmented" | "ghost" | "split",
+  size: ButtonGroupSize,
+  shape: ButtonGroupShape
+) {
   const s = SIZE[size]
+  const g = shapeClasses(shape, size)
   if (variant === "split") return ""
-  if (variant === "segmented") return cn(s.well, s.childrenAll)
-  return cn(s.well, s.childrenL, s.childrenR)
+  if (variant === "segmented") return cn(s.well, g.well, g.childrenAll)
+  return cn(s.well, g.well, g.childrenL, g.childrenR)
 }
 
 // Single-select (default): segmented radio with the sliding white pill.
@@ -236,12 +366,13 @@ type ButtonGroupProps = ButtonGroupSingleProps | ButtonGroupMultipleProps
 function ButtonGroup(props: ButtonGroupProps) {
   // Multi-select toggle group (type="multiple").
   if (props.type === "multiple") {
-    const { className, size, value, defaultValue, onValueChange, children, ...rest } =
+    const { className, size, shape, value, defaultValue, onValueChange, children, ...rest } =
       props
     return (
       <MultiToggleGroup
         className={className}
         size={size}
+        shape={shape}
         value={value}
         defaultValue={defaultValue}
         onValueChange={onValueChange}
@@ -256,6 +387,7 @@ function ButtonGroup(props: ButtonGroupProps) {
     className,
     variant,
     size = "medium",
+    shape = "auto",
     value,
     defaultValue,
     onValueChange,
@@ -277,6 +409,7 @@ function ButtonGroup(props: ButtonGroupProps) {
       <SegmentedSlider
         className={className}
         size={size}
+        shape={shape}
         value={value}
         defaultValue={defaultValue}
         onValueChange={onValueChange}
@@ -289,16 +422,23 @@ function ButtonGroup(props: ButtonGroupProps) {
 
   return (
     <ButtonGroupSizeContext.Provider value={size}>
-      <div
-        role="group"
-        data-slot="button-group"
-        data-variant={variant ?? "attached"}
-        data-size={size}
-        className={cn(buttonGroupVariants({ variant }), wellClasses(variant ?? "attached", size), className)}
-        {...rest}
-      >
-        {children}
-      </div>
+      <ButtonGroupShapeContext.Provider value={shape}>
+        <div
+          role="group"
+          data-slot="button-group"
+          data-variant={variant ?? "attached"}
+          data-size={size}
+          data-shape={shape}
+          className={cn(
+            buttonGroupVariants({ variant }),
+            wellClasses(variant ?? "attached", size, shape),
+            className
+          )}
+          {...rest}
+        >
+          {children}
+        </div>
+      </ButtonGroupShapeContext.Provider>
     </ButtonGroupSizeContext.Provider>
   )
 }
@@ -309,6 +449,7 @@ function ButtonGroup(props: ButtonGroupProps) {
 function MultiToggleGroup({
   className,
   size = "medium",
+  shape = "auto",
   value: valueProp,
   defaultValue,
   onValueChange,
@@ -316,6 +457,7 @@ function MultiToggleGroup({
   ...props
 }: Omit<ButtonGroupMultipleProps, "type">) {
   const s = SIZE[size]
+  const g = shapeClasses(shape, size)
   const [uncontrolled, setUncontrolled] = React.useState<string[]>(
     defaultValue ?? []
   )
@@ -339,22 +481,26 @@ function MultiToggleGroup({
       data-slot="button-group"
       data-variant="multiple"
       data-size={size}
+      data-shape={shape}
       className={cn(
         // Same shared gray well as the attached variant; flush items with the outer
         // corners rounded to the well's inner radius (well − 2px inset), per size.
         "inline-flex isolate items-stretch bg-[var(--acr-field)] text-foreground",
         "[&>*]:rounded-none",
         s.well,
-        s.childrenL,
-        s.childrenR,
+        g.well,
+        g.childrenL,
+        g.childrenR,
         className
       )}
       {...props}
     >
       <ButtonGroupSizeContext.Provider value={size}>
-        <MultiSelectContext.Provider value={{ value, toggle }}>
-          {children}
-        </MultiSelectContext.Provider>
+        <ButtonGroupShapeContext.Provider value={shape}>
+          <MultiSelectContext.Provider value={{ value, toggle }}>
+            {children}
+          </MultiSelectContext.Provider>
+        </ButtonGroupShapeContext.Provider>
       </ButtonGroupSizeContext.Provider>
     </div>
   )
@@ -367,6 +513,7 @@ function MultiToggleGroup({
 function SegmentedSlider({
   className,
   size = "medium",
+  shape = "auto",
   value: valueProp,
   defaultValue,
   onValueChange,
@@ -374,6 +521,7 @@ function SegmentedSlider({
   ...props
 }: Omit<ButtonGroupSingleProps, "type" | "variant">) {
   const s = SIZE[size]
+  const g = shapeClasses(shape, size)
   const items = React.useMemo(
     () =>
       React.Children.toArray(children).filter(
@@ -428,12 +576,14 @@ function SegmentedSlider({
       data-slot="button-group"
       data-variant="segmented"
       data-size={size}
+      data-shape={shape}
       onKeyDown={onKeyDown}
       className={cn(
         // The well: gray track with a uniform 2px inset on all four sides (radius
         // per size).
         "inline-flex isolate bg-[var(--acr-field)] text-foreground",
         s.well,
+        g.well,
         className
       )}
       {...props}
@@ -457,7 +607,7 @@ function SegmentedSlider({
           data-slot="button-group-indicator"
           className={cn(
             "pointer-events-none absolute left-0 top-0 z-0 h-full bg-[var(--acr-control)]",
-            s.pill,
+            g.pill,
             "shadow-[0_1px_2px_rgba(0,0,0,0.16),0_0_0_0.5px_rgba(0,0,0,0.04)]",
             "transition-[transform,width] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)]",
             "motion-reduce:transition-none"
@@ -491,9 +641,11 @@ function SegmentedSlider({
             )
           })}
         <ButtonGroupSizeContext.Provider value={size}>
-          <SegmentedContext.Provider value={{ value, setValue }}>
-            {children}
-          </SegmentedContext.Provider>
+          <ButtonGroupShapeContext.Provider value={shape}>
+            <SegmentedContext.Provider value={{ value, setValue }}>
+              {children}
+            </SegmentedContext.Provider>
+          </ButtonGroupShapeContext.Provider>
         </ButtonGroupSizeContext.Provider>
       </div>
     </div>
@@ -518,6 +670,7 @@ function ButtonGroupItem({
 }: ButtonGroupItemProps) {
   const ctx = React.useContext(SegmentedContext)
   const size = useButtonGroupSize()
+  const shape = useButtonGroupShape()
   const selected = ctx?.value === value
   const Comp = asChild ? Slot : "button"
   return (
@@ -537,6 +690,7 @@ function ButtonGroupItem({
       className={cn(
         "relative z-10 inline-flex flex-1 select-none items-center justify-center whitespace-nowrap",
         SIZE[size].item,
+        shapeClasses(shape, size).item,
         "font-medium outline-none transition-colors",
         "bg-transparent text-foreground focus-visible:ring-2 focus-visible:ring-ring/50",
         // Disabled: clearly dimmed + inert, so an unavailable segment reads as
@@ -574,6 +728,7 @@ function ButtonGroupToggle({
 }: ButtonGroupToggleProps) {
   const ctx = React.useContext(MultiSelectContext)
   const size = useButtonGroupSize()
+  const shape = useButtonGroupShape()
   const on = ctx?.value.includes(value) ?? false
   const Comp = asChild ? Slot : "button"
   return (
@@ -589,6 +744,7 @@ function ButtonGroupToggle({
       className={cn(
         "relative z-10 inline-flex flex-1 select-none items-center justify-center whitespace-nowrap",
         SIZE[size].item,
+        shapeClasses(shape, size).item,
         "font-medium outline-none transition-colors",
         // Flat on the well; ON tints the label/glyph to the accent (no fill — the
         // color change is the selection hint), with a faint neutral hover.

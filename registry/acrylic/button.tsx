@@ -6,9 +6,9 @@ import { cn } from "@/lib/utils"
 
 // Acrylic Button — modeled on the Apple macOS 26 UI Kit Buttons page.
 // Three orthogonal axes:
-//   • variant — the kit's four push-button colors + a borderless ghost. `default`
+//   • variant — the kit's push-button colors plus borderless ghost/link actions. `default`
 //     is the solid, high-emphasis button; the others are low-emphasis tinted fills
-//     with same-hue text. Colors resolve through the theme vars so they flip light/dark.
+//     or borderless actions. Colors resolve through the theme vars so they flip light/dark.
 //   • size    — the five macOS control sizes (heights 16/20/24/28/36). Geometry
 //     (height/radius/padding/font) is lifted verbatim; radius is NOT a single
 //     formula: mini/small/medium are ~quarter-height (4/5/6) while large/xl snap to
@@ -31,8 +31,10 @@ const buttonVariants = cva(
           "bg-destructive/25 text-destructive hover:bg-destructive/35 active:bg-destructive/45",
         neutral:                                       // Neutral — gray fill, foreground label
           "bg-[var(--acr-chip)] text-foreground hover:bg-[var(--acr-chip-hover)]",
-        ghost:                                         // Borderless — no fill at rest, accent label (theme color); hover reveals the neutral chip fill
-          "bg-transparent text-primary hover:bg-[var(--acr-chip)] active:bg-[var(--acr-chip-hover)]",
+        ghost:                                         // Borderless neutral — no fill at rest, foreground label/glyph; hover reveals the neutral chip fill
+          "bg-transparent text-foreground hover:bg-[var(--acr-chip)] active:bg-[var(--acr-chip-hover)]",
+        link:                                          // Borderless accent text action — use for link-like primary actions, not toolbar chrome
+          "bg-transparent text-primary hover:underline hover:underline-offset-4 active:opacity-80",
       },
       // The five macOS control sizes (heights 16/20/24/28/36 from the kit).
       // gap = the icon↔label spacing: the kit renders icon+label as inline SF text

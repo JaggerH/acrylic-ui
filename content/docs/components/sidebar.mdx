@@ -78,10 +78,9 @@ mobile sheets, persisted state, and the keyboard toggle.
 
 For complete macOS app frames — source list, toolbars, split panes, and main
 content — compose the `Shell` component instead. In that relationship, Shell is
-the higher-level geometry owner and Sidebar supplies the source-list surface and
-row vocabulary. Do not treat Sidebar's full collapsible layout as the Shell pane
-layout: a Shell source list should remain a real pane whose width is controlled
-by Shell.
+the higher-level geometry owner: pass `sidebarWidth` and
+`sidebarCollapsedWidth` to Shell so Sidebar's gap reservation, visible surface,
+and collapsed icon rail all read the same width tokens.
 
 <ComponentPreview name="shell-mail" />
 
@@ -119,7 +118,8 @@ The three kit sidebar sizes map onto the `SidebarMenuButton` `size` prop —
 - `collapsible="icon"` shrinks the sidebar to a 3rem icon rail; pass `tooltip` on
   each `SidebarMenuButton` so the label appears on hover in that mode. Use
   `collapsible="none"` for a static, always-open panel (as in the previews above).
-- Inside `Shell`, use Sidebar content primitives without handing over Shell
-  geometry. Shell-controlled source-list collapse should change the pane width
-  directly instead of using Sidebar's transparent gap + absolute rail adapter.
+- Inside `Shell`, do not set the source-list width only with a `Sidebar`
+  `className`. Put the width on Shell (`sidebarWidth`,
+  `sidebarCollapsedWidth`) so Sidebar's internal gap and visible rail stay
+  aligned.
 - State is restored across reloads via the `sidebar_state` cookie.

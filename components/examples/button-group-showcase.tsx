@@ -12,6 +12,9 @@ import {
   Copy,
   Scissors,
   Clipboard,
+  Archive,
+  Trash2,
+  Reply,
 } from "lucide-react"
 
 import { Button } from "@/registry/acrylic/button"
@@ -77,6 +80,23 @@ export default function ButtonGroupShowcase() {
           <Button variant="neutral">
             <Clipboard />
             Paste
+          </Button>
+        </ButtonGroup>
+      </Row>
+
+      {/* toolbar: large hit area, but rect corners instead of capsule ends */}
+      <Row label="toolbar">
+        <ButtonGroup variant="ghost" size="large" shape="rect">
+          <Button icon variant="ghost" size="large" aria-label="Archive">
+            <Archive />
+          </Button>
+          <ButtonGroupSeparator />
+          <Button icon variant="ghost" size="large" aria-label="Delete">
+            <Trash2 />
+          </Button>
+          <ButtonGroupSeparator />
+          <Button icon variant="ghost" size="large" aria-label="Reply">
+            <Reply />
           </Button>
         </ButtonGroup>
       </Row>

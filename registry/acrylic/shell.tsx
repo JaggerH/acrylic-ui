@@ -9,20 +9,41 @@ type ShellVariant = "default" | "inset"
 type ShellPanelVariant = "default" | "list" | "detail"
 type ShellNavbarSize = "default" | "compact" | "large"
 type ShellContentPadding = "flush" | "default" | "reading"
+type ShellLength = number | string
+
+function shellLength(value: ShellLength | undefined) {
+  if (value === undefined) return undefined
+  return typeof value === "number" ? `${value}px` : value
+}
 
 function Shell({
   className,
   variant = "default",
+  sidebarWidth,
+  sidebarCollapsedWidth,
+  style,
   defaultOpen,
   open,
   onOpenChange,
   ...props
 }: React.ComponentProps<"div"> & {
   variant?: ShellVariant
+  sidebarWidth?: ShellLength
+  sidebarCollapsedWidth?: ShellLength
   defaultOpen?: React.ComponentProps<typeof SidebarProvider>["defaultOpen"]
   open?: React.ComponentProps<typeof SidebarProvider>["open"]
   onOpenChange?: React.ComponentProps<typeof SidebarProvider>["onOpenChange"]
 }) {
+  const shellStyle = {
+    ...style,
+    ...(sidebarWidth !== undefined && {
+      "--sidebar-width": shellLength(sidebarWidth),
+    }),
+    ...(sidebarCollapsedWidth !== undefined && {
+      "--sidebar-width-icon": shellLength(sidebarCollapsedWidth),
+    }),
+  } as React.CSSProperties
+
   return (
     <SidebarProvider
       defaultOpen={defaultOpen}
@@ -30,6 +51,7 @@ function Shell({
       onOpenChange={onOpenChange}
       data-slot="shell"
       data-variant={variant}
+      style={shellStyle}
       className={cn(
         "relative min-h-0 overflow-hidden bg-background text-foreground",
         variant === "inset" &&

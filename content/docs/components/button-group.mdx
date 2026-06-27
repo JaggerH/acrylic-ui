@@ -88,6 +88,30 @@ together.
 </ButtonGroup>
 ```
 
+## Shape
+
+`size` controls height, icon scale, text scale, padding and divider inset. `shape`
+controls only the corner geometry:
+
+- **`auto`** (default) — follows the macOS kit table. `large` and `xl` become
+  capsules.
+- **`rect`** — keeps the same size metrics, but uses square-ish corners. This is
+  useful for toolbar groups that need the `large` hit area without pill-shaped end
+  caps.
+- **`capsule`** — forces fully rounded geometry at any size.
+
+```tsx
+<ButtonGroup variant="ghost" size="large" shape="rect">
+  <Button icon variant="ghost" size="large" aria-label="Archive">
+    <Archive />
+  </Button>
+  <ButtonGroupSeparator />
+  <Button icon variant="ghost" size="large" aria-label="Delete">
+    <Trash2 />
+  </Button>
+</ButtonGroup>
+```
+
 ## Selection
 
 For value-driven groups, set `type` (shadcn-style):

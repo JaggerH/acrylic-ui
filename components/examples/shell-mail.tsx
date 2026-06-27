@@ -34,6 +34,7 @@ import {
   ItemDescription,
   ItemMeta,
   ItemRow,
+  ItemSeparator,
   ItemTitle,
 } from "@/registry/acrylic/item"
 import {
@@ -136,10 +137,11 @@ function MailListItem({ message }: { message: (typeof MESSAGES)[number] }) {
       size="xs"
       selected={message.active}
       className={[
-        "w-full rounded-none px-5 py-2.5",
+        "w-full px-5 py-2.5",
         "items-start gap-0 text-left",
         "focus-visible:relative focus-visible:z-10",
-        "data-[selected=true]:bg-primary",
+        "[&:not([data-selected=true])]:!bg-transparent",
+        "[&[data-selected=true]]:!bg-primary",
         "data-[selected=true]:text-primary-foreground",
         "[&[data-selected=true]_[data-slot=item-title]]:text-primary-foreground",
         "[&[data-selected=true]_[data-slot=item-description]]:text-primary-foreground/80",
@@ -198,6 +200,8 @@ export default function ShellMail() {
       >
         <Shell
           variant="inset"
+          sidebarWidth={150}
+          sidebarCollapsedWidth={48}
           className={[
             "transition-all duration-200 ease-out",
             expanded
@@ -220,7 +224,7 @@ export default function ShellMail() {
 
           <Sidebar
             collapsible="icon"
-            className={expanded ? "w-[150px]" : "w-[150px] rounded-l-xl"}
+            className={expanded ? undefined : "rounded-l-xl"}
           >
             <SidebarHeader className="h-[46px] px-2 pt-4">
               <div className="flex h-7 items-center gap-2">
@@ -260,10 +264,10 @@ export default function ShellMail() {
                     </div>
                   </div>
                   <Button
-                    icon
-                    variant="neutral"
+                    variant="ghost"
                     size="large"
                     aria-label="New message"
+                    className="h-7 w-9 rounded-[6px] px-0"
                   >
                     <SquarePen />
                   </Button>
@@ -273,22 +277,33 @@ export default function ShellMail() {
                   className="scrollbar-mac overflow-x-hidden pt-1"
                 >
                   <div className="ml-2 w-[208px]">
-                    {MESSAGES.map((message) => (
-                      <MailListItem key={message.subject} message={message} />
-                    ))}
+                    {MESSAGES.map((message, index) => {
+                      const nextMessage = MESSAGES[index + 1]
+                      const showSeparator =
+                        nextMessage && !message.active && !nextMessage.active
+
+                      return (
+                        <React.Fragment key={message.subject}>
+                          <MailListItem message={message} />
+                          {showSeparator ? (
+                            <ItemSeparator className="mx-3" />
+                          ) : null}
+                        </React.Fragment>
+                      )
+                    })}
                   </div>
                 </ShellContent>
               </ShellPanel>
 
               <ShellPanel
                 variant="detail"
-                className={expanded ? "flex-1" : "w-[425px] flex-none"}
+                className="min-w-[425px] flex-1"
               >
                 <ShellNavbar className="h-[49px] justify-between px-1.5">
-                  <ButtonGroup variant="attached" size="large">
+                  <ButtonGroup variant="ghost" size="large" shape="rect">
                     <Button
                       icon
-                      variant="neutral"
+                      variant="ghost"
                       size="large"
                       aria-label="Archive"
                     >
@@ -297,7 +312,7 @@ export default function ShellMail() {
                     <ButtonGroupSeparator />
                     <Button
                       icon
-                      variant="neutral"
+                      variant="ghost"
                       size="large"
                       aria-label="Archive junk"
                     >
@@ -306,7 +321,7 @@ export default function ShellMail() {
                     <ButtonGroupSeparator />
                     <Button
                       icon
-                      variant="neutral"
+                      variant="ghost"
                       size="large"
                       aria-label="Delete"
                     >
@@ -314,10 +329,10 @@ export default function ShellMail() {
                     </Button>
                   </ButtonGroup>
                   <div className="flex h-7 items-center gap-6">
-                    <ButtonGroup variant="attached" size="large">
+                    <ButtonGroup variant="ghost" size="large" shape="rect">
                       <Button
                         icon
-                        variant="neutral"
+                        variant="ghost"
                         size="large"
                         aria-label="Reply"
                       >
@@ -326,7 +341,7 @@ export default function ShellMail() {
                       <ButtonGroupSeparator />
                       <Button
                         icon
-                        variant="neutral"
+                        variant="ghost"
                         size="large"
                         aria-label="Reply all"
                       >
@@ -335,7 +350,7 @@ export default function ShellMail() {
                       <ButtonGroupSeparator />
                       <Button
                         icon
-                        variant="neutral"
+                        variant="ghost"
                         size="large"
                         aria-label="Flag"
                       >
@@ -344,18 +359,18 @@ export default function ShellMail() {
                     </ButtonGroup>
                     <div className="flex items-center gap-1">
                       <Button
-                        icon
-                        variant="neutral"
-                        size="large"
+                        variant="ghost"
+                        size="medium"
                         aria-label="Previous message"
+                        className="h-7 w-9 rounded-[6px] px-0"
                       >
                         <ChevronLeft />
                       </Button>
                       <Button
-                        icon
-                        variant="neutral"
-                        size="large"
+                        variant="ghost"
+                        size="medium"
                         aria-label="Next message"
+                        className="h-7 w-9 rounded-[6px] px-0"
                       >
                         <ChevronRight />
                       </Button>
@@ -364,7 +379,7 @@ export default function ShellMail() {
                 </ShellNavbar>
 
                 <ShellContent padding="flush" className="scrollbar-mac px-5 pt-4">
-                  <article className={expanded ? "w-full" : "w-[384px]"}>
+                  <article className="w-full">
                     <header className="h-[67px] border-b border-[var(--acr-border-soft)]">
                       <div className="flex h-[50px] gap-3">
                         <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--acr-chip)] text-[11px] font-semibold text-foreground">

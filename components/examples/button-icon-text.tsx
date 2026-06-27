@@ -47,6 +47,9 @@ export default function ButtonIconText() {
         <Button variant="ghost">
           <Plus /> Add
         </Button>
+        <Button variant="link">
+          <Plus /> Learn more
+        </Button>
       </div>
     </div>
   )
