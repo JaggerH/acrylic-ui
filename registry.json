@@ -520,7 +520,7 @@
       "name": "button-group",
       "type": "registry:ui",
       "title": "Acrylic Button Group",
-      "description": "Button Group aligned to the macOS 26 Segmented Controls \u2014 group buttons into a rounded gray well. Variants: attached (flush + hairline dividers), segmented (active item as a raised white pill), split (gapped); horizontal/vertical. Five kit sizes (mini/small/medium/large/xl \u2014 height 16/20/24/28/36, radius 4/5/6/14/18) set once via the size prop, scaling the well, segments, sliding pill and dividers. Exports ButtonGroup/ButtonGroupItem/ButtonGroupToggle/ButtonGroupSeparator/ButtonGroupText. Colors flip light/dark via the Acrylic theme tokens.",
+      "description": "Button Group aligned to the macOS 26 Segmented Controls \u2014 group buttons into a rounded gray well. Variants: attached (flush + hairline dividers), ghost (flush + hairline dividers with no well background), segmented (active item as a raised white pill), split (gapped); horizontal/vertical. Five kit sizes (mini/small/medium/large/xl \u2014 height 16/20/24/28/36, radius 4/5/6/14/18) set once via the size prop, scaling the well, segments, sliding pill and dividers. Exports ButtonGroup/ButtonGroupItem/ButtonGroupToggle/ButtonGroupSeparator/ButtonGroupText. Colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": [
         "class-variance-authority"
       ],
@@ -608,6 +608,23 @@
       ],
       "registryDependencies": [
         "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ]
+    },
+    {
+      "name": "shell",
+      "type": "registry:ui",
+      "title": "Acrylic Shell",
+      "description": "A composable macOS app shell around the Acrylic Sidebar, with inset panels, navbars, and scrollable content for Mail, Notes, or custom app frames.",
+      "files": [
+        {
+          "path": "registry/acrylic/shell.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/shell.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json",
+        "https://acrylic-ui.vercel.app/r/sidebar.json"
       ]
     },
     {

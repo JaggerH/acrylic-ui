@@ -48,6 +48,7 @@
     "@types/node": "^25.9.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "playwright": "^1.61.1",
     "postcss": "^8.5.15",
     "shadcn": "^3.4.0",
     "tailwindcss": "^4.3.1",

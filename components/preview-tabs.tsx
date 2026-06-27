@@ -23,15 +23,19 @@ export function PreviewTabs({ source, children }: { source: string; children: Re
           Code
         </button>
       </div>
-      {tab === "preview" ? (
-        <div className="flex min-h-44 items-center justify-center p-10">{children}</div>
-      ) : (
+      <div
+        hidden={tab !== "preview"}
+        className="flex min-h-44 items-center justify-center p-10"
+      >
+        {children}
+      </div>
+      <div hidden={tab !== "code"}>
         <DynamicCodeBlock
           lang="tsx"
           code={source}
           codeblock={{ className: "my-0 rounded-none border-0" }}
         />
-      )}
+      </div>
     </div>
   )
 }

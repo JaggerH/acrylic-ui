@@ -48,19 +48,21 @@ import C44 from "./examples/select-demo"
 import C45 from "./examples/select-showcase"
 import C46 from "./examples/sheet-demo"
 import C47 from "./examples/sheet-showcase"
-import C48 from "./examples/sidebar-app"
-import C49 from "./examples/sidebar-demo"
-import C50 from "./examples/sidebar-sizes"
-import C51 from "./examples/slider-demo"
-import C52 from "./examples/slider-showcase"
-import C53 from "./examples/slider-sizes"
-import C54 from "./examples/slider-variants"
-import C55 from "./examples/sonner-demo"
-import C56 from "./examples/sonner-showcase"
-import C57 from "./examples/stepper-demo"
-import C58 from "./examples/stepper-showcase"
-import C59 from "./examples/switch-demo"
-import C60 from "./examples/switch-showcase"
+import C48 from "./examples/shell-mail"
+import C49 from "./examples/shell-notes"
+import C50 from "./examples/sidebar-app"
+import C51 from "./examples/sidebar-demo"
+import C52 from "./examples/sidebar-sizes"
+import C53 from "./examples/slider-demo"
+import C54 from "./examples/slider-showcase"
+import C55 from "./examples/slider-sizes"
+import C56 from "./examples/slider-variants"
+import C57 from "./examples/sonner-demo"
+import C58 from "./examples/sonner-showcase"
+import C59 from "./examples/stepper-demo"
+import C60 from "./examples/stepper-showcase"
+import C61 from "./examples/switch-demo"
+import C62 from "./examples/switch-showcase"
 
 export const examples: Record<string, ComponentType> = {
   "alert-dialog-demo": C0,
@@ -111,17 +113,19 @@ export const examples: Record<string, ComponentType> = {
   "select-showcase": C45,
   "sheet-demo": C46,
   "sheet-showcase": C47,
-  "sidebar-app": C48,
-  "sidebar-demo": C49,
-  "sidebar-sizes": C50,
-  "slider-demo": C51,
-  "slider-showcase": C52,
-  "slider-sizes": C53,
-  "slider-variants": C54,
-  "sonner-demo": C55,
-  "sonner-showcase": C56,
-  "stepper-demo": C57,
-  "stepper-showcase": C58,
-  "switch-demo": C59,
-  "switch-showcase": C60,
+  "shell-mail": C48,
+  "shell-notes": C49,
+  "sidebar-app": C50,
+  "sidebar-demo": C51,
+  "sidebar-sizes": C52,
+  "slider-demo": C53,
+  "slider-showcase": C54,
+  "slider-sizes": C55,
+  "slider-variants": C56,
+  "sonner-demo": C57,
+  "sonner-showcase": C58,
+  "stepper-demo": C59,
+  "stepper-showcase": C60,
+  "switch-demo": C61,
+  "switch-showcase": C62,
 }

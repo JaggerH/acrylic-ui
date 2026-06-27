@@ -1,0 +1,154 @@
+---
+title: Shell
+description: A composable macOS app shell for source lists, toolbars, split panes, and main content.
+---
+
+`Shell` is the window-level layout primitive for Acrylic apps. It owns the
+geometry of the app frame: source-list columns, split panes, toolbars, and
+scrollable content. Sidebar primitives can be used inside that frame for
+source-list content and styling, but Shell remains the layout owner.
+
+This boundary matters: `Sidebar`'s full collapsible app-layout mode uses gap
+reservation, absolute positioning, mobile sheets, cookie state, and keyboard
+shortcuts. Those are correct for standalone app navigation, but they should not
+silently change a pixel-level Shell window. In Shell, collapse is a Shell geometry
+concern; Sidebar contributes the menu vocabulary and visual surface.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/shell.json
+```
+
+## Usage
+
+```tsx
+import {
+  Shell,
+  ShellBody,
+  ShellContent,
+  ShellInset,
+  ShellNavbar,
+  ShellNavbarActions,
+  ShellNavbarTitle,
+  ShellPanel,
+  ShellPanelDescription,
+  ShellPanelHeader,
+  ShellPanelTitle,
+} from "@/components/acrylic/shell"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/acrylic/sidebar"
+
+<Shell>
+  <Sidebar collapsible="none" className="w-[150px]">
+    <SidebarHeader>{/* source list header */}</SidebarHeader>
+    <SidebarContent>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton isActive>Inbox</SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarContent>
+  </Sidebar>
+  <ShellInset>
+    <ShellNavbar>
+      <ShellNavbarTitle>All Inboxes</ShellNavbarTitle>
+      <ShellNavbarActions>{/* global actions */}</ShellNavbarActions>
+    </ShellNavbar>
+    <ShellBody>
+      <ShellPanel variant="list">
+        <ShellPanelHeader>
+          <div className="min-w-0">
+            <ShellPanelTitle>Inbox</ShellPanelTitle>
+            <ShellPanelDescription>67 messages</ShellPanelDescription>
+          </div>
+        </ShellPanelHeader>
+        <ShellContent padding="flush">{/* list */}</ShellContent>
+      </ShellPanel>
+      <ShellPanel variant="detail">
+        <ShellPanelHeader>
+          <div className="min-w-0">
+            <ShellPanelTitle>Message title</ShellPanelTitle>
+            <ShellPanelDescription>sender@example.com</ShellPanelDescription>
+          </div>
+        </ShellPanelHeader>
+        <ShellContent padding="reading">{/* detail */}</ShellContent>
+      </ShellPanel>
+    </ShellBody>
+  </ShellInset>
+</Shell>
+```
+
+## Composition
+
+```txt
+Shell
+├── Sidebar (content/surface vocabulary; Shell owns the column geometry)
+│   ├── SidebarHeader
+│   └── SidebarContent
+└── ShellInset
+    ├── ShellNavbar
+    └── ShellBody
+        ├── ShellPanel
+        │   ├── ShellPanelHeader
+        │   └── ShellContent
+        └── ShellPanel
+            ├── ShellPanelHeader
+            └── ShellContent
+```
+
+## Examples
+
+### Mail
+
+Compose a Mail-style split view: source list, message list, and reading pane.
+
+<ComponentPreview name="shell-mail" />
+
+### Notes
+
+Use the same structure for a Notes-style source list, note list, and editor.
+
+<ComponentPreview name="shell-notes" />
+
+## Anatomy
+
+| part | role |
+| --- | --- |
+| `Shell` | the outer app frame and geometry owner; pass `variant="inset"` for a rounded preview/window surface |
+| `Sidebar` | source-list content and surface vocabulary inside the shell; use the static pane path (`collapsible="none"`) unless Shell explicitly adapts collapse |
+| `ShellInset` | the main region beside the sidebar |
+| `ShellNavbar` | an inset-level navigation/toolbar row that can span multiple panels |
+| `ShellBody` | the horizontal region below an inset-level navbar |
+| `ShellPanel` | a split pane inside the inset; adjacent panels share one divider |
+| `ShellPanelHeader` | a per-panel title/meta strip below the navbar |
+| `ShellNavbarTitle` / `ShellNavbarSubtitle` | compact title text for pane chrome |
+| `ShellPanelTitle` / `ShellPanelDescription` | compact title/meta text for panel headers |
+| `ShellNavbarActions` | right-aligned action cluster with standard spacing |
+| `ShellContent` | the scrollable body; use `padding="flush"`, `default`, or `reading` |
+
+## Notes
+
+- `Shell` owns pane geometry. Source-list width, collapsed width, and adjacent
+  panel flow should be decided at the Shell layer, not by a child sidebar
+  inserting layout gaps or absolute-positioned containers.
+- Use Sidebar's full `collapsible="icon"` / `offcanvas` behavior for standalone
+  app navigation. Inside a pixel-level Shell window, prefer `collapsible="none"`
+  plus Shell-controlled width/collapse so the source list remains a real pane.
+- Sidebar content primitives (`SidebarHeader`, `SidebarContent`,
+  `SidebarMenuButton`, badges, groups) are still the right vocabulary for
+  source-list rows inside Shell.
+- The panel variants set common structural widths only. Override widths with
+  `className` when the app needs a different split.
+- Put `ShellNavbar` directly under `ShellInset` when the toolbar should span
+  multiple panels, as in Mail. Use `ShellPanelHeader` for per-panel title and
+  metadata rows.
+- `ShellNavbar` and `ShellPanelHeader` draw their own horizontal bottom rules.
+  `ShellPanel` owns vertical dividers, so two adjacent panels do not double
+  their borders.

@@ -10,11 +10,13 @@ function Item({
   className,
   variant = "default",
   size = "default",
+  selected,
   asChild = false,
   ...props
 }: React.ComponentProps<"div"> & {
   variant?: ItemVariant
   size?: ItemSize
+  selected?: boolean
   asChild?: boolean
 }) {
   const Comp = asChild ? Slot : "div"
@@ -24,6 +26,7 @@ function Item({
       data-slot="item"
       data-variant={variant}
       data-size={size}
+      data-selected={selected || undefined}
       className={cn(itemClasses({ variant, size }), className)}
       {...props}
     />
@@ -41,6 +44,7 @@ function itemClasses({
     "group/item flex min-w-0 items-center gap-3 rounded-[10px] text-left outline-none",
     "has-data-[slot=item-header]:flex-wrap has-data-[slot=item-footer]:flex-wrap",
     "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
+    "data-[selected=true]:bg-primary/10",
     variant === "outline" &&
       "acr-frosted bg-[var(--acr-surface)] backdrop-blur-xl",
     variant === "muted" && "bg-[var(--acr-card-nested)]",
@@ -72,6 +76,19 @@ function ItemMedia({
           "size-12 overflow-hidden bg-[var(--acr-card-nested)] group-data-[size=sm]/item:size-10 group-data-[size=xs]/item:size-8 [&>img]:size-full [&>img]:object-cover",
         variant === "avatar" &&
           "size-10 rounded-full bg-transparent group-data-[size=sm]/item:size-8 group-data-[size=xs]/item:size-7",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function ItemRow({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="item-row"
+      className={cn(
+        "flex min-w-0 basis-full items-start gap-2",
         className
       )}
       {...props}
@@ -125,6 +142,19 @@ function ItemDescription({ className, ...props }: React.ComponentProps<"p">) {
   )
 }
 
+function ItemMeta({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="item-meta"
+      className={cn(
+        "shrink-0 whitespace-nowrap text-[11px] leading-snug text-muted-foreground group-data-[size=xs]/item:text-[10px]",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
 function ItemActions({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -134,6 +164,8 @@ function ItemActions({ className, ...props }: React.ComponentProps<"div">) {
     />
   )
 }
+
+const ItemAction = ItemActions
 
 function ItemFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -171,13 +203,16 @@ function ItemSeparator({ className, ...props }: React.ComponentProps<"div">) {
 
 export {
   Item,
+  ItemAction,
   ItemActions,
   ItemContent,
   ItemDescription,
   ItemFooter,
   ItemGroup,
   ItemHeader,
+  ItemMeta,
   ItemMedia,
+  ItemRow,
   ItemSeparator,
   ItemTitle,
 }

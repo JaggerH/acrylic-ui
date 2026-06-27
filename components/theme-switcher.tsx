@@ -1,10 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { useTheme } from "next-themes"
 import { Droplet, Moon, Sun } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { useTheme } from "@/components/theme-provider"
 import { ButtonGroup, ButtonGroupItem } from "@/registry/acrylic/button-group"
 
 // The three registered themes. Acrylic ("Liquid Glass") is the showcase default,
@@ -19,20 +19,12 @@ const THEMES = [
 
 export function ThemeSwitcher({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
-  React.useEffect(() => setMounted(true), [])
-
-  // The resolved theme is unknown during SSR / first paint; render the default
-  // (acrylic) as active so the markup is stable, then hydrate to the real value.
-  // Kept controlled throughout (value always defined) to avoid an uncontrolled→
-  // controlled flip in the segmented control.
-  const active = mounted ? theme ?? "acrylic" : "acrylic"
 
   return (
     <ButtonGroup
       variant="segmented"
       size="small"
-      value={active}
+      value={theme}
       onValueChange={setTheme}
       aria-label="Theme"
       className={cn(className)}

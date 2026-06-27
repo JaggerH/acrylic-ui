@@ -22,6 +22,8 @@ import { cn } from "@/lib/utils"
 //    single absolutely-positioned indicator that transitions across equal-width
 //    segments. For uncontrolled use, the `data-active`/`aria-pressed` styling on
 //    plain children still paints the pill (no slide).
+//  • ghost — the attached layout without the shared well. Use when the surrounding
+//    surface already provides the chrome but the group still needs dividers.
 //  • split — separate buttons with a small gap (no shared well), still grouped
 //    semantically (role="group"). For sub-groups sitting side by side.
 //
@@ -146,6 +148,15 @@ const buttonGroupVariants = cva(
           "[&>[data-active=true]]:shadow-[0_1px_2px_rgba(0,0,0,0.16),0_0_0_0.5px_rgba(0,0,0,0.04)]",
           "[&>[aria-pressed=true]]:shadow-[0_1px_2px_rgba(0,0,0,0.16),0_0_0_0.5px_rgba(0,0,0,0.04)]"
         ),
+        // Same flush geometry as attached, but no shared well fill. The surrounding
+        // surface carries the chrome; this group only supplies grouping, hover, and
+        // visible dividers.
+        ghost: cn(
+          "items-stretch bg-transparent",
+          "[&>[data-slot=button]]:bg-transparent [&>[data-slot=button]]:text-foreground [&>[data-slot=button]]:shadow-none",
+          "[&>[data-slot=button]:hover]:bg-[var(--acr-hover)]",
+          "[&>*]:rounded-none"
+        ),
         // Separate buttons, small gap, no shared surface.
         split: "items-center gap-1.5",
       },
@@ -190,7 +201,7 @@ type ButtonGroupBaseProps = Omit<
 // Well radius/inset for the uncontrolled (non-sliding) paths. `split` has no shared
 // well, so no radius/inset; attached/multi round their outer children; segmented
 // (uncontrolled fallback) rounds every child.
-function wellClasses(variant: "attached" | "segmented" | "split", size: ButtonGroupSize) {
+function wellClasses(variant: "attached" | "segmented" | "ghost" | "split", size: ButtonGroupSize) {
   const s = SIZE[size]
   if (variant === "split") return ""
   if (variant === "segmented") return cn(s.well, s.childrenAll)
@@ -470,7 +481,7 @@ function SegmentedSlider({
                 aria-hidden
                 data-slot="button-group-divider"
                 className={cn(
-                  "pointer-events-none absolute z-[1] w-px -translate-x-1/2 bg-[var(--acr-border-soft)]",
+                  "pointer-events-none absolute z-[1] w-px -translate-x-1/2 bg-[var(--acr-button-group-divider)]",
                   s.divider,
                   "transition-opacity duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none",
                   hidden && "opacity-0"
@@ -595,7 +606,7 @@ function ButtonGroupToggle({
 
 // Hairline divider between flush items (attached variant). Lifted from the kit's
 // 1px Separator inset ~5px top/bottom on the track — here a thin self-stretching
-// rule in --acr-border-soft that flips orientation with the group.
+// rule in --acr-button-group-divider that flips orientation with the group.
 function ButtonGroupSeparator({
   className,
   orientation = "vertical",
@@ -614,7 +625,7 @@ function ButtonGroupSeparator({
       aria-orientation={orientation}
       data-slot="button-group-separator"
       className={cn(
-        "shrink-0 self-stretch bg-[var(--acr-border-soft)]",
+        "shrink-0 self-stretch bg-[var(--acr-button-group-divider)]",
         orientation === "vertical" ? vert[size] : horiz[size],
         className
       )}

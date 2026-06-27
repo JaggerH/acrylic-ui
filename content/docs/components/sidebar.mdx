@@ -70,35 +70,20 @@ import {
 </SidebarProvider>
 ```
 
-## Example — application layout
+## Shell layouts
 
-The full shadcn sidebar pattern with Acrylic components: a workspace switcher in
-the header, grouped navigation with a nested sub-menu, and a footer **user item**
-(an `Avatar` + name/email + chevron, the `lg` menu button) beside a `SidebarInset`
-content pane with a top bar.
+Use `Sidebar` when you need the full collapsible shadcn sidebar behavior. Its
+layout adapter owns gap reservation, absolute desktop rails, off-canvas movement,
+mobile sheets, persisted state, and the keyboard toggle.
 
-<ComponentPreview name="sidebar-app" />
+For complete macOS app frames — source list, toolbars, split panes, and main
+content — compose the `Shell` component instead. In that relationship, Shell is
+the higher-level geometry owner and Sidebar supplies the source-list surface and
+row vocabulary. Do not treat Sidebar's full collapsible layout as the Shell pane
+layout: a Shell source list should remain a real pane whose width is controlled
+by Shell.
 
-The footer user row uses the **Avatar** component (a circular portrait with an
-initials fallback). Compose it with a `lg` `SidebarMenuButton`:
-
-```tsx
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/acrylic/avatar"
-
-<SidebarMenuButton size="lg" className="h-12">
-  <Avatar className="size-8 rounded-lg">
-    <AvatarImage src="/me.png" alt="Jagger" />
-    <AvatarFallback className="rounded-lg">JH</AvatarFallback>
-  </Avatar>
-  <div className="grid flex-1 text-left leading-tight">
-    <span className="truncate text-[13px] font-semibold">Jagger H</span>
-    <span className="truncate text-[11px] text-muted-foreground">
-      jagger@acrylic.dev
-    </span>
-  </div>
-  <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
-</SidebarMenuButton>
-```
+<ComponentPreview name="shell-mail" />
 
 ## Densities
 
@@ -112,7 +97,7 @@ The three kit sidebar sizes map onto the `SidebarMenuButton` `size` prop —
 | part | role |
 | --- | --- |
 | `SidebarProvider` | holds open/collapsed state (cookie-persisted), ⌘B toggle, mobile detection |
-| `Sidebar` | the frosted panel; `side`, `variant` (sidebar / floating / inset), `collapsible` (offcanvas / icon / none) |
+| `Sidebar` | the frosted panel plus app-navigation layout adapter; `side`, `variant` (sidebar / floating / inset), `collapsible` (offcanvas / icon / none) |
 | `SidebarTrigger` / `SidebarRail` | toggle controls (button / draggable edge rail) |
 | `SidebarInset` | the main content area beside the sidebar |
 | `SidebarHeader` / `SidebarFooter` | pinned top / bottom regions |
@@ -134,4 +119,7 @@ The three kit sidebar sizes map onto the `SidebarMenuButton` `size` prop —
 - `collapsible="icon"` shrinks the sidebar to a 3rem icon rail; pass `tooltip` on
   each `SidebarMenuButton` so the label appears on hover in that mode. Use
   `collapsible="none"` for a static, always-open panel (as in the previews above).
+- Inside `Shell`, use Sidebar content primitives without handing over Shell
+  geometry. Shell-controlled source-list collapse should change the pane width
+  directly instead of using Sidebar's transparent gap + absolute rail adapter.
 - State is restored across reloads via the `sidebar_state` cookie.

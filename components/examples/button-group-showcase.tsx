@@ -61,6 +61,26 @@ export default function ButtonGroupShowcase() {
         </ButtonGroup>
       </Row>
 
+      {/* ghost: flush grouping and dividers, but no shared background well */}
+      <Row label="ghost">
+        <ButtonGroup variant="ghost">
+          <Button variant="neutral">
+            <Scissors />
+            Cut
+          </Button>
+          <ButtonGroupSeparator />
+          <Button variant="neutral">
+            <Copy />
+            Copy
+          </Button>
+          <ButtonGroupSeparator />
+          <Button variant="neutral">
+            <Clipboard />
+            Paste
+          </Button>
+        </ButtonGroup>
+      </Row>
+
       {/* segmented: controlled value API — the raised white pill SLIDES between
           segments on selection (macOS easing, respects prefers-reduced-motion) */}
       <Row label="segmented">

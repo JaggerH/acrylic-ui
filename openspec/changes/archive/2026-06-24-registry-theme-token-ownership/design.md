@@ -2,7 +2,7 @@
 
 Edit `registry.json`, the `acrylic` registry:style item, `cssVars`:
 
-- `theme`: `{}` (was 9 semantic `color-*` mappings). The consuming app already provides the `--color-*` mappings from its own `init`; Acrylic components use arbitrary `bg-[var(--acr-*)]` values plus the semantic utilities (`bg-primary`) that the host maps.
+- `theme`: `{}` (was 9 semantic `color-*` mappings). The consuming app already provides the `--color-*` mappings from its own `init`; Acrylic components use arbitrary background utilities that reference concrete `--acr-*` variables plus the semantic utilities (`bg-primary`) that the host maps.
 - `light` / `dark`: remove the leading 10 semantic keys (`background … border`); keep `--acr-*` + `--text-*`.
 
 Token-ownership rule encoded: **a registry ships only its namespaced tokens (`--acr-*`, `--text-*`); standard shadcn semantic tokens belong to the consumer.**

@@ -1,6 +1,6 @@
 ---
 title: Button Group
-description: macOS 26 grouped control — attached buttons in a gray well, a selectable segmented control with a raised white pill, or a split group.
+description: macOS 26 grouped control — attached buttons in a gray well, a backgroundless ghost group, a selectable segmented control with a raised white pill, or a split group.
 ---
 
 The macOS 26 grouped control. A set of buttons sits inside a rounded gray "well";
@@ -62,6 +62,9 @@ import {
 - **`attached`** (default) — action buttons sharing one rounded gray well
   (`--acr-field`), flush, with collapsed inner radii so they read as one capsule.
   Insert `ButtonGroupSeparator` between items for the macOS hairlines.
+- **`ghost`** — the same flush grouping and dividers as `attached`, but without
+  the shared background well. Use it when the surrounding surface already provides
+  enough chrome.
 - **`segmented`** — a selectable control: the same gray well, but the active item
   becomes a raised white pill (`--acr-control`) with a soft shadow. Mark the
   active item with `aria-pressed` (or `data-active`); the others stay plain.
@@ -112,7 +115,7 @@ const [marks, setMarks] = React.useState<string[]>(["bold"])
 
 - The well uses `--acr-field` (the kit's 5% black track, 5% white in dark); the
   selected pill uses `--acr-control` (white → translucent white in dark); the
-  hairline uses `--acr-border-soft`. All flip with the theme.
+  hairline uses `--acr-button-group-divider`. All flip with the theme.
 - Items reuse the Acrylic `Button`. In the **attached** well the group renders
   items flat (it strips each button's own fill/shadow so the single gray surface
   and the hairline separators show through), so the `Button` variant you pass

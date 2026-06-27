@@ -8,6 +8,11 @@
 @source '../registry';
 @source not '../openspec';
 @source not '../docs';
+/* Markdown (specs/plans/READMEs) is prose, not UI — never scan it for classes.
+   This also neutralizes stray duplicate checkouts (e.g. accidental
+   `\wsl.localhost\...\.codex` worktree copies) whose openspec .md files contain
+   token-shaped strings like `bg-[var(--acr-*)]` that otherwise mis-generate. */
+@source not '../**/*.md';
 
 /* ===== Acrylic tokens (macOS 26) — mirrored from registry/acrylic/acrylic.css ===== */
 
@@ -83,6 +88,7 @@
   --acr-hover: rgba(0, 0, 0, 0.04);
   --acr-border: #e3e3e6;
   --acr-border-soft: #ececef;
+  --acr-button-group-divider: rgba(0, 0, 0, 0.16);
   --acr-control: #ffffff;
   --acr-control-hover: #f4f4f5;
   --acr-control-border: rgba(0, 0, 0, 0.12);
@@ -150,6 +156,7 @@
   --acr-hover: rgba(255, 255, 255, 0.05);
   --acr-border: #2a2a2c;
   --acr-border-soft: #232325;
+  --acr-button-group-divider: rgba(255, 255, 255, 0.20);
   --acr-control: #1c1c1e;
   --acr-control-hover: #252527;
   --acr-control-border: rgba(255, 255, 255, 0.14);
@@ -209,6 +216,7 @@
   --acr-hover: rgba(255, 255, 255, 0.06);
   --acr-border: rgba(255, 255, 255, 0.16);
   --acr-border-soft: rgba(255, 255, 255, 0.10);
+  --acr-button-group-divider: rgba(255, 255, 255, 0.22);
   --acr-control: rgba(255, 255, 255, 0.14);
   --acr-control-hover: rgba(255, 255, 255, 0.20);
   --acr-control-border: rgba(255, 255, 255, 0.18);
