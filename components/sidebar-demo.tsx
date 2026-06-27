@@ -39,6 +39,12 @@ import {
 import { Input } from "@/registry/acrylic/input"
 import { Separator } from "@/registry/acrylic/separator"
 import {
+  Shell,
+  ShellBody,
+  ShellInset,
+  ShellNavbar,
+} from "@/registry/acrylic/shell"
+import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -46,14 +52,12 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
-  SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  SidebarProvider,
   SidebarTrigger,
 } from "@/registry/acrylic/sidebar"
 import { Toaster } from "@/registry/acrylic/sonner"
@@ -237,7 +241,14 @@ export function SidebarDemo({
   const pane = useDeferredValue(view)
 
   const shell = (
-    <SidebarProvider className={framed ? "min-h-0 w-full" : "h-full w-full"}>
+    <Shell
+      sidebarWidth={240}
+      sidebarCollapsedWidth={48}
+      className={cn(
+        framed ? "min-h-0 w-full" : "h-full w-full",
+        "bg-transparent"
+      )}
+    >
       <Sidebar collapsible="icon" className={framed ? "rounded-l-xl" : undefined}>
         {/* macOS traffic lights sit at the sidebar's top-left (native placement); the
             row is the window drag region. Tauri/mac only — omitted everywhere else. */}
@@ -339,19 +350,20 @@ export function SidebarDemo({
       {/* `backdrop-brightness-150` lifts the frosted main panel — over the dark
           Backdrop the `--background` veil alone reads too dim; brightening the
           backdrop the blur samples makes the glass read lighter/airier. */}
-      <SidebarInset
+      <ShellInset
         className={cn(
           "acr-frosted min-w-0 backdrop-brightness-150",
           framed && "rounded-r-xl"
         )}
       >
         <Toaster />
-        <header
+        <ShellNavbar
           // Tauri only: the header IS the titlebar, so make its empty space draggable.
           // data-tauri-drag-region acts only on the element it's set on; the child
           // buttons/inputs stay interactive.
           {...(windowControls ? { "data-tauri-drag-region": "" } : {})}
-          className="flex h-12 shrink-0 items-center gap-2 border-b border-[var(--acr-border)] px-4"
+          size="large"
+          className="h-12 border-[var(--acr-border)] px-4"
         >
           <SidebarTrigger />
           <Separator
@@ -381,16 +393,18 @@ export function SidebarDemo({
           ) : (
             pane === "home" && <NewLoanDialog />
           )}
-        </header>
-        {pane === "components" ? (
-          <div className="min-h-0 flex-1 overflow-y-auto scrollbar-mac">
-            <ComponentsGallery />
-          </div>
-        ) : (
-          <LoansBoard />
-        )}
-      </SidebarInset>
-    </SidebarProvider>
+        </ShellNavbar>
+        <ShellBody>
+          {pane === "components" ? (
+            <div className="min-h-0 flex-1 overflow-y-auto scrollbar-mac">
+              <ComponentsGallery />
+            </div>
+          ) : (
+            <LoansBoard />
+          )}
+        </ShellBody>
+      </ShellInset>
+    </Shell>
   )
 
   if (!framed) return shell
