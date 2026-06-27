@@ -235,6 +235,18 @@ Use `ItemContent` to wrap the title and description.
 </ItemContent>
 ```
 
+### ItemRow
+
+Use `ItemRow` inside `ItemContent` to align title, metadata, or inline actions
+on a single row.
+
+```tsx
+<ItemRow>
+  <ItemTitle>Title</ItemTitle>
+  <ItemMeta>9:41 AM</ItemMeta>
+</ItemRow>
+```
+
 ### ItemTitle
 
 Use `ItemTitle` to display the title.
@@ -251,6 +263,15 @@ Use `ItemDescription` to display the description.
 <ItemDescription>Item description</ItemDescription>
 ```
 
+### ItemMeta
+
+Use `ItemMeta` for compact secondary metadata such as timestamps, counts, or
+short statuses.
+
+```tsx
+<ItemMeta>Yesterday</ItemMeta>
+```
+
 ### ItemActions
 
 Use `ItemActions` to display actions.
@@ -259,6 +280,17 @@ Use `ItemActions` to display actions.
 <ItemActions>
   <Button>Action</Button>
 </ItemActions>
+```
+
+### ItemAction
+
+Use `ItemAction` as a single-action alias for `ItemActions`, commonly inside
+`ItemRow`.
+
+```tsx
+<ItemAction>
+  <Icon />
+</ItemAction>
 ```
 
 ### ItemHeader
