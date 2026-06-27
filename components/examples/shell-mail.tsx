@@ -74,6 +74,13 @@ const MESSAGES = [
     time: "9:42 AM",
     marker: Flag,
     active: true,
+    initials: "AU",
+    image:
+      "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
+    body: [
+      "Shell owns the window structure. Sidebar remains the source-list primitive, while the main panel can split into list and detail panes at exact macOS frame sizes.",
+      "This Mail example uses Item for each message preview, so density, truncation, and actions can be reused without turning Shell into a mail-specific API.",
+    ],
   },
   {
     from: "Mira Chen",
@@ -81,6 +88,13 @@ const MESSAGES = [
     preview: "I added a Mail-style split view and a Notes editor variant.",
     time: "8:15 AM",
     marker: Paperclip,
+    initials: "MC",
+    image:
+      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
+    body: [
+      "The split view is now close enough to the Mail reference that the remaining work is mostly behavioral polish.",
+      "The important part is keeping the message list as Item composition, not a mail-only component.",
+    ],
   },
   {
     from: "Design Systems",
@@ -88,6 +102,13 @@ const MESSAGES = [
     preview: "Keep sidebar rows compact at 13px with muted counts.",
     time: "Yesterday",
     compact: true,
+    initials: "DS",
+    image:
+      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
+    body: [
+      "Density should come from stable primitives: fixed row heights, truncation rules, and predictable action slots.",
+      "The same item anatomy can carry mail previews, command history, or document lists without changing Shell.",
+    ],
   },
   {
     from: "Tauri",
@@ -95,6 +116,13 @@ const MESSAGES = [
     preview: "The backdrop is visible through the shell and sidebar surfaces.",
     time: "Mon",
     marker: Star,
+    initials: "TA",
+    image:
+      "https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=900&q=80",
+    body: [
+      "The web demo and native shell share the same composition, but the material source changes underneath.",
+      "That keeps the component API honest: Shell describes structure, while the host supplies the window environment.",
+    ],
   },
   {
     from: "Release",
@@ -102,12 +130,26 @@ const MESSAGES = [
     preview: "The preview should match the macOS mail frame before API polish.",
     time: "Jun 22",
     marker: Flag,
+    initials: "RE",
+    image:
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80",
+    body: [
+      "The docs capture should show the product surface first: sidebar, list, detail, toolbar, and live theme switching.",
+      "Once the frame reads correctly, the API story becomes much easier to explain.",
+    ],
   },
   {
     from: "Preview Bot",
     subject: "Screenshot run",
     preview: "Playwright has a repeatable path for the docs shell page.",
     time: "Jun 21",
+    initials: "PB",
+    image:
+      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+    body: [
+      "The verification script checks that the shell, sidebar, navbar, and inbox panes render without horizontal page overflow.",
+      "It also captures both the default board and Inbox view so visual regressions are easier to compare.",
+    ],
   },
 ]
 
@@ -130,12 +172,20 @@ function AppleIcon({
   )
 }
 
-function MailListItem({ message }: { message: (typeof MESSAGES)[number] }) {
+function MailListItem({
+  message,
+  selected,
+  onSelect,
+}: {
+  message: (typeof MESSAGES)[number]
+  selected: boolean
+  onSelect: () => void
+}) {
   return (
     <Item
       asChild
       size="xs"
-      selected={message.active}
+      selected={selected}
       className={[
         "w-full px-5 py-2.5",
         "items-start gap-0 text-left",
@@ -150,7 +200,7 @@ function MailListItem({ message }: { message: (typeof MESSAGES)[number] }) {
         .filter(Boolean)
         .join(" ")}
     >
-      <button type="button" className="w-full">
+      <button type="button" className="w-full" onClick={onSelect}>
         <ItemContent className="flex min-w-0 flex-col">
           <ItemRow className="h-4 items-center">
             <ItemTitle className="min-w-0 flex-1 text-[13px] font-semibold leading-4">
@@ -186,7 +236,10 @@ function MailListItem({ message }: { message: (typeof MESSAGES)[number] }) {
 
 export default function ShellMail() {
   const [expanded, setExpanded] = React.useState(false)
+  const [selectedSubject, setSelectedSubject] = React.useState(MESSAGES[0].subject)
   const ExpandIcon = expanded ? Minimize2 : Maximize2
+  const selectedMessage =
+    MESSAGES.find((message) => message.subject === selectedSubject) ?? MESSAGES[0]
 
   return (
     <ExampleBackdrop className={expanded ? "min-h-0" : undefined}>
@@ -279,11 +332,17 @@ export default function ShellMail() {
                     {MESSAGES.map((message, index) => {
                       const nextMessage = MESSAGES[index + 1]
                       const showSeparator =
-                        nextMessage && !message.active && !nextMessage.active
+                        nextMessage &&
+                        message.subject !== selectedSubject &&
+                        nextMessage.subject !== selectedSubject
 
                       return (
                         <React.Fragment key={message.subject}>
-                          <MailListItem message={message} />
+                          <MailListItem
+                            message={message}
+                            selected={message.subject === selectedSubject}
+                            onSelect={() => setSelectedSubject(message.subject)}
+                          />
                           {showSeparator ? (
                             <ItemSeparator className="mx-3" />
                           ) : null}
@@ -382,27 +441,33 @@ export default function ShellMail() {
                     <header className="h-[67px] border-b border-[var(--acr-border-soft)]">
                       <div className="flex h-[50px] gap-3">
                         <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--acr-chip)] text-[11px] font-semibold text-foreground">
-                          AU
+                          {selectedMessage.initials}
                         </span>
                         <div className="min-w-0 flex-1">
                           <div className="grid grid-cols-[minmax(0,1fr)_40px] items-start gap-5">
                             <div className="truncate text-[13px] font-semibold leading-4">
-                              Acrylic UI
+                              {selectedMessage.from}
                             </div>
                             <div className="pt-px text-[11px] leading-[13px] text-muted-foreground">
-                              9:42 AM
+                              {selectedMessage.time}
                             </div>
                           </div>
                           <div className="mt-1 grid grid-cols-[minmax(0,1fr)_12px] items-start gap-2">
                             <div className="truncate text-[11px] font-medium leading-[13px]">
-                              Registry review notes
+                              {selectedMessage.subject}
                             </div>
                             <span className="mt-px text-muted-foreground">
-                              <AppleIcon icon={Flag} size={12} strokeWidth={1.4} />
+                              {selectedMessage.marker ? (
+                                <AppleIcon
+                                  icon={selectedMessage.marker}
+                                  size={12}
+                                  strokeWidth={1.4}
+                                />
+                              ) : null}
                             </span>
                           </div>
                           <div className="mt-1 truncate text-[11px] leading-[13px] text-muted-foreground">
-                            The Shell primitive keeps app structure separate from Sidebar.
+                            {selectedMessage.preview}
                           </div>
                         </div>
                       </div>
@@ -410,18 +475,19 @@ export default function ShellMail() {
 
                     <div className="pt-4">
                       <div className="h-44 text-[13px] leading-6 text-foreground/85">
-                        <p>
-                          Shell owns the window structure. Sidebar remains the
-                          source-list primitive, while the main panel can split
-                          into list and detail panes at exact macOS frame sizes.
-                        </p>
-                        <p className="mt-3">
-                          This Mail example uses Item for each message preview,
-                          so density, truncation, and actions can be reused
-                          without turning Shell into a mail-specific API.
-                        </p>
+                        {selectedMessage.body.map((paragraph) => (
+                          <p key={paragraph} className="mt-3 first:mt-0">
+                            {paragraph}
+                          </p>
+                        ))}
                       </div>
-                      <div className="h-[200px] rounded-[8px] border border-[var(--acr-border-soft)] bg-[linear-gradient(135deg,rgba(255,255,255,0.20),rgba(255,255,255,0.04)),var(--acr-card-nested)] shadow-[inset_0_1px_rgba(255,255,255,0.14)]" />
+                      <div className="h-[200px] overflow-hidden rounded-[8px] border border-[var(--acr-border-soft)] bg-[var(--acr-card-nested)] shadow-[inset_0_1px_rgba(255,255,255,0.14)]">
+                        <img
+                          src={selectedMessage.image}
+                          alt=""
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
                     </div>
                   </article>
                 </ShellContent>

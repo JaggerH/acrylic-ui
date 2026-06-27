@@ -78,7 +78,10 @@ const snapshot = () =>
 const home = await snapshot()
 await page.screenshot({ path: `${outputDir}/home-shell-page.png`, fullPage: true })
 
-await page.getByRole("button", { name: "Inbox" }).click()
+await page
+  .locator('[data-slot="sidebar"] [data-slot="sidebar-menu-button"]')
+  .filter({ hasText: "Inbox" })
+  .click()
 await page.waitForTimeout(250)
 
 const inbox = await snapshot()
