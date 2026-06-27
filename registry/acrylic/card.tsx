@@ -17,11 +17,15 @@ import { cn } from "@/lib/utils"
  *  no descendant re-composes the float into an inner "wrap" seam. */
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { interactive?: boolean }
->(({ className, interactive = false, ...props }, ref) => (
+  React.HTMLAttributes<HTMLDivElement> & {
+    interactive?: boolean
+    nestedSurface?: boolean
+  }
+>(({ className, interactive = false, nestedSurface = false, ...props }, ref) => (
   <div
     ref={ref}
     data-slot="card"
+    data-nested-surface={nestedSurface || undefined}
     className={cn(
       "acr-frosted relative rounded-xl bg-[var(--acr-surface)] backdrop-blur-xl",
       "transition-[transform,background-color] duration-200",

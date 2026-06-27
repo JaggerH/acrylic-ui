@@ -28,12 +28,11 @@ own thumbnails and fields.
 
 ## Example — card in card
 
-A nested composition (the iOS grouped-list pattern): an outer frosted Card holds
-a recessed inner card. The inner surface is **not** a second blurred Card —
-stacking another `backdrop-blur` over the already-translucent glass double-samples
-it and leaves a darkened seam. Instead it's a flat black wash that recesses the
-surface (darker than the outer glass in both themes), reading as a secondary
-surface on the same pane.
+A nested composition (the iOS grouped-list pattern): an outer frosted Card opts
+into `nestedSurface` and holds a recessed inner card. The inner surface is **not**
+a second blurred Card — stacking another `backdrop-blur` over the already-translucent
+glass double-samples it and leaves a darkened seam. Instead it's a flat wash that
+recesses the surface, reading as a secondary surface on the same pane.
 
 <ComponentPreview name="card-nested" />
 
@@ -50,5 +49,6 @@ footer action — with the body as a frosted glass surface over the wallpaper.
 | prop | type | default | description |
 | --- | --- | --- | --- |
 | `interactive` | `boolean` | `false` | hover lift + float shadow for clickable cards |
+| `nestedSurface` | `boolean` | `false` | opt in to nested Card surface treatment for child Cards |
 
 Plus all native `<div>` props.

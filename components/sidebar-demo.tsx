@@ -108,8 +108,8 @@ const COLUMNS: { name: string; loans: Loan[] }[] = [
   },
 ]
 
-/** Inner card — one loan, a real nested <Card>. Inside the frosted inset the
- *  `.acr-frosted [data-slot=card]` rule auto-drops its blur and tints it darker. */
+/** Inner card — one loan, rendered as a real nested <Card>. The parent column
+ *  opts into nested surfaces so these cards read as recessed rows. */
 function LoanCard({ loan }: { loan: Loan }) {
   return (
     <Card className="p-2.5">
@@ -131,7 +131,7 @@ function LoanCard({ loan }: { loan: Loan }) {
 /** Outer card — one pipeline column holding its loan cards + an add row. */
 function LoanColumn({ name, loans }: { name: string; loans: Loan[] }) {
   return (
-    <Card className="flex w-72 shrink-0 flex-col gap-2.5 p-3 text-foreground">
+    <Card nestedSurface className="flex w-72 shrink-0 flex-col gap-2.5 p-3 text-foreground">
       <div className="flex items-center gap-2 px-0.5">
         <span className="text-[13px] font-semibold">{name}</span>
         <Badge variant="secondary" className="min-w-5 px-1.5 text-[11px] tabular-nums">
@@ -351,6 +351,7 @@ export function SidebarDemo({
           Backdrop the `--background` veil alone reads too dim; brightening the
           backdrop the blur samples makes the glass read lighter/airier. */}
       <ShellInset
+        data-nested-surface="true"
         className={cn(
           "acr-frosted min-w-0 backdrop-brightness-150",
           framed && "rounded-r-xl"

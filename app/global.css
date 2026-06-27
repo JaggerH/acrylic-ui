@@ -312,16 +312,15 @@
   font-style: var(--shiki-dark-font-style);
 }
 
-/* Nested frosted surfaces. A Card or Item inside any frosted surface — Card and
-   outline Item carry `.acr-frosted` themselves, so nested surfaces are automatic;
-   other frosted containers (e.g. a sidebar inset) opt in by adding the class.
-   The inner surface can't
+/* Nested card surfaces. `acr-frosted` only marks the element's own material.
+   A container opts into nested-surface handling explicitly with
+   `data-nested-surface`; Card exposes this as the `nestedSurface` prop.
+   The inner card surface can't
    usefully re-blur an already-blurred backdrop (no high-frequency detail left to
    soften), so it drops its own blur and becomes a translucent tint that lets the
    outer frost show through. Each nesting level darkens by one step, and that
    step IS the visible layer boundary — no border required. */
-.acr-frosted [data-slot="card"],
-.acr-frosted [data-slot="item"] {
+[data-nested-surface="true"] [data-slot="card"] {
   background-color: var(--acr-card-nested);
   /* Drop the inherited blur by zeroing Tailwind's blur variable rather than
      writing `backdrop-filter: none` — lightningcss collapses a none/`-webkit-`

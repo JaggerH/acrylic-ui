@@ -8,12 +8,10 @@ import { Button } from "@/registry/acrylic/button"
 import { Card } from "@/registry/acrylic/card"
 import { ExampleBackdrop } from "@/components/example-backdrop"
 
-// Card-in-card: the outer Card is the frosted glass (backdrop-blur). A REAL Card
-// nested inside it auto-drops its blur and tints one step darker (the
-// `.acr-frosted [data-slot="card"]` rule + the `--acr-card-nested` token), so the
-// nested surface reads as a recessed secondary layer — the iOS grouped-list
-// pattern — with no extra blur and no border. Each nesting level steps darker, so
-// even a 3-deep stack keeps every layer visually distinct.
+// Card-in-card: the outer Card is the frosted glass (backdrop-blur). `nestedSurface`
+// explicitly opts it into nested-card treatment, so real Cards inside it drop their
+// blur and tint one step darker via `--acr-card-nested`. Each nesting level steps
+// darker, so even a 3-deep stack keeps every layer visually distinct.
 
 /** One loan row, rendered as a real nested <Card>. */
 function LoanRow() {
@@ -76,7 +74,7 @@ export default function CardNested() {
   return (
     <ExampleBackdrop className="!flex-row flex-wrap items-start justify-center gap-6">
       {/* Single nest: outer Card → one nested Card per loan. */}
-      <Card className="flex w-72 shrink-0 flex-col gap-2.5 p-3 text-foreground">
+      <Card nestedSurface className="flex w-72 shrink-0 flex-col gap-2.5 p-3 text-foreground">
         <ColumnHeader name="Approving" count={1} />
         <LoanRow />
         <AddRow />
@@ -84,9 +82,9 @@ export default function CardNested() {
 
       {/* Three layers deep: outer Card → middle Card → inner Card. The middle
           layer must stay a clearly distinct surface, not wash out. */}
-      <Card className="flex w-72 shrink-0 flex-col gap-2.5 p-3 text-foreground">
+      <Card nestedSurface className="flex w-72 shrink-0 flex-col gap-2.5 p-3 text-foreground">
         <ColumnHeader name="Pipeline" count={1} />
-        <Card className="flex flex-col gap-2.5 p-2.5">
+        <Card nestedSurface className="flex flex-col gap-2.5 p-2.5">
           <span className="px-0.5 text-[12px] font-semibold text-muted-foreground">
             Qualification
           </span>
