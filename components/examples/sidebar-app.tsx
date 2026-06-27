@@ -1,5 +1,7 @@
 "use client"
 
+import { useState } from "react"
+
 import {
   Calendar,
   ChevronRight,
@@ -38,13 +40,35 @@ import {
 } from "@/registry/acrylic/sidebar"
 
 const NAV = [
-  { title: "Home", icon: Home, isActive: true },
-  { title: "Inbox", icon: Inbox },
-  { title: "Calendar", icon: Calendar },
-  { title: "Search", icon: Search },
+  {
+    id: "home",
+    title:
+      "Home dashboard with an extremely long primary navigation label",
+    icon: Home,
+  },
+  { id: "inbox", title: "Inbox", icon: Inbox },
+  { id: "calendar", title: "Calendar", icon: Calendar },
+  { id: "search", title: "Search", icon: Search },
+]
+
+const PROJECT_ITEMS = [
+  {
+    id: "tokens",
+    title: "Tokens And Semantic Color Variables With A Long Label",
+  },
+  {
+    id: "components",
+    title: "Components And Interaction Patterns With A Long Label",
+  },
 ]
 
 export default function SidebarApp() {
+  const [activeItem, setActiveItem] = useState("home")
+  const activeLabel =
+    NAV.find((item) => item.id === activeItem)?.title ??
+    PROJECT_ITEMS.find((item) => item.id === activeItem)?.title ??
+    "Tokens"
+
   return (
     <ExampleBackdrop>
       <div className="flex h-[30rem] w-full max-w-3xl overflow-hidden rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.28)]">
@@ -62,11 +86,11 @@ export default function SidebarApp() {
                       <GalleryVerticalEnd className="size-4" />
                     </div>
                     <div className="grid flex-1 text-left leading-tight">
-                      <span className="truncate text-[13px] font-semibold">
-                        Acrylic Inc
+                      <span className="overflow-hidden text-[13px] font-semibold">
+                        Acrylic Design Systems Incorporated With A Very Long Name
                       </span>
-                      <span className="truncate text-[11px] text-muted-foreground">
-                        Enterprise
+                      <span className="overflow-hidden text-[11px] text-muted-foreground">
+                        Enterprise workspace description that should fade out
                       </span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
@@ -81,8 +105,11 @@ export default function SidebarApp() {
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {NAV.map((item) => (
-                      <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton isActive={item.isActive}>
+                      <SidebarMenuItem key={item.id}>
+                        <SidebarMenuButton
+                          isActive={activeItem === item.id}
+                          onClick={() => setActiveItem(item.id)}
+                        >
                           <item.icon />
                           <span>{item.title}</span>
                         </SidebarMenuButton>
@@ -97,20 +124,25 @@ export default function SidebarApp() {
                 <SidebarGroupContent>
                   <SidebarMenu>
                     <SidebarMenuItem>
-                      <SidebarMenuButton>
+                      <SidebarMenuButton
+                        isActive={activeItem === "design-system"}
+                        onClick={() => setActiveItem("design-system")}
+                      >
                         <Settings2 />
-                        <span>Design System</span>
+                        <span>Design System Navigation Item With A Very Long Label</span>
                         <ChevronRight className="ml-auto" />
                       </SidebarMenuButton>
                       <SidebarMenuSub>
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton isActive>
-                            Tokens
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton>Components</SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
+                        {PROJECT_ITEMS.map((item) => (
+                          <SidebarMenuSubItem key={item.id}>
+                            <SidebarMenuSubButton
+                              isActive={activeItem === item.id}
+                              onClick={() => setActiveItem(item.id)}
+                            >
+                              <span>{item.title}</span>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
                       </SidebarMenuSub>
                     </SidebarMenuItem>
                   </SidebarMenu>
@@ -131,11 +163,11 @@ export default function SidebarApp() {
                       <AvatarFallback className="rounded-lg">JH</AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left leading-tight">
-                      <span className="truncate text-[13px] font-semibold">
-                        Jagger H
+                      <span className="overflow-hidden text-[13px] font-semibold">
+                        Jagger H With A Very Long Display Name
                       </span>
-                      <span className="truncate text-[11px] text-muted-foreground">
-                        jagger@acrylic.dev
+                      <span className="overflow-hidden text-[11px] text-muted-foreground">
+                        jagger.with.a.very.long.email.address@acrylic.dev
                       </span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
@@ -157,8 +189,8 @@ export default function SidebarApp() {
                 Design System
               </span>
               <ChevronRight className="size-3.5 text-muted-foreground" />
-              <span className="text-[13px] font-medium text-foreground">
-                Tokens
+              <span className="min-w-0 truncate text-[13px] font-medium text-foreground">
+                {activeLabel}
               </span>
             </header>
             <div className="flex flex-1 flex-col gap-4 overflow-auto p-4">
