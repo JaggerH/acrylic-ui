@@ -6,13 +6,18 @@ import {
   Calendar,
   ChevronRight,
   ChevronsUpDown,
+  Flag,
   GalleryVerticalEnd,
   Home,
   Inbox,
+  Paperclip,
   Plus,
   Search,
   Settings2,
+  SquarePen,
+  Star,
   Trash2,
+  type LucideIcon,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -41,9 +46,22 @@ import { Separator } from "@/registry/acrylic/separator"
 import {
   Shell,
   ShellBody,
+  ShellContent,
   ShellInset,
   ShellNavbar,
+  ShellPanel,
+  ShellPanelHeader,
 } from "@/registry/acrylic/shell"
+import {
+  Item,
+  ItemAction,
+  ItemContent,
+  ItemDescription,
+  ItemMeta,
+  ItemRow,
+  ItemSeparator,
+  ItemTitle,
+} from "@/registry/acrylic/item"
 import {
   Sidebar,
   SidebarContent,
@@ -70,11 +88,11 @@ import { Toaster } from "@/registry/acrylic/sonner"
 // native vibrancy). `framed` adds the bounded-card chrome the landing page wants;
 // the Tauri window renders it edge-to-edge.
 
-type View = "home" | "components"
+type View = "home" | "inbox" | "components"
 
 const NAV: { title: string; icon: typeof Home; view?: View }[] = [
   { title: "Home", icon: Home, view: "home" },
-  { title: "Inbox", icon: Inbox },
+  { title: "Inbox", icon: Inbox, view: "inbox" },
   { title: "Calendar", icon: Calendar },
   { title: "Search", icon: Search },
   { title: "Components", icon: Blocks, view: "components" },
@@ -107,6 +125,122 @@ const COLUMNS: { name: string; loans: Loan[] }[] = [
     ],
   },
 ]
+
+const MESSAGES = [
+  {
+    from: "Acrylic UI",
+    subject: "Registry review notes",
+    preview: "The Shell primitive keeps app structure separate from Sidebar.",
+    time: "9:42 AM",
+    marker: Flag,
+    active: true,
+  },
+  {
+    from: "Mira Chen",
+    subject: "Window shell sketches",
+    preview: "I added a Mail-style split view and a Notes editor variant.",
+    time: "8:15 AM",
+    marker: Paperclip,
+  },
+  {
+    from: "Design Systems",
+    subject: "Source list density",
+    preview: "Keep sidebar rows compact at 13px with muted counts.",
+    time: "Yesterday",
+    compact: true,
+  },
+  {
+    from: "Tauri",
+    subject: "Vibrancy pass",
+    preview: "The backdrop is visible through the shell and sidebar surfaces.",
+    time: "Mon",
+    marker: Star,
+  },
+  {
+    from: "Release",
+    subject: "Docs capture",
+    preview: "The preview should match the macOS mail frame before API polish.",
+    time: "Jun 22",
+    marker: Flag,
+  },
+  {
+    from: "Preview Bot",
+    subject: "Screenshot run",
+    preview: "Playwright has a repeatable path for the docs shell page.",
+    time: "Jun 21",
+  },
+]
+
+function AppleIcon({
+  icon: Icon,
+  size = 14,
+  strokeWidth = 1.5,
+}: {
+  icon: LucideIcon
+  size?: number
+  strokeWidth?: number
+}) {
+  return (
+    <Icon
+      aria-hidden
+      absoluteStrokeWidth
+      size={size}
+      strokeWidth={strokeWidth}
+    />
+  )
+}
+
+function MailListItem({ message }: { message: (typeof MESSAGES)[number] }) {
+  return (
+    <Item
+      asChild
+      size="xs"
+      selected={message.active}
+      className={[
+        "w-full px-5 py-2.5",
+        "items-start gap-0 text-left",
+        "focus-visible:relative focus-visible:z-10",
+        "data-[selected=true]:bg-primary",
+        "data-[selected=true]:text-primary-foreground",
+        "[&[data-selected=true]_[data-slot=item-title]]:text-primary-foreground",
+        "[&[data-selected=true]_[data-slot=item-description]]:text-primary-foreground/80",
+        "[&[data-selected=true]_[data-slot=item-meta]]:text-primary-foreground/80",
+        "[&[data-selected=true]_[data-slot=item-actions]]:text-primary-foreground/80",
+      ].join(" ")}
+    >
+      <button type="button" className="w-full">
+        <ItemContent className="flex min-w-0 flex-col">
+          <ItemRow className="h-4 items-center">
+            <ItemTitle className="min-w-0 flex-1 text-[13px] font-semibold leading-4">
+              {message.from}
+            </ItemTitle>
+            <ItemMeta className="text-[11px] leading-4">
+              {message.time}
+            </ItemMeta>
+          </ItemRow>
+          <ItemRow className="mt-1 h-[13px] items-center">
+            <ItemTitle className="min-w-0 flex-1 text-[11px] font-medium leading-[13px]">
+              {message.subject}
+            </ItemTitle>
+            <ItemAction className="h-3 w-3 text-muted-foreground [&>svg]:size-3">
+              {message.marker ? (
+                <AppleIcon icon={message.marker} size={12} strokeWidth={1.4} />
+              ) : null}
+            </ItemAction>
+          </ItemRow>
+          <ItemDescription
+            className={[
+              "mt-1 text-[11px] leading-[13px]",
+              message.compact ? "line-clamp-1" : "line-clamp-2",
+            ].join(" ")}
+          >
+            {message.preview}
+          </ItemDescription>
+        </ItemContent>
+      </button>
+    </Item>
+  )
+}
 
 /** Inner card — one loan, rendered as a real nested <Card>. The parent column
  *  opts into nested surfaces so these cards read as recessed rows. */
@@ -206,6 +340,107 @@ function LoansBoard() {
         <LoanColumn key={col.name} name={col.name} loans={col.loans} />
       ))}
     </div>
+  )
+}
+
+function InboxMainPanel() {
+  return (
+    <>
+      <ShellPanel variant="list" className="w-[225px] flex-none">
+        <ShellPanelHeader className="h-[49px] px-4">
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-[15px] font-semibold leading-5">
+              Inbox
+            </div>
+            <div className="truncate text-[11px] leading-[14px] text-muted-foreground">
+              67 messages
+            </div>
+          </div>
+          <Button
+            variant="ghost"
+            size="large"
+            aria-label="New message"
+            className="h-7 w-9 rounded-[6px] px-0"
+          >
+            <SquarePen />
+          </Button>
+        </ShellPanelHeader>
+        <ShellContent
+          padding="flush"
+          className="scrollbar-mac overflow-x-hidden pt-1"
+        >
+          <div className="ml-2 w-[208px]">
+            {MESSAGES.map((message, index) => {
+              const nextMessage = MESSAGES[index + 1]
+              const showSeparator =
+                nextMessage && !message.active && !nextMessage.active
+
+              return (
+                <div key={message.subject}>
+                  <MailListItem message={message} />
+                  {showSeparator ? <ItemSeparator className="mx-3" /> : null}
+                </div>
+              )
+            })}
+          </div>
+        </ShellContent>
+      </ShellPanel>
+
+      <ShellPanel variant="detail" className="min-w-[425px] flex-1">
+        <ShellNavbar className="h-[49px] justify-start px-3">
+          <ThemeSwitcher />
+        </ShellNavbar>
+
+        <ShellContent padding="flush" className="scrollbar-mac px-5 pt-4">
+          <article className="w-full">
+            <header className="h-[67px] border-b border-[var(--acr-border-soft)]">
+              <div className="flex h-[50px] gap-3">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--acr-chip)] text-[11px] font-semibold text-foreground">
+                  AU
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="grid grid-cols-[minmax(0,1fr)_40px] items-start gap-5">
+                    <div className="truncate text-[13px] font-semibold leading-4">
+                      Acrylic UI
+                    </div>
+                    <div className="pt-px text-[11px] leading-[13px] text-muted-foreground">
+                      9:42 AM
+                    </div>
+                  </div>
+                  <div className="mt-1 grid grid-cols-[minmax(0,1fr)_12px] items-start gap-2">
+                    <div className="truncate text-[11px] font-medium leading-[13px]">
+                      Registry review notes
+                    </div>
+                    <span className="mt-px text-muted-foreground">
+                      <AppleIcon icon={Flag} size={12} strokeWidth={1.4} />
+                    </span>
+                  </div>
+                  <div className="mt-1 truncate text-[11px] leading-[13px] text-muted-foreground">
+                    The Shell primitive keeps app structure separate from Sidebar.
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            <div className="pt-4">
+              <div className="h-44 text-[13px] leading-6 text-foreground/85">
+                <p>
+                  Shell owns the window structure. Sidebar remains the source-list
+                  primitive, while the main panel can split into list and detail
+                  panes at exact macOS frame sizes.
+                </p>
+                <p className="mt-3">
+                  This Mail example uses Item for each message preview, so
+                  density, truncation, and actions can be reused without turning
+                  Shell into a mail-specific API.
+                </p>
+              </div>
+              <div className="h-[200px] rounded-[8px] border border-[var(--acr-border-soft)] bg-[linear-gradient(135deg,rgba(255,255,255,0.20),rgba(255,255,255,0.04)),var(--acr-card-nested)] shadow-[inset_0_1px_rgba(255,255,255,0.14)]" />
+            </div>
+          </article>
+        </ShellContent>
+      </ShellPanel>
+    </>
   )
 }
 
@@ -353,50 +588,66 @@ export function SidebarDemo({
       <ShellInset
         data-nested-surface="true"
         className={cn(
-          "acr-frosted min-w-0 backdrop-brightness-150",
+          "acr-frosted relative min-w-0 bg-[var(--background)] text-foreground backdrop-blur-2xl backdrop-brightness-150",
           framed && "rounded-r-xl"
         )}
       >
         <Toaster />
-        <ShellNavbar
-          // Tauri only: the header IS the titlebar, so make its empty space draggable.
-          // data-tauri-drag-region acts only on the element it's set on; the child
-          // buttons/inputs stay interactive.
-          {...(windowControls ? { "data-tauri-drag-region": "" } : {})}
-          size="large"
-          className="h-12 border-[var(--acr-border)] px-4"
-        >
-          <SidebarTrigger />
-          <Separator
-            orientation="vertical"
-            className="mr-1 !h-4 data-[orientation=vertical]:!h-4"
-          />
-          {/* Web showcase dogfoods its own theme control (flip Light/Dark/Acrylic
-              and watch the glass react). The Tauri app is always Acrylic over native
-              vibrancy, so switching there would just cover the OS material — it shows
-              the pane title instead. */}
-          {showThemeSwitcher ? (
-            <ThemeSwitcher />
-          ) : (
-            <span className="text-[15px] font-semibold text-foreground">
-              {pane === "components" ? "Components" : "Loans"}
-            </span>
-          )}
-          {/* Host controls take over the header's right edge. Tauri uses native window
-              buttons; the web landing page uses a fullscreen toggle. Without either,
-              the web demo keeps its New Loan action there. */}
-          {windowControls ? (
-            <div className="ml-auto flex items-stretch self-stretch">
-              {windowControls}
-            </div>
-          ) : headerControls ? (
-            <div className="ml-auto flex items-center">{headerControls}</div>
-          ) : (
-            pane === "home" && <NewLoanDialog />
-          )}
-        </ShellNavbar>
+        {pane === "inbox" && (windowControls || headerControls) ? (
+          <div
+            {...(windowControls ? { "data-tauri-drag-region": "" } : {})}
+            className="absolute right-3 top-2 z-20 flex items-center"
+          >
+            {windowControls ? (
+              <div className="flex h-8 items-stretch">{windowControls}</div>
+            ) : (
+              headerControls
+            )}
+          </div>
+        ) : null}
+        {pane !== "inbox" ? (
+          <ShellNavbar
+            // Tauri only: the header IS the titlebar, so make its empty space draggable.
+            // data-tauri-drag-region acts only on the element it's set on; the child
+            // buttons/inputs stay interactive.
+            {...(windowControls ? { "data-tauri-drag-region": "" } : {})}
+            size="large"
+            className="h-12 border-[var(--acr-border)] px-4"
+          >
+            <SidebarTrigger />
+            <Separator
+              orientation="vertical"
+              className="mr-1 !h-4 data-[orientation=vertical]:!h-4"
+            />
+            {/* Web showcase dogfoods its own theme control (flip Light/Dark/Acrylic
+                and watch the glass react). The Tauri app is always Acrylic over native
+                vibrancy, so switching there would just cover the OS material — it shows
+                the pane title instead. */}
+            {showThemeSwitcher ? (
+              <ThemeSwitcher />
+            ) : (
+              <span className="text-[15px] font-semibold text-foreground">
+                {pane === "components" ? "Components" : "Loans"}
+              </span>
+            )}
+            {/* Host controls take over the header's right edge. Tauri uses native window
+                buttons; the web landing page uses a fullscreen toggle. Without either,
+                the web demo keeps its New Loan action there. */}
+            {windowControls ? (
+              <div className="ml-auto flex items-stretch self-stretch">
+                {windowControls}
+              </div>
+            ) : headerControls ? (
+              <div className="ml-auto flex items-center">{headerControls}</div>
+            ) : (
+              pane === "home" && <NewLoanDialog />
+            )}
+          </ShellNavbar>
+        ) : null}
         <ShellBody>
-          {pane === "components" ? (
+          {pane === "inbox" ? (
+            <InboxMainPanel />
+          ) : pane === "components" ? (
             <div className="min-h-0 flex-1 overflow-y-auto scrollbar-mac">
               <ComponentsGallery />
             </div>

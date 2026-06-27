@@ -609,7 +609,7 @@ function SegmentedSlider({
           className={cn(
             "pointer-events-none absolute left-0 top-0 z-0 h-full bg-[var(--acr-button-group-control)]",
             g.pill,
-            "shadow-[0_1px_2px_rgba(0,0,0,0.16),0_0_0_0.5px_rgba(0,0,0,0.04)]",
+            "shadow-[0_1px_2px_rgba(0,0,0,0.35)]",
             "transition-[transform,width] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)]",
             "motion-reduce:transition-none"
           )}

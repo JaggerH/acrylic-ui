@@ -10,7 +10,8 @@ const browser = await chromium.launch()
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } })
 await page.goto(url, { waitUntil: "networkidle" })
 
-const result = await page.evaluate(() => {
+const snapshot = () =>
+  page.evaluate(() => {
   const box = (selector) => {
     const node = document.querySelector(selector)
     if (!node) return null
@@ -38,11 +39,54 @@ const result = await page.evaluate(() => {
       inset: box('[data-slot="shell-inset"]'),
       navbar: box('[data-slot="shell-navbar"]'),
       body: box('[data-slot="shell-body"]'),
+      inboxPanel: box('[data-slot="shell-panel"][data-variant="list"]'),
+      detailPanel: box('[data-slot="shell-panel"][data-variant="detail"]'),
+      firstItem: box('[data-slot="item"]'),
+    },
+    overflow: {
+      page: {
+        clientWidth: document.documentElement.clientWidth,
+        scrollWidth: document.documentElement.scrollWidth,
+        hasHorizontalOverflow:
+          document.documentElement.scrollWidth >
+          document.documentElement.clientWidth,
+      },
+      shellBody: (() => {
+        const node = document.querySelector('[data-slot="shell-body"]')
+        if (!node) return null
+        return {
+          clientWidth: node.clientWidth,
+          scrollWidth: node.scrollWidth,
+          hasHorizontalOverflow: node.scrollWidth > node.clientWidth,
+        }
+      })(),
+      inboxContent: (() => {
+        const node = document.querySelector(
+          '[data-slot="shell-panel"][data-variant="list"] [data-slot="shell-content"]'
+        )
+        if (!node) return null
+        return {
+          clientWidth: node.clientWidth,
+          scrollWidth: node.scrollWidth,
+          hasHorizontalOverflow: node.scrollWidth > node.clientWidth,
+        }
+      })(),
     },
   }
 })
 
+const home = await snapshot()
 await page.screenshot({ path: `${outputDir}/home-shell-page.png`, fullPage: true })
+
+await page.getByRole("button", { name: "Inbox" }).click()
+await page.waitForTimeout(250)
+
+const inbox = await snapshot()
+await page.screenshot({
+  path: `${outputDir}/home-shell-inbox-page.png`,
+  fullPage: true,
+})
+
 await browser.close()
 
-console.log(JSON.stringify(result, null, 2))
+console.log(JSON.stringify({ home, inbox }, null, 2))
