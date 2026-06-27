@@ -136,29 +136,34 @@ function MailListItem({ message }: { message: (typeof MESSAGES)[number] }) {
       size="xs"
       selected={message.active}
       className={[
-        "h-[83px] w-full rounded-none px-5 py-2.5",
+        "w-full rounded-none px-5 py-2.5",
         "items-start gap-0 text-left",
         "focus-visible:relative focus-visible:z-10",
-        message.compact && "h-[70px]",
+        "data-[selected=true]:bg-primary",
+        "data-[selected=true]:text-primary-foreground",
+        "[&[data-selected=true]_[data-slot=item-title]]:text-primary-foreground",
+        "[&[data-selected=true]_[data-slot=item-description]]:text-primary-foreground/80",
+        "[&[data-selected=true]_[data-slot=item-meta]]:text-primary-foreground/80",
+        "[&[data-selected=true]_[data-slot=item-actions]]:text-primary-foreground/80",
       ]
         .filter(Boolean)
         .join(" ")}
     >
-      <button type="button">
-        <ItemContent className="flex h-full min-w-0 flex-col">
-          <ItemRow className="h-4">
+      <button type="button" className="w-full">
+        <ItemContent className="flex min-w-0 flex-col">
+          <ItemRow className="h-4 items-center">
             <ItemTitle className="min-w-0 flex-1 text-[13px] font-semibold leading-4">
               {message.from}
             </ItemTitle>
-            <ItemMeta className="pt-px text-[11px] leading-[13px]">
+            <ItemMeta className="text-[11px] leading-4">
               {message.time}
             </ItemMeta>
           </ItemRow>
-          <ItemRow className="mt-1 h-[13px]">
+          <ItemRow className="mt-1 h-[13px] items-center">
             <ItemTitle className="min-w-0 flex-1 text-[11px] font-medium leading-[13px]">
               {message.subject}
             </ItemTitle>
-            <ItemAction className="h-3 w-3 pt-px text-muted-foreground [&>svg]:size-3">
+            <ItemAction className="h-3 w-3 text-muted-foreground [&>svg]:size-3">
               {message.marker ? (
                 <AppleIcon icon={message.marker} size={12} strokeWidth={1.4} />
               ) : null}
