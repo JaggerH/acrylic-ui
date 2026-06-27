@@ -235,7 +235,7 @@ function ShellPanelActions({
 
 function ShellContent({
   className,
-  padding = "default",
+  padding = "flush",
   ...props
 }: React.ComponentProps<"div"> & {
   padding?: ShellContentPadding
