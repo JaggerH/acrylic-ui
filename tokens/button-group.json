@@ -230,7 +230,7 @@
       "light": "rgba(255, 255, 255, 1)",
       "dark": "rgba(255, 255, 255, 0.09)"
     },
-    "mapsTo": "--acr-control",
+    "mapsTo": "--acr-button-group-control",
     "shadow": "0 1px 2px rgba(0,0,0,0.16), 0 0 0 0.5px rgba(0,0,0,0.04)",
     "altAccent": {
       "light": "rgba(0, 136, 255, 1)",

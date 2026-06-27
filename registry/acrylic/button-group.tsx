@@ -15,8 +15,8 @@ import { cn } from "@/lib/utils"
 //    to the inner (well − padding) radius and inner corners collapsed to square,
 //    exactly like the macOS −/value/+ and indent toolbar groups.
 //  • segmented — a selectable control: the same gray well, but the ACTIVE item is
-//    a RAISED WHITE rounded pill (--acr-control) with a soft shadow floating over
-//    the well. macOS SLIDES that pill to the newly-selected segment, so the
+//    a RAISED rounded pill (--acr-button-group-control) with a soft shadow floating
+//    over the well. macOS SLIDES that pill to the newly-selected segment, so the
 //    preferred API is CONTROLLED: pass `value`/`defaultValue`/`onValueChange` on
 //    `ButtonGroup` and `ButtonGroupItem` children keyed by `value`. The pill is a
 //    single absolutely-positioned indicator that transitions across equal-width
@@ -54,19 +54,19 @@ const SIZE: Record<
     well: "p-0.5",
     item: "h-4 gap-1 px-2 text-[10px] [&_svg]:size-3",
     divider: "inset-y-0.5",
-    text: "px-2 text-[10px]",
+    text: "h-4 px-2 text-[10px]",
   },
   small: {
     well: "p-0.5",
     item: "h-5 gap-1 px-2.5 text-[11px] [&_svg]:size-3",
     divider: "inset-y-0.5",
-    text: "px-2.5 text-[11px]",
+    text: "h-5 px-2.5 text-[11px]",
   },
   medium: {
     well: "p-0.5",
     item: "h-6 gap-1.5 px-4 text-[13px] [&_svg]:size-3.5",
     divider: "inset-y-1",
-    text: "px-3 text-[13px]",
+    text: "h-6 px-3 text-[13px]",
   },
   // large/xl: the kit radius (14 / 18) equals half the segment height (28 / 36),
   // i.e. a FULL capsule — so the well and pill are rounded-full (concentric capsules
@@ -75,13 +75,13 @@ const SIZE: Record<
     well: "p-0.5",
     item: "h-7 gap-1.5 px-4 text-[13px] [&_svg]:size-4",
     divider: "inset-y-1.5",
-    text: "px-3.5 text-[13px]",
+    text: "h-7 px-3.5 text-[13px]",
   },
   xl: {
     well: "p-0.5",
     item: "h-9 gap-2 px-5 text-[13px] [&_svg]:size-4",
     divider: "inset-y-2",
-    text: "px-4 text-[13px]",
+    text: "h-9 px-4 text-[13px]",
   },
 }
 
@@ -335,7 +335,7 @@ function wellClasses(
   const g = shapeClasses(shape, size)
   if (variant === "split") return ""
   if (variant === "segmented") return cn(s.well, g.well, g.childrenAll)
-  return cn(s.well, g.well, g.childrenL, g.childrenR)
+  return cn(s.well, g.well, g.childrenAll, g.childrenL, g.childrenR)
 }
 
 // Single-select (default): segmented radio with the sliding white pill.
@@ -489,6 +489,7 @@ function MultiToggleGroup({
         "[&>*]:rounded-none",
         s.well,
         g.well,
+        g.childrenAll,
         g.childrenL,
         g.childrenR,
         className
@@ -606,7 +607,7 @@ function SegmentedSlider({
           aria-hidden
           data-slot="button-group-indicator"
           className={cn(
-            "pointer-events-none absolute left-0 top-0 z-0 h-full bg-[var(--acr-control)]",
+            "pointer-events-none absolute left-0 top-0 z-0 h-full bg-[var(--acr-button-group-control)]",
             g.pill,
             "shadow-[0_1px_2px_rgba(0,0,0,0.16),0_0_0_0.5px_rgba(0,0,0,0.04)]",
             "transition-[transform,width] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)]",
