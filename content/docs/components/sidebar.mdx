@@ -28,62 +28,6 @@ Wrap your app in `SidebarProvider`, then place a `Sidebar` next to a
 
 <ComponentPreview name="sidebar-demo" />
 
-```tsx
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/acrylic/sidebar"
-
-<SidebarProvider>
-  <Sidebar>
-    <SidebarHeader>{/* logo, search */}</SidebarHeader>
-    <SidebarContent>
-      <SidebarGroup>
-        <SidebarGroupLabel>Mailboxes</SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton isActive>
-                <Inbox />
-                <span>Inbox</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
-    </SidebarContent>
-  </Sidebar>
-  <SidebarInset>
-    <SidebarTrigger />
-    {/* page content */}
-  </SidebarInset>
-</SidebarProvider>
-```
-
-## Shell layouts
-
-Use `Sidebar` when you need the full collapsible shadcn sidebar behavior. Its
-layout adapter owns gap reservation, absolute desktop rails, off-canvas movement,
-mobile sheets, persisted state, and the keyboard toggle.
-
-For complete macOS app frames — source list, toolbars, split panes, and main
-content — compose the `Shell` component instead. In that relationship, Shell is
-the higher-level geometry owner: pass `sidebarWidth` and
-`sidebarCollapsedWidth` to Shell so Sidebar's gap reservation, visible surface,
-and collapsed icon rail all read the same width tokens.
-
-<ComponentPreview name="shell-mail" />
-
 ## Densities
 
 The three kit sidebar sizes map onto the `SidebarMenuButton` `size` prop —
