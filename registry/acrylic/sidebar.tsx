@@ -556,7 +556,7 @@ const sidebarMenuButtonVariants = cva(
   // SELECTED row is highlighted (data-[active]); hovering an item shows nothing, so
   // a selected row and a hovered neighbour never grow touching highlight pills.
   // `active:` (mouse-down press feedback) is kept.
-  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-lg px-2 text-left text-[13px] ring-[var(--ring)] outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! focus-visible:ring-2 active:bg-[var(--acr-chip)] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-[var(--acr-chip)] data-[active=true]:font-medium [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-lg px-2 text-left text-[13px] ring-[var(--ring)] outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! focus-visible:ring-2 active:bg-[var(--acr-chip)] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-[var(--acr-chip)] data-[active=true]:font-medium [&>span:last-child]:min-w-0 [&>span:last-child]:truncate [&>span:last-child>span]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -763,7 +763,7 @@ function SidebarMenuSubButton({
       className={cn(
         // Full-width row, gray-pill selection like top level; content indented via
         // pl so the highlight stays edge-to-edge (matches the kit's nested rows).
-        "flex h-8 min-w-0 items-center gap-2 overflow-hidden rounded-lg pr-2 pl-8 text-foreground ring-[var(--ring)] outline-hidden focus-visible:ring-2 active:bg-[var(--acr-chip)] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+        "flex h-8 min-w-0 items-center gap-2 overflow-hidden rounded-lg pr-2 pl-8 text-foreground ring-[var(--ring)] outline-hidden focus-visible:ring-2 active:bg-[var(--acr-chip)] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:min-w-0 [&>span:last-child:not(:has(*))]:truncate [&>span:last-child>span]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
         "data-[active=true]:bg-[var(--acr-chip)] data-[active=true]:font-medium",
         size === "sm" && "text-[11px]",
         size === "md" && "text-[13px]",
