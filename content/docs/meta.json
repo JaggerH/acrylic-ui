@@ -1,3 +1,3 @@
 {
-  "pages": ["index", "tauri", "components", "theme"]
+  "pages": ["index", "tauri", "components", "theme", "skill"]
 }

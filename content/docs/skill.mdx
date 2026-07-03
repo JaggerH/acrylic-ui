@@ -1,0 +1,42 @@
+---
+title: Agent Skill
+description: Acrylic ships a Claude Code skill — teach your coding agent the material system, the component APIs, and the shadcn correspondences.
+---
+
+Acrylic ships an **agent skill** in-repo at
+[`.claude/skills/acrylic-ui/`](https://github.com/JaggerH/acrylic-ui/tree/main/.claude/skills/acrylic-ui)
+— the same idea as shadcn/ui's skill, adapted to this registry. Point a coding
+agent at it and it learns:
+
+- **The material system** — semantic `--acr-*` tokens, the three theme blocks
+  (light / dark / acrylic), the frosted-glass recipe, why cards are flat at rest
+  and hover shadows live on `::before`, and the nested-surface mechanism
+  (`Card nestedSurface` / `data-nested-surface`).
+- **Component divergences from stock shadcn/ui** — the macOS Button axes
+  (`variant` × `size` × `icon`), Badge `size="sm"` pills, the three Item variants,
+  the Shell scaffolding family.
+- **The 1:1 correspondence table** — every acrylic component mapped to its shadcn
+  counterpart, plus the acrylic-only set (Backdrop, Shell, MediaBox, AudioPlayer,
+  Stepper) and the not-shipped list, so agents install from `@acrylic` instead of
+  re-styling stock components by hand.
+
+## Use it in your project
+
+Copy the skill directory into your project's skills path (or your user-level
+skills directory) — Claude Code discovers it automatically:
+
+```bash
+cp -r acrylic-ui/.claude/skills/acrylic-ui  your-app/.claude/skills/
+```
+
+If your agent runtime supports referencing skills in place, pointing it at the
+directory works too. The skill is self-contained: `SKILL.md` (rules index,
+correspondence table, install commands) plus `rules/materials.md` and
+`rules/components.md` with Incorrect/Correct pairs.
+
+## Relationship to the shadcn skill
+
+Acrylic components are shadcn/ui components restyled per shadcn's extension
+conventions, so the two skills compose: the shadcn skill's generic rules (forms,
+composition, styling discipline) apply verbatim unless the acrylic skill overrides
+them — and the acrylic skill documents exactly those overrides.
