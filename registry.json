@@ -132,6 +132,25 @@
       ]
     },
     {
+      "name": "media-box",
+      "type": "registry:component",
+      "title": "Media Box",
+      "description": "A measured image/video frame with rounded clipping, poster fallback, stable sizing rules, and a children overlay slot for player controls. It does not own playback state.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/media-box.tsx",
+          "type": "registry:component",
+          "target": "components/acrylic/media-box.tsx"
+        }
+      ]
+    },
+    {
       "name": "badge",
       "type": "registry:ui",
       "title": "Acrylic Badge",

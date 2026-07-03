@@ -1,5 +1,5 @@
 {
   "title": "Components",
   "defaultOpen": true,
-  "pages": ["alert-dialog","audio-player","badge","button","button-group","card","combobox","context-menu","dialog","dropdown-menu","field","hover-card","input","input-group","item","popover","radio-group","select","sheet","shell","sidebar","slider","sonner","stepper","switch"]
+  "pages": ["alert-dialog","audio-player","badge","button","button-group","card","combobox","context-menu","dialog","dropdown-menu","field","hover-card","input","input-group","item","media-box","popover","radio-group","select","sheet","shell","sidebar","slider","sonner","stepper","switch"]
 }
