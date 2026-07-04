@@ -17,7 +17,7 @@ export default function ContextMenuDemo() {
   return (
     <ExampleBackdrop>
       <ContextMenu>
-        <ContextMenuTrigger className="flex h-36 w-72 select-none items-center justify-center rounded-[12px] border border-dashed border-white/40 bg-white/10 text-[13px] text-white/80 backdrop-blur-sm">
+        <ContextMenuTrigger className="flex h-36 w-72 select-none items-center justify-center rounded-[12px] border border-dashed border-border bg-[var(--acr-chip)] text-[13px] text-muted-foreground backdrop-blur-sm">
           Right-click here
         </ContextMenuTrigger>
         <ContextMenuContent className="w-52">

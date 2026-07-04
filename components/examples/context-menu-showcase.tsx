@@ -29,7 +29,7 @@ export default function ContextMenuShowcase() {
   return (
     <ExampleBackdrop>
       <ContextMenu>
-        <ContextMenuTrigger className="flex h-44 w-80 select-none items-center justify-center rounded-[12px] border border-dashed border-white/40 bg-white/10 text-[13px] text-white/80 backdrop-blur-sm">
+        <ContextMenuTrigger className="flex h-44 w-80 select-none items-center justify-center rounded-[12px] border border-dashed border-border bg-[var(--acr-chip)] text-[13px] text-muted-foreground backdrop-blur-sm">
           Right-click for the full menu
         </ContextMenuTrigger>
         <ContextMenuContent className="w-60">

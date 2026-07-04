@@ -148,7 +148,7 @@ function StaticMenu({ items }: { items: MenuEntry[] }) {
 }
 
 function Caption({ children }: { children: React.ReactNode }) {
-  return <span className="text-[11px] font-medium text-white/80">{children}</span>
+  return <span className="text-[11px] font-medium text-muted-foreground">{children}</span>
 }
 
 export default function ContextMenuFinder() {
@@ -162,7 +162,7 @@ export default function ContextMenuFinder() {
         <Caption>Right-click ↓</Caption>
         <ContextMenu>
           <ContextMenuTrigger asChild>
-            <div className="flex h-44 w-64 select-none items-center justify-center rounded-[12px] border border-dashed border-white/50 bg-white/10 text-[13px] text-black/50 backdrop-blur-sm">
+            <div className="flex h-44 w-64 select-none items-center justify-center rounded-[12px] border border-dashed border-border bg-[var(--acr-chip)] text-[13px] text-muted-foreground backdrop-blur-sm">
               Right-click the desktop
             </div>
           </ContextMenuTrigger>
