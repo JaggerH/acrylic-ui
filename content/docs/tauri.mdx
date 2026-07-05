@@ -299,6 +299,87 @@ Tauri's `[lib] crate-type` must be `["staticlib", "rlib"]` (not `cdylib`) — th
 mingw BFD linker can't handle Tauri's export count. The desktop binary links via
 `rlib`.
 
+## Frameless title bar (custom window chrome)
+
+The native OS title bar breaks the vibrancy illusion — it's an opaque strip the
+webview can't frost. Drop it (`decorations: false`) and render your own chrome
+inside the app, following each host OS's convention. The example ships this as
+[`examples/tauri/src/window-chrome.tsx`](https://github.com/JaggerH/acrylic-ui/blob/main/examples/tauri/src/window-chrome.tsx)
+— copy that file and wire the three exports into your shell.
+
+**tauri.conf.json** — pair `decorations: false` with the `transparent: true` from
+step 1:
+
+```json
+{
+  "app": {
+    "windows": [{ "label": "main", "transparent": true, "decorations": false }]
+  }
+}
+```
+
+**Capabilities** — the caption buttons and resize handles call window commands,
+so grant them in `src-tauri/capabilities/default.json`:
+
+```json
+{
+  "permissions": [
+    "core:default",
+    "core:window:allow-minimize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-close",
+    "core:window:allow-is-maximized",
+    "core:window:allow-start-dragging",
+    "core:window:allow-start-resize-dragging"
+  ]
+}
+```
+
+**Wire it into the shell** — no dedicated titlebar; the controls integrate into
+the app chrome, and a `data-tauri-drag-region` element lets the empty chrome move
+the window:
+
+- **Windows / Linux** → `<WindowControls />` (min / max / close) at the app's
+  **top-right**, e.g. absolutely positioned in the `ShellInset`. Reserve that
+  corner (~138px) so a header's right-edge actions don't slide under it.
+- **macOS** → `<MacTrafficLights />` in a thin draggable strip at the sidebar's
+  **top-left** (the Finder/Mail placement).
+- **Both** → `<WindowResizeHandles />` once at the root. `decorations: false` also
+  removes the native **resize** borders on Windows ([tauri#8519](https://github.com/tauri-apps/tauri/issues/8519)),
+  so these invisible edge/corner strips re-add them via `startResizeDragging`.
+
+```tsx
+import {
+  isMacOS,
+  MacTrafficLights,
+  WindowControls,
+  WindowResizeHandles,
+} from "./window-chrome"
+
+// Windows caption buttons, overlaid at the ShellInset top-right corner.
+{!isMacOS && (
+  <div {...{ "data-tauri-drag-region": "" }} className="absolute right-0 top-0 z-30 flex h-8 items-stretch">
+    <WindowControls />
+  </div>
+)}
+
+// macOS traffic lights, in a draggable strip at the sidebar top-left.
+{isMacOS && (
+  <div {...{ "data-tauri-drag-region": "" }} className="flex h-7 items-center px-3">
+    <MacTrafficLights />
+  </div>
+)}
+
+// Once at the root — re-adds the resize borders decorations:false stripped.
+<WindowResizeHandles />
+```
+
+`data-tauri-drag-region` acts **only on the element it's set on** — child buttons
+and inputs stay interactive — so put it on the empty container, not a wrapper
+around the controls. `getCurrentWindow()` reads Tauri internals that don't exist
+in a plain browser, so resolve it lazily (never at module load) and only mount
+this chrome under `isTauri()`, or the web build throws.
+
 ## Platform support
 
 | Platform | Backdrop | Notes |
