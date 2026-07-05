@@ -51,7 +51,14 @@ const TOOL =
 
 export interface AudioPlayerProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onVolumeChange"> {
-  /** the loaded track; `null`/`undefined` = idle (transport stays, info group hides) */
+  /** layout: the full transport bar (default), or a compact `mini` chip for a sidebar / rail —
+   *  cover + title/artist + play/pause + seek rail, no prev/next/volume/actions. */
+  variant?: "bar" | "mini"
+  /** `mini` only — icon-rail mode: shrink to just the cover + a progress hairline */
+  collapsed?: boolean
+  /** `mini` only — open the full player (cover + title are a button for this) */
+  onOpen?: () => void
+  /** the loaded track; `null`/`undefined` = idle (bar: transport stays, info hides; mini: renders nothing) */
   track?: AudioPlayerTrack | null
   playing?: boolean
   /** elapsed / total seconds, for the time readout + seek rail */
@@ -72,6 +79,9 @@ export interface AudioPlayerProps
 }
 
 function AudioPlayer({
+  variant = "bar",
+  collapsed = false,
+  onOpen,
   track,
   playing = false,
   currentTime = 0,
@@ -94,6 +104,62 @@ function AudioPlayer({
     const r = e.currentTarget.getBoundingClientRect()
     onSeek(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * duration)
   }
+
+  // ===== mini variant — a compact chip for a sidebar/rail; renders nothing when idle =====
+  if (variant === "mini") {
+    if (!track) return null
+    const cover = track.cover ? (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={track.cover} alt="" loading="lazy" decoding="async" className="size-8 shrink-0 rounded-md object-cover shadow-sm" />
+    ) : (
+      <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-[var(--acr-chip)] text-muted-foreground">
+        <ListMusic className="size-3.5" />
+      </span>
+    )
+    if (collapsed) {
+      return (
+        <div data-slot="audio-player" data-variant="mini" className={cn("relative", className)} {...props}>
+          <button
+            onClick={onOpen}
+            aria-label={`Open now playing: ${track.title || "Now playing"}`}
+            className="relative block overflow-hidden rounded-md transition-transform hover:scale-105"
+          >
+            {cover}
+            <span className="absolute inset-x-0 bottom-0 block h-[2px] bg-foreground/15">
+              <span className="block h-full bg-foreground/70" style={{ width: `${pct}%` }} />
+            </span>
+          </button>
+        </div>
+      )
+    }
+    return (
+      <div
+        data-slot="audio-player"
+        data-variant="mini"
+        className={cn("relative flex min-w-0 items-center gap-2 rounded-xl bg-[var(--acr-chip)] px-2 pb-2.5 pt-1.5", className)}
+        {...props}
+      >
+        <button onClick={onOpen} aria-label={`Open now playing: ${track.title || "Now playing"}`} className="flex min-w-0 flex-1 items-center gap-2 text-left">
+          {cover}
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-[12px] font-semibold leading-tight">{track.title || "Now playing"}</span>
+            {track.artist && <span className="block truncate text-[10px] leading-tight text-muted-foreground">{track.artist}</span>}
+          </span>
+        </button>
+        <button
+          onClick={onToggle}
+          aria-label={playing ? "Pause" : "Play"}
+          className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[var(--acr-chip-hover)] text-foreground transition-all hover:scale-105"
+        >
+          {playing ? <Pause className="size-3.5 fill-current" /> : <Play className="size-3.5 translate-x-px fill-current" />}
+        </button>
+        <div onClick={seek} className="absolute inset-x-2 bottom-1 h-[3px] cursor-pointer overflow-hidden rounded-full bg-foreground/15">
+          <div className="h-full rounded-full bg-foreground/70" style={{ width: `${pct}%` }} />
+        </div>
+      </div>
+    )
+  }
+
   const showVolume = typeof volume === "number" && !!onVolumeChange
   const VolIcon = volume === 0 ? VolumeX : (volume ?? 1) < 0.5 ? Volume1 : Volume2
 
