@@ -524,25 +524,6 @@
       ]
     },
     {
-      "name": "mini-audio-player",
-      "type": "registry:component",
-      "title": "Mini Audio Player",
-      "description": "A compact, sidebar-sized now-playing chip — a shrunk AudioPlayer info group (cover + title/artist + a bottom seek rail) plus a single play/pause. Fully controlled via callbacks; renders nothing when idle, so it takes no space when nothing plays. A `collapsed` mode shrinks it to just the cover + a progress hairline for an icon-rail sidebar. Cover/title are a button (onOpen) for navigating to the full player. Flips light/dark via the Acrylic theme tokens.",
-      "dependencies": [
-        "lucide-react"
-      ],
-      "files": [
-        {
-          "path": "registry/acrylic/mini-audio-player.tsx",
-          "type": "registry:component",
-          "target": "components/acrylic/mini-audio-player.tsx"
-        }
-      ],
-      "registryDependencies": [
-        "https://acrylic-ui.vercel.app/r/acrylic.json"
-      ]
-    },
-    {
       "name": "switch",
       "type": "registry:ui",
       "title": "Acrylic Switch",

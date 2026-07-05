@@ -2,48 +2,48 @@
 import type { ComponentType } from "react"
 import C0 from "./examples/alert-dialog-demo"
 import C1 from "./examples/audio-player-demo"
-import C2 from "./examples/badge-demo"
-import C3 from "./examples/button-demo"
-import C4 from "./examples/button-group-demo"
-import C5 from "./examples/button-group-showcase"
-import C6 from "./examples/button-group-sizes"
-import C7 from "./examples/button-icon-text"
-import C8 from "./examples/button-showcase"
-import C9 from "./examples/card-cover"
-import C10 from "./examples/card-demo"
-import C11 from "./examples/card-image-thumb"
-import C12 from "./examples/card-nested"
-import C13 from "./examples/combobox-demo"
-import C14 from "./examples/combobox-showcase"
-import C15 from "./examples/context-menu-demo"
-import C16 from "./examples/context-menu-finder"
-import C17 from "./examples/context-menu-showcase"
-import C18 from "./examples/context-menu-sizes"
-import C19 from "./examples/dialog-demo"
-import C20 from "./examples/dialog-showcase"
-import C21 from "./examples/dropdown-menu-demo"
-import C22 from "./examples/field-demo"
-import C23 from "./examples/field-showcase"
-import C24 from "./examples/hover-card-demo"
-import C25 from "./examples/input-demo"
-import C26 from "./examples/input-group-demo"
-import C27 from "./examples/input-group-showcase"
-import C28 from "./examples/input-showcase"
-import C29 from "./examples/item-actions"
-import C30 from "./examples/item-avatar"
-import C31 from "./examples/item-demo"
-import C32 from "./examples/item-dropdown"
-import C33 from "./examples/item-group"
-import C34 from "./examples/item-header"
-import C35 from "./examples/item-image"
-import C36 from "./examples/item-link"
-import C37 from "./examples/item-post"
-import C38 from "./examples/item-rtl"
-import C39 from "./examples/item-sizes"
-import C40 from "./examples/item-text"
-import C41 from "./examples/item-variants"
-import C42 from "./examples/media-box-demo"
-import C43 from "./examples/mini-audio-player-demo"
+import C2 from "./examples/audio-player-mini-demo"
+import C3 from "./examples/badge-demo"
+import C4 from "./examples/button-demo"
+import C5 from "./examples/button-group-demo"
+import C6 from "./examples/button-group-showcase"
+import C7 from "./examples/button-group-sizes"
+import C8 from "./examples/button-icon-text"
+import C9 from "./examples/button-showcase"
+import C10 from "./examples/card-cover"
+import C11 from "./examples/card-demo"
+import C12 from "./examples/card-image-thumb"
+import C13 from "./examples/card-nested"
+import C14 from "./examples/combobox-demo"
+import C15 from "./examples/combobox-showcase"
+import C16 from "./examples/context-menu-demo"
+import C17 from "./examples/context-menu-finder"
+import C18 from "./examples/context-menu-showcase"
+import C19 from "./examples/context-menu-sizes"
+import C20 from "./examples/dialog-demo"
+import C21 from "./examples/dialog-showcase"
+import C22 from "./examples/dropdown-menu-demo"
+import C23 from "./examples/field-demo"
+import C24 from "./examples/field-showcase"
+import C25 from "./examples/hover-card-demo"
+import C26 from "./examples/input-demo"
+import C27 from "./examples/input-group-demo"
+import C28 from "./examples/input-group-showcase"
+import C29 from "./examples/input-showcase"
+import C30 from "./examples/item-actions"
+import C31 from "./examples/item-avatar"
+import C32 from "./examples/item-demo"
+import C33 from "./examples/item-dropdown"
+import C34 from "./examples/item-group"
+import C35 from "./examples/item-header"
+import C36 from "./examples/item-image"
+import C37 from "./examples/item-link"
+import C38 from "./examples/item-post"
+import C39 from "./examples/item-rtl"
+import C40 from "./examples/item-sizes"
+import C41 from "./examples/item-text"
+import C42 from "./examples/item-variants"
+import C43 from "./examples/media-box-demo"
 import C44 from "./examples/popover-demo"
 import C45 from "./examples/radio-group-demo"
 import C46 from "./examples/radio-group-showcase"
@@ -70,48 +70,48 @@ import C65 from "./examples/switch-showcase"
 export const examples: Record<string, ComponentType> = {
   "alert-dialog-demo": C0,
   "audio-player-demo": C1,
-  "badge-demo": C2,
-  "button-demo": C3,
-  "button-group-demo": C4,
-  "button-group-showcase": C5,
-  "button-group-sizes": C6,
-  "button-icon-text": C7,
-  "button-showcase": C8,
-  "card-cover": C9,
-  "card-demo": C10,
-  "card-image-thumb": C11,
-  "card-nested": C12,
-  "combobox-demo": C13,
-  "combobox-showcase": C14,
-  "context-menu-demo": C15,
-  "context-menu-finder": C16,
-  "context-menu-showcase": C17,
-  "context-menu-sizes": C18,
-  "dialog-demo": C19,
-  "dialog-showcase": C20,
-  "dropdown-menu-demo": C21,
-  "field-demo": C22,
-  "field-showcase": C23,
-  "hover-card-demo": C24,
-  "input-demo": C25,
-  "input-group-demo": C26,
-  "input-group-showcase": C27,
-  "input-showcase": C28,
-  "item-actions": C29,
-  "item-avatar": C30,
-  "item-demo": C31,
-  "item-dropdown": C32,
-  "item-group": C33,
-  "item-header": C34,
-  "item-image": C35,
-  "item-link": C36,
-  "item-post": C37,
-  "item-rtl": C38,
-  "item-sizes": C39,
-  "item-text": C40,
-  "item-variants": C41,
-  "media-box-demo": C42,
-  "mini-audio-player-demo": C43,
+  "audio-player-mini-demo": C2,
+  "badge-demo": C3,
+  "button-demo": C4,
+  "button-group-demo": C5,
+  "button-group-showcase": C6,
+  "button-group-sizes": C7,
+  "button-icon-text": C8,
+  "button-showcase": C9,
+  "card-cover": C10,
+  "card-demo": C11,
+  "card-image-thumb": C12,
+  "card-nested": C13,
+  "combobox-demo": C14,
+  "combobox-showcase": C15,
+  "context-menu-demo": C16,
+  "context-menu-finder": C17,
+  "context-menu-showcase": C18,
+  "context-menu-sizes": C19,
+  "dialog-demo": C20,
+  "dialog-showcase": C21,
+  "dropdown-menu-demo": C22,
+  "field-demo": C23,
+  "field-showcase": C24,
+  "hover-card-demo": C25,
+  "input-demo": C26,
+  "input-group-demo": C27,
+  "input-group-showcase": C28,
+  "input-showcase": C29,
+  "item-actions": C30,
+  "item-avatar": C31,
+  "item-demo": C32,
+  "item-dropdown": C33,
+  "item-group": C34,
+  "item-header": C35,
+  "item-image": C36,
+  "item-link": C37,
+  "item-post": C38,
+  "item-rtl": C39,
+  "item-sizes": C40,
+  "item-text": C41,
+  "item-variants": C42,
+  "media-box-demo": C43,
   "popover-demo": C44,
   "radio-group-demo": C45,
   "radio-group-showcase": C46,
