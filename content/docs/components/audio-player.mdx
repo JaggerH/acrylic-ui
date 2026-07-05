@@ -49,9 +49,9 @@ info group collapses. Drop the `volume`/`onVolumeChange` pair to hide the volume
 
 `variant="mini"` renders a compact chip for a sidebar footer or any tight rail — cover +
 title/artist + play/pause with the seek rail along the bottom, and no prev/next/volume/actions.
-It renders **nothing** when idle (so it takes no space); `collapsed` shrinks it to just the cover
-plus a progress hairline for an icon-rail sidebar; and `onOpen` (cover/title click) is where you
-navigate to the full player.
+It renders **nothing** when idle (so it takes no space); `onOpen` (cover/title click) is where
+you navigate to the full player. When the rail is too narrow for it (e.g. an icon-only sidebar),
+hide it — a cover-only stub isn't a usable player.
 
 <ComponentPreview name="audio-player-mini-demo" />
 
@@ -62,7 +62,6 @@ navigate to the full player.
   playing={playing}
   currentTime={time}
   duration={duration}
-  collapsed={sidebarCollapsed}
   onToggle={toggle}
   onSeek={seek}
   onOpen={goToPlayer}
@@ -78,7 +77,6 @@ any page.
 | prop | type | default | description |
 | --- | --- | --- | --- |
 | `variant` | `"bar" \| "mini"` | `"bar"` | full transport bar, or a compact sidebar/rail chip |
-| `collapsed` | `boolean` | `false` | `mini` only — icon-rail mode: cover + progress hairline |
 | `onOpen` | `() => void` | — | `mini` only — cover/title clicked (open the full player) |
 | `track` | `AudioPlayerTrack \| null` | — | `{ title, artist?, cover? }`; `null`/omitted = idle (bar: info hidden; mini: renders nothing) |
 | `playing` | `boolean` | `false` | play/pause icon state |

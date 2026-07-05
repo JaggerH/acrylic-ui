@@ -54,8 +54,6 @@ export interface AudioPlayerProps
   /** layout: the full transport bar (default), or a compact `mini` chip for a sidebar / rail —
    *  cover + title/artist + play/pause + seek rail, no prev/next/volume/actions. */
   variant?: "bar" | "mini"
-  /** `mini` only — icon-rail mode: shrink to just the cover + a progress hairline */
-  collapsed?: boolean
   /** `mini` only — open the full player (cover + title are a button for this) */
   onOpen?: () => void
   /** the loaded track; `null`/`undefined` = idle (bar: transport stays, info hides; mini: renders nothing) */
@@ -80,7 +78,6 @@ export interface AudioPlayerProps
 
 function AudioPlayer({
   variant = "bar",
-  collapsed = false,
   onOpen,
   track,
   playing = false,
@@ -116,22 +113,6 @@ function AudioPlayer({
         <ListMusic className="size-3.5" />
       </span>
     )
-    if (collapsed) {
-      return (
-        <div data-slot="audio-player" data-variant="mini" className={cn("relative", className)} {...props}>
-          <button
-            onClick={onOpen}
-            aria-label={`Open now playing: ${track.title || "Now playing"}`}
-            className="relative block overflow-hidden rounded-md transition-transform hover:scale-105"
-          >
-            {cover}
-            <span className="absolute inset-x-0 bottom-0 block h-[2px] bg-foreground/15">
-              <span className="block h-full bg-foreground/70" style={{ width: `${pct}%` }} />
-            </span>
-          </button>
-        </div>
-      )
-    }
     return (
       <div
         data-slot="audio-player"
