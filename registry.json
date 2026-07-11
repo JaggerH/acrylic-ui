@@ -798,6 +798,11 @@
           "path": "registry/acrylic/sheet.tsx",
           "type": "registry:ui",
           "target": "components/acrylic/sheet.tsx"
+        },
+        {
+          "path": "registry/acrylic/use-modal-acrylic.ts",
+          "type": "registry:lib",
+          "target": "components/acrylic/use-modal-acrylic.ts"
         }
       ],
       "registryDependencies": [

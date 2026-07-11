@@ -78,7 +78,7 @@ Always enforced. Each links to Incorrect/Correct pairs.
 - **Exactly one `<Backdrop />` at the app root** — frosted chrome has nothing to
   frost without it.
 - **Tauri vibrancy is opt-in and inert on the web**; modals use the shipped
-  `useModalAcrylicBody` (already wired into Dialog/AlertDialog).
+  `useModalAcrylicBody` (already wired into Dialog/AlertDialog/Sheet).
 
 ### Components & divergences → [rules/components.md](./rules/components.md)
 
@@ -95,6 +95,16 @@ Always enforced. Each links to Incorrect/Correct pairs.
   nested Cards.
 - **Shell family** composes app layouts (Shell/ShellInset/ShellPanel/ShellNavbar/
   ShellContent…) — don't hand-roll panel scaffolding.
+
+### Authoring a new acrylic component → [rules/authoring.md](./rules/authoring.md)
+
+- **Adding a component to the acrylic-ui repo** (vs. consuming one): ship it through
+  the registry, never hand-copy. Source in `registry/acrylic/<name>.tsx` (start from
+  shadcn, recolor via tokens) → `registry.json` entry with `target:
+  components/acrylic/<name>.tsx` + `registryDependencies: acrylic.json` → `npm run
+  registry:build` → docs (mdx + `meta.json` + `<name>-demo.tsx`) → move it from "Not
+  shipped" into the correspondence table here. Deploy (git push → Vercel) before any
+  consumer can `npx shadcn add @acrylic/<name>`.
 
 ### Inherited shadcn rules (unchanged — apply as-is)
 
@@ -116,6 +126,7 @@ Same name = same API surface, acrylic restyling only. File = `registry/acrylic/<
 | alert-dialog | `alert-dialog.tsx` | + `useModalAcrylicBody` wired for vibrancy |
 | avatar | `avatar.tsx` | 1:1 |
 | badge | `badge.tsx` | + `size="sm"` compact pill |
+| breadcrumb | `breadcrumb.tsx` | 1:1 (already token-driven; separator/ellipsis glyph on `--label-tertiary`) |
 | button | `button.tsx` | **Diverges**: macOS variant/size/icon axes (see rules/components.md) |
 | button-group | `button-group.tsx` | macOS segmented controls |
 | card | `card.tsx` | + `interactive`, + `nestedSurface`; flat glass, no border |
@@ -148,7 +159,7 @@ Same name = same API surface, acrylic restyling only. File = `registry/acrylic/<
 | — | `use-modal-acrylic.ts` | **acrylic-only**: Tauri vibrancy modal hook |
 
 **Not shipped by acrylic** (use the host app's own or ask before adding): accordion,
-alert, breadcrumb, calendar, carousel, chart, checkbox, collapsible, drawer, empty,
+alert, calendar, carousel, chart, checkbox, collapsible, drawer, empty,
 input-otp, menubar, navigation-menu, pagination, progress, resizable, scroll-area
 (use `scrollbar-mac` utility class), spinner, table, tabs, textarea (exists inside
 input-group), toggle, toggle-group.

@@ -299,6 +299,105 @@ Tauri's `[lib] crate-type` must be `["staticlib", "rlib"]` (not `cdylib`) — th
 mingw BFD linker can't handle Tauri's export count. The desktop binary links via
 `rlib`.
 
+## Debugging the WebView from WSL (CDP)
+
+When you run `tauri dev --target x86_64-pc-windows-gnu` from WSL, the frontend runs
+inside the Windows **WebView2** window — you can't see its console from the WSL
+terminal. Attach to its Chrome DevTools Protocol (CDP) endpoint instead. Three things
+have to line up, and each one has a non-obvious failure mode.
+
+**1. Open the CDP port — env-gated in Rust (what the example ships).** The
+`examples/tauri` app opens the port only when `ACRYLIC_TAURI_DEBUG` is set, appending
+the debug flags to the WebView2 args at the top of `run()`. Gated on the env flag so
+production builds never expose the port; APPEND (never overwrite) so it survives any
+other WebView2 flags:
+
+```rust
+#[cfg(target_os = "windows")]
+if std::env::var_os("ACRYLIC_TAURI_DEBUG").is_some() {
+    let flag = "--remote-debugging-port=9222 --remote-allow-origins=*";
+    let existing = std::env::var("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS").unwrap_or_default();
+    let merged = if existing.is_empty() { flag.into() } else { format!("{existing} {flag}") };
+    std::env::set_var("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS", merged);
+}
+```
+
+Launch with the flag forwarded across the WSL→Windows boundary (see #3 for why
+`WSLENV` is needed — a bare shell env var wouldn't reach the Windows process):
+
+```bash
+ACRYLIC_TAURI_DEBUG=1 WSLENV=ACRYLIC_TAURI_DEBUG cargo tauri dev --target x86_64-pc-windows-gnu
+```
+
+- Quick alternative: hardcode `"additionalBrowserArgs": "--remote-debugging-port=9222 --remote-allow-origins=*"` on the window in `tauri.conf.json`. Simpler, but the port then opens in *every* build including production — prefer the gated approach above.
+- Don't add `--remote-debugging-address=0.0.0.0` — it makes WebView2 refuse to open
+  the port at all. Bind loopback with `--remote-debugging-port` and allow origins.
+
+**2. Reach the port through a Windows-side relay.** WebView2's CDP binds loopback
+only and rejects connections whose origin isn't local. Under WSL2 mirrored
+networking the TCP layer bridges `localhost` both ways, but Chromium's application
+layer still refuses the WSL-originated connection. Run a tiny relay with the
+**Windows** node (`0.0.0.0:9223 → 127.0.0.1:9222`) and point your CDP client at
+`9223`. Chromium's DNS-rebinding guard also requires a `Host: localhost` header on
+the `/json` fetch, and `Host` + `Origin` on the WebSocket upgrade — without them the
+connection is rejected.
+
+The example ships both halves in `examples/tauri/scripts/`: run `cdp-relay.cjs`
+with the **Windows** node, then drive the WebView from WSL with `cdp.mjs` (needs
+`npm i` for `ws`, which supplies those headers the built-in WebSocket can't):
+
+```bash
+node.exe scripts\cdp-relay.cjs                 # Windows node — leave running
+node scripts/cdp.mjs "document.documentElement.className"   # WSL node — evaluate in the WebView
+```
+
+**3. Pass dev env vars to the Windows process with `WSLENV`.** A variable exported
+in the WSL shell is invisible to the Windows `*.exe` unless you name it in `WSLENV`:
+
+```bash
+MY_VAR=/home/you/project/thing WSLENV=MY_VAR cargo tauri dev --target x86_64-pc-windows-gnu
+```
+
+With no flag suffix, `WSLENV` forwards the literal string, so a WSL path like
+`/home/...` arrives intact (handy when your Rust side translates it to a `\\wsl$`
+or `/mnt/c` form itself).
+
+### Port won't bind? Clear the WebView2 lock
+
+A leftover `msedgewebview2.exe` keeps the user-data dir locked, so a new launch
+reuses the old browser instance — which never got the debug args — and the port
+never opens. Kill the stale processes and remove the lock before relaunching:
+
+```bash
+taskkill.exe /F /IM <yourapp>.exe /T
+taskkill.exe /F /IM msedgewebview2.exe
+rm -f "/mnt/c/Users/<you>/AppData/Local/<bundle-id>/EBWebView/lockfile"
+```
+
+WebView2 opens the port a little after the app window appears, so give it a few
+seconds and confirm with `netstat.exe -ano | grep 127.0.0.1:9222`.
+
+### Catching effects that fire before you can attach
+
+To trace a side effect that happens on load — e.g. which code path adds a class to
+`<html>` — inject a patch via CDP's `Page.addScriptToEvaluateOnNewDocument` (it runs
+before any app code), then `Page.reload`:
+
+```js
+// runs before the app boots; records every add/remove of the target class + stack
+for (const op of ['add', 'remove']) {
+  const orig = DOMTokenList.prototype[op]
+  DOMTokenList.prototype[op] = function (...a) {
+    if (a.includes('modal-acrylic')) (window.__trace ||= []).push(op + ' ' + new Error().stack)
+    return orig.apply(this, a)
+  }
+}
+```
+
+Read `window.__trace` back after the reload. This pins the exact call site and React
+commit phase behind a "class stuck on after load" symptom far faster than poking at
+the live DOM.
+
 ## Frameless title bar (custom window chrome)
 
 The native OS title bar breaks the vibrancy illusion — it's an opaque strip the

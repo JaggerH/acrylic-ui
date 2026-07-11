@@ -163,3 +163,13 @@ do nothing. When targeting Tauri, use the shipped `useModalAcrylicBody` hook
 (bundled with Dialog / AlertDialog) so open modals repaint the body opaque enough to
 frost — it is already wired into those components. Don't invent your own transparency
 handling. Full guidance lives in the `/docs/tauri` page.
+
+**The body-paint is DOM-driven, not counted.** `useModalAcrylicBody` /
+`ModalAcrylicBody` decide `html.modal-acrylic` from a MutationObserver reading the
+live DOM (is any `[role=dialog]` / `[role=alertdialog]` currently `[data-state=open]`?)
+— NOT a module-level open-overlay counter. A counter desyncs under React StrictMode:
+the mount→unmount→remount of a literal-`open` overlay (`<Dialog open>` inside a
+conditionally-rendered wrapper) can drop the final cleanup and leave the class stuck
+on, which flips `--background` to near-opaque and kills the native acrylic. If you
+ever reimplement the paint, read the DOM — never mirror open-state in a hand-kept
+counter.

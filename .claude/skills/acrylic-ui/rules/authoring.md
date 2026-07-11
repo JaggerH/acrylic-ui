@@ -1,0 +1,120 @@
+# Authoring a new Acrylic component
+
+Adding a component to the **acrylic-ui repo itself** (not consuming one — for that
+see the Workflow section in SKILL.md). Do this when the correspondence table lists
+a component under "Not shipped" and you've confirmed with the maintainer it should
+ship. The pipeline is: source `.tsx` → `registry.json` entry → `registry:build` →
+docs → register in this skill → verify. Deploy is what makes it installable.
+
+## Contents
+
+- Ground rule: start from shadcn, diverge only for the material
+- Step 1 — source component (`registry/acrylic/<name>.tsx`)
+- Step 2 — registry entry (`registry.json`)
+- Step 3 — build (`npm run registry:build`)
+- Step 4 — docs (mdx + meta + demo)
+- Step 5 — register in this skill
+- Step 6 — verify & deploy
+- Token cheat-sheet (which form for which token)
+
+---
+
+## Ground rule: start from shadcn, diverge only for the material
+
+Every acrylic component IS its shadcn counterpart, restyled. Copy shadcn's source
+verbatim, keep the anatomy and API 1:1, then recolor **through tokens** and add the
+macOS material. If a component is already token-driven (Breadcrumb, Separator), the
+"restyle" is nearly a no-op — that's expected, ship it 1:1. Only invent new axes
+(Button sizes, Badge pills) when the macOS kit demands it, and record those in
+[components.md](./components.md).
+
+Never introduce raw hex/rgb, never write manual `dark:` pairs — the three theme
+blocks in `acrylic.css` flip values for free (see [materials.md](./materials.md)).
+
+## Step 1 — source component (`registry/acrylic/<name>.tsx`)
+
+- File lives in `registry/acrylic/`, imports `cn` from `@/lib/utils`, one component
+  family per file, `export { … }` at the bottom (no default export).
+- **Open with a docstring** — a `//` comment block stating what it is, the acrylic
+  delta vs shadcn, and how to compose it. This IS the component's API reference (the
+  consuming-side Workflow reads local docstrings, not the website).
+- Recolor through tokens using the cheat-sheet below.
+
+## Step 2 — registry entry (`registry.json`)
+
+Add one object to the `items` array (roughly alphabetical). Copy the shape of an
+existing simple entry (`separator`, `badge`):
+
+```json
+{
+  "name": "<name>",
+  "type": "registry:ui",
+  "title": "Acrylic <Name>",
+  "description": "One or two sentences: what it is + the acrylic delta.",
+  "dependencies": ["@radix-ui/react-…", "lucide-react", "class-variance-authority"],
+  "registryDependencies": ["https://acrylic-ui.vercel.app/r/acrylic.json"],
+  "files": [
+    {
+      "path": "registry/acrylic/<name>.tsx",
+      "type": "registry:ui",
+      "target": "components/acrylic/<name>.tsx"
+    }
+  ]
+}
+```
+
+- **`target` is mandatory and must be `components/acrylic/<name>.tsx`.** Without it,
+  `shadcn add` drops the file into the host's `components/ui/`, clobbering stock
+  shadcn components. This target is what keeps acrylic vendored under its own dir.
+- **`dependencies`** = only the npm packages the source actually imports (radix
+  primitives, `lucide-react`, `class-variance-authority`). Omit `react`/`cn`.
+- **`registryDependencies`** always includes `.../r/acrylic.json` (the theme tokens).
+  Add other acrylic components it composes — e.g. Dialog lists `.../r/button.json`
+  because its close button is the acrylic Button. This is the dependency graph a
+  hand-copy misses; the registry install pulls it transitively.
+
+## Step 3 — build (`npm run registry:build`)
+
+Runs `shadcn build`, compiling every `registry.json` item into the installable
+`public/r/<name>.json` served at `/r/<name>.json`. Run it after every source or
+entry change. Verify `public/r/<name>.json` exists and its `target` is correct.
+
+## Step 4 — docs (mdx + meta + demo)
+
+Three files, all required for a working docs page:
+
+1. `content/docs/components/<name>.mdx` — frontmatter `title` + `description`, then
+   Installation (`npx shadcn add …/r/<name>.json`), `<ComponentPreview name="<name>-demo" />`,
+   a Usage code block, an Anatomy/Variants section, and Notes. Match `badge.mdx`.
+2. `components/examples/<name>-demo.tsx` — a `default export` component importing from
+   `@/registry/acrylic/<name>`. **Then run `node scripts/gen-examples.mjs`** to
+   regenerate `components/examples-map.ts` — `<ComponentPreview name="<name>-demo" />`
+   resolves the name through that map, NOT by scanning the folder. Skip this and the
+   preview renders blank (the demo file existing is not enough).
+3. `content/docs/components/meta.json` — add `"<name>"` to the `pages` array so it
+   appears in the sidebar nav.
+
+## Step 5 — register in this skill
+
+- Move the component from the **"Not shipped by acrylic"** list to the
+  **Component correspondence table** in SKILL.md (mark `1:1` or link its divergence).
+- If it added a new API axis, document it in [components.md](./components.md).
+
+## Step 6 — verify & deploy
+
+- `npm run types:check` (fumadocs-mdx + `next typegen` + `tsc --noEmit`) — must pass.
+- **Deploy (git push → Vercel) before any consumer can `npx shadcn add @acrylic/<name>`.**
+  The registry is served from the deployed site, not the local `public/r`. Until
+  deploy lands, a consuming app must vendor the file by hand — safe only when its
+  `registryDependencies` are already present in that app (e.g. a token-only
+  component); otherwise wait for deploy so the graph installs.
+
+## Token cheat-sheet (which form for which token)
+
+| Need | Form | Why |
+|---|---|---|
+| Text/border that maps to a semantic color | utility: `text-muted-foreground`, `text-foreground`, `bg-background`, `border` | mapped in `acrylic.css` `@theme inline` |
+| Frosted surface | `acr-frosted bg-[var(--acr-surface)] backdrop-blur-xl` (panels: `--acr-panel`) | the glass recipe |
+| Any `--acr-*` material token | arbitrary: `bg-[var(--acr-border)]`, `bg-[var(--acr-chip)]` | `--acr-*` are NOT mapped as `--color-acr-*` |
+| A value token NOT in `@theme` (e.g. `--label-tertiary`) | arbitrary: `text-[var(--label-tertiary)]` | **do not** write `text-label-tertiary` — that utility only exists where the host mapped `--color-label-tertiary`, so it silently breaks in the repo and in unmapped consumers |
+| Raw hex / rgb / `dark:` pair | never | the three theme blocks flip values for free |

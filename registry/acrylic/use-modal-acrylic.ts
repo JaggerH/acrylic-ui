@@ -1,76 +1,82 @@
 import * as React from "react"
 
-// Ref-counted across ALL acrylic overlays (Dialog + AlertDialog + Sheet) so
-// stacking works: the body stays painted opaque until the LAST overlay closes.
-// While an overlay is open we add `html.modal-acrylic`, so the overlay's
-// `backdrop-filter` has real pixels to frost on a TRANSPARENT vibrancy window
-// (Tauri/Electron). On a normal opaque-body web page this is a harmless no-op.
-// See acrylic.css / the Tauri guide.
+// Single source of truth for the `html.modal-acrylic` paint. The class means
+// exactly ONE thing: "at least one OPEN overlay (Dialog/AlertDialog/Sheet) is in
+// the DOM" — so the overlay's `backdrop-filter` has opaque body pixels to frost on
+// a TRANSPARENT vibrancy window (Tauri/Electron). On a normal opaque-body web page
+// it's a harmless no-op. See acrylic.css / the Tauri guide.
 //
-// IMPORTANT: the paint must track the overlay's OPEN state, and un-paint the
-// moment it starts CLOSING — NOT on unmount. Radix keeps `Content` mounted through
-// its exit animation, so an unmount-based un-paint fires ~the exit duration late,
-// then the body's own 0.18s background transition lingers on top — the opaque body
-// outlives the overlay's fade and reads as a two-step, desynced exit. Painting via
-// `<ModalAcrylicBody />` (which watches `Content`'s `data-state`) fades the body out
-// in sync with the overlay instead.
-let openOverlays = 0
+// It is driven by DOM FACT via a MutationObserver, NOT a hand-kept counter. A
+// module-level open-overlay counter (incremented in an effect, decremented in its
+// cleanup) desyncs under React StrictMode: the mount→unmount→remount of a
+// freshly-mounted overlay whose `open` is a literal `true` (e.g. `<Dialog open>`
+// inside a conditionally-rendered wrapper) can DROP the final cleanup, leaving the
+// counter — and the class — stuck ON. A stuck class flips
+// `html.vibrancy.modal-acrylic`'s `--background` to near-opaque and kills the native
+// acrylic. Reading the DOM never desyncs: however an overlay leaves (normal close,
+// StrictMode churn, parent unmount, exit animation), the observer recomputes and the
+// class follows reality — and because it watches `data-state`, the un-paint still
+// fires the moment an overlay flips to closing, staying in sync with the fade-out.
 
-function paintBody() {
-  openOverlays += 1
-  document.documentElement.classList.add("modal-acrylic")
+const OVERLAY_OPEN =
+  "[role=dialog][data-state=open],[role=alertdialog][data-state=open]"
+
+let observer: MutationObserver | null = null
+let refs = 0
+
+function recompute() {
+  const open = document.querySelector(OVERLAY_OPEN) != null
+  document.documentElement.classList.toggle("modal-acrylic", open)
 }
 
-function unpaintBody() {
-  openOverlays = Math.max(0, openOverlays - 1)
-  if (openOverlays === 0) document.documentElement.classList.remove("modal-acrylic")
+// Lazily start a single observer the first time any overlay mounts; it watches the
+// document for overlays being added/removed (childList) and for their `data-state`
+// flipping open↔closed. `refs` only governs the observer's lifecycle — even if it
+// drifts (a dropped cleanup leaves it too high), class CORRECTNESS is unaffected,
+// because `recompute` reads the live DOM. Drift can only leak an idle observer,
+// never stick the class.
+function acquire() {
+  refs += 1
+  if (!observer) {
+    observer = new MutationObserver(recompute)
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["data-state"],
+    })
+  }
+  recompute()
 }
 
-// Hook form — paints the body for as long as the caller is mounted. Kept for
-// manual use; prefer `<ModalAcrylicBody />` inside an overlay's Content so the
-// un-paint is synced to the open/closed state rather than mount/unmount.
+function release() {
+  refs = Math.max(0, refs - 1)
+  // Recompute after the DOM settles (Radix flips data-state=closed / unmounts the
+  // Content), so a closing overlay's fade-out and the body un-paint stay in sync.
+  queueMicrotask(recompute)
+  if (refs === 0 && observer) {
+    observer.disconnect()
+    observer = null
+    queueMicrotask(recompute)
+  }
+}
+
+// Hook form — keeps the observer alive while the caller is mounted. Used by the
+// Dialog / AlertDialog / Sheet Content wrappers, and available for manual use.
 export function useModalAcrylicBody() {
   React.useEffect(() => {
-    paintBody()
-    return unpaintBody
+    acquire()
+    return release
   }, [])
 }
 
-// Renders an inert marker INSIDE `Dialog`/`AlertDialog`/`Sheet` Content. It paints
-// the body while the Content's `data-state` is "open" and un-paints it the instant
-// that flips to "closed" (exit start) — so the body's transparency returns in sync
-// with the overlay's fade-out, no lingering opaque scrim after the content is gone.
+// Component form — drop inside a Dialog/AlertDialog/Sheet Content. Same effect as
+// the hook; kept as a JSX-friendly marker whose presence in the overlay subtree
+// also nudges the observer. The class is decided by the DOM, so it no longer needs
+// to watch the host's data-state itself.
 export function ModalAcrylicBody() {
-  const ref = React.useRef<HTMLSpanElement>(null)
-  React.useEffect(() => {
-    const host = ref.current?.closest("[data-state]") ?? null
-    let painted = false
-    const sync = () => {
-      const open = !host || host.getAttribute("data-state") === "open"
-      if (open && !painted) {
-        painted = true
-        paintBody()
-      } else if (!open && painted) {
-        painted = false
-        unpaintBody()
-      }
-    }
-    sync()
-    let observer: MutationObserver | undefined
-    if (host) {
-      observer = new MutationObserver(sync)
-      observer.observe(host, { attributes: true, attributeFilter: ["data-state"] })
-    }
-    return () => {
-      observer?.disconnect()
-      if (painted) {
-        painted = false
-        unpaintBody()
-      }
-    }
-  }, [])
+  useModalAcrylicBody()
   return React.createElement("span", {
-    ref,
     "aria-hidden": true,
     style: { display: "none" },
   })

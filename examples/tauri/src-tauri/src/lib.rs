@@ -17,6 +17,25 @@ fn window_translucent(state: tauri::State<'_, Translucent>) -> bool {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    // Dev-only: when ACRYLIC_TAURI_DEBUG is set, open a CDP endpoint so you can
+    // attach Chrome DevTools to the WebView2 window — essential when running
+    // `tauri dev` against the Windows target from WSL, where the WebView's console
+    // is otherwise invisible. See docs/tauri → "Debugging the WebView from WSL".
+    // Gated on an env flag so production builds never expose the port. APPEND to any
+    // existing WebView2 args — a blind set_var would clobber flags a later edit adds.
+    #[cfg(target_os = "windows")]
+    if std::env::var_os("ACRYLIC_TAURI_DEBUG").is_some() {
+        let flag = "--remote-debugging-port=9222 --remote-allow-origins=*";
+        let existing =
+            std::env::var("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS").unwrap_or_default();
+        let merged = if existing.is_empty() {
+            flag.to_string()
+        } else {
+            format!("{existing} {flag}")
+        };
+        std::env::set_var("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS", merged);
+    }
+
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             window_translucent,
