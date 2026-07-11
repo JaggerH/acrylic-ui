@@ -473,15 +473,15 @@ export default function ShellMail() {
                       </div>
                     </header>
 
-                    <div className="pt-4">
-                      <div className="h-44 text-[13px] leading-6 text-foreground/85">
+                    <div className="flex flex-col gap-4 pt-4">
+                      <div className="text-[13px] leading-6 text-foreground/85">
                         {selectedMessage.body.map((paragraph) => (
                           <p key={paragraph} className="mt-3 first:mt-0">
                             {paragraph}
                           </p>
                         ))}
                       </div>
-                      <div className="h-[200px] overflow-hidden rounded-[8px] border border-[var(--acr-border-soft)] bg-[var(--acr-card-nested)] shadow-[inset_0_1px_rgba(255,255,255,0.14)]">
+                      <div className="aspect-[16/10] w-full overflow-hidden rounded-[8px] border border-[var(--acr-border-soft)] bg-[var(--acr-card-nested)] shadow-[inset_0_1px_rgba(255,255,255,0.14)]">
                         <img
                           src={selectedMessage.image}
                           alt=""
