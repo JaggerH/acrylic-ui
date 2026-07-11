@@ -4,7 +4,10 @@ import * as React from "react"
 import { Searchbar } from "@/registry/acrylic/searchbar"
 
 export default function SearchbarShowcase() {
-  const [values, setValues] = React.useState<Record<string, string>>({})
+  const [values, setValues] = React.useState<Record<string, string>>({
+    "default-medium": "Design Systems",
+    "over-glass-medium": "Components",
+  })
 
   const handleChange = (id: string, val: string) => {
     setValues((prev) => ({ ...prev, [id]: val }))

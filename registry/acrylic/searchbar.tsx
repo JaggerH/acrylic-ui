@@ -96,19 +96,21 @@ const Searchbar = React.forwardRef<HTMLInputElement, SearchbarProps>(
             type="button"
             onClick={handleClear}
             className={cn(
-              "absolute flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground focus:outline-none transition-colors",
+              "absolute top-1/2 -translate-y-1/2 flex items-center justify-center rounded-full bg-muted-foreground/30 hover:bg-muted-foreground/45 text-background focus:outline-none transition-colors",
               {
-                "right-1": size === "mini" || size === "small",
-                "right-1.5": size === "medium" || size === "large" || !size,
-                "right-2": size === "xl",
+                "right-1 size-3": size === "mini",
+                "right-1 size-3.5": size === "small",
+                "right-1.5 size-3.5": size === "medium" || !size,
+                "right-1.5 size-4": size === "large",
+                "right-2 size-4.5": size === "xl",
               }
             )}
           >
             <X
               className={cn({
-                "size-2.5": size === "mini",
-                "size-3": size === "small" || size === "medium" || size === "large" || !size,
-                "size-3.5": size === "xl",
+                "size-2": size === "mini",
+                "size-2.5": size === "small" || size === "medium" || size === "large" || !size,
+                "size-3": size === "xl",
               })}
             />
           </button>
