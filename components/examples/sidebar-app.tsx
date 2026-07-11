@@ -185,10 +185,10 @@ export default function SidebarApp() {
                 orientation="vertical"
                 className="mr-1 !h-4 data-[orientation=vertical]:!h-4"
               />
-              <span className="text-[13px] text-muted-foreground">
+              <span className="text-[13px] text-muted-foreground shrink-0">
                 Design System
               </span>
-              <ChevronRight className="size-3.5 text-muted-foreground" />
+              <ChevronRight className="size-3.5 text-muted-foreground shrink-0" />
               <span className="min-w-0 truncate text-[13px] font-medium text-foreground">
                 {activeLabel}
               </span>
