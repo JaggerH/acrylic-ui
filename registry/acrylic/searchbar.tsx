@@ -14,7 +14,7 @@ const searchbarVariants = cva(
     variants: {
       variant: {
         default: "border border-[var(--acr-input-border)] bg-[var(--acr-input)] hover:border-[var(--acr-border)] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/25",
-        "over-glass": "bg-[var(--acr-input)] hover:bg-[var(--acr-hover)] border-transparent focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/25",
+        "over-glass": "bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 border border-transparent focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/25",
       },
       size: {
         mini: "h-4 pl-5 pr-4 text-[10px]",
