@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react"
 import { Bell, Copy, MoreHorizontal, Plus, Scissors, Trash2 } from "lucide-react"
-import { toast } from "sonner"
+import { toast } from "@/registry/acrylic/sonner"
 
 import { Button, buttonVariants } from "@/registry/acrylic/button"
 import {
@@ -251,7 +251,8 @@ export function ComponentsGallery() {
             onClick={() =>
               toast("Acrylic", {
                 description: "A frosted notification banner.",
-                icon: <Bell className="size-5" />,
+                icon: <Bell />,
+                variant: "icon",
               })
             }
           >

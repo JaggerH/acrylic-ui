@@ -63,10 +63,11 @@ import C59 from "./examples/slider-sizes"
 import C60 from "./examples/slider-variants"
 import C61 from "./examples/sonner-demo"
 import C62 from "./examples/sonner-showcase"
-import C63 from "./examples/stepper-demo"
-import C64 from "./examples/stepper-showcase"
-import C65 from "./examples/switch-demo"
-import C66 from "./examples/switch-showcase"
+import C63 from "./examples/spinner-demo"
+import C64 from "./examples/stepper-demo"
+import C65 from "./examples/stepper-showcase"
+import C66 from "./examples/switch-demo"
+import C67 from "./examples/switch-showcase"
 
 export const examples: Record<string, ComponentType> = {
   "alert-dialog-demo": C0,
@@ -132,8 +133,9 @@ export const examples: Record<string, ComponentType> = {
   "slider-variants": C60,
   "sonner-demo": C61,
   "sonner-showcase": C62,
-  "stepper-demo": C63,
-  "stepper-showcase": C64,
-  "switch-demo": C65,
-  "switch-showcase": C66,
+  "spinner-demo": C63,
+  "stepper-demo": C64,
+  "stepper-showcase": C65,
+  "switch-demo": C66,
+  "switch-showcase": C67,
 }

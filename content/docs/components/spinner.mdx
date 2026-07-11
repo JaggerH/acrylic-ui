@@ -1,0 +1,35 @@
+---
+title: Spinner
+description: A smooth, modern circular loading indicator with a track and an active animating stroke.
+---
+
+A clean, centered SVG loading spinner. It features a faint full-circle background track and an active animating arc. It supports customization of size and color via standard Tailwind classes.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/spinner.json
+```
+
+## Usage
+
+<ComponentPreview name="spinner-demo" />
+
+```tsx
+import { Spinner } from "@/components/acrylic/spinner"
+
+<Spinner size={16} />
+<Spinner size={24} className="text-primary" />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `size` | `number` | `16` | The width and height of the spinner icon in pixels. |
+
+## Notes
+
+- It defaults to `animate-spin` and `text-muted-foreground`.
+- Pass a text color class (e.g. `text-primary`, `text-[var(--acr-green)]`) to change the color of both the track and the active arc.
+- Used internally by the Acrylic `Toaster` for promise loading indicators.

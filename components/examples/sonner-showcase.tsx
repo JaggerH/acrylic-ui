@@ -2,11 +2,11 @@
 
 import * as React from "react"
 import { Check, Download, MessageCircle, X } from "lucide-react"
-import { toast } from "sonner"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/registry/acrylic/button"
 import { ExampleBackdrop } from "@/components/example-backdrop"
+import { toast } from "@/registry/acrylic/sonner"
 
 // The static cards show the banner anatomy over a wallpaper; the buttons below fire
 // the REAL toasts, which reproduce the same cards (same icon, title, body, actions)
@@ -26,16 +26,10 @@ const updateIcon = (
     <Download className="size-[18px]" />
   </span>
 )
-const successIcon = (
-  <span className="flex size-8 items-center justify-center rounded-[8px] bg-[var(--acr-green)] text-white">
-    <Check className="size-[18px]" />
-  </span>
-)
-const errorIcon = (
-  <span className="flex size-8 items-center justify-center rounded-[8px] bg-[var(--acr-red)] text-white">
-    <X className="size-[18px]" />
-  </span>
-)
+
+// Bare icons for the Icon variant, styled and sized cleanly.
+const successIcon = <Check className="text-[var(--acr-green)]" />
+const errorIcon = <X className="text-[var(--acr-red)]" />
 
 const pill =
   "inline-flex h-5 items-center rounded-[5px] px-[10px] text-[11px] font-medium shadow-sm"
@@ -46,22 +40,32 @@ function Banner({
   title,
   body,
   actions,
+  variant = "img",
 }: {
   icon?: React.ReactNode
   title: string
   body: string
   actions?: React.ReactNode
+  variant?: "img" | "icon"
 }) {
   return (
     <div
       className={cn(
-        // gap-1.5 (6px) matches Sonner's own toast gap, so static == live
-        "flex w-[344px] items-center gap-1.5 rounded-2xl bg-[var(--acr-toast)] pt-3 pb-3 pr-[14px] shadow-[0_8px_30px_rgba(0,0,0,0.22)] backdrop-blur-2xl backdrop-saturate-150",
-        // 10px left pad assumes a 32px app icon; with no icon, give the text room
-        icon ? "pl-[10px]" : "pl-4"
+        "flex w-[344px] items-center rounded-2xl bg-[var(--acr-toast)] pt-3 pb-3 pr-[14px] shadow-[0_8px_30px_rgba(0,0,0,0.22)] backdrop-blur-2xl backdrop-saturate-150",
+        // Padding and Gap based on variant:
+        icon && variant === "img" ? "pl-[10px] gap-1.5" : "pl-4 gap-2.5"
       )}
     >
-      {icon && <div className="shrink-0">{icon}</div>}
+      {icon && (
+        <div
+          className={cn(
+            "shrink-0 flex items-center justify-center",
+            variant === "img" ? "size-8" : "size-5 [&_svg]:size-5"
+          )}
+        >
+          {icon}
+        </div>
+      )}
       <div className="min-w-0 flex-1">
         <p className="text-[13px] font-bold leading-tight text-foreground">{title}</p>
         <p className="text-[13px] leading-snug text-foreground">{body}</p>
@@ -91,8 +95,8 @@ export default function SonnerShowcase() {
         />
         {/* no app icon — text gets extra left padding so it isn't crammed */}
         <Banner title="Reminder" body="Stand-up meeting starts in 10 minutes." />
-        <Banner icon={successIcon} title="Saved" body="Your changes are synced." />
-        <Banner icon={errorIcon} title="Upload failed" body="Check your connection." />
+        <Banner icon={successIcon} title="Saved" body="Your changes are synced." variant="icon" />
+        <Banner icon={errorIcon} title="Upload failed" body="Check your connection." variant="icon" />
       </div>
 
       {/* live triggers — fire the real toasts (top center) into the page's single
@@ -140,6 +144,19 @@ export default function SonnerShowcase() {
           }
         >
           Error
+        </Button>
+        <Button
+          variant="default"
+          onClick={() => {
+            const promise = new Promise((resolve) => setTimeout(resolve, 2000))
+            toast.promise(promise, {
+              loading: "Saving changes...",
+              success: "Changes saved successfully!",
+              error: "Could not save changes.",
+            })
+          }}
+        >
+          Promise (Spinner)
         </Button>
       </div>
     </ExampleBackdrop>

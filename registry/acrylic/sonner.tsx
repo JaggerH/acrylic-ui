@@ -1,11 +1,125 @@
 "use client"
 
 import * as React from "react"
-import { Toaster as Sonner } from "sonner"
+import { Toaster as Sonner, toast as rawToast } from "sonner"
 
 import { cn } from "@/lib/utils"
+import { Spinner } from "./spinner"
 
 type ToasterProps = React.ComponentProps<typeof Sonner>
+
+export interface ToastOptions extends Omit<NonNullable<Parameters<typeof rawToast>[1]>, "icon"> {
+  variant?: "img" | "icon"
+  icon?: React.ReactNode
+}
+
+function getFormattedOptions(variant: "img" | "icon", options?: ToastOptions) {
+  const isIcon = variant === "icon"
+  const paddingAndGapClass = isIcon 
+    ? "group/toast-icon !pl-4 !gap-2.5" 
+    : "group/toast-img !pl-[10px] !gap-1.5"
+
+  if (!options) {
+    return {
+      className: paddingAndGapClass,
+      classNames: {
+        icon: isIcon ? "!size-5 [&_svg]:!size-5" : "!size-8",
+      },
+      style: {
+        "--loader-size": isIcon ? "20px" : "32px",
+      },
+    }
+  }
+
+  const { className, classNames = {}, style, ...rest } = options
+  return {
+    ...rest,
+    className: cn(paddingAndGapClass, className),
+    classNames: {
+      ...classNames,
+      icon: cn(
+        isIcon ? "!size-5 [&_svg]:!size-5" : "!size-8",
+        classNames.icon
+      ),
+    },
+    style: {
+      "--loader-size": isIcon ? "20px" : "32px",
+      ...style,
+    } as React.CSSProperties,
+  }
+}
+
+type ToastT = string | number
+
+const toastFn = (message: string | React.ReactNode, options?: ToastOptions): ToastT => {
+  const variant = options?.variant || (options?.icon ? "img" : undefined)
+  const formatted = variant ? getFormattedOptions(variant, options) : options
+  return rawToast(message, formatted)
+}
+
+const wrapMethod = (rawMethod: any, defaultVariant: "img" | "icon") => {
+  return (message: string | React.ReactNode, options?: ToastOptions): ToastT => {
+    const variant = options?.variant || defaultVariant
+    const formatted = getFormattedOptions(variant, options)
+    return rawMethod(message, formatted)
+  }
+}
+
+export const toast = Object.assign(toastFn, {
+  success: wrapMethod(rawToast.success, "icon"),
+  error: wrapMethod(rawToast.error, "icon"),
+  warning: wrapMethod(rawToast.warning, "icon"),
+  info: wrapMethod(rawToast.info, "icon"),
+  loading: wrapMethod(rawToast.loading, "icon"),
+  custom: rawToast.custom,
+  dismiss: rawToast.dismiss,
+  message: wrapMethod(rawToast.message, "img"),
+  promise: <T,>(
+    promise: Promise<T> | (() => Promise<T>),
+    options?: {
+      loading?: string | React.ReactNode | ToastOptions
+      success?: string | React.ReactNode | ((data: T) => ToastOptions) | ToastOptions
+      error?: string | React.ReactNode | ((error: any) => ToastOptions) | ToastOptions
+    } & ToastOptions
+  ): Promise<T> => {
+    if (!options) return rawToast.promise(promise, options)
+
+    const { loading, success, error, ...restGlobalOptions } = options
+    const globalVariant = restGlobalOptions.variant || "icon"
+    const formattedGlobal = getFormattedOptions(globalVariant, restGlobalOptions)
+
+    const formatPhase = (phase: any, defaultVar: "img" | "icon") => {
+      if (typeof phase === "string" || React.isValidElement(phase)) {
+        return phase
+      }
+      if (phase && typeof phase === "object") {
+        const variant = phase.variant || defaultVar
+        return getFormattedOptions(variant, phase)
+      }
+      if (typeof phase === "function") {
+        return (data: any) => {
+          const res = phase(data)
+          if (typeof res === "string" || React.isValidElement(res)) {
+            return res
+          }
+          if (res && typeof res === "object") {
+            const variant = res.variant || defaultVar
+            return getFormattedOptions(variant, res)
+          }
+          return res
+        }
+      }
+      return phase
+    }
+
+    return rawToast.promise(promise, {
+      loading: formatPhase(loading, "icon"),
+      success: formatPhase(success, "icon"),
+      error: formatPhase(error, "icon"),
+      ...formattedGlobal,
+    } as any)
+  },
+})
 
 // Acrylic Toaster — modeled on the Apple macOS 26 UI Kit Notifications page. A
 // Sonner toast is the web equivalent of a macOS notification *banner*: a frosted,
@@ -62,6 +176,9 @@ export function Toaster({ className, toastOptions, ...props }: ToasterProps) {
       position="top-center"
       offset={56}
       className={cn("toaster group", className)}
+      icons={{
+        loading: <Spinner />,
+      }}
       style={
         {
           // Sonner hard-codes a system font-family on the toaster (unlayered, so it
@@ -93,14 +210,22 @@ export function Toaster({ className, toastOptions, ...props }: ToasterProps) {
           // (Sonner renders no [data-icon]), bump the left pad so the text isn't
           // crammed against the edge.
           // (gap between icon and text is Sonner's own 6px, kept for the tighter look)
-          toast:
-            "group items-center text-foreground !py-3 !pl-[10px] !pr-[14px] [&:not(:has([data-icon]))]:!pl-4 !shadow-[0_8px_30px_rgba(0,0,0,0.22)] backdrop-blur-2xl backdrop-saturate-150",
+          toast: cn(
+            "group/toast items-center text-foreground !py-3 !pr-[14px] !shadow-[0_8px_30px_rgba(0,0,0,0.22)] backdrop-blur-2xl backdrop-saturate-150",
+            // Fallback paddings and gaps if toast is not triggered via wrapped helper:
+            "group-[&:not(.group\/toast-icon):not(.group\/toast-img)]/toast:!pl-[10px] group-[&:not(.group\/toast-icon):not(.group\/toast-img)]/toast:!gap-1.5",
+            "[&:not(:has([data-icon]))]:!pl-4"
+          ),
           // App-icon slot — 32×32 leading glyph, matching the kit. `!size-8` beats
           // Sonner's unlayered 16px [data-icon] rule so a passed app icon fills it;
           // we do NOT force the inner svg size, so Sonner's own status icons
           // (success/error) keep their intrinsic size instead of blowing up and
           // overlapping the text.
-          icon: "!size-8 shrink-0",
+          icon: cn(
+            "shrink-0 flex items-center justify-center",
+            // Fallback size if not triggered via wrapped helper:
+            "group-[&:not(.group\/toast-icon):not(.group\/toast-img)]/toast:!size-8"
+          ),
           content: "gap-0",
           // Title SFPro-Bold/13 and body SFPro-Regular/13 share the kit's ink
           // (rgba(26,26,26) light / rgba(245,245,245) dark ≈ foreground); the body

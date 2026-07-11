@@ -1,10 +1,8 @@
 "use client"
 
 import { MessageCircle } from "lucide-react"
-import { toast } from "sonner"
-
 import { Button } from "@/registry/acrylic/button"
-import { Toaster } from "@/registry/acrylic/sonner"
+import { Toaster, toast } from "@/registry/acrylic/sonner"
 import { ExampleBackdrop } from "@/components/example-backdrop"
 
 // The same app icon used by the static card and the live toast, so clicking the

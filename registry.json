@@ -717,6 +717,22 @@
       ]
     },
     {
+      "name": "spinner",
+      "type": "registry:ui",
+      "title": "Acrylic Spinner",
+      "description": "A smooth, modern circular loading indicator with a track and an active animating stroke.",
+      "files": [
+        {
+          "path": "registry/acrylic/spinner.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/spinner.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ]
+    },
+    {
       "name": "shell",
       "type": "registry:ui",
       "title": "Acrylic Shell",

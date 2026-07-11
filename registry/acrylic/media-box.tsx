@@ -199,7 +199,13 @@ export const MediaBox = React.forwardRef<HTMLDivElement, MediaBoxProps>(function
     <div ref={setRefs} data-slot="media-box" className={cn("w-full", className)} style={{ maxWidth }} {...props}>
       <div
         data-slot="media-box-frame"
-        className={cn("relative block overflow-hidden rounded-2xl border border-[var(--acr-border)] bg-black", frameClassName)}
+        className={cn(
+          // translateZ(0) promotes the frame to its own compositing layer so the rounded
+          // overflow clip is honored for GPU-composited children — without it a playing
+          // <video> paints on its own layer and its square corners spill past rounded-2xl.
+          "relative block [transform:translateZ(0)] overflow-hidden rounded-2xl border border-[var(--acr-border)] bg-black",
+          frameClassName
+        )}
         style={{ width: box.width || undefined, height: box.height || undefined }}
       >
         {src && !failed ? (
