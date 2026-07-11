@@ -1,0 +1,68 @@
+---
+title: Breadcrumb
+description: shadcn's Breadcrumb, anatomy and API unchanged — already token-driven, so it flips light/dark/acrylic for free; the only acrylic touch is quieter separator glyphs.
+---
+
+The shadcn Breadcrumb, shipped as-is. Its base styling is already token-driven —
+the list sits on `--muted-foreground`, the current page on `--foreground`, and
+links hover to `--foreground` — so it flips light/dark/acrylic with the theme
+without any recoloring. The one acrylic touch: the separator and ellipsis glyphs
+sit on `--label-tertiary` (the macOS tertiary-label token), one step quieter than
+the links, to match the frosted chrome.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/breadcrumb.json
+```
+
+## Usage
+
+<ComponentPreview name="breadcrumb-demo" />
+
+```tsx
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/acrylic/breadcrumb"
+
+<Breadcrumb>
+  <BreadcrumbList>
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/">Home</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbPage>Current</BreadcrumbPage>
+    </BreadcrumbItem>
+  </BreadcrumbList>
+</Breadcrumb>
+```
+
+## Anatomy
+
+- **`Breadcrumb`** — the `<nav aria-label="breadcrumb">` wrapper.
+- **`BreadcrumbList`** — the `<ol>`; carries the `--muted-foreground` color and the
+  gap/wrap layout.
+- **`BreadcrumbItem`** — one `<li>`; wraps a link or the current page.
+- **`BreadcrumbLink`** — a navigable crumb (`<a>`, or any element via `asChild` for
+  a router `<Link>`); hovers to `--foreground`.
+- **`BreadcrumbPage`** — the current page (`aria-current="page"`), on `--foreground`,
+  non-interactive.
+- **`BreadcrumbSeparator`** — the divider between items; defaults to a `ChevronRight`,
+  override with `children` (e.g. a `/`). On `--label-tertiary`.
+- **`BreadcrumbEllipsis`** — a `…` collapsing placeholder for hidden middle crumbs,
+  pair with a `DropdownMenu` to reveal them.
+
+## Notes
+
+- **Use `asChild` with your router** so the crumb navigates client-side:
+  `<BreadcrumbLink asChild><Link to="/x">X</Link></BreadcrumbLink>`.
+- **Separators are `aria-hidden` presentation** — they carry no text; the semantic
+  trail is the links + the `aria-current` page.
+- **Colors come from the theme tokens**, not `className`. Pass `className` for layout
+  only (truncation, flex behavior), never to recolor a crumb.

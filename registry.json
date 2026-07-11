@@ -238,6 +238,26 @@
       ]
     },
     {
+      "name": "breadcrumb",
+      "type": "registry:ui",
+      "title": "Acrylic Breadcrumb",
+      "description": "shadcn's Breadcrumb, anatomy and API unchanged. Already token-driven (list on --muted-foreground, current page on --foreground, links hover to --foreground), so it flips light/dark/acrylic for free; the only acrylic touch is the separator/ellipsis glyphs on --label-tertiary so the chevrons read one step quieter than the links.",
+      "dependencies": [
+        "@radix-ui/react-slot",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/breadcrumb.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/breadcrumb.tsx"
+        }
+      ]
+    },
+    {
       "name": "dialog",
       "type": "registry:ui",
       "title": "Acrylic Dialog",
