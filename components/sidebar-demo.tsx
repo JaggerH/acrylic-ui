@@ -459,11 +459,11 @@ function InboxMainPanel() {
                   {selectedMessage.initials}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div className="grid grid-cols-[minmax(0,1fr)_40px] items-start gap-5">
+                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-5">
                     <div className="truncate text-[13px] font-semibold leading-4">
                       {selectedMessage.from}
                     </div>
-                    <div className="pt-px text-[11px] leading-[13px] text-muted-foreground">
+                    <div className="pt-px text-[11px] leading-[13px] text-muted-foreground whitespace-nowrap shrink-0">
                       {selectedMessage.time}
                     </div>
                   </div>
