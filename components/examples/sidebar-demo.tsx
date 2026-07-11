@@ -3,6 +3,7 @@
 import {
   Archive,
   ChevronRight,
+  ChevronsUpDown,
   Folder,
   Inbox,
   Search,
@@ -11,6 +12,8 @@ import {
   Star,
   Trash2,
 } from "lucide-react"
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/registry/acrylic/avatar"
 
 import { ExampleBackdrop } from "@/components/example-backdrop"
 import { Input } from "@/registry/acrylic/input"
@@ -133,9 +136,16 @@ export default function SidebarDemo() {
             <SidebarFooter>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton>
-                    <Settings />
-                    <span>Settings</span>
+                  <SidebarMenuButton size="lg" className="h-12">
+                    <Avatar className="size-8 rounded-lg">
+                      <AvatarImage src="https://avatar.vercel.sh/jagger" alt="Jagger" />
+                      <AvatarFallback className="rounded-lg">JH</AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left leading-tight">
+                      <span className="truncate text-[13px] font-semibold">Jagger H</span>
+                      <span className="truncate text-[11px] text-muted-foreground">jagger@acrylic.dev</span>
+                    </div>
+                    <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>

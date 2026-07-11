@@ -434,7 +434,11 @@ function InboxMainPanel() {
                     selected={message.subject === selectedSubject}
                     onSelect={() => setSelectedSubject(message.subject)}
                   />
-                  {showSeparator ? <ItemSeparator className="mx-3" /> : null}
+                  {nextMessage ? (
+                    <ItemSeparator
+                      className={cn("mx-3", !showSeparator && "invisible")}
+                    />
+                  ) : null}
                 </div>
               )
             })}
