@@ -48,26 +48,28 @@ import C44 from "./examples/media-box-demo"
 import C45 from "./examples/popover-demo"
 import C46 from "./examples/radio-group-demo"
 import C47 from "./examples/radio-group-showcase"
-import C48 from "./examples/select-demo"
-import C49 from "./examples/select-showcase"
-import C50 from "./examples/sheet-demo"
-import C51 from "./examples/sheet-showcase"
-import C52 from "./examples/shell-mail"
-import C53 from "./examples/shell-notes"
-import C54 from "./examples/sidebar-app"
-import C55 from "./examples/sidebar-demo"
-import C56 from "./examples/sidebar-sizes"
-import C57 from "./examples/slider-demo"
-import C58 from "./examples/slider-showcase"
-import C59 from "./examples/slider-sizes"
-import C60 from "./examples/slider-variants"
-import C61 from "./examples/sonner-demo"
-import C62 from "./examples/sonner-showcase"
-import C63 from "./examples/spinner-demo"
-import C64 from "./examples/stepper-demo"
-import C65 from "./examples/stepper-showcase"
-import C66 from "./examples/switch-demo"
-import C67 from "./examples/switch-showcase"
+import C48 from "./examples/searchbar-demo"
+import C49 from "./examples/searchbar-showcase"
+import C50 from "./examples/select-demo"
+import C51 from "./examples/select-showcase"
+import C52 from "./examples/sheet-demo"
+import C53 from "./examples/sheet-showcase"
+import C54 from "./examples/shell-mail"
+import C55 from "./examples/shell-notes"
+import C56 from "./examples/sidebar-app"
+import C57 from "./examples/sidebar-demo"
+import C58 from "./examples/sidebar-sizes"
+import C59 from "./examples/slider-demo"
+import C60 from "./examples/slider-showcase"
+import C61 from "./examples/slider-sizes"
+import C62 from "./examples/slider-variants"
+import C63 from "./examples/sonner-demo"
+import C64 from "./examples/sonner-showcase"
+import C65 from "./examples/spinner-demo"
+import C66 from "./examples/stepper-demo"
+import C67 from "./examples/stepper-showcase"
+import C68 from "./examples/switch-demo"
+import C69 from "./examples/switch-showcase"
 
 export const examples: Record<string, ComponentType> = {
   "alert-dialog-demo": C0,
@@ -118,24 +120,26 @@ export const examples: Record<string, ComponentType> = {
   "popover-demo": C45,
   "radio-group-demo": C46,
   "radio-group-showcase": C47,
-  "select-demo": C48,
-  "select-showcase": C49,
-  "sheet-demo": C50,
-  "sheet-showcase": C51,
-  "shell-mail": C52,
-  "shell-notes": C53,
-  "sidebar-app": C54,
-  "sidebar-demo": C55,
-  "sidebar-sizes": C56,
-  "slider-demo": C57,
-  "slider-showcase": C58,
-  "slider-sizes": C59,
-  "slider-variants": C60,
-  "sonner-demo": C61,
-  "sonner-showcase": C62,
-  "spinner-demo": C63,
-  "stepper-demo": C64,
-  "stepper-showcase": C65,
-  "switch-demo": C66,
-  "switch-showcase": C67,
+  "searchbar-demo": C48,
+  "searchbar-showcase": C49,
+  "select-demo": C50,
+  "select-showcase": C51,
+  "sheet-demo": C52,
+  "sheet-showcase": C53,
+  "shell-mail": C54,
+  "shell-notes": C55,
+  "sidebar-app": C56,
+  "sidebar-demo": C57,
+  "sidebar-sizes": C58,
+  "slider-demo": C59,
+  "slider-showcase": C60,
+  "slider-sizes": C61,
+  "slider-variants": C62,
+  "sonner-demo": C63,
+  "sonner-showcase": C64,
+  "spinner-demo": C65,
+  "stepper-demo": C66,
+  "stepper-showcase": C67,
+  "switch-demo": C68,
+  "switch-showcase": C69,
 }

@@ -346,6 +346,22 @@
       ]
     },
     {
+      "name": "searchbar",
+      "type": "registry:ui",
+      "title": "Acrylic Searchbar",
+      "description": "Searchbar component designed in accordance with the Apple macOS 26 UI Kit Search Field: capsule-rounded edges, magnifying glass search icon, clear button, five sizes, and default vs over-glass variants.",
+      "files": [
+        {
+          "path": "registry/acrylic/searchbar.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/searchbar.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ]
+    },
+    {
       "name": "sonner",
       "type": "registry:ui",
       "title": "Acrylic Sonner",

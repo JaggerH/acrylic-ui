@@ -81,7 +81,7 @@ export const toast = Object.assign(toastFn, {
       success?: string | React.ReactNode | ((data: T) => ToastOptions) | ToastOptions
       error?: string | React.ReactNode | ((error: any) => ToastOptions) | ToastOptions
     } & ToastOptions
-  ): Promise<T> => {
+  ): any => {
     if (!options) return rawToast.promise(promise, options)
 
     const { loading, success, error, ...restGlobalOptions } = options

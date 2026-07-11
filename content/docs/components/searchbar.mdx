@@ -1,0 +1,42 @@
+---
+title: Searchbar
+description: "macOS-style search field: capsule-rounded corners, search icon, clear button, five sizes, default/over-glass variants."
+---
+
+The Searchbar component is styled strictly in accordance with the Apple macOS 26 UI Kit Search Field. Unlike standard Text Fields, it features pill-rounded corners (`rounded-full`) across all sizes, a leading magnifying glass search icon, and a trailing clear button that dynamically appears when text is typed.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/searchbar.json
+```
+
+## Usage
+
+```tsx
+import { Searchbar } from "@/components/acrylic/searchbar"
+```
+
+<ComponentPreview name="searchbar-demo" />
+
+## Showcase
+
+Explore all variants and sizes of the Searchbar component in both Light and Dark modes.
+
+<ComponentPreview name="searchbar-showcase" />
+
+## API Reference
+
+### Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `variant` | `"default" \| "over-glass"` | `"default"` | The visual variant. `default` renders a solid background with a hairline border, while `over-glass` is borderless with a transparent background. |
+| `size` | `"mini" \| "small" \| "medium" \| "large" \| "xl"` | `"medium"` | The standard macOS control sizes, corresponding to heights `16px`, `20px`, `24px`, `28px`, and `36px`. |
+| `onClear` | `() => void` | - | Callback triggered when the clear button is clicked. |
+
+## Notes
+
+- **Capsule Geometry**: The Apple design kit enforces a strict `radius = height / 2` (capsule) rule for all sizes of Search Fields.
+- **Over-glass Variant**: Used inside blurred chrome headers (like navigation toolbars). The background color resolves through scoped theme variables (`--acr-input` and `--acr-input-border`) to ensure proper translucency and color flipping under Light, Dark, and Acrylic modes.
+- **Controlled vs Uncontrolled**: The clear button works out-of-the-box for both controlled (`value` + `onChange`) and uncontrolled (internal state) usage.
