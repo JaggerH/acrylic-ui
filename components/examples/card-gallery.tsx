@@ -29,14 +29,21 @@ const COVERS: Cover[] = [
   { src: "https://picsum.photos/seed/lofi/600/600", title: "城市轻音乐 Vol.3", sub: "V.A. · 20 首" },
 ]
 
+// Hover feedback WITHOUT the lift: the Card's `interactive` prop bakes in a
+// `hover:-translate-y-px` displacement — we drop `interactive` and keep only the
+// soft float shadow (on ::before) so the tile gains depth on hover but never moves.
+const HOVER_FLOAT =
+  "before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-xl " +
+  "before:shadow-[0_12px_28px_rgba(0,0,0,0.28)] before:opacity-0 before:transition-opacity " +
+  "before:duration-200 hover:before:opacity-100"
+
 function MediaCard({ cover, ratio, style }: { cover: Cover; ratio: string; style: Style }) {
   const overlay = style === "overlay"
   return (
     <Card
-      interactive
       role="button"
       tabIndex={0}
-      className="group flex flex-col overflow-hidden p-0 text-left focus:outline-none"
+      className={`group flex flex-col overflow-hidden p-0 text-left focus:outline-none ${HOVER_FLOAT}`}
     >
       <div className="relative w-full overflow-hidden" style={{ aspectRatio: ratio }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -74,7 +81,7 @@ export default function CardGallery() {
   const [style, setStyle] = React.useState<Style>("default")
 
   return (
-    <ExampleBackdrop className="rounded-2xl bg-[linear-gradient(135deg,#5b21b6_0%,#2563eb_50%,#db2777_100%)] p-6 sm:p-8">
+    <ExampleBackdrop>
       <div className="flex w-full max-w-3xl flex-col gap-5 text-foreground">
         <div className="flex flex-wrap items-center gap-3">
           <ButtonGroup variant="segmented" size="small" value={ratio} onValueChange={(v) => setRatio(v as RatioKey)}>
