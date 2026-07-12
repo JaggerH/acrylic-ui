@@ -663,10 +663,16 @@ export function SidebarDemo({
         {pane === "inbox" && (windowControls || headerControls) ? (
           <div
             {...(windowControls ? { "data-tauri-drag-region": "" } : {})}
-            className="absolute right-3 top-2 z-20 flex items-center"
+            className={cn(
+              "absolute right-3 z-20 flex",
+              // Tauri window buttons fill the navbar top-to-bottom (49px, flush to the
+              // top edge) like standard caption buttons; the web fullscreen toggle stays
+              // a centered float.
+              windowControls ? "top-0 h-[49px] items-stretch" : "top-2 items-center"
+            )}
           >
             {windowControls ? (
-              <div className="flex h-8 items-stretch">{windowControls}</div>
+              <div className="flex items-stretch self-stretch">{windowControls}</div>
             ) : (
               headerControls
             )}
@@ -674,15 +680,22 @@ export function SidebarDemo({
         ) : null}
         {pane !== "inbox" ? (
           <ShellNavbar
-            // Tauri only: the header IS the titlebar, so make its empty space draggable.
-            // data-tauri-drag-region acts only on the element it's set on; the child
-            // buttons/inputs stay interactive.
+            // Tauri only: the header IS the titlebar, so make it the drag region.
+            // data-tauri-drag-region matches only the EXACT mousedown target: a bare
+            // navbar drags, but any child on top of it blocks the drag. So the passive
+            // chrome (separator, title) each carries the attribute too — making it a
+            // first-class drag target like the bare padding, so the WHOLE bar drags
+            // uniformly. (pointer-events-none fall-through also "works" but makes
+            // webkit2gtk paint a no-drop cursor mid-drag.) Only the real controls
+            // (trigger, window buttons) stay interactive. `select-none` stops the title
+            // text from being selected on click.
             {...(windowControls ? { "data-tauri-drag-region": "" } : {})}
             size="large"
-            className="h-12 border-[var(--acr-border)] px-4"
+            className="h-12 select-none border-[var(--acr-border)] px-4"
           >
             <SidebarTrigger />
             <Separator
+              data-tauri-drag-region=""
               orientation="vertical"
               className="mr-1 !h-4 data-[orientation=vertical]:!h-4"
             />
@@ -693,7 +706,10 @@ export function SidebarDemo({
             {showThemeSwitcher ? (
               <ThemeSwitcher />
             ) : (
-              <span className="text-[15px] font-semibold text-foreground">
+              <span
+                data-tauri-drag-region=""
+                className="text-[15px] font-semibold text-foreground"
+              >
                 {pane === "components" ? "Components" : "Loans"}
               </span>
             )}

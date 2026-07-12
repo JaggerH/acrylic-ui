@@ -17,9 +17,18 @@ export default defineConfig({
     dedupe: ["react", "react-dom"],
   },
   server: {
+    // Windows-target dev (`tauri:dev:win`): vite runs in WSL, WebView2 runs on
+    // Windows. `host: true` binds 0.0.0.0 so the Windows side can reach it; the
+    // `hmr` block pins the HMR client back to localhost:5180 (WSL2 forwards it)
+    // instead of a host it can't find across the WSL↔Windows boundary; `usePolling`
+    // because WSL inotify doesn't fire for edits made from the Windows side (and is
+    // unreliable across the boundary). Linux-target dev works with or without these.
+    host: true,
     port: 5180,
     strictPort: true,
     fs: { allow: [repoRoot] },
+    hmr: { protocol: "ws", host: "localhost", port: 5180 },
+    watch: { usePolling: true },
   },
   // Tauri expects a fixed dev server; envPrefix lets us read TAURI_* if needed.
   clearScreen: false,

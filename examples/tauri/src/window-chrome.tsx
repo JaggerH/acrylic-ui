@@ -111,8 +111,12 @@ export function MacTrafficLights() {
 
 // ── Windows caption buttons (injected into the app header) ─────────────────────
 function WinControls({ maximized }: { maximized: boolean }) {
+  // self-stretch (align-self), NOT h-full: webkit2gtk (the Tauri webview) won't
+  // resolve `height:100%` against a parent whose height only comes from flex-stretch,
+  // so h-full collapses the button to glyph height and the hover fill stops short of
+  // the navbar edges. align-self:stretch fills the full navbar height in every engine.
   const base =
-    "flex h-full w-[46px] items-center justify-center text-foreground/80 transition-colors"
+    "flex self-stretch w-[46px] items-center justify-center text-foreground/80 transition-colors"
   return (
     // -mr-4 cancels the header's right padding so the buttons reach the window corner.
     <div className="-mr-4 flex items-stretch self-stretch">
