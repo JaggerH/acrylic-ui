@@ -44,11 +44,111 @@ footer action — with the body as a frosted glass surface over the wallpaper.
 
 <ComponentPreview name="card-cover" />
 
-## Props
+## Example — gallery / media card
 
-| prop | type | default | description |
+A media tile with two live segmented controls. **Size** swaps the cover's
+`aspect-ratio` (16:9 / 3:4 / 1:1) — one source stays uniform while different sources
+each keep their own shape, un-cropped — and **style** toggles `default` (caption
+under the media) against `overlay` (caption on a bottom scrim). Title and subtitle
+reuse the Card's own `CardTitle` / `CardDescription` — the same type as the
+Cover-image-card above — so the family reads as one; the corner chip is the acrylic
+`Badge` tinted for on-media contrast.
+
+<ComponentPreview name="card-gallery" />
+
+## API Reference
+
+The frosted Card follows the shadcn/ui Card anatomy — a surface root plus
+Header / Title / Description / Action / Content / Footer sub-parts. Only the root
+diverges (it adds `interactive` + `nestedSurface`); every sub-part is a
+layout/typography wrapper that renders a `<div>` with a `data-slot` styling hook and
+forwards all native `<div>` props (`className`, `onClick`, `style`, …). `className`
+is for layout only — color always flows through the `--acr-*` tokens.
+
+### Card
+
+The dark-glass surface root — flat at rest (no border, no rest shadow), a soft
+float lift on hover when `interactive`. Renders `<div data-slot="card">`.
+
+| Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `interactive` | `boolean` | `false` | hover lift + float shadow for clickable cards |
-| `nestedSurface` | `boolean` | `false` | opt in to nested Card surface treatment for child Cards |
+| `interactive` | `boolean` | `false` | Hover lift + soft float shadow, for clickable cards. |
+| `nestedSurface` | `boolean` | `false` | Opt child Cards into the nested-surface treatment — they drop their own blur and tint one step recessed (the card-in-card pattern). Sets `data-nested-surface`. |
+| `className` | `string` | — | Merged onto the surface (layout only). |
+| `...props` | `React.HTMLAttributes<HTMLDivElement>` | — | Forwarded to the root `<div>`. |
 
-Plus all native `<div>` props.
+```tsx
+<Card interactive>
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+    <CardDescription>Description</CardDescription>
+    <CardAction>
+      <Button icon variant="ghost" aria-label="More" />
+    </CardAction>
+  </CardHeader>
+  <CardContent>…</CardContent>
+  <CardFooter>…</CardFooter>
+</Card>
+```
+
+### CardHeader
+
+Grid header for the title / description stack; when a `CardAction` is present it
+auto-adds a trailing column (`has-data-[slot=card-action]:grid-cols-[1fr_auto]`) to
+hold it. Renders `<div data-slot="card-header">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the header grid. |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
+
+### CardTitle
+
+The 15px semibold title (`self-center` within the header grid). Renders
+`<div data-slot="card-title">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the title. |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
+
+### CardDescription
+
+The 13px `text-muted-foreground` description. Renders
+`<div data-slot="card-description">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the description. |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
+
+### CardAction
+
+Top-right action slot inside `CardHeader` (a menu or icon button), pinned to the
+header's trailing column (`col-start-2 row-start-1 justify-self-end`). Renders
+`<div data-slot="card-action">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the action wrapper. |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
+
+### CardContent
+
+The card body wrapper — horizontal padding only; the root owns the vertical rhythm,
+so compose it with `flex flex-col gap-*`. Renders `<div data-slot="card-content">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the content. |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
+
+### CardFooter
+
+Footer row for actions, aligned on a single line (`flex items-center`). Renders
+`<div data-slot="card-footer">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the footer. |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
