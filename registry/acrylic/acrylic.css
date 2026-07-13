@@ -38,8 +38,7 @@
 /* ---- Light (plain, default) ---- */
 /* `:root, .light` so the light token block works both as the document default AND
    as a region class (e.g. a `.light` main pane under an `.acrylic` document root). */
-:root,
-.light {
+:root, .light {
   --background: #ffffff;
   --foreground: rgba(0, 0, 0, 0.88);
   --muted-foreground: rgba(0, 0, 0, 0.52);
