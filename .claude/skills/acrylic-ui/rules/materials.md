@@ -73,6 +73,10 @@ become translucent and the blur turns them to glass. **Never assume the app is i
 one specific theme** — wire everything through the token names and it works in all
 three. The theme switcher is 3-way (Light / Dark / Acrylic), not a light/dark toggle.
 
+> [!WARNING]
+> **Keep `:root, .light` selector on a single line in CSS files.**
+> In consuming projects, ensure that the selector `:root, .light {` is written on a single line. Some CSS formatters (e.g. Prettier) split it into multiple lines (with a newline after the comma), which confuses the `shadcn` CLI parser. If formatters split it, `shadcn add` will fail to recognize the existing block, appending a duplicate `:root, .light` block at the end of the file that overrides other themes and breaks the dark/acrylic modes.
+
 ---
 
 ## Frosted glass = `acr-frosted` + `bg-[var(--acr-surface)]` + `backdrop-blur`
