@@ -98,9 +98,6 @@ function SheetPortal({ ...props }: React.ComponentProps<typeof SheetPrimitive.Po
   return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />
 }
 
-const MotionOverlay = motion.create(SheetPrimitive.Overlay)
-const MotionContent = motion.create(SheetPrimitive.Content)
-
 function SheetContent({
   className,
   children,
@@ -234,37 +231,41 @@ function SheetContent({
 
   return (
     <SheetPortal forceMount>
-      <MotionOverlay
-        data-slot="sheet-overlay"
-        forceMount
-        style={{
-          opacity: scrimOpacity,
-          backdropFilter: "blur(20px) saturate(1.3)",
-          WebkitBackdropFilter: "blur(20px) saturate(1.3)",
-        }}
-        className="fixed inset-0 z-50 bg-[var(--acr-overlay)]"
-      />
-      <MotionContent
-        ref={panelRef}
-        data-slot="sheet-content"
-        forceMount
-        style={{ ...style, ...(axis === "x" ? { x: offset } : { y: offset }) }}
-        {...dragProps}
-        className={cn(
-          "fixed z-50 flex flex-col gap-4 bg-[var(--acr-panel)] backdrop-blur-xl shadow-[0_0_0_1px_var(--acr-border-soft),0_16px_48px_rgba(0,0,0,0.35)]",
-          axis === "x" ? "touch-pan-y" : "touch-pan-x",
-          positional,
-          className
-        )}
-        {...props}
-      >
-        <ModalAcrylicBody />
-        {children}
-        <SheetPrimitive.Close className="absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[var(--ring)] disabled:pointer-events-none">
-          <XIcon className="size-4" />
-          <span className="sr-only">Close</span>
-        </SheetPrimitive.Close>
-      </MotionContent>
+      {/* Radix owns state/a11y; the motion.div child (via asChild) is the real
+          motion DOM node Motion controls. Wrapping the Radix primitive directly
+          with motion.create does NOT apply transforms/drag. */}
+      <SheetPrimitive.Overlay asChild forceMount>
+        <motion.div
+          data-slot="sheet-overlay"
+          style={{
+            opacity: scrimOpacity,
+            backdropFilter: "blur(20px) saturate(1.3)",
+            WebkitBackdropFilter: "blur(20px) saturate(1.3)",
+          }}
+          className="fixed inset-0 z-50 bg-[var(--acr-overlay)]"
+        />
+      </SheetPrimitive.Overlay>
+      <SheetPrimitive.Content asChild forceMount {...props}>
+        <motion.div
+          ref={panelRef}
+          data-slot="sheet-content"
+          style={{ ...style, ...(axis === "x" ? { x: offset } : { y: offset }) }}
+          {...dragProps}
+          className={cn(
+            "fixed z-50 flex flex-col gap-4 bg-[var(--acr-panel)] backdrop-blur-xl shadow-[0_0_0_1px_var(--acr-border-soft),0_16px_48px_rgba(0,0,0,0.35)]",
+            axis === "x" ? "touch-pan-y" : "touch-pan-x",
+            positional,
+            className
+          )}
+        >
+          <ModalAcrylicBody />
+          {children}
+          <SheetPrimitive.Close className="absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[var(--ring)] disabled:pointer-events-none">
+            <XIcon className="size-4" />
+            <span className="sr-only">Close</span>
+          </SheetPrimitive.Close>
+        </motion.div>
+      </SheetPrimitive.Content>
     </SheetPortal>
   )
 }

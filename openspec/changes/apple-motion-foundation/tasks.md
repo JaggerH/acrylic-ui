@@ -26,7 +26,7 @@
 - [x] 4.4 On release, project the endpoint (Apple decay `current + (v/1000)·d/(1−d)`) and hand off velocity: dismiss if projected past threshold / velocity sign says dismiss, else spring back open
 - [x] 4.5 Tie scrim opacity to drag progress (dim to focus)
 - [x] 4.6 Guard the JS motion path on `matchMedia('(prefers-reduced-motion: reduce)')` → direct transition, no velocity animation
-- [ ] 4.7 Confirm focus trap, scroll lock, ESC-to-close, and ARIA semantics survive the refactor
+- [x] 4.7 Confirm focus trap, scroll lock, ESC-to-close, and ARIA semantics survive the refactor
 
 ## 5. Skill documentation
 
@@ -36,7 +36,7 @@
 
 ## 6. Build, verify, wire-up
 
-- [ ] 6.1 Run `npm run registry:build`; confirm `r/sheet.json` re-emits with the `motion` dependency and the acrylic theme item carries the new tokens
-- [ ] 6.2 Build/typecheck the project; confirm no errors introduced
-- [ ] 6.3 Drive the Sheet in the running app: verify spring enter/exit, interruptible grab-mid-flight, 1:1 drag, velocity-projected dismiss vs spring-back, scrim dimming, and reduced-motion degradation
-- [ ] 6.4 Verify tokens hold in light / dark / acrylic themes (no regression to existing surfaces)
+- [x] 6.1 Run `npm run registry:build`; confirm `r/sheet.json` re-emits with the `motion` dependency and the acrylic theme item carries the new tokens
+- [x] 6.2 Build/typecheck the project; confirm no errors introduced
+- [x] 6.3 Drive the Sheet in the running app: verify spring enter/exit, interruptible grab-mid-flight, 1:1 drag, velocity-projected dismiss vs spring-back, scrim dimming, and reduced-motion degradation
+- [x] 6.4 Verify tokens hold in light / dark / acrylic themes (no regression to existing surfaces)
