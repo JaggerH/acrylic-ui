@@ -2,13 +2,7 @@
 
 import * as React from "react"
 import * as SheetPrimitive from "@radix-ui/react-dialog"
-import {
-  animate,
-  motion,
-  useMotionValue,
-  useTransform,
-  type PanInfo,
-} from "motion/react"
+import { animate, motion, useMotionValue, useTransform } from "motion/react"
 import { XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -33,6 +27,14 @@ const CLOSE_SIGN: Record<Side, 1 | -1> = { right: 1, bottom: 1, left: -1, top: -
 function project(velocity: number, decay = 0.998) {
   return ((velocity / 1000) * decay) / (1 - decay)
 }
+
+// Progressive resistance past a boundary — the further you pull, the less it
+// follows (real things slow before they stop), instead of a hard wall.
+function rubberband(overshoot: number, dimension: number, constant = 0.55) {
+  return (overshoot * dimension * constant) / (dimension + constant * overshoot)
+}
+
+const DRAG_THRESHOLD = 5 // px of movement before a press becomes a drag
 
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = React.useState(false)
@@ -114,87 +116,65 @@ function SheetContent({
   const axis = AXIS[side]
   const sign = CLOSE_SIGN[side]
 
-  // Single source of truth for the panel's position along its axis:
-  // 0 = fully open, sign*size = fully closed/offscreen. Motion `drag` writes
-  // this same value, so drag and programmatic animation never fight.
-  const offset = useMotionValue(0)
-  // Under reduced motion we cross-fade instead of sliding: offset stays 0 and
-  // this opacity drives enter/exit (non-vestibular).
+  // Position as a FRACTION of the panel's own size — 0 = fully open, 1 = fully
+  // closed/offscreen — rendered as a percentage transform. This is
+  // measurement-free, so the enter travels exactly one panel-width and looks
+  // identical on the first open and every open after (pixel measurement was
+  // unreliable on first mount through Radix's asChild/Slot ref).
+  const pos = useMotionValue(open ? 0 : 1)
+  // Reduced motion cross-fades instead of sliding: pos stays 0, this drives it.
   const panelOpacity = useMotionValue(1)
-  // Scrim opacity has its OWN short fade on open/close so it never depends on a
-  // measured panel size (which isn't available on the very first open, before the
-  // asChild ref resolves — that lag made the first-open scrim segmented). During
-  // an active drag we dim it by the slide offset instead (size is reliable then).
+  // Scrim has its own short fade on open/close (measurement-free) so it comes on
+  // in sync with the panel on the FIRST open; during an active drag it dims by
+  // the live pos instead.
   const overlayBase = useMotionValue(open ? 1 : 0)
   const draggingRef = React.useRef(false)
-  const sizeRef = React.useRef(0)
-  const inited = React.useRef(false)
+  const pendingRef = React.useRef(false)
   const panelRef = React.useRef<HTMLDivElement>(null)
+  const posAnim = React.useRef<ReturnType<typeof animate> | null>(null)
+  const dragState = React.useRef({ start: 0, startPos: 0, size: 1 })
+  const samples = React.useRef<{ c: number; t: number }[]>([])
 
   // `rendered` gates the portal: stays mounted through the close animation so
   // the exit can play before Radix tears the content down.
   const [rendered, setRendered] = React.useState(open)
 
   const spring = React.useMemo(
-    () =>
-      reduced
-        ? ({ duration: 0.12, ease: "linear" } as const)
-        : ({ type: "spring", bounce: 0.2, duration: 0.3 } as const),
-    [reduced]
+    () => ({ type: "spring", bounce: 0.2, duration: 0.3 }) as const,
+    []
   )
 
-  const measure = React.useCallback(() => {
-    const el = panelRef.current
-    if (el) sizeRef.current = axis === "x" ? el.offsetWidth : el.offsetHeight
-  }, [axis])
-
-  // Measure at DOM-attach time via a ref callback (fires during commit, before
-  // layout/effects) so the panel size is known on the FIRST open — effects alone
-  // ran before the asChild/Slot ref resolved, leaving sizeRef 0 the first time.
-  const setPanelNode = React.useCallback(
-    (node: HTMLDivElement | null) => {
-      panelRef.current = node
-      if (node) sizeRef.current = axis === "x" ? node.offsetWidth : node.offsetHeight
-    },
-    [axis]
-  )
-
-  const offscreen = React.useCallback(() => {
-    const fallback = axis === "x" ? window.innerWidth : window.innerHeight
-    return sign * (sizeRef.current || fallback)
-  }, [axis, sign])
+  const translate = useTransform(pos, (p) => `${sign * p * 100}%`)
 
   React.useEffect(() => {
     if (open) setRendered(true)
   }, [open])
 
-  // Before first paint, park a freshly-mounted panel at its hidden start state so
-  // the enter animation plays (no flash of the open position). Reduced motion
-  // starts transparent (fade in); otherwise offscreen (slide in).
+  // Before first paint, put a freshly-mounted panel in its hidden start state.
+  // (pos already inits to 1/offscreen for the slide path; this covers reduced
+  // motion, which starts in-place + transparent.)
   React.useLayoutEffect(() => {
-    if (!rendered || inited.current) return
-    inited.current = true
-    measure()
-    if (open) {
-      overlayBase.set(0)
-      if (reduced) panelOpacity.set(0)
-      else offset.set(offscreen())
+    if (!rendered || !open) return
+    overlayBase.set(open ? overlayBase.get() : 0)
+    if (reduced && pos.get() !== 0) {
+      pos.set(0)
+      panelOpacity.set(0)
     }
-  }, [rendered, open, reduced, measure, offscreen, offset, panelOpacity, overlayBase])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rendered])
 
   // Programmatic open/close (trigger, ESC, overlay click, Close button).
   // Animates from the live value, so an interrupt (reopen mid-close) is smooth.
   React.useEffect(() => {
     if (!rendered) return
-    measure()
-    // Scrim fades on its own short curve (measurement-free), so it comes on
+    // Scrim fades on its own short curve (measurement-free) so it comes on
     // reliably on the FIRST open, in sync with — not lagging — the panel.
     const scrimControls = animate(overlayBase, open ? 1 : 0, {
       duration: 0.2,
       ease: "easeOut",
     })
     if (reduced) {
-      // Cross-fade: opacity only, offset held at 0 (no vestibular slide).
+      pos.set(0) // no vestibular slide — cross-fade only
       const controls = animate(panelOpacity, open ? 1 : 0, {
         duration: 0.15,
         ease: "linear",
@@ -205,17 +185,11 @@ function SheetContent({
         scrimControls.stop()
       }
     }
-    if (open) {
-      const controls = animate(offset, 0, spring)
-      return () => {
-        controls.stop()
-        scrimControls.stop()
-      }
-    }
-    const controls = animate(offset, offscreen(), {
+    const controls = animate(pos, open ? 0 : 1, {
       ...spring,
-      onComplete: () => setRendered(false),
+      onComplete: open ? undefined : () => setRendered(false),
     })
+    posAnim.current = controls
     return () => {
       controls.stop()
       scrimControls.stop()
@@ -224,51 +198,112 @@ function SheetContent({
   }, [open, rendered, spring, reduced])
 
   // Scrim: its own fade (overlayBase) for enter/exit; while actively dragging,
-  // dim by the slide offset (sizeRef is reliable once the panel is open).
-  const scrimOpacity = useTransform([offset, overlayBase], ([o, base]) => {
+  // dim by the live pos (1 - pos), no measurement needed.
+  const scrimOpacity = useTransform([pos, overlayBase], ([p, base]) => {
     if (!draggingRef.current) return base as number
-    const size = sizeRef.current || 1
-    const byDrag = Math.max(0, 1 - Math.abs(o as number) / size)
-    return Math.min(base as number, byDrag)
+    return Math.min(base as number, Math.max(0, 1 - (p as number)))
   })
 
-  const handleDragEnd = React.useCallback(
-    (_e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-      const v = info.velocity[axis]
-      const current = offset.get()
-      const projected = current + project(v)
-      const size = sizeRef.current || Math.abs(offscreen())
-      const dismiss =
-        Math.sign(projected) === sign && Math.abs(projected) > Math.abs(size) * 0.4
-      if (dismiss) {
-        // Hand the release velocity into the close spring, then sync Radix
-        // state once the panel is gone (returns focus to the trigger). Keep
-        // draggingRef true so the scrim keeps tracking the panel out.
+  // --- Manual 1:1 drag (pointer events) --------------------------------------
+  // Replaces Motion's pixel `drag` so the panel can be positioned by a
+  // measurement-free percentage. Size is read at pointer-down, when the panel is
+  // open and stable (reliable, unlike first-mount measurement).
+  const coordOf = React.useCallback(
+    (e: React.PointerEvent) => (axis === "x" ? e.clientX : e.clientY),
+    [axis]
+  )
+
+  const onPointerDown = React.useCallback(
+    (e: React.PointerEvent) => {
+      if (reduced || (e.button !== undefined && e.button !== 0)) return
+      // Don't hijack interactive controls (inputs, buttons, links, the close X).
+      if (
+        (e.target as HTMLElement).closest(
+          'input, textarea, select, button, a, [contenteditable="true"]'
+        )
+      )
+        return
+      const el = panelRef.current
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      dragState.current = {
+        start: coordOf(e),
+        startPos: pos.get(),
+        size: (axis === "x" ? rect.width : rect.height) || 1,
+      }
+      samples.current = [{ c: coordOf(e), t: e.timeStamp }]
+      pendingRef.current = true
+    },
+    [reduced, axis, coordOf, pos]
+  )
+
+  const onPointerMove = React.useCallback(
+    (e: React.PointerEvent) => {
+      if (!pendingRef.current && !draggingRef.current) return
+      const coord = coordOf(e)
+      const { start, startPos, size } = dragState.current
+      const delta = coord - start
+      if (pendingRef.current) {
+        if (Math.abs(delta) < DRAG_THRESHOLD) return
+        // Commit to a drag: grab the pointer and interrupt any running animation.
+        pendingRef.current = false
+        draggingRef.current = true
+        posAnim.current?.stop()
+        try {
+          panelRef.current?.setPointerCapture(e.pointerId)
+        } catch {
+          /* no-op */
+        }
+      }
+      let next = startPos + (sign * delta) / size
+      if (next < 0) next = -rubberband(-next * size, size) / size // rubber-band past open
+      pos.set(next)
+      const s = samples.current
+      s.push({ c: coord, t: e.timeStamp })
+      if (s.length > 5) s.shift()
+    },
+    [coordOf, sign, pos]
+  )
+
+  const endDrag = React.useCallback(
+    (e: React.PointerEvent) => {
+      if (pendingRef.current) {
+        pendingRef.current = false
+        return // was a tap/click, not a drag
+      }
+      if (!draggingRef.current) return
+      draggingRef.current = false
+      try {
+        panelRef.current?.releasePointerCapture(e.pointerId)
+      } catch {
+        /* no-op */
+      }
+      const { size } = dragState.current
+      const s = samples.current
+      let vel = 0 // px/s along the axis
+      if (s.length >= 2) {
+        const a = s[0]
+        const b = s[s.length - 1]
+        const dt = b.t - a.t || 16
+        vel = ((b.c - a.c) / dt) * 1000
+      }
+      const projectedFrac = pos.get() + (sign * project(vel)) / size
+      const velFrac = (sign * vel) / size // fraction/s for the spring hand-off
+      if (projectedFrac > 0.4) {
         animate(overlayBase, 0, { duration: 0.2, ease: "easeOut" })
-        animate(offset, offscreen(), {
-          type: "spring",
-          bounce: 0.2,
-          duration: 0.3,
-          velocity: v,
+        posAnim.current = animate(pos, 1, {
+          ...spring,
+          velocity: velFrac,
           onComplete: () => {
-            draggingRef.current = false
             setRendered(false)
             setOpen(false)
           },
         })
       } else {
-        animate(offset, 0, {
-          type: "spring",
-          bounce: 0.2,
-          duration: 0.3,
-          velocity: v,
-          onComplete: () => {
-            draggingRef.current = false
-          },
-        })
+        posAnim.current = animate(pos, 0, { ...spring, velocity: velFrac })
       }
     },
-    [axis, sign, offset, offscreen, overlayBase, setOpen]
+    [sign, pos, overlayBase, spring, setOpen]
   )
 
   if (!rendered) return null
@@ -282,17 +317,13 @@ function SheetContent({
           ? "inset-x-0 top-0 h-auto"
           : "inset-x-0 bottom-0 h-auto"
 
-  const dragProps = reduced
+  const dragHandlers = reduced
     ? {}
     : {
-        drag: axis,
-        dragMomentum: false,
-        dragElastic: 0.16,
-        dragConstraints: sign === 1 ? { left: 0, top: 0 } : { right: 0, bottom: 0 },
-        onDragStart: () => {
-          draggingRef.current = true
-        },
-        onDragEnd: handleDragEnd,
+        onPointerDown,
+        onPointerMove,
+        onPointerUp: endDrag,
+        onPointerCancel: endDrag,
       }
 
   return (
@@ -311,14 +342,14 @@ function SheetContent({
       </SheetPrimitive.Overlay>
       <SheetPrimitive.Content asChild forceMount {...props}>
         <motion.div
-          ref={setPanelNode}
+          ref={panelRef}
           data-slot="sheet-content"
           style={{
             ...style,
             opacity: panelOpacity,
-            ...(axis === "x" ? { x: offset } : { y: offset }),
+            ...(axis === "x" ? { x: translate } : { y: translate }),
           }}
-          {...dragProps}
+          {...dragHandlers}
           className={cn(
             "fixed z-50 flex flex-col gap-4 bg-[var(--acr-panel)] backdrop-blur-xl shadow-[0_0_0_1px_var(--acr-border-soft),0_16px_48px_rgba(0,0,0,0.35)]",
             axis === "x" ? "touch-pan-y" : "touch-pan-x",

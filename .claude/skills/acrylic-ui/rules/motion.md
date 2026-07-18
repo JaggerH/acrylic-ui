@@ -125,14 +125,24 @@ adding gesture components:
 - **Radix Dialog stays** for focus trap / scroll lock / ESC / ARIA. A
   controlled/uncontrolled bridge exposes `open` to the content so the **exit animates
   before unmount** (`forceMount` + a `rendered` gate).
-- **One motion value** for the panel's axis position (`0` open, `sign*size` closed).
-  Motion's `drag` writes the *same* value, so drag and programmatic `animate()` never
-  fight. Enter/exit `animate()` from the live value → interruptible.
-- **Drag** axis-locked toward the edge, `dragConstraints` pinning the open direction
-  to `0` with `dragElastic` for rubber-band; `dragMomentum: false` (we project
-  ourselves).
-- **Release** projects the endpoint and hands velocity into the close spring
-  (dismiss) or springs back to `0` (snap back), decided by projected distance/sign.
-- **Scrim** opacity is a `useTransform` of the panel offset — dims to focus.
+- **Position is a size-fraction, not pixels.** One motion value `pos` (`0` open, `1`
+  closed) rendered as a **percentage transform** (`translateX(sign·pos·100%)`).
+  Percentage = exactly one panel-width, so enter/exit is **measurement-free** — the
+  slide is identical on the first open and every open after. (Measuring the panel in
+  px on first mount is unreliable through Radix's `asChild`/Slot ref timing, which
+  makes the first open travel a different distance and feel different — a real bug we
+  hit. Don't reintroduce a pixel `offset` + `motion`-`drag`.) Enter/exit `animate(pos)`
+  from the live value → interruptible.
+- **Drag is manual pointer events**, not Motion's `drag` (which needs a pixel value on
+  the element). Measure the panel size at `pointerdown` (open + stable → reliable),
+  convert finger delta → `pos` fraction 1:1, apply a `DRAG_THRESHOLD` before
+  committing, `rubberband()` past the open bound, and skip the drag when the target is
+  an interactive control (input/button/link/close).
+- **Release** projects the endpoint (`project(velocity)`) and hands velocity into the
+  close spring (dismiss) or springs back to `0` (snap back), decided by projected
+  fraction (`> 0.4` → dismiss).
+- **Scrim** has its **own** short opacity fade on open/close (measurement-free, so it
+  comes on in sync on the first open — deriving it from `offset/size` made it lag/snap
+  the first time); during an active drag it dims by `1 − pos`.
 - Install note for consumers: Sheet pulls in `motion` (opt-in); other components
   don't.
