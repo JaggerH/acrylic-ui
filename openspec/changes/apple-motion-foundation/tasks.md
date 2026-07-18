@@ -30,9 +30,9 @@
 
 ## 5. Skill documentation
 
-- [ ] 5.1 Create `references/apple-motion.md` in the acrylic-ui skill — trimmed, attributed copy of the general Apple motion philosophy ("source: emilkowalski/skills, adapted")
-- [ ] 5.2 Author `rules/motion.md` — spring tokens, the CSS-vs-Motion tiering rule, per-component motion recipes, accessibility wiring; Incorrect/Correct pairs in the skill's style
-- [ ] 5.3 Cross-link from `SKILL.md` (critical-rules index) and add a typography note + link in `rules/materials.md`
+- [x] 5.1 Create `references/apple-motion.md` in the acrylic-ui skill — trimmed, attributed copy of the general Apple motion philosophy ("source: emilkowalski/skills, adapted")
+- [x] 5.2 Author `rules/motion.md` — spring tokens, the CSS-vs-Motion tiering rule, per-component motion recipes, accessibility wiring; Incorrect/Correct pairs in the skill's style
+- [x] 5.3 Cross-link from `SKILL.md` (critical-rules index) and add a typography note + link in `rules/materials.md`
 
 ## 6. Build, verify, wire-up
 

@@ -80,6 +80,24 @@ Always enforced. Each links to Incorrect/Correct pairs.
 - **Tauri vibrancy is opt-in and inert on the web**; modals use the shipped
   `useModalAcrylicBody` (already wired into Dialog/AlertDialog/Sheet).
 
+### Motion, springs & gesture → [rules/motion.md](./rules/motion.md)
+
+- **Motion flows through `--acr-spring-*` tokens** (generated from damping/response),
+  never a hand-picked `cubic-bezier` + ms. CSS: `var(--acr-spring-<name>)` +
+  `var(--acr-spring-<name>-duration)`. Default is critically damped; reserve overshoot
+  (`bounce`) for gesture-carried momentum.
+- **Tiered substrate**: CSS `linear()` springs are the zero-runtime default for
+  enter/exit + hover; `motion` (the JS lib) is an **opt-in `registryDependency` only on
+  gesture components** (Sheet today) — never a default dep.
+- **Gesture contract**: pointer-down response, 1:1 drag from the grab offset,
+  interruptible from the live value, velocity handoff, momentum projection,
+  rubber-band. Radix stays underneath for a11y; Motion owns only how it moves.
+- **A11y is at the token layer** — `prefers-reduced-motion` / `-reduced-transparency`
+  / `-contrast` `@media` blocks resolve through the tokens; don't re-implement per
+  component. Gesture components also guard the JS path via `usePrefersReducedMotion`.
+- The general philosophy is [references/apple-motion.md](./references/apple-motion.md)
+  (inherited from emilkowalski/skills); `rules/motion.md` is the acrylic delta.
+
 ### Components & divergences → [rules/components.md](./rules/components.md)
 
 - **Button axes are macOS, not shadcn**: `variant` default/secondary/destructive/

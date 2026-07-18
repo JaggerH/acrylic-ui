@@ -177,3 +177,14 @@ conditionally-rendered wrapper) can drop the final cleanup and leave the class s
 on, which flips `--background` to near-opaque and kills the native acrylic. If you
 ever reimplement the paint, read the DOM — never mirror open-state in a hand-kept
 counter.
+
+## Typography tokens — size-specific tracking & leading
+
+The macOS type scale (`--text-largetitle` … `--text-footnote`, in `acrylic.css`) is a
+**reference for text-heavy components** (it is not shipped in the registry theme item).
+Each size now carries a companion `--text-<size>-tracking` (letter-spacing) and
+`--text-<size>-leading` (line-height). **Tracking is size-specific** — a single fixed
+`letter-spacing` is wrong at some size: large display text tightens (negative), body
+sits near `0`. Pair a size with its own companions rather than reusing one value. Full
+Incorrect/Correct pair and the rationale (Apple's optical-sizing principle) live in
+[motion.md](./motion.md#typography-tracking--leading).
