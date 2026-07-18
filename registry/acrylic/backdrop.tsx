@@ -25,17 +25,19 @@ function Backdrop({
       className={cn("pointer-events-none fixed inset-0 -z-10 overflow-hidden", className)}
     >
       {children ?? (
-        // A DARK wallpaper: deep base + low-opacity deep-color glows. Dark enough that
-        // white text on a translucent acrylic region over it stays readable, while the
-        // colour gives the frost something to blur (the macOS "vibrancy over wallpaper"
-        // read). Override via `children` for a brand wallpaper.
+        // A DARK wallpaper: deep base + low-opacity glows. Dark enough that white text on
+        // a translucent acrylic region over it stays readable, while the colour gives the
+        // frost something to blur (the macOS "vibrancy over wallpaper" read). The palette
+        // is a COHESIVE cool dusk — analogous indigo → navy → teal, no clashing warm
+        // (magenta/green) accents — and the glows sit at low opacity so the field reads
+        // calm and even behind reading content rather than as bright competing spotlights.
+        // Override via `children` for a brand wallpaper.
         <>
-          <div className="absolute inset-0 bg-[#15122a]" />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#3a2f86] via-[#241b48] to-[#7a2a5c]" />
-          <div className="absolute -left-32 -top-32 size-[40rem] rounded-full bg-[#7c6bff] opacity-45 blur-3xl" />
-          <div className="absolute -right-24 -top-24 size-[34rem] rounded-full bg-[#2b9dff] opacity-40 blur-3xl" />
-          <div className="absolute bottom-[-12rem] left-1/4 size-[40rem] rounded-full bg-[#ff5c93] opacity-38 blur-3xl" />
-          <div className="absolute -bottom-24 right-1/4 size-[30rem] rounded-full bg-[#34d57e] opacity-33 blur-3xl" />
+          <div className="absolute inset-0 bg-[#0d1120]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#1c2550] via-[#121830] to-[#153042]" />
+          <div className="absolute -left-32 -top-32 size-[42rem] rounded-full bg-[#4f5bd5] opacity-30 blur-3xl" />
+          <div className="absolute -right-28 -top-20 size-[34rem] rounded-full bg-[#2b9dff] opacity-24 blur-3xl" />
+          <div className="absolute bottom-[-14rem] left-1/3 size-[40rem] rounded-full bg-[#1e88a8] opacity-22 blur-3xl" />
         </>
       )}
     </div>
