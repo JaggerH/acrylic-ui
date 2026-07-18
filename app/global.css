@@ -315,6 +315,32 @@
   font-style: var(--shiki-dark-font-style);
 }
 
+/* ===========================================================================
+   Docs-shell heading typography — Apple type discipline ("The Details of UI
+   Typography", WWDC 2020). Fumadocs ships its prose headings with body-loose,
+   un-tracked leading: H1 28px at line-height 1.5, and — inverted — H3 20px at
+   1.6, *looser* than H1. Apple's rule is the opposite: leading tightens as size
+   grows, and large text carries NEGATIVE tracking (letters drift apart as they
+   scale). Retune the headings to that. Body copy, inline code, TOC and sidebar
+   measured fine (body is near-white; inline code's 28px is just the paragraph
+   strut, not bloat) and are deliberately left untouched. Theme-independent —
+   the same type reads in light / dark / acrylic. Selectors are scoped so they
+   never reach the example components' own titles (those render as <div>s). */
+
+/* Page title — direct child of #nd-page, outside .prose. Large-title feel:
+   tight leading + negative tracking, and weight (not just size) tops the ladder. */
+#nd-page > h1 {
+  line-height: 1.15;
+  letter-spacing: -0.021em;
+  font-weight: 700; /* was 600 — build hierarchy from weight + size together */
+}
+
+/* Prose section headings. Leading tightens with size; tracking is negative and
+   eases back toward 0 as the heading shrinks toward body size. */
+.prose h2 { line-height: 1.22; letter-spacing: -0.019em; }
+.prose h3 { line-height: 1.3;  letter-spacing: -0.014em; }
+.prose h4 { line-height: 1.35; letter-spacing: -0.01em; }
+
 /* Nested card surfaces. `acr-frosted` only marks the element's own material.
    A container opts into nested-surface handling explicitly with
    `data-nested-surface`; Card exposes this as the `nestedSurface` prop.
