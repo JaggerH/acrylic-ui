@@ -121,6 +121,12 @@ function SheetContent({
   // Under reduced motion we cross-fade instead of sliding: offset stays 0 and
   // this opacity drives enter/exit (non-vestibular).
   const panelOpacity = useMotionValue(1)
+  // Scrim opacity has its OWN short fade on open/close so it never depends on a
+  // measured panel size (which isn't available on the very first open, before the
+  // asChild ref resolves — that lag made the first-open scrim segmented). During
+  // an active drag we dim it by the slide offset instead (size is reliable then).
+  const overlayBase = useMotionValue(open ? 1 : 0)
+  const draggingRef = React.useRef(false)
   const sizeRef = React.useRef(0)
   const inited = React.useRef(false)
   const panelRef = React.useRef<HTMLDivElement>(null)
@@ -142,6 +148,17 @@ function SheetContent({
     if (el) sizeRef.current = axis === "x" ? el.offsetWidth : el.offsetHeight
   }, [axis])
 
+  // Measure at DOM-attach time via a ref callback (fires during commit, before
+  // layout/effects) so the panel size is known on the FIRST open — effects alone
+  // ran before the asChild/Slot ref resolved, leaving sizeRef 0 the first time.
+  const setPanelNode = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      panelRef.current = node
+      if (node) sizeRef.current = axis === "x" ? node.offsetWidth : node.offsetHeight
+    },
+    [axis]
+  )
+
   const offscreen = React.useCallback(() => {
     const fallback = axis === "x" ? window.innerWidth : window.innerHeight
     return sign * (sizeRef.current || fallback)
@@ -159,16 +176,23 @@ function SheetContent({
     inited.current = true
     measure()
     if (open) {
+      overlayBase.set(0)
       if (reduced) panelOpacity.set(0)
       else offset.set(offscreen())
     }
-  }, [rendered, open, reduced, measure, offscreen, offset, panelOpacity])
+  }, [rendered, open, reduced, measure, offscreen, offset, panelOpacity, overlayBase])
 
   // Programmatic open/close (trigger, ESC, overlay click, Close button).
   // Animates from the live value, so an interrupt (reopen mid-close) is smooth.
   React.useEffect(() => {
     if (!rendered) return
     measure()
+    // Scrim fades on its own short curve (measurement-free), so it comes on
+    // reliably on the FIRST open, in sync with — not lagging — the panel.
+    const scrimControls = animate(overlayBase, open ? 1 : 0, {
+      duration: 0.2,
+      ease: "easeOut",
+    })
     if (reduced) {
       // Cross-fade: opacity only, offset held at 0 (no vestibular slide).
       const controls = animate(panelOpacity, open ? 1 : 0, {
@@ -176,26 +200,36 @@ function SheetContent({
         ease: "linear",
         onComplete: open ? undefined : () => setRendered(false),
       })
-      return () => controls.stop()
+      return () => {
+        controls.stop()
+        scrimControls.stop()
+      }
     }
     if (open) {
       const controls = animate(offset, 0, spring)
-      return () => controls.stop()
+      return () => {
+        controls.stop()
+        scrimControls.stop()
+      }
     }
     const controls = animate(offset, offscreen(), {
       ...spring,
       onComplete: () => setRendered(false),
     })
-    return () => controls.stop()
+    return () => {
+      controls.stop()
+      scrimControls.stop()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, rendered, spring, reduced])
 
-  // Scrim dims with the panel: driven by drag/slide offset normally, by opacity
-  // under reduced motion (offset stays 0 there). Whichever is lower wins.
-  const scrimOpacity = useTransform([offset, panelOpacity], ([o, op]) => {
+  // Scrim: its own fade (overlayBase) for enter/exit; while actively dragging,
+  // dim by the slide offset (sizeRef is reliable once the panel is open).
+  const scrimOpacity = useTransform([offset, overlayBase], ([o, base]) => {
+    if (!draggingRef.current) return base as number
     const size = sizeRef.current || 1
-    const bySlide = Math.max(0, 1 - Math.abs(o as number) / size)
-    return Math.min(bySlide, op as number)
+    const byDrag = Math.max(0, 1 - Math.abs(o as number) / size)
+    return Math.min(base as number, byDrag)
   })
 
   const handleDragEnd = React.useCallback(
@@ -208,22 +242,33 @@ function SheetContent({
         Math.sign(projected) === sign && Math.abs(projected) > Math.abs(size) * 0.4
       if (dismiss) {
         // Hand the release velocity into the close spring, then sync Radix
-        // state once the panel is gone (returns focus to the trigger).
+        // state once the panel is gone (returns focus to the trigger). Keep
+        // draggingRef true so the scrim keeps tracking the panel out.
+        animate(overlayBase, 0, { duration: 0.2, ease: "easeOut" })
         animate(offset, offscreen(), {
           type: "spring",
           bounce: 0.2,
           duration: 0.3,
           velocity: v,
           onComplete: () => {
+            draggingRef.current = false
             setRendered(false)
             setOpen(false)
           },
         })
       } else {
-        animate(offset, 0, { type: "spring", bounce: 0.2, duration: 0.3, velocity: v })
+        animate(offset, 0, {
+          type: "spring",
+          bounce: 0.2,
+          duration: 0.3,
+          velocity: v,
+          onComplete: () => {
+            draggingRef.current = false
+          },
+        })
       }
     },
-    [axis, sign, offset, offscreen, setOpen]
+    [axis, sign, offset, offscreen, overlayBase, setOpen]
   )
 
   if (!rendered) return null
@@ -244,6 +289,9 @@ function SheetContent({
         dragMomentum: false,
         dragElastic: 0.16,
         dragConstraints: sign === 1 ? { left: 0, top: 0 } : { right: 0, bottom: 0 },
+        onDragStart: () => {
+          draggingRef.current = true
+        },
         onDragEnd: handleDragEnd,
       }
 
@@ -263,7 +311,7 @@ function SheetContent({
       </SheetPrimitive.Overlay>
       <SheetPrimitive.Content asChild forceMount {...props}>
         <motion.div
-          ref={panelRef}
+          ref={setPanelNode}
           data-slot="sheet-content"
           style={{
             ...style,
