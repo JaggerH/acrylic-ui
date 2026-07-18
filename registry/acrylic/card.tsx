@@ -28,12 +28,12 @@ const Card = React.forwardRef<
     data-nested-surface={nestedSurface || undefined}
     className={cn(
       "acr-frosted relative rounded-xl bg-[var(--acr-surface)] backdrop-blur-xl",
-      "transition-[transform,background-color] duration-200",
+      "transition-[translate,background-color] [transition-timing-function:var(--acr-spring-default)] [transition-duration:var(--acr-spring-default-duration)]",
       interactive &&
         "hover:-translate-y-px hover:bg-[var(--acr-surface-hover)] " +
         "before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-xl " +
         "before:shadow-[0_12px_28px_rgba(0,0,0,0.28)] before:opacity-0 " +
-        "before:transition-opacity before:duration-200 hover:before:opacity-100",
+        "before:transition-opacity before:[transition-timing-function:var(--acr-spring-default)] before:[transition-duration:var(--acr-spring-default-duration)] hover:before:opacity-100",
       className
     )}
     {...props}
@@ -63,7 +63,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-title"
-      className={cn("self-center text-[15px] font-semibold leading-none tracking-tight", className)}
+      className={cn("self-center text-[15px] font-semibold leading-none [letter-spacing:var(--text-title3-tracking)]", className)}
       {...props}
     />
   )

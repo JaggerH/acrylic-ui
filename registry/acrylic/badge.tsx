@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
 // neutral chip fill, accent hovers map to --acr-hover. All flip light/dark via
 // the theme, so no manual dark: overrides are needed.
 const badgeVariants = cva(
-  "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border border-transparent px-2 py-0.5 text-xs font-medium leading-none whitespace-nowrap transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 [&>svg]:pointer-events-none [&>svg]:size-3",
+  "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border border-transparent px-2 py-0.5 text-xs font-medium leading-none whitespace-nowrap transition-[color,background-color,box-shadow] [transition-timing-function:var(--acr-spring-default)] [transition-duration:var(--acr-spring-default-duration)] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 [&>svg]:pointer-events-none [&>svg]:size-3",
   {
     variants: {
       variant: {
@@ -32,7 +32,7 @@ const badgeVariants = cva(
       // balloon. Use `sm` for compact count/status pills.
       size: {
         default: "",
-        sm: "px-1.5 text-[11px] leading-none",
+        sm: "px-1.5 text-[11px] leading-none [letter-spacing:var(--text-subheadline-tracking)]",
       },
     },
     defaultVariants: {
