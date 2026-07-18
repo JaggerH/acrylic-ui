@@ -18,8 +18,14 @@ import { cn } from "@/lib/utils"
 //     with the glyph scaled to the size. So `<Button icon size="large" variant="ghost">`
 //     is a large round ghost icon button — icon is a SHAPE, orthogonal to size/color.
 // Hover is a brightness/fill shift, not a color swap, so it reads on glass.
+// Motion runs on the acrylic spring substrate: hover/press transitions use the
+// critically-damped --acr-spring-default token (NOT Tailwind's hand-picked 150ms
+// ease), so they inherit the reduced-motion collapse + @supports fallback shipped
+// with the token. Only the properties that actually change are transitioned — never
+// `transition-all`, which would also animate geometry across size/variant swaps.
+// The press yields a physical scale(0.97) (Apple §1 Response), springing back on release.
 const buttonVariants = cva(
-  "inline-flex shrink-0 select-none items-center justify-center whitespace-nowrap font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-40 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "inline-flex shrink-0 select-none items-center justify-center whitespace-nowrap font-medium transition-[background-color,box-shadow,filter,opacity,scale] [transition-timing-function:var(--acr-spring-default)] [transition-duration:var(--acr-spring-default-duration)] active:scale-[0.97] outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-40 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -33,20 +39,25 @@ const buttonVariants = cva(
           "bg-[var(--acr-chip)] text-foreground hover:bg-[var(--acr-chip-hover)]",
         ghost:                                         // Borderless neutral — no fill at rest, foreground label/glyph; hover reveals the neutral chip fill
           "bg-transparent text-foreground hover:bg-[var(--acr-chip)] active:bg-[var(--acr-chip-hover)]",
-        link:                                          // Borderless accent text action — use for link-like primary actions, not toolbar chrome
-          "bg-transparent text-primary hover:underline hover:underline-offset-4 active:opacity-80",
+        link:                                          // Borderless accent text action — use for link-like primary actions, not toolbar chrome. No press-scale: text, not a surface.
+          "bg-transparent text-primary hover:underline hover:underline-offset-4 active:opacity-80 active:scale-100",
       },
       // The five macOS control sizes (heights 16/20/24/28/36 from the kit).
       // gap = the icon↔label spacing: the kit renders icon+label as inline SF text
       // (glyph + a single space), so the gap is ~one SF Pro space (~0.25em ≈ 4px at
       // 13px) — gap-1, NOT the looser 6/8px we had. Padding (px-[7]/[10]/4) is lifted
       // verbatim from the kit's text-layer insets.
+      // Tracking is the type scale's size-specific companion (Apple §15): each px size
+      // pairs with its --text-<size>-tracking so the small 10/11px labels get their
+      // legibility-restoring positive tracking. 13px (body) tracking is 0 — written
+      // explicitly to state intent, not left to the browser default. Leading is omitted
+      // deliberately: these are single-line controls whose height is fixed by h-*.
       size: {
-        mini: "h-4 gap-1 rounded-[4px] px-[7px] text-[10px] [&_svg]:size-3",
-        small: "h-5 gap-1 rounded-[5px] px-[10px] text-[11px] [&_svg]:size-3",
-        medium: "h-6 gap-1 rounded-[6px] px-4 text-[13px] [&_svg]:size-3.5",
-        large: "h-7 gap-1 rounded-[14px] px-4 text-[13px] [&_svg]:size-4",
-        xl: "h-9 gap-1 rounded-[18px] px-4 text-[13px] [&_svg]:size-[18px]",
+        mini: "h-4 gap-1 rounded-[4px] px-[7px] text-[10px] [letter-spacing:var(--text-footnote-tracking)] [&_svg]:size-3",
+        small: "h-5 gap-1 rounded-[5px] px-[10px] text-[11px] [letter-spacing:var(--text-subheadline-tracking)] [&_svg]:size-3",
+        medium: "h-6 gap-1 rounded-[6px] px-4 text-[13px] [letter-spacing:var(--text-body-tracking)] [&_svg]:size-3.5",
+        large: "h-7 gap-1 rounded-[14px] px-4 text-[13px] [letter-spacing:var(--text-body-tracking)] [&_svg]:size-4",
+        xl: "h-9 gap-1 rounded-[18px] px-4 text-[13px] [letter-spacing:var(--text-body-tracking)] [&_svg]:size-[18px]",
       },
       // Icon shape — orthogonal to size/variant; the per-size geometry is set in
       // compoundVariants below (square diameter = the size's height, glyph scaled).
