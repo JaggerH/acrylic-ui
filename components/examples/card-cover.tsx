@@ -22,7 +22,7 @@ import { ExampleBackdrop } from "@/components/example-backdrop"
 export default function CardCover() {
   return (
     <ExampleBackdrop>
-      <Card className="relative mx-auto flex w-full max-w-sm flex-col gap-6 overflow-hidden py-6 pt-0">
+      <Card className="relative mx-auto flex w-full max-w-sm flex-col overflow-hidden pt-0 pb-[18px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://picsum.photos/seed/sunsetset/640/360"
@@ -31,7 +31,9 @@ export default function CardCover() {
         />
         <div className="pointer-events-none absolute inset-x-0 top-0 z-10 aspect-video bg-gradient-to-b from-black/20 to-transparent" />
 
-        <CardHeader>
+        {/* Caption hugs the image (14px), then a calmer gap to the action (18px) —
+            an Apple event-card rhythm, not shadcn's uniform 24px gap-6. */}
+        <CardHeader className="mt-3.5">
           <CardAction>
             <Badge variant="secondary">Live</Badge>
           </CardAction>
@@ -40,7 +42,7 @@ export default function CardCover() {
             Ólafur Arnalds, live from Reykjavík — tonight at 9:00.
           </CardDescription>
         </CardHeader>
-        <CardFooter>
+        <CardFooter className="mt-[18px]">
           <Button className="w-full">Set Reminder</Button>
         </CardFooter>
       </Card>
