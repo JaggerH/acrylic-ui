@@ -40,3 +40,14 @@
 - [x] 6.2 Build/typecheck the project; confirm no errors introduced
 - [x] 6.3 Drive the Sheet in the running app: verify spring enter/exit, interruptible grab-mid-flight, 1:1 drag, velocity-projected dismiss vs spring-back, scrim dimming, and reduced-motion degradation
 - [x] 6.4 Verify tokens hold in light / dark / acrylic themes (no regression to existing surfaces)
+
+
+## Code review outcome (executing-plans review gate)
+
+Reviewer verdict: **With fixes** — no Critical. Important findings fixed:
+- [x] Typography tracking/leading companions added to shipped `registry.json` (the registry ships the `--text-*` sizes, so companions must ship too).
+- [x] Reduced-transparency now drops the Sheet scrim blur — overlay blur moved inline→`backdrop-blur-[20px]` utility so `--tw-backdrop-blur` reset reaches it.
+- [x] `registry.json` reduced-transparency reaches parity with `acrylic.css` — added `--sidebar` re-tint and the frosted-slot blur-drop rule.
+- [x] Reduced-motion cross-fades instead of sliding — opacity animates, offset held at 0 (verified: transform none, opacity 0.24→1.0).
+
+Minor findings accepted (documented, non-blocking): Sheet hardcodes drawer-preset spring numbers (in sync by value); linear() settle-time vs duration negligible; SheetContent Omits Motion-colliding DOM drag handlers; focus-trap releases during the ~300ms exit (inherent to animate-before-unmount, iOS-style).

@@ -118,6 +118,9 @@ function SheetContent({
   // 0 = fully open, sign*size = fully closed/offscreen. Motion `drag` writes
   // this same value, so drag and programmatic animation never fight.
   const offset = useMotionValue(0)
+  // Under reduced motion we cross-fade instead of sliding: offset stays 0 and
+  // this opacity drives enter/exit (non-vestibular).
+  const panelOpacity = useMotionValue(1)
   const sizeRef = React.useRef(0)
   const inited = React.useRef(false)
   const panelRef = React.useRef<HTMLDivElement>(null)
@@ -148,20 +151,33 @@ function SheetContent({
     if (open) setRendered(true)
   }, [open])
 
-  // Before first paint, park a freshly-mounted panel offscreen so the enter
-  // animation slides it in (no flash of the open position).
+  // Before first paint, park a freshly-mounted panel at its hidden start state so
+  // the enter animation plays (no flash of the open position). Reduced motion
+  // starts transparent (fade in); otherwise offscreen (slide in).
   React.useLayoutEffect(() => {
     if (!rendered || inited.current) return
     inited.current = true
     measure()
-    if (open) offset.set(offscreen())
-  }, [rendered, open, measure, offscreen, offset])
+    if (open) {
+      if (reduced) panelOpacity.set(0)
+      else offset.set(offscreen())
+    }
+  }, [rendered, open, reduced, measure, offscreen, offset, panelOpacity])
 
   // Programmatic open/close (trigger, ESC, overlay click, Close button).
   // Animates from the live value, so an interrupt (reopen mid-close) is smooth.
   React.useEffect(() => {
     if (!rendered) return
     measure()
+    if (reduced) {
+      // Cross-fade: opacity only, offset held at 0 (no vestibular slide).
+      const controls = animate(panelOpacity, open ? 1 : 0, {
+        duration: 0.15,
+        ease: "linear",
+        onComplete: open ? undefined : () => setRendered(false),
+      })
+      return () => controls.stop()
+    }
     if (open) {
       const controls = animate(offset, 0, spring)
       return () => controls.stop()
@@ -172,12 +188,14 @@ function SheetContent({
     })
     return () => controls.stop()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, rendered, spring])
+  }, [open, rendered, spring, reduced])
 
-  // Scrim dims in proportion to how far the panel has moved out (dim to focus).
-  const scrimOpacity = useTransform(offset, (o) => {
+  // Scrim dims with the panel: driven by drag/slide offset normally, by opacity
+  // under reduced motion (offset stays 0 there). Whichever is lower wins.
+  const scrimOpacity = useTransform([offset, panelOpacity], ([o, op]) => {
     const size = sizeRef.current || 1
-    return Math.max(0, 1 - Math.abs(o) / size)
+    const bySlide = Math.max(0, 1 - Math.abs(o as number) / size)
+    return Math.min(bySlide, op as number)
   })
 
   const handleDragEnd = React.useCallback(
@@ -237,19 +255,21 @@ function SheetContent({
       <SheetPrimitive.Overlay asChild forceMount>
         <motion.div
           data-slot="sheet-overlay"
-          style={{
-            opacity: scrimOpacity,
-            backdropFilter: "blur(20px) saturate(1.3)",
-            WebkitBackdropFilter: "blur(20px) saturate(1.3)",
-          }}
-          className="fixed inset-0 z-50 bg-[var(--acr-overlay)]"
+          style={{ opacity: scrimOpacity }}
+          // Blur via utilities (sets --tw-backdrop-*), so the reduced-transparency
+          // rule that zeroes --tw-backdrop-blur actually reaches the scrim.
+          className="fixed inset-0 z-50 bg-[var(--acr-overlay)] backdrop-blur-[20px] backdrop-saturate-[1.3]"
         />
       </SheetPrimitive.Overlay>
       <SheetPrimitive.Content asChild forceMount {...props}>
         <motion.div
           ref={panelRef}
           data-slot="sheet-content"
-          style={{ ...style, ...(axis === "x" ? { x: offset } : { y: offset }) }}
+          style={{
+            ...style,
+            opacity: panelOpacity,
+            ...(axis === "x" ? { x: offset } : { y: offset }),
+          }}
           {...dragProps}
           className={cn(
             "fixed z-50 flex flex-col gap-4 bg-[var(--acr-panel)] backdrop-blur-xl shadow-[0_0_0_1px_var(--acr-border-soft),0_16px_48px_rgba(0,0,0,0.35)]",
