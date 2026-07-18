@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { cn } from "@/lib/utils"
 import { Badge } from "@/registry/acrylic/badge"
 import { ButtonGroup, ButtonGroupItem } from "@/registry/acrylic/button-group"
 import { Card, CardDescription, CardTitle } from "@/registry/acrylic/card"
@@ -21,12 +22,12 @@ type Style = "default" | "overlay"
 type Cover = { src: string; title: string; sub: string; badge?: string }
 
 const COVERS: Cover[] = [
-  { src: "https://picsum.photos/seed/vlog/600/600", title: "48h 城市漫游 vlog", sub: "STUDIO K · 12万次观看 · 3天前", badge: "12:06" },
-  { src: "https://picsum.photos/seed/kyoto/600/600", title: "京都·秋日散步", sub: "@aoi · 22 张", badge: "图集" },
-  { src: "https://picsum.photos/seed/tapes/600/600", title: "Midnight Tapes", sub: "Khruangbin · 12 首" },
-  { src: "https://picsum.photos/seed/cinema/600/600", title: "如何拍出电影感的运镜", sub: "映画研究所 · 8.4万次观看", badge: "18:32" },
-  { src: "https://picsum.photos/seed/kamakura/600/600", title: "镰仓海岸线的黄昏", sub: "@aoi · 18 张" },
-  { src: "https://picsum.photos/seed/lofi/600/600", title: "城市轻音乐 Vol.3", sub: "V.A. · 20 首" },
+  { src: "https://picsum.photos/seed/lisboa/600/600", title: "48 Hours in Lisbon", sub: "Studio K · 120K views · 3d ago", badge: "12:06" },
+  { src: "https://picsum.photos/seed/kyoto/600/600", title: "Kyoto in Autumn", sub: "@aoi · 22 photos", badge: "Album" },
+  { src: "https://picsum.photos/seed/tapes/600/600", title: "Midnight Tapes", sub: "Khruangbin · 12 tracks" },
+  { src: "https://picsum.photos/seed/cinema/600/600", title: "Cinematic Camera Moves", sub: "Film Lab · 84K views", badge: "18:32" },
+  { src: "https://picsum.photos/seed/kamakura/600/600", title: "Dusk on the Kamakura Coast", sub: "@aoi · 18 photos" },
+  { src: "https://picsum.photos/seed/lofi/600/600", title: "City Lo-Fi, Vol. 3", sub: "Various Artists · 20 tracks" },
 ]
 
 // Hover feedback WITHOUT the lift: the Card's `interactive` prop bakes in a
@@ -35,7 +36,13 @@ const COVERS: Cover[] = [
 const HOVER_FLOAT =
   "before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-xl " +
   "before:shadow-[0_12px_28px_rgba(0,0,0,0.28)] before:opacity-0 before:transition-opacity " +
-  "before:duration-200 hover:before:opacity-100"
+  "before:[transition-timing-function:var(--acr-spring-default)] before:[transition-duration:var(--acr-spring-default-duration)] hover:before:opacity-100"
+
+// Compact media-caption type — a thumbnail caption, not a full CardHeader. Reuse the
+// Card's CardTitle/CardDescription for family consistency but step the size down
+// (title3 15px → 13px, body 13px → 12px) so it reads as a caption under the media.
+const CAPTION_TITLE = "self-stretch truncate text-[13px] font-semibold leading-snug"
+const CAPTION_SUB = "truncate text-[12px] leading-snug"
 
 function MediaCard({ cover, ratio, style }: { cover: Cover; ratio: string; style: Style }) {
   const overlay = style === "overlay"
@@ -59,17 +66,17 @@ function MediaCard({ cover, ratio, style }: { cover: Cover; ratio: string; style
         ) : null}
 
         {overlay ? (
-          <div className="absolute inset-x-0 bottom-0 flex flex-col gap-1 bg-gradient-to-t from-black/85 to-transparent px-3 pb-2.5 pt-8">
-            <CardTitle className="self-stretch truncate leading-snug text-white">{cover.title}</CardTitle>
-            <CardDescription className="truncate text-white/75">{cover.sub}</CardDescription>
+          <div className="absolute inset-x-0 bottom-0 flex flex-col gap-0.5 bg-gradient-to-t from-black/85 to-transparent px-3 pb-2.5 pt-8">
+            <CardTitle className={cn(CAPTION_TITLE, "text-white")}>{cover.title}</CardTitle>
+            <CardDescription className={cn(CAPTION_SUB, "text-white/70")}>{cover.sub}</CardDescription>
           </div>
         ) : null}
       </div>
 
       {!overlay ? (
-        <div className="flex flex-col gap-1 px-3 pb-3 pt-2.5">
-          <CardTitle className="self-stretch truncate leading-snug">{cover.title}</CardTitle>
-          <CardDescription className="truncate">{cover.sub}</CardDescription>
+        <div className="flex flex-col gap-0.5 px-3 pb-3 pt-2.5">
+          <CardTitle className={CAPTION_TITLE}>{cover.title}</CardTitle>
+          <CardDescription className={CAPTION_SUB}>{cover.sub}</CardDescription>
         </div>
       ) : null}
     </Card>

@@ -14,7 +14,13 @@ import { cn } from "@/lib/utils"
  *  darkening. An outset box-shadow is never painted under its own box, so on ::before
  *  (inset-0, behind the card) the lift stays purely OUTSIDE the card with no internal
  *  smudge. Scoping it to ::before also keeps `--tw-shadow` off the card's children, so
- *  no descendant re-composes the float into an inner "wrap" seam. */
+ *  no descendant re-composes the float into an inner "wrap" seam.
+ *
+ *  `isolate` is load-bearing: without its own stacking context the card's
+ *  `backdrop-blur` samples the `::before` float sitting behind it and pulls that
+ *  shadow INTO the glass as a dark top band on hover. Isolating the card keeps the
+ *  backdrop sampling the page behind the card, not its own ::before, so the float
+ *  reads only as outer elevation. */
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
@@ -27,7 +33,7 @@ const Card = React.forwardRef<
     data-slot="card"
     data-nested-surface={nestedSurface || undefined}
     className={cn(
-      "acr-frosted relative rounded-xl bg-[var(--acr-surface)] backdrop-blur-xl",
+      "acr-frosted relative isolate rounded-xl bg-[var(--acr-surface)] backdrop-blur-xl",
       "transition-[translate,background-color] [transition-timing-function:var(--acr-spring-default)] [transition-duration:var(--acr-spring-default-duration)]",
       interactive &&
         "hover:-translate-y-px hover:bg-[var(--acr-surface-hover)] " +
