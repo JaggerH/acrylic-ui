@@ -28,14 +28,14 @@ function ReminderRow({
   flagged?: boolean
 }) {
   return (
-    <Card className="p-2.5">
+    <Card className="p-2.5 leading-tight">
       <div className="flex items-center gap-2">
         <span className="size-3.5 shrink-0 rounded-full border-[1.5px] border-primary/70" />
         <span className="text-[13px] font-medium">{title}</span>
         {flagged ? <Flag className="size-3 shrink-0 fill-orange-400 text-orange-400" /> : null}
         <span className="ms-auto text-[11px] tabular-nums text-muted-foreground">{time}</span>
       </div>
-      {note ? <p className="mt-0.5 ps-[22px] text-[11px] text-muted-foreground">{note}</p> : null}
+      {note ? <p className="mt-1 ps-[22px] text-[11px] text-muted-foreground">{note}</p> : null}
     </Card>
   )
 }
