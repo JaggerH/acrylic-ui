@@ -20,12 +20,12 @@
 
 ## 4. Sheet pilot refactor
 
-- [ ] 4.1 Add `motion` to `registry.json`'s sheet entry `dependencies` and install it in the workspace
-- [ ] 4.2 Refactor `registry/acrylic/sheet.tsx`: keep Radix Dialog primitives for a11y, `forceMount` content, drive enter/exit with a Motion spring (drawer preset) from the live value inside `AnimatePresence`, path symmetric to the entry edge
-- [ ] 4.3 Add 1:1 axis-locked drag toward the sheet edge with grab-offset respect and rubber-band resistance past the closed bound
-- [ ] 4.4 On release, project the endpoint (Apple decay `current + (v/1000)·d/(1−d)`) and hand off velocity: dismiss if projected past threshold / velocity sign says dismiss, else spring back open
-- [ ] 4.5 Tie scrim opacity to drag progress (dim to focus)
-- [ ] 4.6 Guard the JS motion path on `matchMedia('(prefers-reduced-motion: reduce)')` → direct transition, no velocity animation
+- [x] 4.1 Add `motion` to `registry.json`'s sheet entry `dependencies` and install it in the workspace
+- [x] 4.2 Refactor `registry/acrylic/sheet.tsx`: keep Radix Dialog primitives for a11y, `forceMount` content, drive enter/exit with a Motion spring (drawer preset) from the live value inside `AnimatePresence`, path symmetric to the entry edge
+- [x] 4.3 Add 1:1 axis-locked drag toward the sheet edge with grab-offset respect and rubber-band resistance past the closed bound
+- [x] 4.4 On release, project the endpoint (Apple decay `current + (v/1000)·d/(1−d)`) and hand off velocity: dismiss if projected past threshold / velocity sign says dismiss, else spring back open
+- [x] 4.5 Tie scrim opacity to drag progress (dim to focus)
+- [x] 4.6 Guard the JS motion path on `matchMedia('(prefers-reduced-motion: reduce)')` → direct transition, no velocity animation
 - [ ] 4.7 Confirm focus trap, scroll lock, ESC-to-close, and ARIA semantics survive the refactor
 
 ## 5. Skill documentation
