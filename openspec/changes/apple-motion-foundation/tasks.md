@@ -2,21 +2,21 @@
 
 ## 1. Spring token foundation
 
-- [ ] 1.1 Write `scripts/gen-springs.mjs` that samples the damped-spring ODE for each preset `(damping, response)` and emits a CSS `linear()` string (~24 stops), with a `--supports not(linear())` cubic-bezier fallback value
-- [ ] 1.2 Generate the three presets — `default` (1.0/0.4), `drawer` (0.8/0.3), `bounce` (0.8/0.4) — and insert `--acr-spring-<name>` (linear) + `--acr-spring-<name>-damping` / `--acr-spring-<name>-response` (raw numbers) into `registry/acrylic/acrylic.css`
-- [ ] 1.3 Confirm the tokens are theme-independent (defined once, not per light/dark/acrylic) and documented inline in the CSS
+- [x] 1.1 Write `scripts/gen-springs.mjs` that samples the damped-spring ODE for each preset `(damping, response)` and emits a CSS `linear()` string (~24 stops), with a `--supports not(linear())` cubic-bezier fallback value
+- [x] 1.2 Generate the three presets — `default` (1.0/0.4), `drawer` (0.8/0.3), `bounce` (0.8/0.4) — and insert `--acr-spring-<name>` (linear) + `--acr-spring-<name>-damping` / `--acr-spring-<name>-response` (raw numbers) into `registry/acrylic/acrylic.css`
+- [x] 1.3 Confirm the tokens are theme-independent (defined once, not per light/dark/acrylic) and documented inline in the CSS
 
 ## 2. Typography tracking + leading tokens
 
-- [ ] 2.1 Add `--text-<size>-tracking` and `--text-<size>-leading` companions for every existing `--text-*` size in `acrylic.css` (negative tracking + tight leading for large sizes, near-zero + comfortable for body)
-- [ ] 2.2 Verify each size token now has a matching tracking and leading value and the values differ across sizes
+- [x] 2.1 Add `--text-<size>-tracking` and `--text-<size>-leading` companions for every existing `--text-*` size in `acrylic.css` (negative tracking + tight leading for large sizes, near-zero + comfortable for body)
+- [x] 2.2 Verify each size token now has a matching tracking and leading value and the values differ across sizes
 
 ## 3. Accessibility media blocks
 
-- [ ] 3.1 Add `@media (prefers-reduced-motion: reduce)` block (springs/slides → opacity cross-fade, `transform:none`, overshoot dropped) to `acrylic.css`
-- [ ] 3.2 Add `@media (prefers-reduced-transparency: reduce)` block (raise `--acr-surface`/`--acr-panel` opacity, drop blur) 
-- [ ] 3.3 Add `@media (prefers-contrast: more)` block (near-solid surfaces + defined contrasting border)
-- [ ] 3.4 Mirror the token/media additions into the app global stylesheet if it does not import the registry CSS (confirm which by inspecting the app CSS entry)
+- [x] 3.1 Add `@media (prefers-reduced-motion: reduce)` block (springs/slides → opacity cross-fade, `transform:none`, overshoot dropped) to `acrylic.css`
+- [x] 3.2 Add `@media (prefers-reduced-transparency: reduce)` block (raise `--acr-surface`/`--acr-panel` opacity, drop blur) 
+- [x] 3.3 Add `@media (prefers-contrast: more)` block (near-solid surfaces + defined contrasting border)
+- [x] 3.4 Mirror the token/media additions into the app global stylesheet if it does not import the registry CSS (confirm which by inspecting the app CSS entry)
 
 ## 4. Sheet pilot refactor
 
