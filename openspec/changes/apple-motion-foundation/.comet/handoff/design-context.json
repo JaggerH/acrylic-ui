@@ -1,0 +1,15 @@
+{
+  "change": "apple-motion-foundation",
+  "phase": "design",
+  "mode": "compact",
+  "canonical_spec": "openspec",
+  "generated_by": "comet-handoff.sh",
+  "context_hash": "1700b9717dfa50b407a40d64b319f2e0fed279668a62a4a9bdb527c232eb9ce7",
+  "files": [
+    { "path": "openspec/changes/apple-motion-foundation/proposal.md", "sha256": "56c847ac03796925d8fbcd3865c014690d48689dba906e2b7aa89787c7966113" },
+    { "path": "openspec/changes/apple-motion-foundation/design.md", "sha256": "3cc67a89318a6ba85f7cabe2bc79aa5f04b0a0ce757a59f07efa929eb44434bd" },
+    { "path": "openspec/changes/apple-motion-foundation/tasks.md", "sha256": "94c5d86b32f73cbd07d12a2db7098c44bcadbcbf3d2b464f05be8bae82a1436c" },
+    { "path": "openspec/changes/apple-motion-foundation/specs/acrylic-theme/spec.md", "sha256": "e9fe651477a1446dceb7cced6e3f02490a7bd5b211e60e37f66b1ba83e480be7" },
+    { "path": "openspec/changes/apple-motion-foundation/specs/component-motion/spec.md", "sha256": "98251f110fc25393bc177353d4db1d387b4cb03a2a063367a7c047f2bfff0032" }
+  ]
+}
