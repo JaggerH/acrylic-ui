@@ -1,5 +1,5 @@
 workflow: full
-phase: verify
+phase: archive
 context_compression: off
 build_mode: executing-plans
 build_pause: null
@@ -12,11 +12,11 @@ auto_transition: true
 base_ref: a6c50a57a4cb873bbe7754512a2b27e42cc72153
 design_doc: docs/superpowers/specs/2026-07-18-apple-motion-foundation-design.md
 plan: docs/superpowers/plans/2026-07-18-apple-motion-foundation.md
-verify_result: pending
+verify_result: pass
 verification_report: docs/superpowers/reports/2026-07-18-apple-motion-foundation-verify.md
 branch_status: handled
 created_at: 2026-07-18
-verified_at: null
-archived: false
+verified_at: 2026-07-18
+archived: true
 handoff_context: openspec/changes/apple-motion-foundation/.comet/handoff/design-context.json
 handoff_hash: 1700b9717dfa50b407a40d64b319f2e0fed279668a62a4a9bdb527c232eb9ce7

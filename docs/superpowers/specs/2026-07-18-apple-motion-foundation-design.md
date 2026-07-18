@@ -2,6 +2,8 @@
 comet_change: apple-motion-foundation
 role: technical-design
 canonical_spec: openspec
+archived-with: 2026-07-18-apple-motion-foundation
+status: final
 ---
 
 # Apple Motion Foundation — Technical Design

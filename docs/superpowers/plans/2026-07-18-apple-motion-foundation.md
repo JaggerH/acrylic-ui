@@ -2,6 +2,7 @@
 change: apple-motion-foundation
 design-doc: docs/superpowers/specs/2026-07-18-apple-motion-foundation-design.md
 base-ref: ed569012c5bbc402ae2e81084b2e4ac4ad1f0c2b
+archived-with: 2026-07-18-apple-motion-foundation
 ---
 
 # Implementation Plan — Apple Motion Foundation
