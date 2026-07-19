@@ -49,10 +49,16 @@ export interface SearchbarProps
   extends Omit<React.ComponentProps<"input">, "size">,
     VariantProps<typeof searchbarVariants> {
   onClear?: () => void
+  /** Optional trailing keyboard-shortcut hint (e.g. "⌘K"), rendered as a keycap
+   *  while the field is empty and hidden once the clear button appears. Purely
+   *  visual + pointer-events-none — bind the actual hotkey yourself (or let the
+   *  host bind it, e.g. Fumadocs' global ⌘K), so the Searchbar can double as a
+   *  search-dialog trigger. */
+  shortcut?: React.ReactNode
 }
 
 const Searchbar = React.forwardRef<HTMLInputElement, SearchbarProps>(
-  ({ className, variant, size = "medium", onClear, value, onChange, disabled, ...props }, ref) => {
+  ({ className, variant, size = "medium", onClear, shortcut, value, onChange, disabled, ...props }, ref) => {
     const [localValue, setLocalValue] = React.useState("")
     const isControlled = value !== undefined
     const currentValue = isControlled ? value : localValue
@@ -131,6 +137,21 @@ const Searchbar = React.forwardRef<HTMLInputElement, SearchbarProps>(
             />
           </button>
         )}
+        {!hasContent && shortcut && !disabled ? (
+          <kbd
+            aria-hidden
+            className={cn(
+              "pointer-events-none absolute top-1/2 -translate-y-1/2 inline-flex items-center gap-0.5 rounded border border-[var(--acr-border-soft)] bg-[var(--acr-chip)] font-sans font-medium leading-none text-muted-foreground",
+              {
+                "right-1 px-1 py-0.5 text-[9px]": size === "mini" || size === "small",
+                "right-1.5 px-1 py-0.5 text-[10px]": size === "medium" || size === "large" || !size,
+                "right-2 px-1.5 py-1 text-[11px]": size === "xl",
+              }
+            )}
+          >
+            {shortcut}
+          </kbd>
+        ) : null}
       </div>
     )
   }
