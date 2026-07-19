@@ -36,14 +36,14 @@ export default function TableDemo() {
               <TableCell className="font-medium">{row.plan}</TableCell>
               <TableCell className="text-muted-foreground">{row.detail}</TableCell>
               <TableCell className="text-muted-foreground">{row.period}</TableCell>
-              <TableCell className="text-right tabular-nums">{row.amount}</TableCell>
+              <TableCell className="text-right">{row.amount}</TableCell>
             </TableRow>
           ))}
         </TableBody>
         <TableFooter>
           <TableRow>
             <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className="text-right tabular-nums">$37.96</TableCell>
+            <TableCell className="text-right">$37.96</TableCell>
           </TableRow>
         </TableFooter>
       </Table>

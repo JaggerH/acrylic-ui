@@ -9,10 +9,16 @@ import { cn } from "@/lib/utils"
 // Acrylic delta vs shadcn:
 //  - Flat glass citizen: no own surface. It sits transparently on whatever it is
 //    dropped into and composes inside <Card>; depth comes from the container.
-//  - Hairline row separators on --acr-border-soft (header row on the firmer
-//    --acr-border); hover tint --acr-hover; selected row --acr-chip.
-//  - Row hover is wired onto the spring substrate (color transition only — a row
-//    is not a press target, so NO active:scale).
+//  - Row highlight is the macOS inset-rounded pill (same language as DropdownMenu
+//    / Command / Item), NOT a full-bleed rectangular tint: a ~7px rounded fill
+//    that sits inset from the container edge (put the table in a Card / padded
+//    surface — the padding IS the inset, exactly like a menu item in its panel).
+//    Hover = neutral --acr-hover; selected (data-state="selected") = accent
+//    bg-primary/10. Wired onto the spring substrate (color transition only — a
+//    row is not a press target, so NO active:scale).
+//  - Rounded corners need border-separate, so separators are inset hairlines on
+//    the cells (--acr-border-soft between body rows; the firmer --acr-border
+//    under the header and above the footer).
 //  - Column labels use the small subheadline size + its tracking companion,
 //    muted (text-muted-foreground), Apple label style.
 //  - Horizontal overflow uses the macOS thin overlay scrollbar (scrollbar-mac).
@@ -29,7 +35,7 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
     >
       <table
         data-slot="table"
-        className={cn("w-full caption-bottom border-collapse text-sm", className)}
+        className={cn("w-full caption-bottom border-separate border-spacing-0 text-sm", className)}
         {...props}
       />
     </div>
@@ -40,7 +46,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (
     <thead
       data-slot="table-header"
-      className={cn("[&_tr]:border-b [&_tr]:border-b-[var(--acr-border)]", className)}
+      className={cn("[&_th]:border-b [&_th]:border-b-[var(--acr-border)]", className)}
       {...props}
     />
   )
@@ -50,7 +56,10 @@ function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
   return (
     <tbody
       data-slot="table-body"
-      className={cn("[&_tr:last-child]:border-0", className)}
+      className={cn(
+        "[&_tr:not(:last-child)>td]:border-b [&_tr:not(:last-child)>td]:border-b-[var(--acr-border-soft)] [&_tr:hover>td]:bg-[var(--acr-hover)]",
+        className
+      )}
       {...props}
     />
   )
@@ -61,7 +70,7 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
     <tfoot
       data-slot="table-footer"
       className={cn(
-        "border-t border-t-[var(--acr-border)] bg-[var(--acr-chip)] font-medium [&>tr]:last:border-b-0",
+        "font-medium [&>tr>td]:border-t [&>tr>td]:border-t-[var(--acr-border)] [&>tr>td]:bg-[var(--acr-chip)]",
         className
       )}
       {...props}
@@ -74,7 +83,7 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
     <tr
       data-slot="table-row"
       className={cn(
-        "border-b border-b-[var(--acr-border-soft)] transition-colors [transition-timing-function:var(--acr-spring-default)] [transition-duration:var(--acr-spring-default-duration)] hover:bg-[var(--acr-hover)] data-[state=selected]:bg-[var(--acr-chip)]",
+        "[&>*:first-child]:rounded-l-[7px] [&>*:last-child]:rounded-r-[7px] [&>td]:transition-colors [&>td]:[transition-timing-function:var(--acr-spring-default)] [&>td]:[transition-duration:var(--acr-spring-default-duration)] data-[state=selected]:[&>td]:bg-primary/10",
         className
       )}
       {...props}

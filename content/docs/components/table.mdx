@@ -5,10 +5,13 @@ description: "A data table — shadcn's Table restyled to the Acrylic material: 
 
 The shadcn Table, recolored to the Acrylic palette. The anatomy and API are
 copied 1:1 from shadcn; only the material changes — the table is flat and
-transparent (no surface of its own), rows are divided by hairlines on the
-Acrylic border token, column labels take the small muted subheadline style, and
-the hover tint rides the same spring substrate as the rest of the kit. Drop it
-inside a `Card` when you want a surface behind it.
+transparent (no surface of its own), rows are divided by inset hairlines, column
+labels take the small muted subheadline style, and — like the rest of the kit's
+rows (menus, command, items) — the row highlight is the macOS inset-rounded pill
+rather than a full-bleed tint: a rounded fill that hovers neutral and tints to
+the accent when selected, riding the same spring substrate. Drop it inside a
+`Card` when you want a surface behind it (the surface's padding is what insets
+the highlight).
 
 ## Installation
 
@@ -54,8 +57,10 @@ import {
   the macOS overlay scrollbar (`scrollbar-mac`).
 - **`TableHeader` / `TableBody` / `TableFooter`** — `<thead>` / `<tbody>` /
   `<tfoot>`. The footer carries a faint chip fill and medium weight for totals.
-- **`TableRow`** — a row with a hairline bottom border and a spring-wired hover
-  tint; the last body row drops its border.
+- **`TableRow`** — a row separated by an inset hairline. On hover it shows the
+  macOS inset-rounded highlight (neutral `--acr-hover`); set
+  `data-state="selected"` for the accent-tinted (`bg-primary/10`) selection. The
+  last body row drops its separator.
 - **`TableHead`** — a column-label cell: muted, small subheadline size.
 - **`TableCell`** — a body cell.
 - **`TableCaption`** — a muted caption below the table.
@@ -65,8 +70,14 @@ import {
 - **It has no surface of its own.** For a framed look, put it inside a `Card`
   (see the preview). On a bare page it renders flat.
 - **Right-align numeric columns** with `className="text-right"` on both the
-  `TableHead` and the `TableCell`; add `tabular-nums` so figures line up.
+  `TableHead` and the `TableCell`. SF's proportional figures are the Apple
+  default; reach for `tabular-nums` only in dense numeric grids where strict
+  digit alignment actually matters.
 - **Colours are tokens** — pass `className` for layout only, never to override
   the material. Light / dark / acrylic themes flip automatically.
-- **Selected rows**: set `data-state="selected"` on a `TableRow` for the chip
-  fill.
+- **Selected rows**: set `data-state="selected"` on a `TableRow` for the
+  accent-tinted highlight.
+- **The highlight is inset by the container** — because the rounded pill spans
+  the table width, it reads as "inset" only when the table has a padded surface
+  around it (a `Card`, or a wrapper with a little horizontal padding), the same
+  way a menu item is inset by its panel's padding.
