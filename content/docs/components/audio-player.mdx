@@ -72,6 +72,72 @@ For a persistent mini player, keep one global player (a single `<audio>` element
 its state **above your whole layout** — sidebar and content both — so the chip can read it from
 any page.
 
+## Full-screen stage
+
+`AudioPlayerStage` is the immersive, full-screen face of the same player — an Apple-Music
+"now playing" view on a flowing **Silk** shader background. It shares AudioPlayer's controlled
+API (its `track` **extends** `AudioPlayerTrack`) and adds time-synced **karaoke lyrics**, a
+cover-derived background color that crossfades between tracks, and a real Fullscreen toggle. It
+installs separately, so the lightweight bar/mini transport never has to pull in the WebGL shader.
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/audio-player-stage.json
+```
+
+The preview renders two triggers — **Now Playing** opens the stage windowed, **Full screen**
+opens it straight into the Fullscreen API (via `autoFullscreen`). Inside: ▾ or Escape to close,
+⤢ to toggle fullscreen, prev/next to switch tracks and watch the background recolor.
+
+<ComponentPreview name="audio-player-stage-demo" />
+
+```tsx
+import { AudioPlayerStage } from "@/components/acrylic/audio-player-stage"
+
+<AudioPlayerStage
+  track={{
+    title,
+    artist,
+    cover,
+    lyrics: [ { time: 0, text: "…" }, { time: 12, text: "…" } ], // omit → no-lyrics layout
+  }}
+  playing={playing}
+  currentTime={time}       // seconds; the stage runs its own smooth clock for karaoke
+  duration={duration}
+  volume={volume}
+  extractFromCover         // pull the background color from the cover art…
+  // accentColor="#5E3AA8" // …or set it explicitly (skips extraction)
+  colorTransitionMs={400}
+  onToggle={toggle}
+  onPrev={prev}
+  onNext={next}
+  onSeek={seek}
+  onVolumeChange={setVolume}
+  onClose={close}
+/>
+```
+
+- **Lyrics** are LRC-style `{ time, text }` lines; the active line fills bright, karaoke-style,
+  as playback crosses it. Omit `lyrics` (or pass `[]`) and the lyrics pane disappears — the
+  player centers instead.
+- **Background color** comes from the cover when `extractFromCover` is set (needs a same-origin
+  or CORS-enabled cover; otherwise it falls back to `accentColor`, then a default) and
+  crossfades over `colorTransitionMs`.
+- **Fullscreen**: the ⤢ button calls the Fullscreen API on the stage (browsers require a real
+  user click).
+
+### Stage-only props
+
+| prop | type | default | description |
+| --- | --- | --- | --- |
+| `track` | `AudioPlayerStageTrack` | — | `AudioPlayerTrack` + optional `lyrics: { time, text }[]` |
+| `accentColor` | `string` | — | force the background color (skips cover extraction) |
+| `extractFromCover` | `boolean` | `true` | pull the background color from the cover art |
+| `colorTransitionMs` | `number` | `400` | crossfade duration between track colors (`0` = snap) |
+| `onClose` | `() => void` | — | the collapse (▾) button / Escape |
+
+The playback props (`playing`, `currentTime`, `duration`, `volume`, `hasPrev`/`hasNext`,
+`onToggle`/`onPrev`/`onNext`/`onSeek`/`onVolumeChange`) match AudioPlayer above.
+
 ## Props
 
 | prop | type | default | description |

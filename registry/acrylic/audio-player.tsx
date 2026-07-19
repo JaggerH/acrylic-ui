@@ -39,6 +39,77 @@ function fmtClock(s: number): string {
   return `${m}:${r.toString().padStart(2, "0")}`
 }
 
+/**
+ * ScrollingText — a single line that marquee-scrolls ONLY when its content
+ * overflows the available width (song title / artist that runs long). When the
+ * text fits, it renders as a normal (truncating) line — no motion. Honors
+ * `prefers-reduced-motion` (falls back to truncate) and re-measures on resize.
+ *
+ * Self-contained: uses the Web Animations API so it needs no global keyframes,
+ * which keeps the component portable when copied out of the registry.
+ */
+const MARQUEE_GAP = 32 // px between the two copies (also the second copy's left pad)
+const MARQUEE_SPEED = 40 // px / second
+
+function ScrollingText({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  const viewportRef = React.useRef<HTMLDivElement>(null)
+  const trackRef = React.useRef<HTMLDivElement>(null)
+  const [scroll, setScroll] = React.useState(false)
+
+  React.useLayoutEffect(() => {
+    const viewport = viewportRef.current
+    const track = trackRef.current
+    if (!viewport || !track) return
+
+    let anim: Animation | undefined
+    const measure = () => {
+      anim?.cancel()
+      anim = undefined
+      const copy = track.firstElementChild as HTMLElement | null
+      const textWidth = copy?.scrollWidth ?? 0
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      const overflowing = !reduce && textWidth > viewport.clientWidth + 1
+      setScroll(overflowing)
+      if (!overflowing) return
+      const shift = textWidth + MARQUEE_GAP
+      anim = track.animate(
+        [{ transform: "translateX(0)" }, { transform: `translateX(-${shift}px)` }],
+        { duration: (shift / MARQUEE_SPEED) * 1000, iterations: Infinity, easing: "linear" }
+      )
+    }
+
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(viewport)
+    return () => {
+      ro.disconnect()
+      anim?.cancel()
+    }
+  }, [children])
+
+  return (
+    <div ref={viewportRef} className={cn("overflow-hidden", className)}>
+      <div
+        ref={trackRef}
+        className={cn("flex whitespace-nowrap", scroll && "w-max will-change-transform")}
+      >
+        <span className={cn("min-w-0", !scroll && "truncate")}>{children}</span>
+        {scroll && (
+          <span aria-hidden className="shrink-0" style={{ paddingLeft: MARQUEE_GAP }}>
+            {children}
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export interface AudioPlayerTrack {
   title: string
   artist?: string
@@ -123,8 +194,8 @@ function AudioPlayer({
         <button onClick={onOpen} aria-label={`Open now playing: ${track.title || "Now playing"}`} className="flex min-w-0 flex-1 items-center gap-2 text-left">
           {cover}
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-[12px] font-semibold leading-tight">{track.title || "Now playing"}</span>
-            {track.artist && <span className="block truncate text-[10px] leading-tight text-muted-foreground">{track.artist}</span>}
+            <ScrollingText className="text-[12px] font-semibold leading-tight">{track.title || "Now playing"}</ScrollingText>
+            {track.artist && <ScrollingText className="text-[10px] leading-tight text-muted-foreground">{track.artist}</ScrollingText>}
           </span>
         </button>
         <button
@@ -194,13 +265,13 @@ function AudioPlayer({
             </span>
           )}
           <div className="min-w-0 flex-1">
-            <div className="truncate text-[13px] font-semibold leading-tight">
+            <ScrollingText className="text-[13px] font-semibold leading-tight">
               {track.title || "播放中"}
-            </div>
+            </ScrollingText>
             {track.artist && (
-              <div className="truncate text-[11px] leading-tight text-muted-foreground">
+              <ScrollingText className="text-[11px] leading-tight text-muted-foreground">
                 {track.artist}
-              </div>
+              </ScrollingText>
             )}
           </div>
           <span className="shrink-0 font-mono text-[10px] tabular-nums text-muted-foreground">
@@ -260,4 +331,4 @@ function AudioPlayer({
   )
 }
 
-export { AudioPlayer, fmtClock }
+export { AudioPlayer, ScrollingText, fmtClock }

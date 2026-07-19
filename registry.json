@@ -256,7 +256,7 @@
       "name": "card",
       "type": "registry:component",
       "title": "Card",
-      "description": "Dark frosted-glass (acrylic) surface card \u2014 a charcoal translucent pane over a blurred backdrop. Flat at rest, soft float shadow + lift on hover (interactive). Composes into list rows, tiles, and panels.",
+      "description": "Dark frosted-glass (acrylic) surface card — a charcoal translucent pane over a blurred backdrop. Flat at rest, soft float shadow + lift on hover (interactive). Composes into list rows, tiles, and panels.",
       "files": [
         {
           "path": "registry/acrylic/card.tsx",
@@ -291,7 +291,7 @@
       "name": "badge",
       "type": "registry:ui",
       "title": "Acrylic Badge",
-      "description": "A small pill label \u2014 shadcn's Badge with its base styling copied verbatim (shape, sizing, focus ring, the six variants), recolored to the Acrylic theme tokens: accent default, neutral-chip secondary, system-red destructive, hairline outline. Flips light/dark via the theme.",
+      "description": "A small pill label — shadcn's Badge with its base styling copied verbatim (shape, sizing, focus ring, the six variants), recolored to the Acrylic theme tokens: accent default, neutral-chip secondary, system-red destructive, hairline outline. Flips light/dark via the theme.",
       "dependencies": [
         "@radix-ui/react-slot",
         "class-variance-authority"
@@ -357,7 +357,7 @@
       "name": "alert-dialog",
       "type": "registry:ui",
       "title": "Acrylic Alert Dialog",
-      "description": "Frosted confirm dialog \u2014 the AlertDialog counterpart of the acrylic Dialog (72px blur overlay + translucent panel). Modeled on the macOS 26 Alerts page: 26px panel radius and action/cancel buttons that reuse the acrylic Button (buttonVariants) at the kit's large size. Shares the Dialog's ref-counted body-paint so it can stack on a Dialog without either losing its frost.",
+      "description": "Frosted confirm dialog — the AlertDialog counterpart of the acrylic Dialog (72px blur overlay + translucent panel). Modeled on the macOS 26 Alerts page: 26px panel radius and action/cancel buttons that reuse the acrylic Button (buttonVariants) at the kit's large size. Shares the Dialog's ref-counted body-paint so it can stack on a Dialog without either losing its frost.",
       "dependencies": [
         "@radix-ui/react-alert-dialog",
         "class-variance-authority"
@@ -435,7 +435,7 @@
       "name": "sonner",
       "type": "registry:ui",
       "title": "Acrylic Sonner",
-      "description": "Sonner toasts restyled as the macOS 26 notification banner: a 344px frosted-acrylic card (--acr-toast + backdrop-blur), 16px radius, SFPro-Bold/13 title, top-center. Theme-provider-agnostic \u2014 reads the active theme from the `.dark` class on <html> (works with next-themes, shadcn's Vite ThemeProvider, or a single-theme app) so there's no next-themes dependency or import swap. Inherits the host font. Mount the <Toaster /> once near the app root, then call toast() from sonner.",
+      "description": "Sonner toasts restyled as the macOS 26 notification banner: a 344px frosted-acrylic card (--acr-toast + backdrop-blur), 16px radius, SFPro-Bold/13 title, top-center. Theme-provider-agnostic — reads the active theme from the `.dark` class on <html> (works with next-themes, shadcn's Vite ThemeProvider, or a single-theme app) so there's no next-themes dependency or import swap. Inherits the host font. Mount the <Toaster /> once near the app root, then call toast() from sonner.",
       "dependencies": [
         "sonner"
       ],
@@ -454,7 +454,7 @@
       "name": "popover",
       "type": "registry:ui",
       "title": "Acrylic Popover",
-      "description": "Frosted floating panel (translucent material + backdrop-blur) \u2014 the dropdown surface for Combobox and other overlays. Radix Popover under the hood.",
+      "description": "Frosted floating panel (translucent material + backdrop-blur) — the dropdown surface for Combobox and other overlays. Radix Popover under the hood.",
       "dependencies": [
         "@radix-ui/react-popover"
       ],
@@ -473,7 +473,7 @@
       "name": "hover-card",
       "type": "registry:ui",
       "title": "Acrylic Hover Card",
-      "description": "Frosted floating card revealed on hover (translucent material + backdrop-blur) \u2014 a peek panel for previews and rich link cards. Radix HoverCard under the hood.",
+      "description": "Frosted floating card revealed on hover (translucent material + backdrop-blur) — a peek panel for previews and rich link cards. Radix HoverCard under the hood.",
       "dependencies": [
         "@radix-ui/react-hover-card"
       ],
@@ -492,7 +492,7 @@
       "name": "command",
       "type": "registry:ui",
       "title": "Acrylic Command",
-      "description": "cmdk command list styled for the frosted popover surface \u2014 accessible keyboard nav + filtering for Combobox and command palettes.",
+      "description": "cmdk command list styled for the frosted popover surface — accessible keyboard nav + filtering for Combobox and command palettes.",
       "dependencies": [
         "cmdk",
         "lucide-react"
@@ -593,7 +593,7 @@
       "name": "slider",
       "type": "registry:ui",
       "title": "Acrylic Slider",
-      "description": "Radix Slider aligned to the macOS 26 Sliders page: a capsule translucent rail, an accent-blue filled range, and a frosted-white pill knob with a hairline border + soft shadow, in five control sizes. Two kit variants \u2014 standard and center-biased fill \u2014 plus the Ticked add-on (marks), range (two-thumb), stepping, vertical orientation, and disabled. Colors flip light/dark via the Acrylic theme tokens.",
+      "description": "Radix Slider aligned to the macOS 26 Sliders page: a capsule translucent rail, an accent-blue filled range, and a frosted-white pill knob with a hairline border + soft shadow, in five control sizes. Two kit variants — standard and center-biased fill — plus the Ticked add-on (marks), range (two-thumb), stepping, vertical orientation, and disabled. Colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": [
         "@radix-ui/react-slider"
       ],
@@ -712,7 +712,7 @@
       "name": "button-group",
       "type": "registry:ui",
       "title": "Acrylic Button Group",
-      "description": "Button Group aligned to the macOS 26 Segmented Controls \u2014 group buttons into a rounded gray well. Variants: attached (flush + hairline dividers), ghost (flush + hairline dividers with no well background), segmented (active item as a raised white pill), split (gapped); horizontal/vertical. Five kit sizes (mini/small/medium/large/xl \u2014 height 16/20/24/28/36, radius 4/5/6/14/18) set once via the size prop, scaling the well, segments, sliding pill and dividers. Exports ButtonGroup/ButtonGroupItem/ButtonGroupToggle/ButtonGroupSeparator/ButtonGroupText. Colors flip light/dark via the Acrylic theme tokens.",
+      "description": "Button Group aligned to the macOS 26 Segmented Controls — group buttons into a rounded gray well. Variants: attached (flush + hairline dividers), ghost (flush + hairline dividers with no well background), segmented (active item as a raised white pill), split (gapped); horizontal/vertical. Five kit sizes (mini/small/medium/large/xl — height 16/20/24/28/36, radius 4/5/6/14/18) set once via the size prop, scaling the well, segments, sliding pill and dividers. Exports ButtonGroup/ButtonGroupItem/ButtonGroupToggle/ButtonGroupSeparator/ButtonGroupText. Colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": [
         "class-variance-authority"
       ],
@@ -732,7 +732,7 @@
       "name": "context-menu",
       "type": "registry:ui",
       "title": "Acrylic Context Menu",
-      "description": "The macOS 26 Menu (right-click / control-click) on the frosted Popover material \u2014 the same glass as Combobox/Select. 13px SF-Medium rows lifted from the kit's 13pt Menu: a 6px-radius highlight bar, a section header, checkbox + radio items, submenus with a trailing chevron, a hairline separator, a muted keyboard-shortcut column, and a destructive row. Radix Context Menu; colors flip light/dark via the Acrylic theme tokens.",
+      "description": "The macOS 26 Menu (right-click / control-click) on the frosted Popover material — the same glass as Combobox/Select. 13px SF-Medium rows lifted from the kit's 13pt Menu: a 6px-radius highlight bar, a section header, checkbox + radio items, submenus with a trailing chevron, a hairline separator, a muted keyboard-shortcut column, and a destructive row. Radix Context Menu; colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": [
         "@radix-ui/react-context-menu",
         "lucide-react"
@@ -752,7 +752,7 @@
       "name": "avatar",
       "type": "registry:ui",
       "title": "Acrylic Avatar",
-      "description": "shadcn's Avatar copied verbatim (Radix, with its built-in image-load / initials-fallback handling), recolored to the Acrylic tokens \u2014 the fallback sits on the neutral chip. Default circular (macOS user pictures); pass rounded-lg for the squircle. Powers the Sidebar footer user item.",
+      "description": "shadcn's Avatar copied verbatim (Radix, with its built-in image-load / initials-fallback handling), recolored to the Acrylic tokens — the fallback sits on the neutral chip. Default circular (macOS user pictures); pass rounded-lg for the squircle. Powers the Sidebar footer user item.",
       "dependencies": [
         "@radix-ui/react-avatar"
       ],
@@ -900,7 +900,7 @@
       "name": "sidebar",
       "type": "registry:ui",
       "title": "Acrylic Sidebar",
-      "description": "The macOS 26 sidebar \u2014 shadcn's Sidebar composition (Provider with cookie state + \u2318B toggle, off-canvas/icon/none collapse, mobile Sheet, groups, menu/sub-menu, rail, inset) restyled to the kit: a 240px frosted-vibrancy panel (--acr-surface + backdrop-blur), three densities (Small 24/11, Medium 32/13, Large 40/15) on the menu-button sm/default/lg sizes, and an accent-pill selected row. Colors flip light/dark via the Acrylic theme tokens.",
+      "description": "The macOS 26 sidebar — shadcn's Sidebar composition (Provider with cookie state + ⌘B toggle, off-canvas/icon/none collapse, mobile Sheet, groups, menu/sub-menu, rail, inset) restyled to the kit: a 240px frosted-vibrancy panel (--acr-surface + backdrop-blur), three densities (Small 24/11, Medium 32/13, Large 40/15) on the menu-button sm/default/lg sizes, and an accent-pill selected row. Colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": [
         "@radix-ui/react-slot",
         "class-variance-authority",
@@ -943,6 +943,44 @@
           "type": "registry:ui",
           "target": "components/acrylic/backdrop.tsx"
         }
+      ]
+    },
+    {
+      "name": "silk",
+      "type": "registry:component",
+      "title": "Silk Background",
+      "description": "A flowing shader background (ported from React Bits) rendered on a raw <canvas> WebGL context — no three.js, no dependencies, no global JSX augmentation. One fullscreen fragment shader plus one rAF loop; freezes on prefers-reduced-motion, pauses on a hidden tab, and tears down on unmount. The color prop eases over colorTransitionMs.",
+      "files": [
+        {
+          "path": "registry/acrylic/silk.tsx",
+          "type": "registry:component",
+          "target": "components/acrylic/silk.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ]
+    },
+    {
+      "name": "audio-player-stage",
+      "type": "registry:component",
+      "title": "Audio Player Stage",
+      "description": "The full-screen 'now playing' face of the Audio Player family: an immersive Apple-Music-style stage over the flowing Silk background. Big cover, marquee title/artist, seek + transport + volume, and time-synced karaoke lyrics that wipe bright across the active line via an internal smooth clock. The background color is pulled from the cover art and crossfades between tracks. Tracks with no lyrics collapse to a centered player. Real Fullscreen API toggle. Shares AudioPlayer's controlled callback API (extends AudioPlayerTrack).",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/audio-player-stage.tsx",
+          "type": "registry:component",
+          "target": "components/acrylic/audio-player-stage.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json",
+        "https://acrylic-ui.vercel.app/r/slider.json",
+        "https://acrylic-ui.vercel.app/r/audio-player.json",
+        "https://acrylic-ui.vercel.app/r/silk.json"
       ]
     }
   ]
