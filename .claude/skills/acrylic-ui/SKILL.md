@@ -168,6 +168,7 @@ Same name = same API surface, acrylic restyling only. File = `registry/acrylic/<
 | slider | `slider.tsx` | 1:1 |
 | sonner | `sonner.tsx` | toast = Card surface material (`--acr-toast`) |
 | switch | `switch.tsx` | 1:1 |
+| table | `table.tsx` | 1:1 anatomy; flat/transparent, hairline rows, muted subheadline labels, spring hover |
 | tooltip | `tooltip.tsx` | frosted `--acr-panel` |
 | — | `backdrop.tsx` | **acrylic-only**: the app-root wallpaper the glass frosts |
 | — | `shell.tsx` | **acrylic-only**: app window scaffolding (Shell/Inset/Panel/Navbar/Content) |
@@ -179,7 +180,7 @@ Same name = same API surface, acrylic restyling only. File = `registry/acrylic/<
 **Not shipped by acrylic** (use the host app's own or ask before adding): accordion,
 alert, calendar, carousel, chart, checkbox, collapsible, drawer, empty,
 input-otp, menubar, navigation-menu, pagination, progress, resizable, scroll-area
-(use `scrollbar-mac` utility class), spinner, table, tabs, textarea (exists inside
+(use `scrollbar-mac` utility class), spinner, tabs, textarea (exists inside
 input-group), toggle, toggle-group.
 
 ## Key Patterns
