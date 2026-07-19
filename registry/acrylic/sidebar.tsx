@@ -234,7 +234,7 @@ function Sidebar({
       <div
         data-slot="sidebar-gap"
         className={cn(
-          "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
+          "relative w-(--sidebar-width) bg-transparent transition-[width] [transition-timing-function:var(--acr-spring-default)] [transition-duration:var(--acr-spring-default-duration)]",
           "group-data-[collapsible=offcanvas]:w-0",
           "group-data-[side=right]:rotate-180",
           variant === "floating" || variant === "inset"
@@ -249,7 +249,7 @@ function Sidebar({
           // the SidebarProvider wrapper and its height follows the wrapper, so it
           // works inside a contained box without any consumer CSS — no transform
           // containing-block trick, no height override.
-          "absolute inset-y-0 z-10 hidden w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
+          "absolute inset-y-0 z-10 hidden w-(--sidebar-width) transition-[left,right,width] [transition-timing-function:var(--acr-spring-default)] [transition-duration:var(--acr-spring-default-duration)] md:flex",
           side === "left"
             ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
             : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
@@ -434,7 +434,7 @@ function SidebarGroupLabel({
       data-slot="sidebar-group-label"
       data-sidebar="group-label"
       className={cn(
-        "flex h-8 shrink-0 items-center rounded-md px-2 text-[11px] font-medium text-[var(--muted-foreground)] ring-[var(--ring)] outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
+        "flex h-8 shrink-0 items-center rounded-md px-2 text-[11px] [letter-spacing:var(--text-subheadline-tracking)] font-medium text-[var(--muted-foreground)] ring-[var(--ring)] outline-hidden transition-[margin,opacity] [transition-timing-function:var(--acr-spring-default)] [transition-duration:var(--acr-spring-default-duration)] focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
         "group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0",
         className
       )}
@@ -556,7 +556,7 @@ const sidebarMenuButtonVariants = cva(
   // SELECTED row is highlighted (data-[active]); hovering an item shows nothing, so
   // a selected row and a hovered neighbour never grow touching highlight pills.
   // `active:` (mouse-down press feedback) is kept.
-  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-lg px-2 text-left text-[13px] whitespace-nowrap ring-[var(--ring)] outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! focus-visible:ring-2 active:bg-[var(--acr-chip)] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-[var(--acr-chip)] data-[active=true]:font-medium [&>*]:min-w-0 [&>span:not([data-slot=avatar])]:flex-1 [&>span:not([data-slot=avatar])]:overflow-hidden [&>span:not([data-slot=avatar])]:[mask-image:linear-gradient(to_right,#000_calc(100%-1.5rem),transparent)] [&>span:not([data-slot=avatar])]:[mask-repeat:no-repeat] [&>span:not([data-slot=avatar])]:[mask-size:100%_100%] [&>div:not(.aspect-square):not([data-slot=avatar])]:overflow-hidden [&>div:not(.aspect-square):not([data-slot=avatar])]:[mask-image:linear-gradient(to_right,#000_calc(100%-1.5rem),transparent)] [&>div:not(.aspect-square):not([data-slot=avatar])]:[mask-repeat:no-repeat] [&>div:not(.aspect-square):not([data-slot=avatar])]:[mask-size:100%_100%] [&>svg]:size-4 [&>svg]:shrink-0",
+  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-lg px-2 text-left text-[13px] whitespace-nowrap ring-[var(--ring)] outline-hidden transition-[width,height,padding] [transition-timing-function:var(--acr-spring-default)] [transition-duration:var(--acr-spring-default-duration)] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! focus-visible:ring-2 active:bg-[var(--acr-chip)] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-[var(--acr-chip)] data-[active=true]:font-medium [&>*]:min-w-0 [&>span:not([data-slot=avatar])]:flex-1 [&>span:not([data-slot=avatar])]:overflow-hidden [&>span:not([data-slot=avatar])]:[mask-image:linear-gradient(to_right,#000_calc(100%-1.5rem),transparent)] [&>span:not([data-slot=avatar])]:[mask-repeat:no-repeat] [&>span:not([data-slot=avatar])]:[mask-size:100%_100%] [&>div:not(.aspect-square):not([data-slot=avatar])]:overflow-hidden [&>div:not(.aspect-square):not([data-slot=avatar])]:[mask-image:linear-gradient(to_right,#000_calc(100%-1.5rem),transparent)] [&>div:not(.aspect-square):not([data-slot=avatar])]:[mask-repeat:no-repeat] [&>div:not(.aspect-square):not([data-slot=avatar])]:[mask-size:100%_100%] [&>svg]:size-4 [&>svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -566,7 +566,7 @@ const sidebarMenuButtonVariants = cva(
       },
       size: {
         default: "h-8 text-[13px]",
-        sm: "h-6 text-[11px]",
+        sm: "h-6 text-[11px] [letter-spacing:var(--text-subheadline-tracking)]",
         lg: "h-10 text-[15px] group-data-[collapsible=icon]:p-0!",
       },
     },
@@ -662,7 +662,7 @@ function SidebarMenuBadge({ className, ...props }: React.ComponentProps<"div">) 
       data-slot="sidebar-menu-badge"
       data-sidebar="menu-badge"
       className={cn(
-        "pointer-events-none absolute top-1/2 right-1 flex h-5 min-w-5 -translate-y-1/2 items-center justify-center rounded-md px-1 text-[11px] font-medium text-[var(--muted-foreground)] tabular-nums select-none",
+        "pointer-events-none absolute top-1/2 right-1 flex h-5 min-w-5 -translate-y-1/2 items-center justify-center rounded-md px-1 text-[11px] [letter-spacing:var(--text-subheadline-tracking)] font-medium text-[var(--muted-foreground)] tabular-nums select-none",
         "peer-data-[active=true]/menu-button:text-foreground",
         "group-data-[collapsible=icon]:hidden",
         className
@@ -765,7 +765,7 @@ function SidebarMenuSubButton({
         // pl so the highlight stays edge-to-edge (matches the kit's nested rows).
         "flex h-8 w-full min-w-0 items-center gap-2 overflow-hidden rounded-lg pr-2 pl-8 text-foreground whitespace-nowrap ring-[var(--ring)] outline-hidden focus-visible:ring-2 active:bg-[var(--acr-chip)] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>*]:min-w-0 [&>span:not([data-slot=avatar])]:flex-1 [&>span:not([data-slot=avatar])]:overflow-hidden [&>span:not([data-slot=avatar])]:[mask-image:linear-gradient(to_right,#000_calc(100%-1.5rem),transparent)] [&>span:not([data-slot=avatar])]:[mask-repeat:no-repeat] [&>span:not([data-slot=avatar])]:[mask-size:100%_100%] [&>div:not(.aspect-square):not([data-slot=avatar])]:overflow-hidden [&>div:not(.aspect-square):not([data-slot=avatar])]:[mask-image:linear-gradient(to_right,#000_calc(100%-1.5rem),transparent)] [&>div:not(.aspect-square):not([data-slot=avatar])]:[mask-repeat:no-repeat] [&>div:not(.aspect-square):not([data-slot=avatar])]:[mask-size:100%_100%] [&>svg]:size-4 [&>svg]:shrink-0",
         "data-[active=true]:bg-[var(--acr-chip)] data-[active=true]:font-medium",
-        size === "sm" && "text-[11px]",
+        size === "sm" && "text-[11px] [letter-spacing:var(--text-subheadline-tracking)]",
         size === "md" && "text-[13px]",
         "group-data-[collapsible=icon]:hidden",
         className

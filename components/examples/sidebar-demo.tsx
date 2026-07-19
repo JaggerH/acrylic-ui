@@ -6,7 +6,6 @@ import {
   ChevronsUpDown,
   Folder,
   Inbox,
-  Search,
   Send,
   Settings,
   Star,
@@ -16,7 +15,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/registry/acrylic/avatar"
 
 import { ExampleBackdrop } from "@/components/example-backdrop"
-import { Input } from "@/registry/acrylic/input"
+import { Searchbar } from "@/registry/acrylic/searchbar"
 import {
   Sidebar,
   SidebarContent,
@@ -53,9 +52,8 @@ export default function SidebarDemo() {
                   Acrylic Mail
                 </span>
               </div>
-              <div className="relative px-1">
-                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <Input placeholder="Search" className="h-8 pl-8" />
+              <div className="px-1">
+                <Searchbar size="large" placeholder="Search" />
               </div>
             </SidebarHeader>
 
