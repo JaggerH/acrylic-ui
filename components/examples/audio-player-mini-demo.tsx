@@ -22,11 +22,11 @@ export default function AudioPlayerMiniDemo() {
   return (
     <div className="flex w-full justify-center px-2 py-8">
       {/* as it sits at the bottom of a sidebar */}
-      <div className="w-[220px] rounded-2xl bg-[var(--acr-surface)] p-2 shadow-[0_0_0_1px_rgba(190,190,190,0.16),0_16px_48px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+      <div className="w-[220px] rounded-2xl bg-[var(--acr-surface)] p-2 shadow-[0_16px_48px_rgba(0,0,0,0.35)] backdrop-blur-xl">
         <div className="px-1 pb-1.5 text-[11px] text-muted-foreground">Sidebar footer</div>
         <AudioPlayer
           variant="mini"
-          track={{ title: "Fantasma", artist: "Tainy, Jhayco", cover: "https://avatar.vercel.sh/fantasma.png" }}
+          track={{ title: "Monaco (feat. someone with a very long name)", artist: "Bad Bunny, Tainy, Jhayco & friends", cover: "https://avatar.vercel.sh/fantasma.png" }}
           playing={playing}
           currentTime={time}
           duration={DURATION}
