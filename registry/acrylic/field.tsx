@@ -95,7 +95,8 @@ function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
       data-slot="field-description"
       className={cn(
         // The macOS "Subtitle": SFPro-Regular 11 / muted, ~2px below the label.
-        "text-[11px] font-normal leading-snug text-muted-foreground",
+        // 11px carries the subheadline positive tracking companion (§15).
+        "text-[11px] font-normal leading-snug [letter-spacing:var(--text-subheadline-tracking)] text-muted-foreground",
         "group-data-[disabled=true]/field:opacity-60",
         className
       )}
@@ -148,7 +149,7 @@ function FieldError({
       data-slot="field-error"
       className={cn(
         // Same metrics as the description, recolored to the kit destructive red.
-        "text-[11px] font-normal leading-snug text-destructive",
+        "text-[11px] font-normal leading-snug [letter-spacing:var(--text-subheadline-tracking)] text-destructive",
         className
       )}
       {...props}
@@ -249,7 +250,7 @@ function FieldSeparator({
       {...props}
     >
       {children && (
-        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[var(--acr-panel)] px-2 text-[11px] text-muted-foreground">
+        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[var(--acr-panel)] px-2 text-[11px] [letter-spacing:var(--text-subheadline-tracking)] text-muted-foreground">
           {children}
         </span>
       )}

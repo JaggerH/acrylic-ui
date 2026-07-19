@@ -23,7 +23,10 @@ import { cn } from "@/lib/utils"
 // author decision; the tint follows whichever surface (light/dark glass) it sits on.
 const inputVariants = cva(
   cn(
-    "flex w-full min-w-0 border border-[var(--acr-input-border)] bg-[var(--acr-input)] text-foreground outline-none transition-colors",
+    "flex w-full min-w-0 border border-[var(--acr-input-border)] bg-[var(--acr-input)] text-foreground outline-none",
+    // Motion on the shared spring token (matches button/searchbar); box-shadow is in
+    // the list so the focus ring animates in on the spring instead of snapping.
+    "transition-[color,background-color,border-color,box-shadow] [transition-timing-function:var(--acr-spring-default)] [transition-duration:var(--acr-spring-default-duration)]",
     "placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground",
     "hover:border-[var(--acr-border)] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/25",
     "disabled:cursor-not-allowed disabled:opacity-50",
@@ -31,13 +34,18 @@ const inputVariants = cva(
   ),
   {
     variants: {
-      // The five macOS control sizes (heights 16/20/24/28/36 from the kit).
+      // The five macOS control sizes (heights 16/20/24/28/36 from the kit). Type
+      // carries its size-specific tracking companion (§15): mini/small get a slight
+      // positive, 13/15px sit at 0, xl 17px a slight negative like a title. mini/
+      // small/medium map to real AppKit control sizes (10/11/13); large/xl are the
+      // library's own bigger sizes, so the font scales WITH the control instead of
+      // staying pinned at 13px (kept in step with Searchbar's scale).
       size: {
-        mini: "h-4 rounded-[4px] px-1.5 text-[10px]",
-        small: "h-5 rounded-[5px] px-1.5 text-[11px]",
+        mini: "h-4 rounded-[4px] px-1.5 text-[10px] [letter-spacing:var(--text-footnote-tracking)]",
+        small: "h-5 rounded-[5px] px-1.5 text-[11px] [letter-spacing:var(--text-subheadline-tracking)]",
         medium: "h-6 rounded-[6px] px-2 text-[13px]",
-        large: "h-7 rounded-[7px] px-2 text-[13px]",
-        xl: "h-9 rounded-[9px] px-2.5 text-[13px]",
+        large: "h-7 rounded-[7px] px-2 text-[15px]",
+        xl: "h-9 rounded-[9px] px-2.5 text-[17px] [letter-spacing:var(--text-title2-tracking)]",
       },
     },
     defaultVariants: { size: "medium" },
