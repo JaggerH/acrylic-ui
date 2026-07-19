@@ -1,0 +1,77 @@
+---
+title: Command
+description: A Cmd-K command palette — a filtering input over a grouped, keyboard-navigable list. The searchable surface behind Combobox.
+---
+
+A command palette: a filtering input over a grouped, keyboard-navigable list —
+the Raycast / Spotlight pattern. Type and the list filters in place. Built on
+[`cmdk`](https://cmdk.paco.me) for accessible keyboard nav and matching, skinned
+for the frosted acrylic surface. This is the same searchable list that powers the
+[Combobox](/docs/components/combobox) dropdown; use it directly when you want a
+standalone palette (a ⌘K menu, a page switcher, an action launcher).
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/command.json
+```
+
+## Usage
+
+<ComponentPreview name="command-demo" />
+
+```tsx
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/acrylic/command"
+
+<Command>
+  <CommandInput placeholder="Type a command or search…" />
+  <CommandList>
+    <CommandEmpty>No results found.</CommandEmpty>
+    <CommandGroup heading="Suggestions">
+      <CommandItem>Calendar</CommandItem>
+      <CommandItem>Search Emoji</CommandItem>
+    </CommandGroup>
+    <CommandSeparator />
+    <CommandGroup heading="Settings">
+      <CommandItem>Profile</CommandItem>
+    </CommandGroup>
+  </CommandList>
+</Command>
+```
+
+The `Command` above is bare — it has no surface of its own so it can sit inside a
+Popover. For a standalone palette, give it the panel material
+(`rounded-[10px] bg-[var(--acr-panel)] backdrop-blur-xl` + a shadow), as the
+preview does. To make it a ⌘K overlay, drop it inside a [Dialog](/docs/components/dialog).
+
+## Anatomy
+
+| Part | Role |
+| --- | --- |
+| `Command` | Root. Holds the cmdk state (query + filtered results) and keyboard nav. |
+| `CommandInput` | The filtering text field, with a leading search icon. Typing filters the list. |
+| `CommandList` | Scroll container (`max-h-64`) for the results. |
+| `CommandEmpty` | Shown when nothing matches the query. |
+| `CommandGroup` | A titled section of items (`heading` prop). |
+| `CommandItem` | One selectable row. Matched against the query by its text (or `value`). |
+| `CommandSeparator` | 1px hairline between groups. |
+
+## Notes
+
+- **Filtering is automatic.** `cmdk` matches each `CommandItem` against the query
+  by its text content; pass an explicit `value` to match on something else.
+- **`CommandItem` has no press animation on purpose** — highlight follows the
+  keyboard/pointer instantly (`data-[selected=true]`), which is what a fast
+  palette should feel like.
+- **Inside Combobox** this whole surface is the dropdown: `CommandInput` is the
+  "Search…" box, `CommandItem` the options.
+- Trailing content in a `CommandItem` (a `⌘P` keycap, a count) floats right with
+  `ms-auto`.

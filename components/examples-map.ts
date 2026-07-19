@@ -71,6 +71,7 @@ import C67 from "./examples/stepper-demo"
 import C68 from "./examples/stepper-showcase"
 import C69 from "./examples/switch-demo"
 import C70 from "./examples/switch-showcase"
+import C71 from "./examples/command-demo"
 
 export const examples: Record<string, ComponentType> = {
   "alert-dialog-demo": C0,
@@ -89,6 +90,7 @@ export const examples: Record<string, ComponentType> = {
   "card-gallery": C13,
   "card-image-thumb": C14,
   "card-nested": C15,
+  "command-demo": C71,
   "combobox-demo": C16,
   "combobox-showcase": C17,
   "context-menu-demo": C18,
