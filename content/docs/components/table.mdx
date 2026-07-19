@@ -1,0 +1,72 @@
+---
+title: Table
+description: "A data table — shadcn's Table restyled to the Acrylic material: flat and transparent so it composes inside a Card, with hairline row separators, muted column labels, and a spring-wired hover tint."
+---
+
+The shadcn Table, recolored to the Acrylic palette. The anatomy and API are
+copied 1:1 from shadcn; only the material changes — the table is flat and
+transparent (no surface of its own), rows are divided by hairlines on the
+Acrylic border token, column labels take the small muted subheadline style, and
+the hover tint rides the same spring substrate as the rest of the kit. Drop it
+inside a `Card` when you want a surface behind it.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/table.json
+```
+
+## Usage
+
+<ComponentPreview name="table-demo" />
+
+```tsx
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/acrylic/table"
+
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Service</TableHead>
+      <TableHead className="text-right">Amount</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>iCloud+</TableCell>
+      <TableCell className="text-right tabular-nums">$9.99</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+## Anatomy
+
+- **`Table`** — wraps the `<table>` in a horizontally scrollable container with
+  the macOS overlay scrollbar (`scrollbar-mac`).
+- **`TableHeader` / `TableBody` / `TableFooter`** — `<thead>` / `<tbody>` /
+  `<tfoot>`. The footer carries a faint chip fill and medium weight for totals.
+- **`TableRow`** — a row with a hairline bottom border and a spring-wired hover
+  tint; the last body row drops its border.
+- **`TableHead`** — a column-label cell: muted, small subheadline size.
+- **`TableCell`** — a body cell.
+- **`TableCaption`** — a muted caption below the table.
+
+## Notes
+
+- **It has no surface of its own.** For a framed look, put it inside a `Card`
+  (see the preview). On a bare page it renders flat.
+- **Right-align numeric columns** with `className="text-right"` on both the
+  `TableHead` and the `TableCell`; add `tabular-nums` so figures line up.
+- **Colours are tokens** — pass `className` for layout only, never to override
+  the material. Light / dark / acrylic themes flip automatically.
+- **Selected rows**: set `data-state="selected"` on a `TableRow` for the chip
+  fill.
