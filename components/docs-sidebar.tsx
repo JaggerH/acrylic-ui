@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import { useTreeContext } from "fumadocs-ui/contexts/tree"
 import { useDocsLayout } from "fumadocs-ui/layouts/docs"
 import { useSidebar as useFumadocsSidebar } from "fumadocs-ui/layouts/docs/slots/sidebar"
+import { useSearchContext } from "fumadocs-ui/contexts/search"
 import { SidebarCollapseTrigger } from "fumadocs-ui/components/sidebar/base"
 import type * as PageTree from "fumadocs-core/page-tree"
 
@@ -25,6 +26,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/registry/acrylic/sidebar"
+import { Searchbar } from "@/registry/acrylic/searchbar"
 import { ThemeSwitcher } from "@/components/theme-switcher"
 
 /** Docs nav rendered with the Acrylic Sidebar (dogfooding). Plugs into Fumadocs'
@@ -119,8 +121,8 @@ export function DocsSidebar(props: React.ComponentProps<"aside">) {
   const { slots, menuItems } = useDocsLayout()
 
   const { collapsed } = useFumadocsSidebar()
+  const { enabled: searchEnabled, setOpenSearch, hotKey } = useSearchContext()
   const NavTitle = slots.navTitle
-  const SearchTrigger = slots.searchTrigger
   const iconLinks = menuItems.filter((item) => item.type === "icon")
 
   return (
@@ -150,7 +152,33 @@ export function DocsSidebar(props: React.ComponentProps<"aside">) {
                 <PanelLeftIcon />
               </SidebarCollapseTrigger>
             </div>
-            {SearchTrigger ? <SearchTrigger.full hideIfDisabled /> : null}
+            {/* Our Searchbar stands in for Fumadocs' default search box: a readOnly
+                trigger that opens Fumadocs' search dialog. The ⌘K hotkey is already
+                bound globally by Fumadocs' SearchProvider, so we only display it
+                (from `hotKey`) and open on click / Enter / Space. */}
+            {searchEnabled ? (
+              <Searchbar
+                readOnly
+                size="large"
+                role="button"
+                aria-label="Search"
+                placeholder="Search"
+                shortcut={hotKey.map((k, i) => (
+                  // wrap each part in its own element so the keycap's flex gap can
+                  // separate them ("Ctrl K", not "CtrlK") — contiguous text nodes
+                  // collapse into a single anonymous flex item.
+                  <span key={i}>{k.display}</span>
+                ))}
+                onClick={() => setOpenSearch(true)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault()
+                    setOpenSearch(true)
+                  }
+                }}
+                className="cursor-pointer [&_input]:cursor-pointer [&_input]:caret-transparent"
+              />
+            ) : null}
           </SidebarHeader>
 
           <SidebarContent className="scrollbar-mac">
