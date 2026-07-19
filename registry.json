@@ -787,6 +787,22 @@
       ]
     },
     {
+      "name": "table",
+      "type": "registry:ui",
+      "title": "Acrylic Table",
+      "description": "A data table — shadcn's Table restyled to the Acrylic material: flat/transparent (composes inside Card), hairline row separators on --acr-border-soft, muted subheadline column labels, and a spring-wired hover tint. Pure CSS, no dependencies.",
+      "files": [
+        {
+          "path": "registry/acrylic/table.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/table.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ]
+    },
+    {
       "name": "skeleton",
       "type": "registry:ui",
       "title": "Acrylic Skeleton",
