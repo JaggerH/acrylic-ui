@@ -1,13 +1,14 @@
 ---
 title: Sidebar
-description: The macOS 26 source-list sidebar — frosted vibrancy panel, three densities, accent-pill selection, collapsible.
+description: The macOS 26 source-list sidebar — frosted vibrancy panel, three densities, neutral-pill selection, collapsible.
 ---
 
 shadcn's Sidebar composition restyled to the Apple macOS 26 UI Kit. The panel is
 the kit's 240px **frosted-vibrancy** surface (`--acr-surface` + `backdrop-blur`),
 so the desktop shows softly through it. Row geometry is lifted from the kit's three
 sidebar densities — Small (24 / 11px), Medium (32 / 13px), Large (40 / 15px) — and
-the selected row is the macOS **accent pill** (System Blue, white label). The full
+the selected row is the macOS **neutral pill** (a gray fill, monochrome label — the
+source-list keeps selection monochrome, no System Blue tint). The full
 shadcn API is intact: a `SidebarProvider` with cookie-persisted open state and the
 ⌘B keyboard toggle, off-canvas / icon / none collapse modes, a mobile `Sheet`,
 groups, menu + sub-menu, badges, a rail, and an inset content area.
@@ -64,9 +65,10 @@ The three kit sidebar sizes map onto the `SidebarMenuButton` `size` prop —
 - The panel uses the frosted vibrancy material (`--acr-surface` + `backdrop-blur-xl`).
   On desktop the real macOS sidebar shows the wallpaper through it — overlay it on
   content (not a flat page) to read as glass.
-- **Selected** rows are the accent pill (`--primary` + white). **Hover** is the
-  subtle `--acr-hover` wash; this matches macOS, where hover and selection are
-  visually distinct.
+- **Selected** rows are the neutral pill (`--acr-chip`, a gray fill with a monochrome
+  label — no `--primary`/System Blue tint). Unselected rows show **no hover fill**;
+  only the selected row is highlighted, matching the macOS source list where hovering
+  an item shows nothing (a mouse-down `active:` press is still fed back).
 - `collapsible="icon"` shrinks the sidebar to a 3rem icon rail; pass `tooltip` on
   each `SidebarMenuButton` so the label appears on hover in that mode. Use
   `collapsible="none"` for a static, always-open panel (as in the previews above).
