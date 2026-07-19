@@ -16,9 +16,12 @@ import { cn } from "@/lib/utils"
 //    Hover = neutral --acr-hover; selected (data-state="selected") = accent
 //    bg-primary/10. Wired onto the spring substrate (color transition only — a
 //    row is not a press target, so NO active:scale).
-//  - Rounded corners need border-separate, so separators are inset hairlines on
-//    the cells (--acr-border-soft between body rows; the firmer --acr-border
-//    under the header and above the footer).
+//  - Rounded corners need border-separate. Radius is applied ONLY to the
+//    highlighted (hover / selected) row — at rest the cells are square, so the
+//    hairline separators (--acr-border-soft between body rows, the firmer
+//    --acr-border under the header) stay perfectly straight instead of curling
+//    at the corners. The highlighted row also drops its own separator so the
+//    pill reads clean.
 //  - Column labels use the small subheadline size + its tracking companion,
 //    muted (text-muted-foreground), Apple label style.
 //  - Horizontal overflow uses the macOS thin overlay scrollbar (scrollbar-mac).
@@ -57,7 +60,7 @@ function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
     <tbody
       data-slot="table-body"
       className={cn(
-        "[&_tr:not(:last-child)>td]:border-b [&_tr:not(:last-child)>td]:border-b-[var(--acr-border-soft)] [&_tr:hover>td]:bg-[var(--acr-hover)]",
+        "[&_tr:not(:last-child)>td]:border-b [&_tr:not(:last-child)>td]:border-b-[var(--acr-border-soft)] [&_tr:hover>td]:border-b-transparent [&_tr:hover>td]:bg-[var(--acr-hover)] [&_tr:hover>td:first-child]:rounded-l-[7px] [&_tr:hover>td:last-child]:rounded-r-[7px]",
         className
       )}
       {...props}
@@ -70,7 +73,7 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
     <tfoot
       data-slot="table-footer"
       className={cn(
-        "font-medium [&>tr>td]:border-t [&>tr>td]:border-t-[var(--acr-border)] [&>tr>td]:bg-[var(--acr-chip)]",
+        "font-medium [&>tr>td]:bg-[var(--acr-chip)] [&>tr>td:first-child]:rounded-l-[7px] [&>tr>td:last-child]:rounded-r-[7px]",
         className
       )}
       {...props}
@@ -83,7 +86,7 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
     <tr
       data-slot="table-row"
       className={cn(
-        "[&>*:first-child]:rounded-l-[7px] [&>*:last-child]:rounded-r-[7px] [&>td]:transition-colors [&>td]:[transition-timing-function:var(--acr-spring-default)] [&>td]:[transition-duration:var(--acr-spring-default-duration)] data-[state=selected]:[&>td]:bg-primary/10",
+        "[&>td]:transition-colors [&>td]:[transition-timing-function:var(--acr-spring-default)] [&>td]:[transition-duration:var(--acr-spring-default-duration)] data-[state=selected]:[&>td]:border-b-transparent data-[state=selected]:[&>td]:bg-primary/10 data-[state=selected]:[&>td:first-child]:rounded-l-[7px] data-[state=selected]:[&>td:last-child]:rounded-r-[7px]",
         className
       )}
       {...props}
