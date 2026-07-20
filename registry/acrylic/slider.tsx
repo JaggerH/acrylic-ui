@@ -166,6 +166,14 @@ function Slider({
       </SliderPrimitive.Track>
 
       {Array.from({ length: thumbCount }, (_, i) => (
+        // Zero-footprint anchor. Radix normally insets the thumb by half its own
+        // width to keep it inside the track — which slides the thumb CENTER off
+        // the filled Range's leading edge (the "progress point") and off the tick
+        // marks by up to that half width, worst at the ends and visible straight
+        // through the frosted knob. Measuring 0×0 makes Radix skip that inset, so
+        // the knob's center lands exactly on the progress point / mark at every
+        // value. (It may overhang the capsule caps at 0/100% — correct: the caps
+        // ARE those values.) The visible pill is an absolutely-centered child.
         <SliderPrimitive.Thumb
           data-slot="slider-thumb"
           key={i}
@@ -175,18 +183,23 @@ function Slider({
               "--slider-thumb-h": `${thumbH}px`,
             } as React.CSSProperties
           }
-          className={cn(
-            // frosted-white pill knob: hairline border + soft ambient shadow
-            "block h-[var(--slider-thumb-h)] w-[var(--slider-thumb-w)] shrink-0 rounded-full bg-[var(--acr-control)]",
-            "border border-[var(--acr-control-border)]",
-            "shadow-[0_1px_3px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.12)]",
-            "transition-[box-shadow,transform] outline-none",
-            "hover:shadow-[0_1px_3px_rgba(0,0,0,0.22),0_6px_14px_rgba(0,0,0,0.16)]",
-            "focus-visible:ring-4 focus-visible:ring-ring/25",
-            "active:scale-95",
-            "disabled:pointer-events-none disabled:opacity-50"
-          )}
-        />
+          className="group/thumb relative block size-0 shrink-0 outline-none"
+        >
+          <span
+            aria-hidden
+            className={cn(
+              // frosted-white pill knob: hairline border + soft ambient shadow,
+              // centered on the zero-size anchor so its middle marks the value
+              "absolute left-1/2 top-1/2 block h-[var(--slider-thumb-h)] w-[var(--slider-thumb-w)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--acr-control)]",
+              "border border-[var(--acr-control-border)]",
+              "shadow-[0_1px_3px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.12)]",
+              "transition-[box-shadow,transform]",
+              "group-hover/thumb:shadow-[0_1px_3px_rgba(0,0,0,0.22),0_6px_14px_rgba(0,0,0,0.16)]",
+              "group-focus-visible/thumb:ring-4 group-focus-visible/thumb:ring-ring/25",
+              "group-active/thumb:scale-95"
+            )}
+          />
+        </SliderPrimitive.Thumb>
       ))}
 
       {markValues.length > 0 && (

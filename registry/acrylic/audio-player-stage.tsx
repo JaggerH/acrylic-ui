@@ -162,7 +162,7 @@ export interface AudioPlayerStageProps
   extractFromCover?: boolean
   /** ms to crossfade the background between tracks (0 = snap) */
   colorTransitionMs?: number
-  /** header label above the cover */
+  /** optional small header label above the cover (e.g. "正在播放"); off when unset */
   nowPlayingLabel?: string
   /** request the Fullscreen API on mount (call from a user gesture, e.g. a button) */
   autoFullscreen?: boolean
@@ -185,7 +185,7 @@ function AudioPlayerStage({
   accentColor,
   extractFromCover = true,
   colorTransitionMs = 400,
-  nowPlayingLabel = "正在播放",
+  nowPlayingLabel,
   autoFullscreen = false,
   onToggle,
   onPrev,
@@ -313,7 +313,11 @@ function AudioPlayerStage({
           >
             <ChevronDown className="size-5" />
           </button>
-          <span className="text-[11px] font-medium uppercase tracking-widest text-white/60">{nowPlayingLabel}</span>
+          {nowPlayingLabel ? (
+            <span className="text-[11px] font-medium uppercase tracking-widest text-white/60">{nowPlayingLabel}</span>
+          ) : (
+            <span aria-hidden />
+          )}
           <button
             onClick={toggleFs}
             aria-label={isFs ? "退出全屏" : "全屏"}
@@ -337,7 +341,7 @@ function AudioPlayerStage({
             </div>
 
             <div className={cn("min-w-0", !hasLyrics && "text-center")}>
-              <ScrollingText className="text-2xl font-bold leading-tight [text-shadow:0_1px_12px_rgba(0,0,0,0.4)]">{track.title || nowPlayingLabel}</ScrollingText>
+              <ScrollingText className="text-2xl font-bold leading-tight [text-shadow:0_1px_12px_rgba(0,0,0,0.4)]">{track.title || nowPlayingLabel || "未知曲目"}</ScrollingText>
               {track.artist && (
                 <ScrollingText className="mt-1 text-base leading-tight text-white/70 [text-shadow:0_1px_10px_rgba(0,0,0,0.5)]">{track.artist}</ScrollingText>
               )}

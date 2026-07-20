@@ -137,7 +137,6 @@ export default function AudioPlayerStageDemo() {
           currentTime={time}
           duration={t.duration}
           volume={volume}
-          nowPlayingLabel="Now Playing"
           autoFullscreen={fullscreen}
           extractFromCover
           colorTransitionMs={400}
