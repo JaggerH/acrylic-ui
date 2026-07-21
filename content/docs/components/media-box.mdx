@@ -3,14 +3,16 @@ title: Media Box
 description: A measured media frame for images, video posters, and player overlays.
 ---
 
-`MediaBox` is a reusable media frame. It measures the available column width,
-sizes a frame to the media's **natural aspect ratio** — so the cover fills it with
-no crop and no black letterbox bars — clips children to rounded corners, and leaves
-playback or action controls to the caller through `children`.
+`MediaBox` is a reusable media frame. It measures the available column width and sizes
+a frame by `kind`: an **image** takes the media's **natural aspect ratio** (the cover
+fills it with no crop and no letterbox); a **video** snaps to a **standard 16:9
+(landscape) / 9:16 (portrait)** frame by orientation and cover-crops the poster to it.
+It clips children to rounded corners and leaves playback controls to the caller through
+`children`.
 
 It composes [`CardMedia`](/docs/components/card): CardMedia owns the `object-cover`
 cover image plus the load retry-on-error and fallback, while MediaBox's job is to
-measure the media, pick the natural ratio, and bound the frame width by
+measure the media, pick the frame ratio, and bound the frame width by
 `minWidth` / `maxWidth` / `maxHeight`.
 
 It does **not** own a video player. Compose an Artplayer, iframe, or custom

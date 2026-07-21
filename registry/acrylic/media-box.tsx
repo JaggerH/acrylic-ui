@@ -164,9 +164,16 @@ export const MediaBox = React.forwardRef<HTMLDivElement, MediaBoxProps>(function
       : MEDIA_BOX_MAX_IMAGE_HEIGHT
   // Video gets an optional tighter ceiling on top of maxHeight (compact verticals in a feed).
   const cap = kind === "video" && valid(videoMaxHeight) ? Math.min(baseCap, videoMaxHeight!) : baseCap
+
+  // Video snaps to a STANDARD frame — 16:9 (landscape) / 9:16 (portrait) by orientation — and
+  // cover-crops the poster to it; an image keeps its own NATURAL ratio (so it neither crops nor
+  // letterboxes). Before the first measurement, video holds a neutral 16:9.
+  const portrait = dims ? dims.height > dims.width : false
+  const displayRatio =
+    kind === "video" ? (portrait ? 9 / 16 : 16 / 9) : dims ? dims.width / dims.height : 16 / 9
   const box = computeMediaBox({
-    naturalWidth: dims?.width ?? 0,
-    naturalHeight: dims?.height ?? 0,
+    naturalWidth: displayRatio,
+    naturalHeight: 1,
     containerWidth,
     minWidth,
     maxWidth,
@@ -183,9 +190,8 @@ export const MediaBox = React.forwardRef<HTMLDivElement, MediaBoxProps>(function
     })
   }, [containerWidth, box.width, box.height, box.ratio, dims?.width, dims?.height, cap, onSizingChange])
 
-  // Frame ratio = the media's natural ratio (so object-cover neither crops nor letterboxes).
-  // Before the first measurement, hold a neutral 16/9 frame so the pre-load box is sane.
-  const ratio = dims ? `${dims.width} / ${dims.height}` : "16 / 9"
+  const ratio =
+    kind === "video" ? (portrait ? "9 / 16" : "16 / 9") : dims ? `${dims.width} / ${dims.height}` : "16 / 9"
 
   return (
     <div ref={setRefs} data-slot="media-box" className={cn("w-full", className)} style={{ maxWidth }} {...props}>

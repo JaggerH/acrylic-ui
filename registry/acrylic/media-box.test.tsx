@@ -240,17 +240,25 @@ describe("MediaBox videoMaxHeight", () => {
     return document.querySelector('[data-slot="media-box-frame"]') as HTMLElement
   }
 
-  it("caps a portrait video tighter than maxHeight, keeping the natural ratio (no letterbox)", () => {
-    // 720x1280 (9:16), container 490, maxHeight 920 but videoMaxHeight 507 wins:
-    // cap 507 -> width = 507 * (720/1280) = 285, height derived from aspect-ratio.
+  it("snaps a portrait video to a 9:16 frame, capped by videoMaxHeight", () => {
+    // portrait poster (720x1280) -> 9:16 frame; cap 507 -> width = 507 * 9/16 = 285.
     render(<MediaBox kind="video" src="/v.jpg" naturalWidth={720} naturalHeight={1280} maxHeight={920} videoMaxHeight={507} />)
+    expect(frame().style.aspectRatio).toBe("9 / 16")
     expect(frame().style.width).toBe("285px")
-    expect(frame().style.aspectRatio).toBe("720 / 1280")
+  })
+
+  it("snaps a landscape video to a 16:9 frame regardless of the poster's own ratio", () => {
+    // landscape poster with an off-standard 440x330 (4:3) -> forced to 16:9; width bound by container 490.
+    render(<MediaBox kind="video" src="/v.jpg" naturalWidth={440} naturalHeight={330} maxHeight={920} videoMaxHeight={507} />)
+    expect(frame().style.aspectRatio).toBe("16 / 9")
+    expect(frame().style.width).toBe("490px") // min(490, 520, 507*16/9=901) = 490
   })
 
   it("does not apply videoMaxHeight to images", () => {
-    // same dims as image: ignores videoMaxHeight, uses maxHeight 920 -> width min(490, 920*0.5625=517) = 490.
+    // same dims as image: keeps NATURAL ratio, ignores videoMaxHeight, uses maxHeight 920
+    // -> width min(490, 920*0.5625=517) = 490.
     render(<MediaBox kind="image" src="/i.jpg" naturalWidth={720} naturalHeight={1280} maxHeight={920} videoMaxHeight={507} />)
+    expect(frame().style.aspectRatio).toBe("720 / 1280")
     expect(frame().style.width).toBe("490px")
   })
 })
