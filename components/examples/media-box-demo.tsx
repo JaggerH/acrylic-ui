@@ -68,6 +68,7 @@ export default function MediaBoxDemo() {
           naturalHeight={item.naturalHeight}
           minWidth={MIN_WIDTH}
           maxWidth={MAX_WIDTH}
+          frameClassName="mx-auto"
           onSizingChange={setSnapshot}
         >
           {active === "player" ? (

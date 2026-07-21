@@ -198,9 +198,10 @@ export const MediaBox = React.forwardRef<HTMLDivElement, MediaBoxProps>(function
         ratio={ratio}
         style={{ width: box.width || undefined }}
         className={cn(
-          // mx-auto centers the frame in its column when the natural-ratio width is
-          // narrower than the available space (e.g. a portrait in a wide column).
-          "mx-auto block [transform:translateZ(0)] rounded-2xl border border-[var(--acr-border)] bg-black [&_video]:rounded-[inherit]",
+          // Left-aligned by default (a plain block hugs the start of its column). To CENTER a
+          // narrower-than-column frame (e.g. a portrait in a wide column), a consumer opts in
+          // with `frameClassName="mx-auto"` — see the gallery demo.
+          "block [transform:translateZ(0)] rounded-2xl border border-[var(--acr-border)] bg-black [&_video]:rounded-[inherit]",
           frameClassName
         )}
         src={src}
