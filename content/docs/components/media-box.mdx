@@ -52,6 +52,7 @@ import { MediaBox } from "@/components/acrylic/media-box"
 | `minWidth` | `number` | — | hard floor on frame width — wins over `maxWidth` / `maxHeight` on conflict |
 | `maxWidth` | `number` | — | cap the frame width |
 | `maxHeight` | `number` | image: `510`, video: `507` | cap frame height (reduces width to honor it) |
+| `videoMaxHeight` | `number` | — | extra height ceiling applied **only** to `kind="video"` (clamped with `maxHeight`) — keep tall images while capping vertical videos to a compact height, still at natural ratio (no letterbox) |
 | `frameClassName` | `string` | — | classes for the rounded frame |
 | `imageClassName` | `string` | — | classes for the poster/image |
 | `fallback` | `ReactNode` | image-off icon | custom broken-image fallback |

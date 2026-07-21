@@ -38,6 +38,10 @@ export interface MediaBoxProps extends React.HTMLAttributes<HTMLDivElement> {
   minWidth?: number
   maxWidth?: number
   maxHeight?: number
+  /** An extra height ceiling applied ONLY to video (kind="video"), clamped together with
+   *  maxHeight. Lets a feed keep tall images (maxHeight) while capping vertical videos to a
+   *  compact height — the video still fills at its natural ratio, just shorter (no letterbox). */
+  videoMaxHeight?: number
   frameClassName?: string
   imageClassName?: string
   fallback?: React.ReactNode
@@ -109,6 +113,7 @@ export const MediaBox = React.forwardRef<HTMLDivElement, MediaBoxProps>(function
     minWidth,
     maxWidth,
     maxHeight,
+    videoMaxHeight,
     frameClassName,
     imageClassName,
     fallback,
@@ -152,11 +157,13 @@ export const MediaBox = React.forwardRef<HTMLDivElement, MediaBoxProps>(function
 
   const provided = valid(naturalWidth) && valid(naturalHeight) ? { width: naturalWidth!, height: naturalHeight! } : null
   const dims = resolveDims(mediaSize, provided ?? measured)
-  const cap = valid(maxHeight)
+  const baseCap = valid(maxHeight)
     ? maxHeight!
     : kind === "video"
       ? MEDIA_BOX_MAX_VIDEO_HEIGHT
       : MEDIA_BOX_MAX_IMAGE_HEIGHT
+  // Video gets an optional tighter ceiling on top of maxHeight (compact verticals in a feed).
+  const cap = kind === "video" && valid(videoMaxHeight) ? Math.min(baseCap, videoMaxHeight!) : baseCap
   const box = computeMediaBox({
     naturalWidth: dims?.width ?? 0,
     naturalHeight: dims?.height ?? 0,

@@ -1,6 +1,6 @@
 import * as React from "react"
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
-import { afterEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { MediaBox, computeMediaBox } from "./media-box"
 
@@ -212,5 +212,45 @@ describe("computeMediaBox", () => {
     const box = computeMediaBox({ naturalWidth: 1600, naturalHeight: 900, containerWidth: 0 })
     expect(box.width).toBe(0)
     expect(box.height).toBe(0)
+  })
+})
+
+// videoMaxHeight needs a real container width to bite, so stub ResizeObserver to report one.
+class ResizeObserverStub {
+  callback: ResizeObserverCallback
+  constructor(callback: ResizeObserverCallback) {
+    this.callback = callback
+  }
+  observe(target: Element) {
+    Object.defineProperty(target, "clientWidth", { value: 490, configurable: true })
+    this.callback([{ contentRect: { width: 490 } } as ResizeObserverEntry], this as unknown as ResizeObserver)
+  }
+  disconnect() {}
+}
+
+describe("MediaBox videoMaxHeight", () => {
+  beforeEach(() => {
+    vi.stubGlobal("ResizeObserver", ResizeObserverStub)
+  })
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  function frame() {
+    return document.querySelector('[data-slot="media-box-frame"]') as HTMLElement
+  }
+
+  it("caps a portrait video tighter than maxHeight, keeping the natural ratio (no letterbox)", () => {
+    // 720x1280 (9:16), container 490, maxHeight 920 but videoMaxHeight 507 wins:
+    // cap 507 -> width = 507 * (720/1280) = 285, height derived from aspect-ratio.
+    render(<MediaBox kind="video" src="/v.jpg" naturalWidth={720} naturalHeight={1280} maxHeight={920} videoMaxHeight={507} />)
+    expect(frame().style.width).toBe("285px")
+    expect(frame().style.aspectRatio).toBe("720 / 1280")
+  })
+
+  it("does not apply videoMaxHeight to images", () => {
+    // same dims as image: ignores videoMaxHeight, uses maxHeight 920 -> width min(490, 920*0.5625=517) = 490.
+    render(<MediaBox kind="image" src="/i.jpg" naturalWidth={720} naturalHeight={1280} maxHeight={920} videoMaxHeight={507} />)
+    expect(frame().style.width).toBe("490px")
   })
 })
