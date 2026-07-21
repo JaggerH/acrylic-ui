@@ -18,6 +18,36 @@ and a handful of macOS-specific axes (Button sizes, Badge pills, Item variants).
 > `space-y-*`, `cn()` for conditional classes, no manual z-index on overlays, etc.
 > This skill documents only the acrylic-specific rules and divergences.
 
+## Built on shadcn — read the example, don't hand-roll
+
+**REQUIRED BACKGROUND:** this skill builds on `shadcn:shadcn` — load it for the shadcn
+workflow discipline (search/view/add, read-the-docs-first, compose-don't-reinvent) and
+the APIs of components that overlap. This skill only documents the acrylic deltas.
+
+Acrylic is shadcn restyled, so the **shadcn skill's workflow discipline applies
+verbatim**: use an existing component before custom markup, **read the docs/example
+before writing**, compose don't reinvent. What differs is WHERE the reference lives:
+
+- **Overlapping component** (Button, Dialog, Card…): the shadcn docs/examples are the
+  API reference — consult them, then apply the acrylic deltas below. (Acrylic-only
+  components are NOT in `shadcn docs/search` for stock shadcn — don't look there for them.)
+- **Acrylic-only component or recipe** (Card `overlay`/gallery tile, MediaBox, nested
+  surfaces, Silk…): the reference is the **vendored source docstring + the worked
+  example in `components/examples/<name>-*.tsx` + the acrylic docs `.mdx`**.
+
+**Read the example before you build. Do NOT hand-roll a pattern an example already
+demonstrates.** The Card gallery `overlay` variant, the media tile, the card-in-card
+recipe each ship as a worked example; reproducing its markup inline (a bespoke scrim, a
+hand-built frame) instead of composing the shipped anatomy is the #1 failure here. If a
+recipe recurs across call sites, extract it into anatomy (e.g. `CardMedia` /
+`CardMediaOverlay`) rather than re-writing it each time.
+
+**Red flags — STOP and open `components/examples/<name>-*.tsx` first:**
+- "I'll just write the div / scrim / frame myself"
+- "I know what an overlay / gallery / media card is"
+- Given a specific component or variant, but writing custom markup without opening its example
+- Reaching for a *different* component (a Dialog for an on-image caption) before checking the named one's example
+
 ## Install
 
 Components install from the registry URL — no config needed; the Acrylic theme
@@ -42,6 +72,37 @@ The theme item deliberately does **NOT** ship the standard shadcn semantic vars
 (`--primary`/`--background`/`--foreground`/`--destructive`/`--ring`/`--border`) —
 those belong to the consuming app, so installed components inherit the host's brand
 colors instead of overwriting them.
+
+## CLI — discover, install, update (consuming `@acrylic`)
+
+Acrylic is a shadcn registry (it publishes a searchable index), so the shadcn CLI works
+against it once `@acrylic` is registered (see Install). Reach for it instead of
+hand-copying files or guessing what exists. (This is the CONSUMER flow — pulling acrylic
+into a host app. Authoring a *new* acrylic component in the acrylic-ui repo itself goes
+through the registry build, not `add` — see rules/authoring.md.)
+
+```bash
+# Discover — search the acrylic registry (matches titles + descriptions)
+npx shadcn@latest search @acrylic -q "slider"
+
+# Inspect before installing — view an item's files/deps, writes nothing
+npx shadcn@latest view @acrylic/dialog
+
+# Install — pulls the component + the acrylic theme tokens + its deps
+npx shadcn@latest add @acrylic/button
+npx shadcn@latest add https://acrylic-ui.vercel.app/r/button.json   # or the full URL
+
+# Update a vendored component — PREVIEW first, never blind-overwrite
+npx shadcn@latest add @acrylic/card --dry-run         # what would change
+npx shadcn@latest add @acrylic/card --diff card.tsx   # upstream vs local, per file
+```
+
+**Vendored acrylic files usually carry local patches** (host tweaks, corner radii, extra
+props). Updating is therefore a **merge, not an overwrite**: read the `--diff`, apply the
+upstream delta while preserving the local changes (three-way merge), and **never
+`--overwrite` without explicit approval** — it silently discards the patches. When you
+need the live, exact item, prefer `search`/`view` over the correspondence table — the
+table is a quick map, the registry is the truth.
 
 ## Principles
 
