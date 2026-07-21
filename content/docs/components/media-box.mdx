@@ -48,5 +48,7 @@ import { MediaBox } from "@/components/acrylic/media-box"
 | `imageClassName` | `string` | — | classes for the poster/image |
 | `fallback` | `ReactNode` | image-off icon | custom broken-image fallback |
 | `onSizingChange` | `(snapshot) => void` | — | reports measured sizing details |
+| `maxRetries` | `number` | `2` | failed loads to retry (exponential backoff) before showing `fallback` |
+| `retryDelayMs` | `number` | `800` | base backoff delay in ms; doubles each attempt |
 
 Plus native `<div>` props on the wrapper.

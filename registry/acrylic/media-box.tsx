@@ -39,7 +39,14 @@ export interface MediaBoxProps extends React.HTMLAttributes<HTMLDivElement> {
   imageClassName?: string
   fallback?: React.ReactNode
   onSizingChange?: (snapshot: MediaBoxSizingSnapshot) => void
+  /** Failed loads to retry with backoff before giving up and showing `fallback`. */
+  maxRetries?: number
+  /** Base backoff delay in ms; doubles each attempt (attempt 0 waits this long, attempt 1 waits 2x, ...). */
+  retryDelayMs?: number
 }
+
+export const MEDIA_BOX_DEFAULT_MAX_RETRIES = 2
+export const MEDIA_BOX_DEFAULT_RETRY_DELAY_MS = 800
 
 function valid(n: number | undefined) {
   return typeof n === "number" && Number.isFinite(n) && n > 0
@@ -126,6 +133,8 @@ export const MediaBox = React.forwardRef<HTMLDivElement, MediaBoxProps>(function
     imageClassName,
     fallback,
     onSizingChange,
+    maxRetries = MEDIA_BOX_DEFAULT_MAX_RETRIES,
+    retryDelayMs = MEDIA_BOX_DEFAULT_RETRY_DELAY_MS,
     className,
     children,
     ...props
@@ -134,9 +143,12 @@ export const MediaBox = React.forwardRef<HTMLDivElement, MediaBoxProps>(function
 ) {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
   const imageRef = React.useRef<HTMLImageElement>(null)
+  const retryTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
   const [containerWidth, setContainerWidth] = React.useState(0)
   const [measured, setMeasured] = React.useState<{ width: number; height: number } | null>(null)
   const [failed, setFailed] = React.useState(false)
+  const [attempt, setAttempt] = React.useState(0)
+  const [pending, setPending] = React.useState(false)
 
   const setRefs = React.useCallback(
     (node: HTMLDivElement | null) => {
@@ -147,7 +159,35 @@ export const MediaBox = React.forwardRef<HTMLDivElement, MediaBoxProps>(function
     [ref]
   )
 
-  React.useLayoutEffect(() => setFailed(false), [src])
+  const clearRetryTimer = React.useCallback(() => {
+    if (retryTimeoutRef.current) {
+      clearTimeout(retryTimeoutRef.current)
+      retryTimeoutRef.current = null
+    }
+  }, [])
+
+  React.useLayoutEffect(() => {
+    clearRetryTimer()
+    setFailed(false)
+    setAttempt(0)
+    setPending(false)
+  }, [src, clearRetryTimer])
+
+  React.useEffect(() => clearRetryTimer, [clearRetryTimer])
+
+  const handleImageError = React.useCallback(() => {
+    if (attempt >= maxRetries) {
+      setFailed(true)
+      return
+    }
+    setPending(true)
+    const delay = retryDelayMs * 2 ** attempt
+    retryTimeoutRef.current = setTimeout(() => {
+      retryTimeoutRef.current = null
+      setAttempt((a) => a + 1)
+      setPending(false)
+    }, delay)
+  }, [attempt, maxRetries, retryDelayMs])
 
   React.useLayoutEffect(() => {
     const node = wrapperRef.current
@@ -208,8 +248,9 @@ export const MediaBox = React.forwardRef<HTMLDivElement, MediaBoxProps>(function
         )}
         style={{ width: box.width || undefined, height: box.height || undefined }}
       >
-        {src && !failed ? (
+        {src && !failed && !pending ? (
           <img
+            key={attempt}
             ref={imageRef}
             src={src}
             alt={alt}
@@ -217,13 +258,14 @@ export const MediaBox = React.forwardRef<HTMLDivElement, MediaBoxProps>(function
             loading="lazy"
             className={cn("absolute inset-0 size-full object-contain", imageClassName)}
             onLoad={(event) => {
+              if (attempt !== 0) setAttempt(0)
               if (naturalWidth && naturalHeight) return
               const image = event.currentTarget
               if (image.naturalWidth && image.naturalHeight) {
                 setMeasured({ width: image.naturalWidth, height: image.naturalHeight })
               }
             }}
-            onError={() => setFailed(true)}
+            onError={handleImageError}
           />
         ) : null}
         {src && failed ? (
