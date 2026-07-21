@@ -152,3 +152,54 @@ Footer row for actions, aligned on a single line (`flex items-center`). Renders
 | --- | --- | --- | --- |
 | `className` | `string` | — | Merged onto the footer. |
 | `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
+
+### CardMedia
+
+The fixed-ratio cover frame for the gallery / media-card anatomy. Give it `src` and it
+owns the cover image — `object-cover` filling and cropping the ratio box — with the same
+load-error strategy as [MediaBox](/docs/components/media-box): a failed load retries with
+exponential backoff, then after `maxRetries` shows `fallback` (default `ImageOff`); a
+missing `src` with a `fallback` shows the placeholder immediately (the avatar-with-no-photo
+case). Without `src` it's just a frame — a direct `<img>` child is still auto-covered
+(`[&>img]:size-full [&>img]:object-cover`). Either way a `CardMediaOverlay`, corner
+`Badge`, or any positioned child rides inside it. Pass `ratio` to lock the aspect so a
+grid of tiles stays uniform. Renders `<div data-slot="card-media">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `ratio` | `string` | — | CSS `aspect-ratio` for the frame, e.g. `"16 / 9"`, `"2 / 3"`, `"1 / 1"`. Merged into `style` (an explicit `style.aspectRatio` still wins). |
+| `src` | `string` | — | Cover image URL. When set, CardMedia renders and manages the `object-cover` `<img>` (retry-on-error + fallback). Omit to hand it your own media as children. |
+| `alt` | `string` | `""` | Alt text for the owned image. |
+| `fallback` | `React.ReactNode` | `<ImageOff />` | Placeholder shown after retries are exhausted, or immediately when `src` is absent. |
+| `imageClassName` | `string` | — | Merged onto the owned `<img>`. |
+| `maxRetries` | `number` | `2` | Failed loads to retry with backoff before giving up. |
+| `retryDelayMs` | `number` | `800` | Base backoff delay in ms; doubles each attempt. |
+| `onNaturalSize` | `(width, height) => void` | — | Fired with the owned image's intrinsic pixel size once it loads — lets a parent (e.g. MediaBox) size a frame to the media's natural aspect. |
+| `className` | `string` | — | Merged onto the frame (layout only). |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
+
+```tsx
+<Card interactive className="overflow-hidden p-0">
+  <CardMedia ratio="2 / 3" src={src} alt={name} fallback={<UserRound className="size-8" />}>
+    <CardMediaOverlay>
+      <CardTitle>{name}</CardTitle>
+      <CardDescription>{role}</CardDescription>
+    </CardMediaOverlay>
+  </CardMedia>
+</Card>
+```
+
+### CardMediaOverlay
+
+The caption-on-media variant: a bottom scrim (`bg-gradient-to-t from-black/85`) placed
+inside `CardMedia` that darkens the media so text stays legible. Nest the **same**
+`CardTitle` / `CardDescription` inside — the overlay retypes them for on-media
+contrast: white / white-70, stepped down to the caption scale (title 15→13,
+description 13→12) and truncated. The "caption under the media" variant needs no
+component — it's `CardTitle` / `CardDescription` in a padded div **below** `CardMedia`.
+Renders `<div data-slot="card-media-overlay">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the scrim (layout only). |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |

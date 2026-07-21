@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Maximize2, Play } from "lucide-react"
 
+import { Badge } from "@/registry/acrylic/badge"
 import { Button } from "@/registry/acrylic/button"
 import {
   MediaBox,
@@ -36,6 +37,9 @@ const items = {
 
 type Key = keyof typeof items
 
+const MIN_WIDTH = 240
+const MAX_WIDTH = 520
+
 export default function MediaBoxDemo() {
   const [active, setActive] = React.useState<Key>("wide")
   const [snapshot, setSnapshot] = React.useState<MediaBoxSizingSnapshot | null>(null)
@@ -62,7 +66,8 @@ export default function MediaBoxDemo() {
           alt=""
           naturalWidth={item.naturalWidth}
           naturalHeight={item.naturalHeight}
-          maxWidth={520}
+          minWidth={MIN_WIDTH}
+          maxWidth={MAX_WIDTH}
           onSizingChange={setSnapshot}
         >
           {active === "player" ? (
@@ -82,8 +87,23 @@ export default function MediaBoxDemo() {
             </div>
           ) : null}
         </MediaBox>
-        <div className="mt-2 rounded-lg bg-[var(--acr-card-nested)] px-3 py-2 font-mono text-[11px] text-muted-foreground">
-          {snapshot ? `${snapshot.box.width} x ${snapshot.box.height}` : "measuring..."}
+        {/* Constraints → result: the width bounds read as compact pills (the inputs),
+            the live measured size is the emphasized output. */}
+        <div className="mt-2 flex items-center justify-between gap-3 rounded-lg bg-[var(--acr-card-nested)] px-3 py-2">
+          <div className="flex items-center gap-1.5">
+            <Badge variant="secondary" size="sm" className="tabular-nums">min {MIN_WIDTH}</Badge>
+            <Badge variant="secondary" size="sm" className="tabular-nums">max {MAX_WIDTH}</Badge>
+          </div>
+          <span className="text-[12px] tabular-nums text-foreground">
+            {snapshot ? (
+              <>
+                {snapshot.box.width} × {snapshot.box.height}
+                <span className="ml-1 text-muted-foreground">px</span>
+              </>
+            ) : (
+              <span className="text-muted-foreground">measuring…</span>
+            )}
+          </span>
         </div>
       </div>
     </ExampleBackdrop>

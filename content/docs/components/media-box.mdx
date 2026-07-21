@@ -4,11 +4,18 @@ description: A measured media frame for images, video posters, and player overla
 ---
 
 `MediaBox` is a reusable media frame. It measures the available column width,
-keeps a stable image/video preview size, clips children to rounded corners, and
-leaves playback or action controls to the caller through `children`.
+sizes a frame to the media's **natural aspect ratio** — so the cover fills it with
+no crop and no black letterbox bars — clips children to rounded corners, and leaves
+playback or action controls to the caller through `children`.
+
+It composes [`CardMedia`](/docs/components/card): CardMedia owns the `object-cover`
+cover image plus the load retry-on-error and fallback, while MediaBox's job is to
+measure the media, pick the natural ratio, and bound the frame width by
+`minWidth` / `maxWidth` / `maxHeight`.
 
 It does **not** own a video player. Compose an Artplayer, iframe, or custom
-controls in the overlay slot when the consuming app needs playback.
+controls in the overlay slot when the consuming app needs playback; a `<video>`
+child is clipped to the frame's rounded corners.
 
 ## Installation
 
@@ -38,12 +45,13 @@ import { MediaBox } from "@/components/acrylic/media-box"
 
 | prop | type | default | description |
 | --- | --- | --- | --- |
-| `kind` | `"image" \| "video"` | `"image"` | switches sizing rules |
+| `kind` | `"image" \| "video"` | `"image"` | selects the default `maxHeight` |
 | `src` | `string` | — | image URL or video poster URL |
-| `naturalWidth` / `naturalHeight` | `number` | — | known intrinsic poster/image size |
+| `naturalWidth` / `naturalHeight` | `number` | — | known intrinsic poster/image size; skips measurement (no reflow) |
 | `mediaSize` | `{ width: number; height: number } \| null` | — | actual media size, preferred over poster size |
-| `maxWidth` | `number` | — | cap the measured frame width |
-| `maxHeight` | `number` | image: `510`, video: `507` | cap tall media |
+| `minWidth` | `number` | — | hard floor on frame width — wins over `maxWidth` / `maxHeight` on conflict |
+| `maxWidth` | `number` | — | cap the frame width |
+| `maxHeight` | `number` | image: `510`, video: `507` | cap frame height (reduces width to honor it) |
 | `frameClassName` | `string` | — | classes for the rounded frame |
 | `imageClassName` | `string` | — | classes for the poster/image |
 | `fallback` | `ReactNode` | image-off icon | custom broken-image fallback |

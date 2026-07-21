@@ -1,4 +1,7 @@
+"use client"
+
 import * as React from "react"
+import { ImageOff } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -109,6 +112,145 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+// Media sub-parts — the gallery / media-card anatomy on the frosted Card. CardMedia is
+// the fixed-ratio cover frame. Give it `src` and it OWNS the cover image (object-cover,
+// filling + cropping the ratio box) with the same load-error strategy as MediaBox: a
+// failed load retries with exponential backoff (`retryDelayMs * 2 ** attempt`), and after
+// `maxRetries` it gives up and shows `fallback` (default `ImageOff`). A missing `src`
+// with a `fallback` shows the placeholder straight away — the avatar-with-no-photo case.
+// Without `src`, it's just a frame: a direct `<img>` child is still auto-covered
+// (`[&>img]:size-full [&>img]:object-cover`). Either way, badges and the caption overlay
+// ride inside it as positioned children. Pass `ratio` ("16 / 9", "2 / 3", "1 / 1") to
+// lock the aspect so a grid stays uniform.
+//
+// CardMediaOverlay is the caption-on-media variant: a bottom scrim
+// (`bg-gradient-to-t from-black/85`) that darkens the media so text stays legible.
+// Nesting is the whole point — put the SAME `CardTitle` / `CardDescription` inside and
+// the overlay retypes them for on-media contrast: white / white-70, stepped down to the
+// caption scale (title 15→13, description 13→12) and truncated. The "caption under the
+// media" variant is not a component — it's just CardTitle / CardDescription in a padded
+// div BELOW CardMedia, which needs no special treatment.
+const CARD_MEDIA_DEFAULT_MAX_RETRIES = 2
+const CARD_MEDIA_DEFAULT_RETRY_DELAY_MS = 800
+
+function CardMedia({
+  className,
+  ratio,
+  style,
+  src,
+  alt = "",
+  fallback,
+  imageClassName,
+  maxRetries = CARD_MEDIA_DEFAULT_MAX_RETRIES,
+  retryDelayMs = CARD_MEDIA_DEFAULT_RETRY_DELAY_MS,
+  onNaturalSize,
+  children,
+  ...props
+}: React.ComponentProps<"div"> & {
+  ratio?: string
+  src?: string
+  alt?: string
+  fallback?: React.ReactNode
+  imageClassName?: string
+  /** Failed loads to retry with backoff before giving up and showing `fallback`. */
+  maxRetries?: number
+  /** Base backoff delay in ms; doubles each attempt (attempt 0 waits this long, attempt 1 waits 2x, ...). */
+  retryDelayMs?: number
+  /** Fired with the owned image's intrinsic pixel size once it loads — lets a parent
+   *  (e.g. MediaBox) size a frame to the media's natural aspect. */
+  onNaturalSize?: (width: number, height: number) => void
+}) {
+  const retryTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [failed, setFailed] = React.useState(false)
+  const [attempt, setAttempt] = React.useState(0)
+  const [pending, setPending] = React.useState(false)
+
+  const clearRetryTimer = React.useCallback(() => {
+    if (retryTimeoutRef.current) {
+      clearTimeout(retryTimeoutRef.current)
+      retryTimeoutRef.current = null
+    }
+  }, [])
+
+  // A new src is a fresh load: drop any in-flight retry and reset the attempt/fail state.
+  React.useLayoutEffect(() => {
+    clearRetryTimer()
+    setFailed(false)
+    setAttempt(0)
+    setPending(false)
+  }, [src, clearRetryTimer])
+
+  React.useEffect(() => clearRetryTimer, [clearRetryTimer])
+
+  const handleImageError = React.useCallback(() => {
+    if (attempt >= maxRetries) {
+      setFailed(true)
+      return
+    }
+    setPending(true)
+    const delay = retryDelayMs * 2 ** attempt
+    retryTimeoutRef.current = setTimeout(() => {
+      retryTimeoutRef.current = null
+      setAttempt((a) => a + 1)
+      setPending(false)
+    }, delay)
+  }, [attempt, maxRetries, retryDelayMs])
+
+  // Show the placeholder when we've given up (`failed`) or there's no src to load but a
+  // fallback was supplied. During a retry backoff (`pending`) show neither — a brief gap.
+  const showFallback = !pending && (failed || (!src && fallback != null))
+
+  return (
+    <div
+      data-slot="card-media"
+      className={cn("relative w-full overflow-hidden [&>img]:size-full [&>img]:object-cover", className)}
+      style={ratio ? { aspectRatio: ratio, ...style } : style}
+      {...props}
+    >
+      {src && !failed && !pending ? (
+        // key={attempt} remounts the <img> so a retry re-requests the same URL.
+        <img
+          key={attempt}
+          src={src}
+          alt={alt}
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          className={cn("size-full object-cover", imageClassName)}
+          onLoad={(event) => {
+            if (attempt !== 0) setAttempt(0)
+            const image = event.currentTarget
+            if (image.naturalWidth && image.naturalHeight) {
+              onNaturalSize?.(image.naturalWidth, image.naturalHeight)
+            }
+          }}
+          onError={handleImageError}
+        />
+      ) : null}
+      {showFallback ? (
+        <div className="absolute inset-0 flex items-center justify-center bg-[var(--acr-card-nested)] text-muted-foreground/50">
+          {fallback ?? <ImageOff className="size-7" />}
+        </div>
+      ) : null}
+      {children}
+    </div>
+  )
+}
+
+function CardMediaOverlay({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-media-overlay"
+      className={cn(
+        "absolute inset-x-0 bottom-0 flex flex-col gap-0.5 bg-gradient-to-t from-black/85 to-transparent px-3 pb-2.5 pt-8",
+        "[&_[data-slot=card-title]]:self-stretch [&_[data-slot=card-title]]:truncate [&_[data-slot=card-title]]:text-[13px] [&_[data-slot=card-title]]:leading-snug [&_[data-slot=card-title]]:text-white",
+        "[&_[data-slot=card-description]]:truncate [&_[data-slot=card-description]]:text-[12px] [&_[data-slot=card-description]]:leading-snug [&_[data-slot=card-description]]:text-white/70",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
 export {
   Card,
   CardHeader,
@@ -117,4 +259,6 @@ export {
   CardAction,
   CardContent,
   CardFooter,
+  CardMedia,
+  CardMediaOverlay,
 }

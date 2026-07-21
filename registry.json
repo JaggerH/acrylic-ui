@@ -257,6 +257,9 @@
       "type": "registry:component",
       "title": "Card",
       "description": "Dark frosted-glass (acrylic) surface card — a charcoal translucent pane over a blurred backdrop. Flat at rest, soft float shadow + lift on hover (interactive). Composes into list rows, tiles, and panels.",
+      "dependencies": [
+        "lucide-react"
+      ],
       "files": [
         {
           "path": "registry/acrylic/card.tsx",
@@ -272,12 +275,10 @@
       "name": "media-box",
       "type": "registry:component",
       "title": "Media Box",
-      "description": "A measured image/video frame with rounded clipping, poster fallback, stable sizing rules, and a children overlay slot for player controls. It does not own playback state.",
-      "dependencies": [
-        "lucide-react"
-      ],
+      "description": "A frame sized to the media's natural aspect ratio (no letterbox), with rounded clipping and a children overlay slot for player controls. Composes CardMedia for the cover image + retry/fallback; it does not own playback state.",
       "registryDependencies": [
-        "https://acrylic-ui.vercel.app/r/acrylic.json"
+        "https://acrylic-ui.vercel.app/r/acrylic.json",
+        "https://acrylic-ui.vercel.app/r/card.json"
       ],
       "files": [
         {

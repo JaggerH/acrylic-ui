@@ -2,10 +2,9 @@
 
 import * as React from "react"
 
-import { cn } from "@/lib/utils"
 import { Badge } from "@/registry/acrylic/badge"
 import { ButtonGroup, ButtonGroupItem } from "@/registry/acrylic/button-group"
-import { Card, CardDescription, CardTitle } from "@/registry/acrylic/card"
+import { Card, CardDescription, CardMedia, CardMediaOverlay, CardTitle } from "@/registry/acrylic/card"
 import { ExampleBackdrop } from "@/components/example-backdrop"
 
 // A gallery / media-card recipe on the acrylic Card, with two live segmented
@@ -52,10 +51,7 @@ function MediaCard({ cover, ratio, style }: { cover: Cover; ratio: string; style
       tabIndex={0}
       className={`group flex flex-col overflow-hidden p-0 text-left focus:outline-none ${HOVER_FLOAT}`}
     >
-      <div className="relative w-full overflow-hidden" style={{ aspectRatio: ratio }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={cover.src} alt="" loading="lazy" className="size-full object-cover" />
-
+      <CardMedia ratio={ratio} src={cover.src}>
         {cover.badge ? (
           <Badge
             size="sm"
@@ -65,14 +61,18 @@ function MediaCard({ cover, ratio, style }: { cover: Cover; ratio: string; style
           </Badge>
         ) : null}
 
+        {/* overlay caption — the scrim + on-media retyping (white, 13/12, truncate) live
+            in CardMediaOverlay, so the same CardTitle / CardDescription just nest in. */}
         {overlay ? (
-          <div className="absolute inset-x-0 bottom-0 flex flex-col gap-0.5 bg-gradient-to-t from-black/85 to-transparent px-3 pb-2.5 pt-8">
-            <CardTitle className={cn(CAPTION_TITLE, "text-white")}>{cover.title}</CardTitle>
-            <CardDescription className={cn(CAPTION_SUB, "text-white/70")}>{cover.sub}</CardDescription>
-          </div>
+          <CardMediaOverlay>
+            <CardTitle>{cover.title}</CardTitle>
+            <CardDescription>{cover.sub}</CardDescription>
+          </CardMediaOverlay>
         ) : null}
-      </div>
+      </CardMedia>
 
+      {/* default caption — under the media, so it's plain layout: no component needed,
+          just the compact caption type on the shared CardTitle / CardDescription. */}
       {!overlay ? (
         <div className="flex flex-col gap-0.5 px-3 pb-3 pt-2.5">
           <CardTitle className={CAPTION_TITLE}>{cover.title}</CardTitle>
