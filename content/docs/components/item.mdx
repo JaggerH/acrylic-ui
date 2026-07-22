@@ -212,11 +212,12 @@ the same mechanism `ItemMedia` already uses for `group-data-[size=*]/item:`:
 </Item>
 ```
 
-A `Badge` nested inside doesn't need a matching rule — `secondary` and
-`outline` already read `group-data-[selected=true]/item:` and escalate on
-their own (see [Badge](/docs/components/badge)). Any other child whose color
-is hard-coded rather than inherited needs the same `[&[data-selected=true]_[data-slot=…]]`
-treatment as `item-title`/`item-description`/`item-meta` above.
+A `Badge` or an `ItemMedia` (`icon`/`image` variant) nested inside doesn't need
+a matching rule — both already read `group-data-[selected=true]/item:` and
+escalate on their own (see [Badge](/docs/components/badge)). Any other child
+whose color is hard-coded rather than inherited needs the same
+`[&[data-selected=true]_[data-slot=…]]` treatment as
+`item-title`/`item-description`/`item-meta` above.
 
 ### ItemGroup
 

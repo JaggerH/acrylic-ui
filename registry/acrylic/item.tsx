@@ -68,12 +68,18 @@ function ItemMedia({
       className={cn(
         "flex shrink-0 items-center justify-center rounded-[8px] text-muted-foreground",
         "group-data-[size=sm]/item:rounded-[6px] group-data-[size=xs]/item:rounded-[5px]",
+        // Same assumption as Badge's secondary/outline (see badge.tsx): the icon
+        // color and the --acr-card-nested wash both read against a normal panel
+        // backdrop. Nested in a selected Item (solid bg-primary), the wash barely
+        // tints the accent color while the icon stays muted-foreground — escalate
+        // through the same group-data-[selected=true]/item: hook.
+        "group-data-[selected=true]/item:text-primary-foreground/85",
         variant === "default" &&
           "size-10 group-data-[size=sm]/item:size-8 group-data-[size=xs]/item:size-7 [&>svg]:size-5 group-data-[size=sm]/item:[&>svg]:size-4 group-data-[size=xs]/item:[&>svg]:size-3.5",
         variant === "icon" &&
-          "size-10 bg-[var(--acr-card-nested)] group-data-[size=sm]/item:size-8 group-data-[size=xs]/item:size-7 [&>svg]:size-5 group-data-[size=sm]/item:[&>svg]:size-4 group-data-[size=xs]/item:[&>svg]:size-3.5",
+          "size-10 bg-[var(--acr-card-nested)] group-data-[selected=true]/item:bg-white/15 group-data-[size=sm]/item:size-8 group-data-[size=xs]/item:size-7 [&>svg]:size-5 group-data-[size=sm]/item:[&>svg]:size-4 group-data-[size=xs]/item:[&>svg]:size-3.5",
         variant === "image" &&
-          "size-12 overflow-hidden bg-[var(--acr-card-nested)] group-data-[size=sm]/item:size-10 group-data-[size=xs]/item:size-8 [&>img]:size-full [&>img]:object-cover",
+          "size-12 overflow-hidden bg-[var(--acr-card-nested)] group-data-[selected=true]/item:bg-white/15 group-data-[size=sm]/item:size-10 group-data-[size=xs]/item:size-8 [&>img]:size-full [&>img]:object-cover",
         variant === "avatar" &&
           "size-10 rounded-full bg-transparent group-data-[size=sm]/item:size-8 group-data-[size=xs]/item:size-7",
         className
