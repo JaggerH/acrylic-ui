@@ -106,7 +106,7 @@
           "--acr-field": "rgba(255, 255, 255, 0.05)",
           "--acr-hover": "rgba(255, 255, 255, 0.05)",
           "--acr-border": "#2a2a2c",
-          "--acr-border-soft": "#232325",
+          "--acr-border-soft": "rgba(255, 255, 255, 0.08)",
           "--acr-button-group-divider": "rgba(255, 255, 255, 0.20)",
           "--acr-button-group-control": "#3a3a3f",
           "--acr-control": "#1c1c1e",

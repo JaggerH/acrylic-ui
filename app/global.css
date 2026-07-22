@@ -156,7 +156,14 @@
   --acr-field: rgba(255, 255, 255, 0.05);
   --acr-hover: rgba(255, 255, 255, 0.05);
   --acr-border: #2a2a2c;
-  --acr-border-soft: #232325;
+  /* A relative white overlay, not a hand-picked hex — #232325 used to sit ~1
+     level from --acr-surface (#222226) and ~7 from --acr-panel (#1c1c1e),
+     collapsing to invisible wherever a border-soft edge is drawn ON a surface/
+     panel instead of directly on --background. rgba(255,255,255,0.08) keeps a
+     ~18-20 level gap against any of --background/--acr-panel/--acr-surface,
+     matching the light theme's own border-soft-vs-surface gap, and (like the
+     .acrylic theme below) can't re-collapse if a surface token is retuned later. */
+  --acr-border-soft: rgba(255, 255, 255, 0.08);
   --acr-button-group-divider: rgba(255, 255, 255, 0.20);
   --acr-button-group-control: #3a3a3f;
   --acr-control: #1c1c1e;

@@ -24,10 +24,6 @@ import {
 import { ExampleBackdrop } from "@/components/example-backdrop"
 import { Button } from "@/registry/acrylic/button"
 import {
-  ButtonGroup,
-  ButtonGroupSeparator,
-} from "@/registry/acrylic/button-group"
-import {
   Item,
   ItemAction,
   ItemContent,
@@ -358,63 +354,39 @@ export default function ShellMail() {
                 className="min-w-[425px] flex-1"
               >
                 <ShellNavbar className="h-[49px] justify-between px-1.5">
-                  <ButtonGroup variant="ghost" size="large" shape="rect">
-                    <Button
-                      icon
-                      variant="ghost"
-                      size="large"
-                      aria-label="Archive"
-                    >
-                      <Archive />
+                  <div className="flex h-7 items-center gap-0.5">
+                    <Button icon variant="ghost" size="large" aria-label="Archive">
+                      <Archive strokeWidth={1.5} />
                     </Button>
-                    <ButtonGroupSeparator />
                     <Button
                       icon
                       variant="ghost"
                       size="large"
                       aria-label="Archive junk"
                     >
-                      <ArchiveX />
+                      <ArchiveX strokeWidth={1.5} />
                     </Button>
-                    <ButtonGroupSeparator />
-                    <Button
-                      icon
-                      variant="ghost"
-                      size="large"
-                      aria-label="Delete"
-                    >
-                      <Trash2 />
+                    <Button icon variant="ghost" size="large" aria-label="Delete">
+                      <Trash2 strokeWidth={1.5} />
                     </Button>
-                  </ButtonGroup>
+                  </div>
                   <div className="flex h-7 items-center gap-6">
-                    <ButtonGroup variant="ghost" size="large" shape="rect">
+                    <div className="flex h-7 items-center gap-0.5">
+                      <Button icon variant="ghost" size="large" aria-label="Reply">
+                        <Reply strokeWidth={1.5} />
+                      </Button>
                       <Button
                         icon
                         variant="ghost"
                         size="large"
-                        aria-label="Reply"
+                        aria-label="Forward"
                       >
-                        <Reply />
+                        <Forward strokeWidth={1.5} />
                       </Button>
-                      <ButtonGroupSeparator />
-                      <Button
-                        icon
-                        variant="ghost"
-                        size="large"
-                        aria-label="Reply all"
-                      >
-                        <Forward />
+                      <Button icon variant="ghost" size="large" aria-label="Flag">
+                        <Flag strokeWidth={1.5} />
                       </Button>
-                      <ButtonGroupSeparator />
-                      <Button
-                        icon
-                        variant="ghost"
-                        size="large"
-                        aria-label="Flag"
-                      >
-                        <Flag />
-                      </Button>
-                    </ButtonGroup>
+                    </div>
                     <div className="flex items-center gap-1">
                       <Button
                         variant="ghost"
@@ -422,7 +394,7 @@ export default function ShellMail() {
                         aria-label="Previous message"
                         className="h-7 w-9 rounded-[6px] px-0"
                       >
-                        <ChevronLeft />
+                        <ChevronLeft strokeWidth={1.5} />
                       </Button>
                       <Button
                         variant="ghost"
@@ -430,7 +402,7 @@ export default function ShellMail() {
                         aria-label="Next message"
                         className="h-7 w-9 rounded-[6px] px-0"
                       >
-                        <ChevronRight />
+                        <ChevronRight strokeWidth={1.5} />
                       </Button>
                     </div>
                   </div>
