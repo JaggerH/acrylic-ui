@@ -42,3 +42,13 @@ import { Badge } from "@/components/acrylic/badge"
   `[a&]:hover:*` styles activate for the anchor.
 - It's a pill (`rounded-full`) at the kit's caption size; pass `className` for layout
   only, not to override its colors.
+- **Nested inside a selected `Item` row**, `secondary` and `outline` escalate
+  automatically: `Item`'s root carries `group/item`, and both variants read
+  `group-data-[selected=true]/item:` to swap onto a legible on-accent treatment
+  instead of their normal translucent-chip-over-panel fill. This is the same
+  cascading mechanism `ItemMedia` already uses for `group-data-[size=*]/item:` —
+  no prop, it just works when the Badge is a descendant of a selected `Item`.
+  `default` doesn't need it (it's already an opaque `bg-primary`/`text-primary-foreground`
+  pairing); avoid pairing a `default` badge with a selected row anyway, since two
+  adjacent solid `--primary` fills read as one shape. `ghost`/`link` inherit color
+  rather than set their own, so they already track a retargeted row.

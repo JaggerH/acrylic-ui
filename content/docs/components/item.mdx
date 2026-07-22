@@ -170,6 +170,7 @@ The main item component.
 | --- | --- | --- |
 | `variant` | `"default" \| "outline" \| "muted"` | `"default"` |
 | `size` | `"default" \| "sm" \| "xs"` | `"default"` |
+| `selected` | `boolean` | `false` |
 | `asChild` | `boolean` | `false` |
 
 ```tsx
@@ -180,6 +181,42 @@ The main item component.
   </ItemContent>
 </Item>
 ```
+
+#### Selected state
+
+`selected` only sets `data-selected` and a faint `bg-primary/10` — enough for a
+subtle highlight, but a **clickable list row** (Mail's message list, a source
+picker) usually wants the stronger macOS treatment: a solid `bg-primary` fill
+with every text child escalated to `text-primary-foreground`. `Item`'s root
+carries `group/item`, so retarget each child's `data-slot` explicitly — this is
+the same mechanism `ItemMedia` already uses for `group-data-[size=*]/item:`:
+
+```tsx
+<Item
+  asChild
+  selected={active}
+  className={[
+    "data-[selected=true]:bg-primary",
+    "data-[selected=true]:text-primary-foreground",
+    "[&[data-selected=true]_[data-slot=item-title]]:text-primary-foreground",
+    "[&[data-selected=true]_[data-slot=item-description]]:text-primary-foreground/80",
+    "[&[data-selected=true]_[data-slot=item-meta]]:text-primary-foreground/80",
+  ].join(" ")}
+>
+  <button type="button" onClick={() => setActive(id)}>
+    <ItemContent>
+      <ItemTitle>Title</ItemTitle>
+      <ItemDescription>Description</ItemDescription>
+    </ItemContent>
+  </button>
+</Item>
+```
+
+A `Badge` nested inside doesn't need a matching rule — `secondary` and
+`outline` already read `group-data-[selected=true]/item:` and escalate on
+their own (see [Badge](/docs/components/badge)). Any other child whose color
+is hard-coded rather than inherited needs the same `[&[data-selected=true]_[data-slot=…]]`
+treatment as `item-title`/`item-description`/`item-meta` above.
 
 ### ItemGroup
 
