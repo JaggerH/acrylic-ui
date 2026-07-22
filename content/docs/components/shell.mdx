@@ -153,3 +153,148 @@ Use the same structure for a Notes-style source list, note list, and editor.
 - `ShellNavbar` and `ShellPanelHeader` draw their own horizontal bottom rules.
   `ShellPanel` owns vertical dividers, so two adjacent panels do not double
   their borders.
+- List panels (`ShellPanel variant="list"` + `ShellContent padding="flush"`) are
+  not a separate list API — rows are `Item` compositions (`ItemContent` /
+  `ItemTitle` / `ItemDescription` / `ItemMeta`), selection is `Item`'s own
+  `selected` prop, and rows are divided with `ItemSeparator`. Mail and Notes both
+  compose the same `Item` anatomy; see their source for the row + selection +
+  separator pattern.
+
+## API Reference
+
+Every Shell sub-part renders a plain element with a `data-slot` styling hook and
+forwards all native props (`className`, `onClick`, `style`, …). `className` is for
+layout only — color always flows through the `--acr-*` tokens. Three legacy aliases
+ship for back-compat: `ShellPane` (= `ShellPanel`), `ShellToolbar` (= `ShellNavbar`),
+`ShellTitle` (= `ShellNavbarTitle`) — prefer the primary names in new code.
+
+### Shell
+
+The outer app frame and geometry owner. Wraps `SidebarProvider`, so `defaultOpen` /
+`open` / `onOpenChange` control the sidebar's collapsed state. Renders
+`<div data-slot="shell" data-variant>`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `variant` | `"default" \| "inset"` | `"default"` | `"inset"` adds the rounded frosted-glass window surface (`acr-frosted`, blur, shadow) used for preview/window contexts; `"default"` is a flat full-bleed frame. |
+| `sidebarWidth` | `number \| string` | — | Sets `--sidebar-width` (numbers are treated as px). Read by `Sidebar`'s own layout — set it here, not as a `className` width on `Sidebar`. |
+| `sidebarCollapsedWidth` | `number \| string` | — | Sets `--sidebar-width-icon`, the collapsed icon-rail width. |
+| `defaultOpen` / `open` / `onOpenChange` | `SidebarProvider` props | — | Forwarded to the underlying `SidebarProvider` to control the sidebar's open/collapsed state. |
+| `className` | `string` | — | Merged onto the frame (layout only). |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the root `<div>`. |
+
+### ShellInset
+
+The main region beside the sidebar — a flex column that clips overflow. Renders
+`<main data-slot="shell-inset">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the region. |
+| `...props` | `React.ComponentProps<"main">` | — | Forwarded to the `<main>`. |
+
+### ShellNavbar
+
+An inset-level toolbar row; place directly under `ShellInset` when it should span
+every panel below it (as in Mail), or inside a single panel for per-panel chrome.
+Draws its own bottom rule. Renders `<div data-slot="shell-navbar" data-size>`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `size` | `"default" \| "compact" \| "large"` | `"default"` | Row height: compact `h-10`, default `h-11`, large `h-[52px]`. |
+| `className` | `string` | — | Merged onto the row. |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
+
+### ShellNavbarHeading
+
+Flexible title/subtitle stack for `ShellNavbar` — takes the remaining row width.
+Renders `<div data-slot="shell-navbar-heading">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the stack. |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
+
+### ShellNavbarTitle / ShellNavbarSubtitle
+
+Compact title (`13px` semibold) and subtitle (`11px` muted) text for navbar chrome,
+each truncating. Render `<div data-slot="shell-navbar-title">` /
+`<div data-slot="shell-navbar-subtitle">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the text. |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
+
+### ShellNavbarActions
+
+Right-aligned action cluster (`ml-auto`) with standard spacing, for navbar
+toolbar buttons. Renders `<div data-slot="shell-navbar-actions">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the cluster. |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
+
+### ShellBody
+
+The horizontal region below an inset-level navbar; lays out adjacent
+`ShellPanel`s in a row. Renders `<div data-slot="shell-body">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the row. |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
+
+### ShellPanel
+
+A split pane inside `ShellBody`. Adjacent panels share one vertical divider
+(`[&+&]:border-l`) so borders never double up. Renders
+`<section data-slot="shell-panel" data-variant>`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `variant` | `"default" \| "list" \| "detail"` | `"default"` | `"list"` sets a fixed `w-72` non-growing column (source/message/note lists); `"detail"` grows at `flex-[1.35]` (reading/detail panes). Override the width with `className` when the app needs a different split. |
+| `className` | `string` | — | Merged onto the pane. |
+| `...props` | `React.ComponentProps<"section">` | — | Forwarded to the `<section>`. |
+
+### ShellPanelHeader
+
+A per-panel title/meta strip below the navbar; draws its own bottom rule.
+Renders `<div data-slot="shell-panel-header">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the strip. |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
+
+### ShellPanelTitle / ShellPanelDescription
+
+Compact title (`13px` semibold) and metadata (`11px` muted) text for panel
+headers, each truncating. Render `<div data-slot="shell-panel-title">` /
+`<div data-slot="shell-panel-description">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the text. |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
+
+### ShellPanelActions
+
+Right-aligned action cluster (`ml-auto`) for `ShellPanelHeader`, the per-panel
+counterpart to `ShellNavbarActions`. Renders `<div data-slot="shell-panel-actions">`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the cluster. |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |
+
+### ShellContent
+
+The scrollable body of a panel. Renders `<div data-slot="shell-content" data-padding>`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `padding` | `"flush" \| "default" \| "reading"` | `"flush"` | `"flush"` adds no padding (for full-bleed lists composed of `Item` rows); `"default"` adds `p-3`; `"reading"` adds `px-8 py-7` for prose/detail panes. |
+| `className` | `string` | — | Merged onto the scroll container. |
+| `...props` | `React.ComponentProps<"div">` | — | Forwarded to the `<div>`. |

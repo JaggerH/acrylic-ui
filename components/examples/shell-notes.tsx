@@ -6,6 +6,13 @@ import { Folder, Maximize2, Minimize2, PenLine, Search } from "lucide-react"
 import { ExampleBackdrop } from "@/components/example-backdrop"
 import { Button } from "@/registry/acrylic/button"
 import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemSeparator,
+  ItemTitle,
+} from "@/registry/acrylic/item"
+import {
   Shell,
   ShellBody,
   ShellContent,
@@ -28,15 +35,45 @@ import {
 
 const FOLDERS = ["All iCloud", "Acrylic", "Components", "Archive"]
 const NOTES = [
-  "Shell component boundary",
-  "macOS Mail split view",
-  "Notes editor padding",
-  "Registry docs outline",
+  {
+    title: "Shell component boundary",
+    preview:
+      "Shell is a composable layout primitive. App names belong in examples, not exports.",
+    body: [
+      "A shell describes the app frame: sidebar, inset, panels, navbar, and scrollable content. Users compose those pieces into Mail, Notes, or their own product surface.",
+      "Panel headers are for local list metadata. Reading and editing surfaces should let the document title live inside the content.",
+    ],
+  },
+  {
+    title: "macOS Mail split view",
+    preview:
+      "The Mail example reuses the same Item composition for its message list.",
+    body: [
+      "Density, truncation, and selection come from Item, not from a mail-only row component. Notes should read the same list.",
+    ],
+  },
+  {
+    title: "Notes editor padding",
+    preview: "The reading pane uses ShellContent padding=\"reading\" for prose margins.",
+    body: [
+      "The editor column caps its width and relies on ShellContent's reading padding rather than a bespoke max-width wrapper.",
+    ],
+  },
+  {
+    title: "Registry docs outline",
+    preview: "Shell's API Reference should mirror Card's per-part prop tables.",
+    body: [
+      "Every Shell sub-part renders a plain element with a data-slot hook and forwards native props — the docs should say so explicitly per part.",
+    ],
+  },
 ]
 
 export default function ShellNotes() {
   const [expanded, setExpanded] = React.useState(false)
+  const [selectedTitle, setSelectedTitle] = React.useState(NOTES[0].title)
   const ExpandIcon = expanded ? Minimize2 : Maximize2
+  const selectedNote =
+    NOTES.find((note) => note.title === selectedTitle) ?? NOTES[0]
 
   return (
     <ExampleBackdrop className={expanded ? "min-h-0" : undefined}>
@@ -106,28 +143,42 @@ export default function ShellNotes() {
           </ShellNavbar>
 
           <ShellBody>
-            <ShellPanel variant="list" className="w-72">
+            <ShellPanel variant="list" className="w-56">
               <ShellContent padding="flush" className="scrollbar-mac">
-                {NOTES.map((note, index) => (
-                  <button
-                    className={[
-                      "block w-full border-b border-[var(--acr-border-soft)] px-3 py-3.5 text-left",
-                      index === 0
-                        ? "bg-primary/10"
-                        : "hover:bg-[var(--acr-hover)]",
-                    ].join(" ")}
-                    key={note}
-                    type="button"
-                  >
-                    <div className="truncate text-[13px] font-semibold">
-                      {note}
-                    </div>
-                    <div className="mt-1 line-clamp-2 text-[11px] leading-snug text-muted-foreground">
-                      Shell is a composable layout primitive. App names belong in
-                      examples, not exports.
-                    </div>
-                  </button>
-                ))}
+                {NOTES.map((note, index) => {
+                  const nextNote = NOTES[index + 1]
+                  const showSeparator =
+                    nextNote &&
+                    note.title !== selectedTitle &&
+                    nextNote.title !== selectedTitle
+
+                  return (
+                    <React.Fragment key={note.title}>
+                      <Item
+                        asChild
+                        size="sm"
+                        selected={note.title === selectedTitle}
+                        className="w-full rounded-none px-3 py-3.5 text-left data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground [&[data-selected=true]_[data-slot=item-description]]:text-primary-foreground/80"
+                      >
+                        <button
+                          type="button"
+                          className="w-full"
+                          onClick={() => setSelectedTitle(note.title)}
+                        >
+                          <ItemContent>
+                            <ItemTitle className="text-[13px] font-semibold">
+                              {note.title}
+                            </ItemTitle>
+                            <ItemDescription className="mt-1">
+                              {note.preview}
+                            </ItemDescription>
+                          </ItemContent>
+                        </button>
+                      </Item>
+                      {showSeparator ? <ItemSeparator /> : null}
+                    </React.Fragment>
+                  )
+                })}
               </ShellContent>
             </ShellPanel>
 
@@ -136,25 +187,20 @@ export default function ShellNotes() {
                 <article className="mx-auto max-w-2xl space-y-4">
                   <div className="space-y-1">
                     <h3 className="text-[24px] font-semibold leading-tight">
-                      Shell component boundary
+                      {selectedNote.title}
                     </h3>
                     <p className="text-[12px] text-muted-foreground">
                       Edited today
                     </p>
                   </div>
-                  <p className="text-[13px] leading-6 text-foreground/85">
-                    A shell describes the app frame: sidebar, inset, panels,
-                    navbar, and scrollable content. Users compose those pieces
-                    into Mail, Notes, or their own product surface.
-                  </p>
-                  <h4 className="pt-2 text-[15px] font-semibold">
-                    Shell component boundary
-                  </h4>
-                  <p className="text-[13px] leading-6 text-foreground/85">
-                    Panel headers are for local list metadata. Reading and
-                    editing surfaces should let the document title live inside
-                    the content.
-                  </p>
+                  {selectedNote.body.map((paragraph) => (
+                    <p
+                      key={paragraph}
+                      className="text-[13px] leading-6 text-foreground/85"
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
                 </article>
               </ShellContent>
             </ShellPanel>
