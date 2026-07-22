@@ -36,6 +36,14 @@ import { Badge } from "@/components/acrylic/badge"
 - **`ghost`** — no fill or border; a hover tint only when used as a link.
 - **`link`** — accent text with a hover underline.
 
+## Example — inside a selected Item
+
+`secondary` and `outline` escalate automatically when nested inside a selected
+`Item` row (compare each pair below — resting vs. selected, same `Badge`
+markup, no extra className).
+
+<ComponentPreview name="badge-selected-item" />
+
 ## Notes
 
 - Render as a link with `asChild`: `<Badge asChild><a href="…">New</a></Badge>` — the

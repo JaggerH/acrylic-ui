@@ -156,20 +156,28 @@ export default function ShellNotes() {
                     <React.Fragment key={note.title}>
                       <Item
                         asChild
-                        size="sm"
+                        size="xs"
                         selected={note.title === selectedTitle}
-                        className="w-full rounded-none px-3 py-3.5 text-left data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground [&[data-selected=true]_[data-slot=item-description]]:text-primary-foreground/80"
+                        className={[
+                          "w-full rounded-none px-3 py-2",
+                          "items-start gap-0 text-left",
+                          "focus-visible:relative focus-visible:z-10",
+                          "data-[selected=true]:bg-primary",
+                          "data-[selected=true]:text-primary-foreground",
+                          "[&[data-selected=true]_[data-slot=item-title]]:text-primary-foreground",
+                          "[&[data-selected=true]_[data-slot=item-description]]:text-primary-foreground/80",
+                        ].join(" ")}
                       >
                         <button
                           type="button"
                           className="w-full"
                           onClick={() => setSelectedTitle(note.title)}
                         >
-                          <ItemContent>
-                            <ItemTitle className="text-[13px] font-semibold">
+                          <ItemContent className="flex min-w-0 flex-col">
+                            <ItemTitle className="min-w-0 text-[13px] font-semibold leading-4">
                               {note.title}
                             </ItemTitle>
-                            <ItemDescription className="mt-1">
+                            <ItemDescription className="mt-1 text-[11px] leading-[13px]">
                               {note.preview}
                             </ItemDescription>
                           </ItemContent>
