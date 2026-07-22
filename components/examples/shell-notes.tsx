@@ -13,11 +13,9 @@ import {
   ShellNavbar,
   ShellNavbarActions,
   ShellNavbarHeading,
+  ShellNavbarSubtitle,
   ShellNavbarTitle,
   ShellPanel,
-  ShellPanelDescription,
-  ShellPanelHeader,
-  ShellPanelTitle,
 } from "@/registry/acrylic/shell"
 import {
   Sidebar,
@@ -93,7 +91,8 @@ export default function ShellNotes() {
         <ShellInset>
           <ShellNavbar size="large" className="px-4">
             <ShellNavbarHeading>
-              <ShellNavbarTitle>Acrylic</ShellNavbarTitle>
+              <ShellNavbarTitle className="text-[15px] leading-5">Notes</ShellNavbarTitle>
+              <ShellNavbarSubtitle className="leading-[14px]">4 notes</ShellNavbarSubtitle>
             </ShellNavbarHeading>
             <ShellNavbarActions>
               <div className="flex h-7 w-40 items-center gap-2 rounded-[7px] bg-[var(--acr-field)] px-2 text-[12px] text-muted-foreground">
@@ -108,12 +107,6 @@ export default function ShellNotes() {
 
           <ShellBody>
             <ShellPanel variant="list" className="w-72">
-              <ShellPanelHeader className="h-[52px]">
-                <div className="min-w-0">
-                  <ShellPanelTitle className="text-[15px]">Notes</ShellPanelTitle>
-                  <ShellPanelDescription>4 notes</ShellPanelDescription>
-                </div>
-              </ShellPanelHeader>
               <ShellContent padding="flush" className="scrollbar-mac">
                 {NOTES.map((note, index) => (
                   <button

@@ -183,7 +183,7 @@ function MailListItem({
       size="xs"
       selected={selected}
       className={[
-        "w-full px-5 py-2.5",
+        "w-full rounded-none px-3 py-2",
         "items-start gap-0 text-left",
         "focus-visible:relative focus-visible:z-10",
         "data-[selected=true]:bg-primary",
@@ -320,32 +320,25 @@ export default function ShellMail() {
                     <SquarePen />
                   </Button>
                 </ShellPanelHeader>
-                <ShellContent
-                  padding="flush"
-                  className="scrollbar-mac overflow-x-hidden pt-1"
-                >
-                  <div className="ml-2 w-[208px]">
-                    {MESSAGES.map((message, index) => {
-                      const nextMessage = MESSAGES[index + 1]
-                      const showSeparator =
-                        nextMessage &&
-                        message.subject !== selectedSubject &&
-                        nextMessage.subject !== selectedSubject
+                <ShellContent padding="flush" className="scrollbar-mac">
+                  {MESSAGES.map((message, index) => {
+                    const nextMessage = MESSAGES[index + 1]
+                    const showSeparator =
+                      nextMessage &&
+                      message.subject !== selectedSubject &&
+                      nextMessage.subject !== selectedSubject
 
-                      return (
-                        <React.Fragment key={message.subject}>
-                          <MailListItem
-                            message={message}
-                            selected={message.subject === selectedSubject}
-                            onSelect={() => setSelectedSubject(message.subject)}
-                          />
-                          {showSeparator ? (
-                            <ItemSeparator className="mx-3" />
-                          ) : null}
-                        </React.Fragment>
-                      )
-                    })}
-                  </div>
+                    return (
+                      <React.Fragment key={message.subject}>
+                        <MailListItem
+                          message={message}
+                          selected={message.subject === selectedSubject}
+                          onSelect={() => setSelectedSubject(message.subject)}
+                        />
+                        {showSeparator ? <ItemSeparator /> : null}
+                      </React.Fragment>
+                    )
+                  })}
                 </ShellContent>
               </ShellPanel>
 
