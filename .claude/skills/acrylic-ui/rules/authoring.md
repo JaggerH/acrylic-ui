@@ -16,6 +16,7 @@ docs → register in this skill → verify. Deploy is what makes it installable.
 - Step 5 — register in this skill
 - Step 6 — verify & deploy
 - Token cheat-sheet (which form for which token)
+- Fixing an existing component (and propagating the fix)
 
 ---
 
@@ -118,3 +119,75 @@ Three files, all required for a working docs page:
 | Any `--acr-*` material token | arbitrary: `bg-[var(--acr-border)]`, `bg-[var(--acr-chip)]` | `--acr-*` are NOT mapped as `--color-acr-*` |
 | A value token NOT in `@theme` (e.g. `--label-tertiary`) | arbitrary: `text-[var(--label-tertiary)]` | **do not** write `text-label-tertiary` — that utility only exists where the host mapped `--color-label-tertiary`, so it silently breaks in the repo and in unmapped consumers |
 | Raw hex / rgb / `dark:` pair | never | the three theme blocks flip values for free |
+
+## Fixing an existing component (and propagating the fix)
+
+A defect can surface in a consuming app's UI while its actual cause lives in the
+vendored acrylic component — a color/token assumption that breaks under a
+composition the component never accounted for. Fixing it has two halves: locate
+and fix the defect at the source (here), then propagate the fix into every
+vendored copy that carries it. Both halves matter — patching only the consumer
+leaves the same defect waiting for the next component that composes the same way,
+and patching only here without syncing leaves consumers stale.
+
+### 1 — Diagnose: acrylic's problem, or the consumer's?
+
+Before touching any consumer code, decide where the defect actually lives:
+
+- **Reproduce it in isolation.** Compose the same combination (e.g. the failing
+  component nested inside another component's particular state) using only
+  acrylic-ui's own pieces — a scratch example, or an existing docs preview. If it
+  reproduces there, the defect is structural: some class in the vendored source
+  hard-codes a color/behavior that assumes a context the component doesn't
+  actually guarantee (e.g. "the surface underneath is always the neutral panel
+  background" — untrue once the component is nested inside a selected/accent
+  surface). That's an acrylic-side fix.
+- **Check whether a documented pattern was simply skipped.** If the component
+  already exposes the right mechanism (a prop, a documented recipe, an existing
+  `data-*`/`group-data-*` hook) and the consumer's code just didn't use it, that's
+  a consumer-side fix — apply it there, not here.
+- **A defect that repeats independently across more than one consumer, or across
+  more than one call site making the same reasonable composition, is strong
+  evidence it's the first kind** — nobody had a spec to follow, so multiple
+  people missed the same case the same way.
+
+### 2 — Fix at the source
+
+- Prefer **extending a mechanism the codebase already established** over
+  inventing a new one-off pattern. If a sibling component already reacts to a
+  parent's state via a `group-data-[...]/<group-name>:` selector (e.g. `ItemMedia`
+  reading `group-data-[size=*]/item:` off `Item`'s `group/item`), give the fixed
+  component the same kind of hook rather than asking every consumer to hand-write
+  a bespoke override.
+- Comment the *why*, not the *what* — future readers need the broken assumption
+  and the mechanism reused, not a restatement of the CSS.
+- If the fix teaches a usage pattern that wasn't obvious before (not just a
+  bugfix), give it a **live example** so the docs page shows the before/after
+  instead of only describing it in prose — see Step 4 above for adding one, and
+  don't forget `node scripts/gen-examples.mjs` or the preview renders blank.
+- Update the component's own `.mdx` (Notes / API Reference), and any other
+  component's docs whose documented recipe is now affected by the change.
+- `npm run types:check` must pass. `npm run registry:build` regenerates
+  `public/r/*.json` for local verification — it's gitignored, don't commit it.
+- Commit and push. Push is what deploys the hosted registry, which is what makes
+  the fix installable via `npx shadcn add @acrylic/<name>` — a consumer syncing a
+  hand-copied file before this lands is copying a fix that doesn't match what a
+  fresh install would pull.
+
+### 3 — Propagate to every vendored copy
+
+Do this once per consumer that vendors the fixed file, as its own change in that
+consumer's repo:
+
+- **Diff the vendored copy against the fixed registry source before touching
+  it.** No diff (or a trivial whitespace-only diff) means the copy has no local
+  patches — a straight copy of the new source is safe.
+- **Any real diff means the copy carries local patches** (host-specific tweaks,
+  extra props). Overwriting would silently discard them. Three-way merge instead:
+  base = the commit that first vendored the file, upstream = the new registry
+  source, local = the consumer's current file — apply the upstream delta while
+  keeping the local one.
+- Typecheck the consumer after copying/merging.
+- Commit the sync as its own change, scoped to just the synced file(s), and
+  reference the upstream commit in the message so the two are traceable to each
+  other later.
