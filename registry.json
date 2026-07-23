@@ -355,6 +355,26 @@
       ]
     },
     {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "title": "Acrylic Dropdown Menu",
+      "description": "The macOS 26 Menu (click-triggered popup) on the shared frosted acrylic material — the same glass as Card, Sidebar, and Context Menu. Identical row geometry, highlight accent, size variants, and shortcut column as Context Menu, just triggered by click instead of right-click. Radix Dropdown Menu; colors flip light/dark via the Acrylic theme tokens.",
+      "dependencies": [
+        "@radix-ui/react-dropdown-menu",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/dropdown-menu.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/dropdown-menu.tsx"
+        }
+      ]
+    },
+    {
       "name": "alert-dialog",
       "type": "registry:ui",
       "title": "Acrylic Alert Dialog",
