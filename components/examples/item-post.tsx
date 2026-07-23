@@ -23,8 +23,8 @@ import {
   ItemDescription,
   ItemFooter,
   ItemGroup,
-  ItemHeader,
   ItemMedia,
+  ItemMeta,
   ItemSeparator,
   ItemTitle,
 } from "@/registry/acrylic/item"
@@ -151,7 +151,7 @@ type PostKind = keyof typeof posts
 export default function PostDemo() {
   const [kind, setKind] = React.useState<PostKind>("wide")
   const [expanded, setExpanded] = React.useState(false)
-  const [commentsOpen, setCommentsOpen] = React.useState(false)
+  const [commentsOpen, setCommentsOpen] = React.useState(true)
   const post = posts[kind]
   const isLong = kind === "long"
   const bodyExpanded = isLong && expanded
@@ -165,7 +165,6 @@ export default function PostDemo() {
         onValueChange={(value) => {
           setKind(value as PostKind)
           setExpanded(false)
-          setCommentsOpen(false)
         }}
       >
         {tabs.map(([value, label]) => (
@@ -177,96 +176,92 @@ export default function PostDemo() {
 
       <ItemGroup className="w-full">
         <Item variant="outline" className="items-start">
-          <ItemHeader className="flex-row items-center gap-3">
-            <ItemMedia variant="avatar">
-              <Avatar>
-                <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  alt="Acrylic Design"
-                  className="grayscale"
-                />
-                <AvatarFallback>AD</AvatarFallback>
-              </Avatar>
-            </ItemMedia>
-            <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
+          <ItemMedia variant="avatar">
+            <Avatar>
+              <AvatarImage
+                src="https://github.com/shadcn.png"
+                alt="Acrylic Design"
+                className="grayscale"
+              />
+              <AvatarFallback>AD</AvatarFallback>
+            </Avatar>
+          </ItemMedia>
+
+          <ItemContent className="flex flex-col gap-2">
+            <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <ItemTitle>Acrylic Design</ItemTitle>
-                <ItemDescription>
-                  @acrylic-ui · {post.time}
-                </ItemDescription>
+                <ItemDescription>@acrylic-ui · {post.time}</ItemDescription>
               </div>
               <Badge variant="secondary" size="sm">
                 {post.source}
               </Badge>
             </div>
-            <ItemActions>
-              <Button variant="ghost" size="medium" icon aria-label="More options">
-                <MoreHorizontalIcon />
-              </Button>
-            </ItemActions>
-          </ItemHeader>
 
-          <ItemContent className="pl-[52px]">
-            <ItemTitle className="text-[14px]">{post.title}</ItemTitle>
-            <ItemDescription
-              className={bodyExpanded ? "mt-1 line-clamp-none" : "mt-1 line-clamp-3"}
-            >
-              {post.description}
-            </ItemDescription>
-            {isLong ? (
-              <Button
-                variant="ghost"
-                size="small"
-                className="mt-1 px-0"
-                onClick={() => setExpanded((value) => !value)}
+            <div>
+              <ItemTitle className="text-[14px]">{post.title}</ItemTitle>
+              <ItemDescription
+                className={bodyExpanded ? "mt-1 line-clamp-none" : "mt-1 line-clamp-3"}
               >
-                {expanded ? "Collapse" : "Expand"}
-              </Button>
+                {post.description}
+              </ItemDescription>
+              {isLong ? (
+                <Button
+                  variant="ghost"
+                  size="small"
+                  className="px-0"
+                  onClick={() => setExpanded((value) => !value)}
+                >
+                  {expanded ? "Collapse" : "Expand"}
+                </Button>
+              ) : null}
+              <PostMedia kind={kind} images={post.images} />
+            </div>
+
+            <ItemFooter className="pt-0">
+              <ButtonGroup size="small">
+                <Button
+                  variant="neutral"
+                  size="small"
+                  aria-pressed={commentsOpen}
+                  onClick={() => setCommentsOpen((value) => !value)}
+                >
+                  <MessageSquareIcon />
+                  {post.comments}
+                </Button>
+                <ButtonGroupSeparator />
+                <Button variant="neutral" size="small">
+                  <BookmarkIcon />
+                  Save
+                </Button>
+                <ButtonGroupSeparator />
+                <Button variant="neutral" size="small">
+                  <ExternalLinkIcon />
+                  Open
+                </Button>
+              </ButtonGroup>
+            </ItemFooter>
+
+            {commentsOpen ? (
+              <div className="flex flex-col">
+                <ItemSeparator />
+                {comments.map((comment) => (
+                  <React.Fragment key={comment.handle}>
+                    <CommentItem comment={comment} />
+                    {comment.replies?.map((reply) => (
+                      <CommentItem key={reply.handle} comment={reply} reply />
+                    ))}
+                  </React.Fragment>
+                ))}
+              </div>
             ) : null}
-            <PostMedia kind={kind} images={post.images} />
           </ItemContent>
 
-          <ItemFooter className="pl-[52px]">
-            <ButtonGroup size="small">
-              <Button
-                variant="neutral"
-                size="small"
-                aria-pressed={commentsOpen}
-                onClick={() => setCommentsOpen((value) => !value)}
-              >
-                <MessageSquareIcon />
-                {post.comments}
-              </Button>
-              <ButtonGroupSeparator />
-              <Button variant="neutral" size="small">
-                <BookmarkIcon />
-                Save
-              </Button>
-              <ButtonGroupSeparator />
-              <Button variant="neutral" size="small">
-                <ExternalLinkIcon />
-                Open
-              </Button>
-            </ButtonGroup>
-          </ItemFooter>
-
-          {commentsOpen ? (
-            <div className="basis-full pl-[52px]">
-              <div className="mt-1">
-                <ItemSeparator className="mb-2 bg-[var(--acr-border)]" />
-                <div className="flex flex-col gap-1">
-                  {comments.map((comment) => (
-                    <React.Fragment key={comment.handle}>
-                      <CommentItem comment={comment} />
-                      {comment.replies?.map((reply) => (
-                        <CommentItem key={reply.handle} comment={reply} reply />
-                      ))}
-                    </React.Fragment>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ) : null}
+          <ItemActions>
+            <Button variant="ghost" size="medium" icon aria-label="More options">
+              <MoreHorizontalIcon />
+            </Button>
+          </ItemActions>
         </Item>
       </ItemGroup>
     </div>
@@ -291,11 +286,7 @@ function CommentItem({
   reply?: boolean
 }) {
   return (
-    <Item
-      variant="default"
-      size="sm"
-      className={reply ? "ml-10 items-start !bg-transparent" : "items-start !bg-transparent"}
-    >
+    <Item variant="default" size="xs" className={reply ? "ml-10" : undefined}>
       <ItemMedia variant="avatar">
         <Avatar>
           <AvatarImage src={comment.avatar} alt={comment.author} className="grayscale" />
@@ -312,9 +303,9 @@ function CommentItem({
         <ItemDescription className="line-clamp-none text-foreground">
           {comment.body}
         </ItemDescription>
-        <div className="mt-1 text-[11px] leading-none text-muted-foreground">
+        <ItemMeta>
           {comment.time} · {comment.location}
-        </div>
+        </ItemMeta>
       </ItemContent>
     </Item>
   )
@@ -333,7 +324,7 @@ function PostMedia({
 
   if (kind === "portrait") {
     return (
-      <div className="mt-2 w-[180px] overflow-hidden rounded-[12px] border border-[var(--acr-border)] bg-[var(--acr-card-nested)]">
+      <div className="mt-2 w-[180px] overflow-hidden rounded-[12px] bg-[var(--acr-card-nested)]">
         <img src={images[0]} alt="" className="aspect-[3/4] size-full object-cover" />
       </div>
     )
@@ -345,7 +336,7 @@ function PostMedia({
         {images.map((image) => (
           <div
             key={image}
-            className="overflow-hidden rounded-[10px] border border-[var(--acr-border)] bg-[var(--acr-card-nested)]"
+            className="overflow-hidden rounded-[10px] bg-[var(--acr-card-nested)]"
           >
             <img src={image} alt="" className="aspect-[4/5] size-full object-cover" />
           </div>
@@ -366,7 +357,7 @@ function PostMedia({
           return (
             <div
               key={`${image}-${index}`}
-              className="relative overflow-hidden rounded-[9px] border border-[var(--acr-border)] bg-[var(--acr-card-nested)]"
+              className="relative overflow-hidden rounded-[9px] bg-[var(--acr-card-nested)]"
             >
               <img src={image} alt="" className="aspect-square size-full object-cover" />
               {showOverflow ? (
@@ -382,7 +373,7 @@ function PostMedia({
   }
 
   return (
-    <div className="mt-2 max-w-md overflow-hidden rounded-[12px] border border-[var(--acr-border)] bg-[var(--acr-card-nested)]">
+    <div className="mt-2 max-w-md overflow-hidden rounded-[12px] bg-[var(--acr-card-nested)]">
       <img src={images[0]} alt="" className="aspect-video size-full object-cover" />
     </div>
   )
