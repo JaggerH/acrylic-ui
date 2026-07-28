@@ -33,26 +33,55 @@ import { cn } from "@/lib/utils"
 // each holding TableRow, cells are TableHead (header) / TableCell (body).
 // Right-align numeric columns with className="text-right" on both head and cell.
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+function Table({
+  className,
+  scrollable = true,
+  ...props
+}: React.ComponentProps<"table"> & { scrollable?: boolean }) {
+  const table = (
+    <table
+      data-slot="table"
+      className={cn("w-full caption-bottom border-separate border-spacing-0 text-sm", className)}
+      {...props}
+    />
+  )
+  // scrollable={false} drops the wrapper. Acrylic divergence from shadcn, and the
+  // ONLY way `TableHeader sticky` works when the page (or an outer ScrollArea) is
+  // what scrolls: the wrapper's overflow-x makes IT the scroll container, so a
+  // sticky <th> would stick to a box that never scrolls vertically and read as
+  // if sticky were broken.
+  if (!scrollable) return table
   return (
     <div
       data-slot="table-container"
       className="relative w-full overflow-x-auto scrollbar-mac"
     >
-      <table
-        data-slot="table"
-        className={cn("w-full caption-bottom border-separate border-spacing-0 text-sm", className)}
-        {...props}
-      />
+      {table}
     </div>
   )
 }
 
-function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
+function TableHeader({
+  className,
+  sticky = false,
+  ...props
+}: React.ComponentProps<"thead"> & { sticky?: boolean }) {
   return (
     <thead
       data-slot="table-header"
-      className={cn("[&_th]:border-b [&_th]:border-b-[var(--acr-border)]", className)}
+      data-sticky={sticky || undefined}
+      className={cn(
+        "[&_th]:border-b [&_th]:border-b-[var(--acr-border)]",
+        // sticky = the header becomes floating chrome the rows scroll UNDER, so it
+        // needs a material (a transparent thead would let rows show through) and it
+        // needs the row geometry: the same 7px the row pill uses, on the bar's outer
+        // top corners, or the bar reads as a square block inside a rounded surface
+        // while every row under it is a rounded pill. Sticky lives on the <th>, not
+        // the <thead>/<tr> — those are internal table boxes and don't take position.
+        sticky &&
+          "[&>tr>th]:sticky [&>tr>th]:top-0 [&>tr>th]:z-10 [&>tr>th]:bg-[var(--acr-surface)] [&>tr>th]:backdrop-blur-xl [&>tr>th:first-child]:rounded-tl-[7px] [&>tr>th:last-child]:rounded-tr-[7px]",
+        className
+      )}
       {...props}
     />
   )

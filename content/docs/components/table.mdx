@@ -59,12 +59,29 @@ import {
 </Table>
 ```
 
+## Sticky header
+
+`<TableHeader sticky>` turns the column labels into floating chrome the rows
+scroll under: the kit's surface material + blur, and the bar's outer top corners
+take the same 7px the row pill uses, so it doesn't read as a square block inside
+a rounded surface. Scroll the list below.
+
+<ComponentPreview name="table-sticky" />
+
+Sticky needs the right scroll container. `Table` normally wraps itself in a
+horizontally-scrollable div — and that div, not the page, is what a sticky `<th>`
+would stick to, which looks like sticky is simply broken. Render the table bare
+inside your own scroll box: `<Table scrollable={false}>`.
+
 ## Anatomy
 
 - **`Table`** — wraps the `<table>` in a horizontally scrollable container with
-  the macOS overlay scrollbar (`scrollbar-mac`).
+  the macOS overlay scrollbar (`scrollbar-mac`). `scrollable={false}` drops that
+  wrapper (an acrylic divergence from shadcn) for when an outer box already
+  scrolls — required for a sticky header.
 - **`TableHeader` / `TableBody` / `TableFooter`** — `<thead>` / `<tbody>` /
-  `<tfoot>`. The footer carries a faint chip fill and medium weight for totals.
+  `<tfoot>`. The header takes `sticky` (see above). The footer carries a faint
+  chip fill and medium weight for totals.
 - **`TableRow`** — a row separated by an inset hairline. On hover it shows the
   macOS inset-rounded highlight (neutral `--acr-hover`); set
   `data-state="selected"` for the solid accent selection (`bg-primary` +

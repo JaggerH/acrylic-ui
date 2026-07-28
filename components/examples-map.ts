@@ -76,6 +76,7 @@ import C72 from "./examples/stepper-showcase"
 import C73 from "./examples/switch-demo"
 import C74 from "./examples/switch-showcase"
 import C75 from "./examples/table-demo"
+import C76 from "./examples/table-sticky"
 
 export const examples: Record<string, ComponentType> = {
   "alert-dialog-demo": C0,
@@ -154,4 +155,5 @@ export const examples: Record<string, ComponentType> = {
   "switch-demo": C73,
   "switch-showcase": C74,
   "table-demo": C75,
+  "table-sticky": C76,
 }
