@@ -184,25 +184,16 @@ The main item component.
 
 #### Selected state
 
-`selected` only sets `data-selected` and a faint `bg-primary/10` — enough for a
-subtle highlight, but a **clickable list row** (Mail's message list, a source
-picker) usually wants the stronger macOS treatment: a solid `bg-primary` fill
-with every text child escalated to `text-primary-foreground`. `Item`'s root
-carries `group/item`, so retarget each child's `data-slot` explicitly — this is
-the same mechanism `ItemMedia` already uses for `group-data-[size=*]/item:`:
+`selected` sets `data-selected` and paints the macOS key-window selection: a
+solid `bg-primary` fill with a white label — the same language as a selected
+`TableRow`. **No className needed.** Every part of the anatomy escalates itself
+through the `group-data-[selected=true]/item:` hook on `Item`'s root:
+`ItemTitle` goes to `text-primary-foreground`, `ItemDescription` / `ItemMeta` /
+`ItemFooter` / `ItemActions` to `text-primary-foreground/80`, and `ItemMedia`
+(`icon`/`image`) swaps its nested wash for `bg-white/15`.
 
 ```tsx
-<Item
-  asChild
-  selected={active}
-  className={[
-    "data-[selected=true]:bg-primary",
-    "data-[selected=true]:text-primary-foreground",
-    "[&[data-selected=true]_[data-slot=item-title]]:text-primary-foreground",
-    "[&[data-selected=true]_[data-slot=item-description]]:text-primary-foreground/80",
-    "[&[data-selected=true]_[data-slot=item-meta]]:text-primary-foreground/80",
-  ].join(" ")}
->
+<Item asChild selected={active}>
   <button type="button" onClick={() => setActive(id)}>
     <ItemContent>
       <ItemTitle>Title</ItemTitle>
@@ -212,12 +203,10 @@ the same mechanism `ItemMedia` already uses for `group-data-[size=*]/item:`:
 </Item>
 ```
 
-A `Badge` or an `ItemMedia` (`icon`/`image` variant) nested inside doesn't need
-a matching rule — both already read `group-data-[selected=true]/item:` and
-escalate on their own (see [Badge](/docs/components/badge)). Any other child
-whose color is hard-coded rather than inherited needs the same
-`[&[data-selected=true]_[data-slot=…]]` treatment as
-`item-title`/`item-description`/`item-meta` above.
+A nested `Badge` escalates on its own too (see
+[Badge](/docs/components/badge)). Only a child whose color you hard-coded
+yourself needs a rule, and it reads the same hook:
+`group-data-[selected=true]/item:text-primary-foreground/80`.
 
 ### ItemGroup
 

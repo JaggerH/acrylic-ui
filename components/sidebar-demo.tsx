@@ -246,12 +246,6 @@ function MailListItem({
         "w-full px-5 py-2.5",
         "items-start gap-0 text-left",
         "focus-visible:relative focus-visible:z-10",
-        "data-[selected=true]:bg-primary",
-        "data-[selected=true]:text-primary-foreground",
-        "[&[data-selected=true]_[data-slot=item-title]]:text-primary-foreground",
-        "[&[data-selected=true]_[data-slot=item-description]]:text-primary-foreground/80",
-        "[&[data-selected=true]_[data-slot=item-meta]]:text-primary-foreground/80",
-        "[&[data-selected=true]_[data-slot=item-actions]]:text-primary-foreground/80",
       ].join(" ")}
     >
       <button type="button" className="w-full" onClick={onSelect}>

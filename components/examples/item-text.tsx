@@ -83,18 +83,6 @@ export default function ItemTextDemo() {
               size="xs"
               selected={isEmailList && index === 0}
               asChild
-              className={
-                isEmailList
-                  ? [
-                      "data-[selected=true]:bg-primary",
-                      "data-[selected=true]:text-primary-foreground",
-                      "[&[data-selected=true]_[data-slot=item-title]]:text-primary-foreground",
-                      "[&[data-selected=true]_[data-slot=item-description]]:text-primary-foreground/80",
-                      "[&[data-selected=true]_[data-slot=item-meta]]:text-primary-foreground/80",
-                      "[&[data-selected=true]_[data-slot=item-actions]]:text-primary-foreground/80",
-                    ].join(" ")
-                  : undefined
-              }
             >
               <button type="button" className="w-full items-start px-3 py-2">
                 <ItemContent className="flex min-w-0 flex-col">

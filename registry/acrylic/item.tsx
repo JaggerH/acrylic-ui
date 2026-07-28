@@ -44,7 +44,11 @@ function itemClasses({
     "group/item flex min-w-0 items-center gap-3 rounded-[10px] text-left outline-none",
     "has-data-[slot=item-header]:flex-wrap has-data-[slot=item-footer]:flex-wrap",
     "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
-    "data-[selected=true]:bg-primary/10",
+    // Selected = the macOS key-window selection: SOLID accent, white label — the
+    // same language as a selected TableRow. Every text slot escalates through the
+    // group-data-[selected=true]/item: hook (ItemMedia and Badge already read it),
+    // so a call site never hand-rolls the per-slot retargeting.
+    "data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground",
     variant === "outline" &&
       "acr-frosted bg-[var(--acr-surface)] backdrop-blur-xl",
     variant === "muted" && "bg-[var(--acr-card-nested)]",
@@ -128,6 +132,7 @@ function ItemTitle({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="item-title"
       className={cn(
         "truncate text-[13px] font-medium leading-snug text-foreground group-data-[size=sm]/item:text-[12px] group-data-[size=xs]/item:text-[11px]",
+        "group-data-[selected=true]/item:text-primary-foreground",
         className
       )}
       {...props}
@@ -141,6 +146,7 @@ function ItemDescription({ className, ...props }: React.ComponentProps<"p">) {
       data-slot="item-description"
       className={cn(
         "line-clamp-2 text-[12px] leading-snug text-muted-foreground group-data-[size=sm]/item:text-[11px] group-data-[size=xs]/item:text-[10px]",
+        "group-data-[selected=true]/item:text-primary-foreground/80",
         className
       )}
       {...props}
@@ -154,6 +160,7 @@ function ItemMeta({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="item-meta"
       className={cn(
         "shrink-0 whitespace-nowrap text-[11px] leading-snug text-muted-foreground group-data-[size=xs]/item:text-[10px]",
+        "group-data-[selected=true]/item:text-primary-foreground/80",
         className
       )}
       {...props}
@@ -165,7 +172,11 @@ function ItemActions({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="item-actions"
-      className={cn("flex shrink-0 items-center justify-end gap-1", className)}
+      className={cn(
+        "flex shrink-0 items-center justify-end gap-1",
+        "group-data-[selected=true]/item:text-primary-foreground/80",
+        className
+      )}
       {...props}
     />
   )
@@ -179,6 +190,7 @@ function ItemFooter({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="item-footer"
       className={cn(
         "flex basis-full items-center gap-2 pt-1 text-[12px] text-muted-foreground group-data-[size=sm]/item:text-[11px] group-data-[size=xs]/item:text-[10px]",
+        "group-data-[selected=true]/item:text-primary-foreground/80",
         className
       )}
       {...props}

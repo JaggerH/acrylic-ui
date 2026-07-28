@@ -23,16 +23,7 @@ export default function BadgeSelectedItem() {
   return (
     <ItemGroup className="w-full max-w-md">
       {ROWS.map((row, i) => (
-        <Item
-          key={i}
-          selected={row.selected}
-          className={[
-            "data-[selected=true]:bg-primary",
-            "data-[selected=true]:text-primary-foreground",
-            "[&[data-selected=true]_[data-slot=item-title]]:text-primary-foreground",
-            "[&[data-selected=true]_[data-slot=item-description]]:text-primary-foreground/80",
-          ].join(" ")}
-        >
+        <Item key={i} selected={row.selected}>
           <ItemMedia variant="icon">
             <Bell />
           </ItemMedia>
