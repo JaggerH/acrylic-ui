@@ -1,3 +1,7 @@
+"use client"
+
+import * as React from "react"
+
 import { Card } from "@/registry/acrylic/card"
 import {
   Table,
@@ -18,6 +22,10 @@ const invoices = [
 ]
 
 export default function TableDemo() {
+  // Click a row to select it — selection is shadcn's contract, unchanged:
+  // data-state="selected" is what swaps the neutral hover pill for the accent one.
+  const [selected, setSelected] = React.useState("Apple Music")
+
   return (
     <Card className="w-full max-w-xl p-2 text-foreground">
       <Table>
@@ -32,10 +40,27 @@ export default function TableDemo() {
         </TableHeader>
         <TableBody>
           {invoices.map((row) => (
-            <TableRow key={row.plan}>
+            <TableRow
+              key={row.plan}
+              data-state={selected === row.plan ? "selected" : undefined}
+              aria-selected={selected === row.plan}
+              tabIndex={0}
+              className="cursor-default outline-none focus-visible:[&>td]:bg-[var(--acr-hover)]"
+              onClick={() => setSelected(row.plan)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault()
+                  setSelected(row.plan)
+                }
+              }}
+            >
               <TableCell className="font-medium">{row.plan}</TableCell>
-              <TableCell className="text-muted-foreground">{row.detail}</TableCell>
-              <TableCell className="text-muted-foreground">{row.period}</TableCell>
+              <TableCell className="text-muted-foreground group-data-[state=selected]/table-row:text-primary-foreground/70!">
+                {row.detail}
+              </TableCell>
+              <TableCell className="text-muted-foreground group-data-[state=selected]/table-row:text-primary-foreground/70!">
+                {row.period}
+              </TableCell>
               <TableCell className="text-right">{row.amount}</TableCell>
             </TableRow>
           ))}

@@ -13,15 +13,18 @@ import { cn } from "@/lib/utils"
 //    / Command / Item), NOT a full-bleed rectangular tint: a ~7px rounded fill
 //    that sits inset from the container edge (put the table in a Card / padded
 //    surface — the padding IS the inset, exactly like a menu item in its panel).
-//    Hover = neutral --acr-hover; selected (data-state="selected") = accent
-//    bg-primary/10. Wired onto the spring substrate (color transition only — a
+//    Hover = neutral --acr-hover; selected (data-state="selected") = the macOS
+//    key-window selection, a SOLID bg-primary fill with primary-foreground text
+//    on every cell (hover is suppressed on a selected row so the two highlights
+//    never fight). Wired onto the spring substrate (color transition only — a
 //    row is not a press target, so NO active:scale).
 //  - Rounded corners need border-separate. Radius is applied ONLY to the
 //    highlighted (hover / selected) row — at rest the cells are square, so the
 //    hairline separators (--acr-border-soft between body rows, the firmer
 //    --acr-border under the header) stay perfectly straight instead of curling
-//    at the corners. The highlighted row also drops its own separator so the
-//    pill reads clean.
+//    at the corners. A highlighted row drops its own separator AND the one
+//    belonging to the row above it, so no hairline ever crosses the pill's top
+//    or bottom edge.
 //  - Column labels use the small subheadline size + its tracking companion,
 //    muted (text-muted-foreground), Apple label style.
 //  - Horizontal overflow uses the macOS thin overlay scrollbar (scrollbar-mac).
@@ -60,7 +63,18 @@ function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
     <tbody
       data-slot="table-body"
       className={cn(
-        "[&_tr:not(:last-child)>td]:border-b [&_tr:not(:last-child)>td]:border-b-[var(--acr-border-soft)] [&_tr:hover>td]:border-b-transparent [&_tr:hover>td]:bg-[var(--acr-hover)] [&_tr:hover>td:first-child]:rounded-l-[7px] [&_tr:hover>td:last-child]:rounded-r-[7px]",
+        "[&_tr:not(:last-child)>td]:border-b [&_tr:not(:last-child)>td]:border-b-[var(--acr-border-soft)]",
+        // A highlighted row drops its own separator AND the one above it — the
+        // pill is a closed shape, so a hairline must never cross either edge.
+        // All four suppressors live HERE, next to the rule they cancel: the
+        // separator is a tbody-level rule, so a canceller written on TableRow
+        // ([data-state=selected]>td, 0-2-1) loses to it (0-2-2) and silently
+        // does nothing. The :not(:last-child) is what buys the extra weight.
+        "[&_tr:hover:not(:last-child)>td]:border-b-transparent [&_tr[data-state=selected]:not(:last-child)>td]:border-b-transparent",
+        "[&_tr:has(+tr:hover)>td]:border-b-transparent [&_tr:has(+tr[data-state=selected])>td]:border-b-transparent",
+        // Hover is the NEUTRAL highlight only — never on a selected row, whose
+        // accent fill would otherwise lose to it on specificity.
+        "[&_tr:hover:not([data-state=selected])>td]:bg-[var(--acr-hover)] [&_tr:hover>td:first-child]:rounded-l-[7px] [&_tr:hover>td:last-child]:rounded-r-[7px]",
         className
       )}
       {...props}
@@ -86,7 +100,13 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
     <tr
       data-slot="table-row"
       className={cn(
-        "[&>td]:transition-colors [&>td]:[transition-timing-function:var(--acr-spring-default)] [&>td]:[transition-duration:var(--acr-spring-default-duration)] data-[state=selected]:[&>td]:border-b-transparent data-[state=selected]:[&>td]:bg-primary/10 data-[state=selected]:[&>td:first-child]:rounded-l-[7px] data-[state=selected]:[&>td:last-child]:rounded-r-[7px]",
+        "group/table-row",
+        "[&>td]:transition-colors [&>td]:[transition-timing-function:var(--acr-spring-default)] [&>td]:[transition-duration:var(--acr-spring-default-duration)]",
+        // Selected = the macOS key-window selection: SOLID accent, white label.
+        // Every cell goes to primary-foreground (a muted column would be
+        // illegible on the fill); dim a secondary column back with the
+        // group-data-[state=selected]/table-row: hook, like Badge does in Item.
+        "data-[state=selected]:[&>td]:bg-primary data-[state=selected]:[&>td]:text-primary-foreground data-[state=selected]:[&>td:first-child]:rounded-l-[7px] data-[state=selected]:[&>td:last-child]:rounded-r-[7px]",
         className
       )}
       {...props}

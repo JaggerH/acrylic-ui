@@ -8,8 +8,8 @@ copied 1:1 from shadcn; only the material changes — the table is flat and
 transparent (no surface of its own), rows are divided by inset hairlines, column
 labels take the small muted subheadline style, and — like the rest of the kit's
 rows (menus, command, items) — the row highlight is the macOS inset-rounded pill
-rather than a full-bleed tint: a rounded fill that hovers neutral and tints to
-the accent when selected, riding the same spring substrate. Drop it inside a
+rather than a full-bleed tint: a rounded fill that hovers neutral and goes solid
+accent with a white label when selected, riding the same spring substrate. Drop it inside a
 `Card` when you want a surface behind it (the surface's padding is what insets
 the highlight).
 
@@ -22,6 +22,10 @@ npx shadcn add https://acrylic-ui.vercel.app/r/table.json
 ## Usage
 
 <ComponentPreview name="table-demo" />
+
+Click a row in the preview to select it, and hover a resting row alongside it to
+compare the two fills — selection is shadcn's contract unchanged,
+`data-state="selected"` on the `TableRow`.
 
 ```tsx
 import {
@@ -47,6 +51,10 @@ import {
       <TableCell>iCloud+</TableCell>
       <TableCell className="text-right tabular-nums">$9.99</TableCell>
     </TableRow>
+    <TableRow data-state="selected">
+      <TableCell>Apple Music</TableCell>
+      <TableCell className="text-right tabular-nums">$10.99</TableCell>
+    </TableRow>
   </TableBody>
 </Table>
 ```
@@ -59,8 +67,11 @@ import {
   `<tfoot>`. The footer carries a faint chip fill and medium weight for totals.
 - **`TableRow`** — a row separated by an inset hairline. On hover it shows the
   macOS inset-rounded highlight (neutral `--acr-hover`); set
-  `data-state="selected"` for the accent-tinted (`bg-primary/10`) selection. The
-  last body row drops its separator.
+  `data-state="selected"` for the solid accent selection (`bg-primary` +
+  `text-primary-foreground` on every cell). A highlighted row drops its own
+  separator and the one above it; the last body row has none to begin with. The
+  row also carries `group/table-row`, so a descendant can react to selection
+  (see Notes).
 - **`TableHead`** — a column-label cell: muted, small subheadline size.
 - **`TableCell`** — a body cell.
 - **`TableCaption`** — a muted caption below the table.
@@ -75,8 +86,17 @@ import {
   digit alignment actually matters.
 - **Colours are tokens** — pass `className` for layout only, never to override
   the material. Light / dark / acrylic themes flip automatically.
-- **Selected rows**: set `data-state="selected"` on a `TableRow` for the
-  accent-tinted highlight.
+- **Selected rows**: set `data-state="selected"` on a `TableRow`. The fill is
+  solid `--primary` and **every cell's text is forced to
+  `text-primary-foreground`** — a `text-muted-foreground` column would be
+  illegible on the accent, so the component overrides it rather than leaving it
+  to the call site. Hover is suppressed on a selected row, so the neutral tint
+  never fights the accent.
+- **Dimming a secondary column while selected**: the row carries
+  `group/table-row`, so opt a cell back down with
+  `group-data-[state=selected]/table-row:text-primary-foreground/70!` — the `!`
+  is required, since the component's own per-cell rule is more specific (this is
+  what the preview's Detail and Billing columns do).
 - **The highlight is inset by the container** — because the rounded pill spans
   the table width, it reads as "inset" only when the table has a padded surface
   around it (a `Card`, or a wrapper with a little horizontal padding), the same
