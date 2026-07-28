@@ -35,21 +35,42 @@ const fieldVariants = cva("group/field data-[invalid=true]:text-destructive", {
   defaultVariants: { orientation: "horizontal" },
 })
 
+// The control-size axis, named exactly like Input/Select/Combobox's so a row
+// declares ONE size and both halves agree: Input already scales its type with the
+// control (10/11/13/15/17), but FieldLabel used to sit pinned at 13px — pair it
+// with an xl control and the label reads 4px smaller than the value beside it.
+// Field owns the axis because the label can't see its control; children read it
+// off group/field, the same mechanism ItemMedia uses for group-data-[size=*]/item:.
+type FieldSize = "mini" | "small" | "medium" | "large" | "xl"
+
 function Field({
   className,
   orientation,
+  size = "medium",
   ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof fieldVariants>) {
+}: React.ComponentProps<"div"> &
+  VariantProps<typeof fieldVariants> & { size?: FieldSize }) {
   return (
     <div
       role="group"
       data-slot="field"
       data-orientation={orientation ?? "horizontal"}
+      data-size={size}
       className={cn(fieldVariants({ orientation, className }))}
       {...props}
     />
   )
 }
+
+// Label/title type per Field size — the same sizes + tracking companions the
+// controls use (§15: tracking is size-specific, never one value for all sizes).
+const fieldLabelSize = cn(
+  "text-[13px]",
+  "group-data-[size=mini]/field:text-[10px] group-data-[size=mini]/field:[letter-spacing:var(--text-footnote-tracking)]",
+  "group-data-[size=small]/field:text-[11px] group-data-[size=small]/field:[letter-spacing:var(--text-subheadline-tracking)]",
+  "group-data-[size=large]/field:text-[15px]",
+  "group-data-[size=xl]/field:text-[17px] group-data-[size=xl]/field:[letter-spacing:var(--text-title2-tracking)]"
+)
 
 function FieldLabel({
   className,
@@ -61,9 +82,10 @@ function FieldLabel({
     <Comp
       data-slot="field-label"
       className={cn(
-        // SFPro-Medium 13 / foreground; mutes when the field is disabled and
-        // tints destructive when the field is invalid.
-        "flex select-none items-center gap-2 text-[13px] font-medium text-foreground",
+        // SFPro-Medium 13 at the default size / foreground; mutes when the field
+        // is disabled and tints destructive when the field is invalid.
+        "flex select-none items-center gap-2 font-medium text-foreground",
+        fieldLabelSize,
         "group-data-[disabled=true]/field:text-muted-foreground",
         "group-data-[invalid=true]/field:text-destructive",
         "has-[[disabled]]:text-muted-foreground",
@@ -79,7 +101,8 @@ function FieldTitle({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="field-title"
       className={cn(
-        "flex items-center gap-2 text-[13px] font-medium text-foreground",
+        "flex items-center gap-2 font-medium text-foreground",
+        fieldLabelSize,
         "group-data-[disabled=true]/field:text-muted-foreground",
         "group-data-[invalid=true]/field:text-destructive",
         className
@@ -95,8 +118,12 @@ function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
       data-slot="field-description"
       className={cn(
         // The macOS "Subtitle": SFPro-Regular 11 / muted, ~2px below the label.
-        // 11px carries the subheadline positive tracking companion (§15).
+        // 11px carries the subheadline positive tracking companion (§15). It
+        // steps up on the two big sizes so it stays a subtitle rather than
+        // collapsing to a footnote next to a 15/17px label — always one step
+        // below the label, never equal to it.
         "text-[11px] font-normal leading-snug [letter-spacing:var(--text-subheadline-tracking)] text-muted-foreground",
+        "group-data-[size=large]/field:text-[12px] group-data-[size=xl]/field:text-[13px] group-data-[size=xl]/field:[letter-spacing:normal]",
         "group-data-[disabled=true]/field:opacity-60",
         className
       )}

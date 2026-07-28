@@ -30,51 +30,52 @@ import C26 from "./examples/dialog-showcase"
 import C27 from "./examples/dropdown-menu-demo"
 import C28 from "./examples/field-demo"
 import C29 from "./examples/field-showcase"
-import C30 from "./examples/hover-card-demo"
-import C31 from "./examples/input-demo"
-import C32 from "./examples/input-group-demo"
-import C33 from "./examples/input-group-showcase"
-import C34 from "./examples/input-showcase"
-import C35 from "./examples/item-actions"
-import C36 from "./examples/item-avatar"
-import C37 from "./examples/item-demo"
-import C38 from "./examples/item-dropdown"
-import C39 from "./examples/item-group"
-import C40 from "./examples/item-header"
-import C41 from "./examples/item-image"
-import C42 from "./examples/item-link"
-import C43 from "./examples/item-post"
-import C44 from "./examples/item-rtl"
-import C45 from "./examples/item-sizes"
-import C46 from "./examples/item-text"
-import C47 from "./examples/item-variants"
-import C48 from "./examples/media-box-demo"
-import C49 from "./examples/popover-demo"
-import C50 from "./examples/radio-group-demo"
-import C51 from "./examples/radio-group-showcase"
-import C52 from "./examples/searchbar-demo"
-import C53 from "./examples/searchbar-showcase"
-import C54 from "./examples/select-demo"
-import C55 from "./examples/select-showcase"
-import C56 from "./examples/sheet-demo"
-import C57 from "./examples/sheet-showcase"
-import C58 from "./examples/shell-mail"
-import C59 from "./examples/shell-notes"
-import C60 from "./examples/sidebar-app"
-import C61 from "./examples/sidebar-demo"
-import C62 from "./examples/sidebar-sizes"
-import C63 from "./examples/slider-demo"
-import C64 from "./examples/slider-showcase"
-import C65 from "./examples/slider-sizes"
-import C66 from "./examples/slider-variants"
-import C67 from "./examples/sonner-demo"
-import C68 from "./examples/sonner-showcase"
-import C69 from "./examples/spinner-demo"
-import C70 from "./examples/stepper-demo"
-import C71 from "./examples/stepper-showcase"
-import C72 from "./examples/switch-demo"
-import C73 from "./examples/switch-showcase"
-import C74 from "./examples/table-demo"
+import C30 from "./examples/field-sizes"
+import C31 from "./examples/hover-card-demo"
+import C32 from "./examples/input-demo"
+import C33 from "./examples/input-group-demo"
+import C34 from "./examples/input-group-showcase"
+import C35 from "./examples/input-showcase"
+import C36 from "./examples/item-actions"
+import C37 from "./examples/item-avatar"
+import C38 from "./examples/item-demo"
+import C39 from "./examples/item-dropdown"
+import C40 from "./examples/item-group"
+import C41 from "./examples/item-header"
+import C42 from "./examples/item-image"
+import C43 from "./examples/item-link"
+import C44 from "./examples/item-post"
+import C45 from "./examples/item-rtl"
+import C46 from "./examples/item-sizes"
+import C47 from "./examples/item-text"
+import C48 from "./examples/item-variants"
+import C49 from "./examples/media-box-demo"
+import C50 from "./examples/popover-demo"
+import C51 from "./examples/radio-group-demo"
+import C52 from "./examples/radio-group-showcase"
+import C53 from "./examples/searchbar-demo"
+import C54 from "./examples/searchbar-showcase"
+import C55 from "./examples/select-demo"
+import C56 from "./examples/select-showcase"
+import C57 from "./examples/sheet-demo"
+import C58 from "./examples/sheet-showcase"
+import C59 from "./examples/shell-mail"
+import C60 from "./examples/shell-notes"
+import C61 from "./examples/sidebar-app"
+import C62 from "./examples/sidebar-demo"
+import C63 from "./examples/sidebar-sizes"
+import C64 from "./examples/slider-demo"
+import C65 from "./examples/slider-showcase"
+import C66 from "./examples/slider-sizes"
+import C67 from "./examples/slider-variants"
+import C68 from "./examples/sonner-demo"
+import C69 from "./examples/sonner-showcase"
+import C70 from "./examples/spinner-demo"
+import C71 from "./examples/stepper-demo"
+import C72 from "./examples/stepper-showcase"
+import C73 from "./examples/switch-demo"
+import C74 from "./examples/switch-showcase"
+import C75 from "./examples/table-demo"
 
 export const examples: Record<string, ComponentType> = {
   "alert-dialog-demo": C0,
@@ -107,49 +108,50 @@ export const examples: Record<string, ComponentType> = {
   "dropdown-menu-demo": C27,
   "field-demo": C28,
   "field-showcase": C29,
-  "hover-card-demo": C30,
-  "input-demo": C31,
-  "input-group-demo": C32,
-  "input-group-showcase": C33,
-  "input-showcase": C34,
-  "item-actions": C35,
-  "item-avatar": C36,
-  "item-demo": C37,
-  "item-dropdown": C38,
-  "item-group": C39,
-  "item-header": C40,
-  "item-image": C41,
-  "item-link": C42,
-  "item-post": C43,
-  "item-rtl": C44,
-  "item-sizes": C45,
-  "item-text": C46,
-  "item-variants": C47,
-  "media-box-demo": C48,
-  "popover-demo": C49,
-  "radio-group-demo": C50,
-  "radio-group-showcase": C51,
-  "searchbar-demo": C52,
-  "searchbar-showcase": C53,
-  "select-demo": C54,
-  "select-showcase": C55,
-  "sheet-demo": C56,
-  "sheet-showcase": C57,
-  "shell-mail": C58,
-  "shell-notes": C59,
-  "sidebar-app": C60,
-  "sidebar-demo": C61,
-  "sidebar-sizes": C62,
-  "slider-demo": C63,
-  "slider-showcase": C64,
-  "slider-sizes": C65,
-  "slider-variants": C66,
-  "sonner-demo": C67,
-  "sonner-showcase": C68,
-  "spinner-demo": C69,
-  "stepper-demo": C70,
-  "stepper-showcase": C71,
-  "switch-demo": C72,
-  "switch-showcase": C73,
-  "table-demo": C74,
+  "field-sizes": C30,
+  "hover-card-demo": C31,
+  "input-demo": C32,
+  "input-group-demo": C33,
+  "input-group-showcase": C34,
+  "input-showcase": C35,
+  "item-actions": C36,
+  "item-avatar": C37,
+  "item-demo": C38,
+  "item-dropdown": C39,
+  "item-group": C40,
+  "item-header": C41,
+  "item-image": C42,
+  "item-link": C43,
+  "item-post": C44,
+  "item-rtl": C45,
+  "item-sizes": C46,
+  "item-text": C47,
+  "item-variants": C48,
+  "media-box-demo": C49,
+  "popover-demo": C50,
+  "radio-group-demo": C51,
+  "radio-group-showcase": C52,
+  "searchbar-demo": C53,
+  "searchbar-showcase": C54,
+  "select-demo": C55,
+  "select-showcase": C56,
+  "sheet-demo": C57,
+  "sheet-showcase": C58,
+  "shell-mail": C59,
+  "shell-notes": C60,
+  "sidebar-app": C61,
+  "sidebar-demo": C62,
+  "sidebar-sizes": C63,
+  "slider-demo": C64,
+  "slider-showcase": C65,
+  "slider-sizes": C66,
+  "slider-variants": C67,
+  "sonner-demo": C68,
+  "sonner-showcase": C69,
+  "spinner-demo": C70,
+  "stepper-demo": C71,
+  "stepper-showcase": C72,
+  "switch-demo": C73,
+  "switch-showcase": C74,
+  "table-demo": C75,
 }

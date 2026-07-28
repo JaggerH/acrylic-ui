@@ -48,6 +48,15 @@ hairlines, with a range of trailing accessories:
 
 <ComponentPreview name="field-showcase" />
 
+### Sizes — the label follows the control
+
+`Field` takes the same `size` axis as the controls (`mini` · `small` · `medium`
+(default) · `large` · `xl`), and the label reads it off the row. Declare it on
+both halves — `<Field size="xl">` + `<Input size="xl">` — and the two agree.
+Skipping it on the `Field` is what makes a 13px label sit next to a 17px value:
+
+<ComponentPreview name="field-sizes" />
+
 ## Notes
 
 - Exports `Field`, `FieldLabel`, `FieldTitle`, `FieldDescription`, `FieldError`,
@@ -60,6 +69,13 @@ hairlines, with a range of trailing accessories:
   queries, so it adapts to its container, not the viewport). For a control row
   (title + subtitle on the left, control hugging the right) wrap the text in
   `FieldContent` and add `className="grid-cols-[1fr_auto]"` to the `Field`.
+- **Size** — `Field` takes `size`: `mini` · `small` · `medium` (**default**) ·
+  `large` · `xl`, named to match `Input`/`Select`/`Combobox` so a row declares one
+  size on both halves. `FieldLabel`/`FieldTitle` scale with it (10/11/13/15/17,
+  each with its tracking companion) and `FieldDescription` steps up one notch on
+  `large`/`xl` so it stays a subtitle. The label can't see its control, which is
+  why the axis lives on `Field` — pair an `xl` control with a default `Field` and
+  the label renders 4px smaller than the value beside it.
 - **Errors** — `FieldError` accepts an `errors` array of `{ message }` objects or
   plain `children`, and renders nothing when there's neither. Set `data-invalid`
   on the `Field` to tint its label/control toward the destructive color.
