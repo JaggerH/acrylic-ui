@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
+import { Slot as SlotPrimitive } from "radix-ui"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
@@ -673,7 +673,7 @@ function ButtonGroupItem({
   const size = useButtonGroupSize()
   const shape = useButtonGroupShape()
   const selected = ctx?.value === value
-  const Comp = asChild ? Slot : "button"
+  const Comp = asChild ? SlotPrimitive.Slot : "button"
   return (
     <Comp
       type={asChild ? undefined : "button"}
@@ -731,7 +731,7 @@ function ButtonGroupToggle({
   const size = useButtonGroupSize()
   const shape = useButtonGroupShape()
   const on = ctx?.value.includes(value) ?? false
-  const Comp = asChild ? Slot : "button"
+  const Comp = asChild ? SlotPrimitive.Slot : "button"
   return (
     <Comp
       type={asChild ? undefined : "button"}
@@ -798,7 +798,7 @@ function ButtonGroupText({
   asChild = false,
   ...props
 }: React.ComponentProps<"div"> & { asChild?: boolean }) {
-  const Comp = asChild ? Slot : "div"
+  const Comp = asChild ? SlotPrimitive.Slot : "div"
   const size = useButtonGroupSize()
   return (
     <Comp

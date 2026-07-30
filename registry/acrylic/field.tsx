@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
+import { Slot as SlotPrimitive } from "radix-ui"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
@@ -77,7 +77,7 @@ function FieldLabel({
   asChild = false,
   ...props
 }: React.ComponentProps<"label"> & { asChild?: boolean }) {
-  const Comp = asChild ? Slot : "label"
+  const Comp = asChild ? SlotPrimitive.Slot : "label"
   return (
     <Comp
       data-slot="field-label"

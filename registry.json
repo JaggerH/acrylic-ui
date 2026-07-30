@@ -294,7 +294,7 @@
       "title": "Acrylic Badge",
       "description": "A small pill label — shadcn's Badge with its base styling copied verbatim (shape, sizing, focus ring, the six variants), recolored to the Acrylic theme tokens: accent default, neutral-chip secondary, system-red destructive, hairline outline. Flips light/dark via the theme.",
       "dependencies": [
-        "@radix-ui/react-slot",
+        "radix-ui",
         "class-variance-authority"
       ],
       "registryDependencies": [
@@ -314,7 +314,7 @@
       "title": "Acrylic Breadcrumb",
       "description": "shadcn's Breadcrumb, anatomy and API unchanged. Already token-driven (list on --muted-foreground, current page on --foreground, links hover to --foreground), so it flips light/dark/acrylic for free; the only acrylic touch is the separator/ellipsis glyphs on --label-tertiary so the chevrons read one step quieter than the links.",
       "dependencies": [
-        "@radix-ui/react-slot",
+        "radix-ui",
         "lucide-react"
       ],
       "registryDependencies": [
@@ -334,7 +334,7 @@
       "title": "Acrylic Dialog",
       "description": "Radix Dialog dressed as a frosted-acrylic modal: a 72px blur+saturate overlay and a translucent panel (20px radius, macOS 26 metrics). The close (X) reuses the acrylic Button (ghost icon) and is not auto-focused on open; toggle it with showCloseButton. Drop-in replacement for the shadcn Dialog.",
       "dependencies": [
-        "@radix-ui/react-dialog",
+        "radix-ui",
         "lucide-react"
       ],
       "registryDependencies": [
@@ -360,7 +360,7 @@
       "title": "Acrylic Dropdown Menu",
       "description": "The macOS 26 Menu (click-triggered popup) on the shared frosted acrylic material — the same glass as Card, Sidebar, and Context Menu. Identical row geometry, highlight accent, size variants, and shortcut column as Context Menu, just triggered by click instead of right-click. Radix Dropdown Menu; colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": [
-        "@radix-ui/react-dropdown-menu",
+        "radix-ui",
         "lucide-react"
       ],
       "registryDependencies": [
@@ -380,7 +380,7 @@
       "title": "Acrylic Alert Dialog",
       "description": "Frosted confirm dialog — the AlertDialog counterpart of the acrylic Dialog (72px blur overlay + translucent panel). Modeled on the macOS 26 Alerts page: 26px panel radius and action/cancel buttons that reuse the acrylic Button (buttonVariants) at the kit's large size. Shares the Dialog's ref-counted body-paint so it can stack on a Dialog without either losing its frost.",
       "dependencies": [
-        "@radix-ui/react-alert-dialog",
+        "radix-ui",
         "class-variance-authority"
       ],
       "registryDependencies": [
@@ -406,7 +406,7 @@
       "title": "Acrylic Button",
       "description": "Button lifted from the Apple macOS 26 UI Kit: a solid prominent default plus tinted secondary, destructive, neutral, and borderless ghost variants, in the five macOS control sizes (16/20/24/28/36) with kit-exact per-size radii and a round icon size. Colors flip light/dark via the Acrylic theme tokens; asChild via Radix Slot.",
       "dependencies": [
-        "@radix-ui/react-slot",
+        "radix-ui",
         "class-variance-authority"
       ],
       "files": [
@@ -477,7 +477,7 @@
       "title": "Acrylic Popover",
       "description": "Frosted floating panel (translucent material + backdrop-blur) — the dropdown surface for Combobox and other overlays. Radix Popover under the hood.",
       "dependencies": [
-        "@radix-ui/react-popover"
+        "radix-ui"
       ],
       "files": [
         {
@@ -496,7 +496,7 @@
       "title": "Acrylic Hover Card",
       "description": "Frosted floating card revealed on hover (translucent material + backdrop-blur) — a peek panel for previews and rich link cards. Radix HoverCard under the hood.",
       "dependencies": [
-        "@radix-ui/react-hover-card"
+        "radix-ui"
       ],
       "files": [
         {
@@ -535,7 +535,7 @@
       "title": "Acrylic Combobox",
       "description": "The macOS 26 Combo Box: an editable, searchable select. An Input-styled trigger with a chevron opens a frosted Popover holding a filterable Command list, in the five macOS control sizes. Assembled from Input + Popover + Command.",
       "dependencies": [
-        "@radix-ui/react-popover",
+        "radix-ui",
         "cmdk",
         "class-variance-authority",
         "lucide-react"
@@ -560,7 +560,7 @@
       "title": "Acrylic Field",
       "description": "Form field layout family from the macOS 26 Forms page, mapped to the shadcn Field API: Field/FieldLabel/FieldTitle/FieldDescription/FieldError/FieldContent/FieldGroup/FieldSet/FieldLegend/FieldSeparator. Vertical/horizontal/responsive orientation; hairline separators at the kit's 5% rhythm. Colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": [
-        "@radix-ui/react-slot",
+        "radix-ui",
         "class-variance-authority"
       ],
       "files": [
@@ -597,7 +597,7 @@
       "title": "Acrylic Item",
       "description": "A flexible shadcn Item row for settings, files, people, notifications, and compact object summaries. Preserves the upstream Item composition API (Item/ItemMedia/ItemHeader/ItemContent/ItemTitle/ItemDescription/ItemActions/ItemFooter/ItemGroup/ItemSeparator) and maps row surfaces, borders, and compact typography to the Acrylic token language.",
       "dependencies": [
-        "@radix-ui/react-slot"
+        "radix-ui"
       ],
       "registryDependencies": [
         "https://acrylic-ui.vercel.app/r/acrylic.json"
@@ -616,7 +616,7 @@
       "title": "Acrylic Slider",
       "description": "Radix Slider aligned to the macOS 26 Sliders page: a capsule translucent rail, an accent-blue filled range, and a frosted-white pill knob with a hairline border + soft shadow, in five control sizes. Two kit variants — standard and center-biased fill — plus the Ticked add-on (marks), range (two-thumb), stepping, vertical orientation, and disabled. Colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": [
-        "@radix-ui/react-slider"
+        "radix-ui"
       ],
       "files": [
         {
@@ -636,7 +636,7 @@
       "description": "A floating capsule transport (Apple-Music mini-player) on the acrylic frosted surface. Two groups: an always-on transport (prev/play/next + your own right-side tools) and a now-playing info group (cover + title + artist + seek rail) that appears only while a track is loaded, with the seek bar along the group's bottom edge. Fully controlled via callbacks; an optional volume control reveals a vertical Slider on hover (portaled via HoverCard so it escapes clipping containers). Flips light/dark via the Acrylic theme tokens.",
       "dependencies": [
         "lucide-react",
-        "@radix-ui/react-hover-card"
+        "radix-ui"
       ],
       "files": [
         {
@@ -656,7 +656,7 @@
       "title": "Acrylic Switch",
       "description": "On/off toggle from the macOS 26 Toggles page: a capsule rail (gray off / accent-blue on) with a white knob, in five control sizes. Radix Switch; colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": [
-        "@radix-ui/react-switch"
+        "radix-ui"
       ],
       "files": [
         {
@@ -675,7 +675,7 @@
       "title": "Acrylic Radio Group",
       "description": "Radio buttons from the macOS 26 Toggles page: a circular control (gray unselected / accent-filled with a white center dot when selected), in five sizes. Radix RadioGroup; colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": [
-        "@radix-ui/react-radio-group"
+        "radix-ui"
       ],
       "files": [
         {
@@ -714,7 +714,7 @@
       "title": "Acrylic Select",
       "description": "The macOS 26 Pop-up Button as a Select: a flat control-surface trigger with the up/down chevron (kit radii 4/5/6/14/18) opening a frosted popover of items, in five sizes. Radix Select; colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": [
-        "@radix-ui/react-select",
+        "radix-ui",
         "class-variance-authority",
         "lucide-react"
       ],
@@ -755,7 +755,7 @@
       "title": "Acrylic Context Menu",
       "description": "The macOS 26 Menu (right-click / control-click) on the frosted Popover material — the same glass as Combobox/Select. 13px SF-Medium rows lifted from the kit's 13pt Menu: a 6px-radius highlight bar, a section header, checkbox + radio items, submenus with a trailing chevron, a hairline separator, a muted keyboard-shortcut column, and a destructive row. Radix Context Menu; colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": [
-        "@radix-ui/react-context-menu",
+        "radix-ui",
         "lucide-react"
       ],
       "files": [
@@ -775,7 +775,7 @@
       "title": "Acrylic Avatar",
       "description": "shadcn's Avatar copied verbatim (Radix, with its built-in image-load / initials-fallback handling), recolored to the Acrylic tokens — the fallback sits on the neutral chip. Default circular (macOS user pictures); pass rounded-lg for the squircle. Powers the Sidebar footer user item.",
       "dependencies": [
-        "@radix-ui/react-avatar"
+        "radix-ui"
       ],
       "files": [
         {
@@ -794,7 +794,7 @@
       "title": "Acrylic Separator",
       "description": "A hairline divider on the Acrylic border token (--acr-border). Radix Separator; horizontal or vertical. Used by Sidebar and form layouts.",
       "dependencies": [
-        "@radix-ui/react-separator"
+        "radix-ui"
       ],
       "files": [
         {
@@ -878,7 +878,7 @@
       "title": "Acrylic Tooltip",
       "description": "A small frosted-acrylic tooltip (--acr-panel + backdrop-blur), 11px label, hairline ring + soft shadow. Radix Tooltip; powers the Sidebar's collapsed-icon labels.",
       "dependencies": [
-        "@radix-ui/react-tooltip"
+        "radix-ui"
       ],
       "files": [
         {
@@ -897,7 +897,7 @@
       "title": "Acrylic Sheet",
       "description": "A frosted-acrylic side drawer (--acr-panel + backdrop-blur) sliding from any edge, over a blurred overlay. Radix Dialog under the hood; used by the Sidebar's mobile off-canvas mode.",
       "dependencies": [
-        "@radix-ui/react-dialog",
+        "radix-ui",
         "lucide-react",
         "motion"
       ],
@@ -923,7 +923,7 @@
       "title": "Acrylic Sidebar",
       "description": "The macOS 26 sidebar — shadcn's Sidebar composition (Provider with cookie state + ⌘B toggle, off-canvas/icon/none collapse, mobile Sheet, groups, menu/sub-menu, rail, inset) restyled to the kit: a 240px frosted-vibrancy panel (--acr-surface + backdrop-blur), three densities (Small 24/11, Medium 32/13, Large 40/15) on the menu-button sm/default/lg sizes, and an accent-pill selected row. Colors flip light/dark via the Acrylic theme tokens.",
       "dependencies": [
-        "@radix-ui/react-slot",
+        "radix-ui",
         "class-variance-authority",
         "lucide-react"
       ],
