@@ -36,6 +36,67 @@ function rubberband(overshoot: number, dimension: number, constant = 0.55) {
 
 const DRAG_THRESHOLD = 5 // px of movement before a press becomes a drag
 
+// After the pointer is handed to a scroll, keep dragging locked out for this long.
+// Without it, the pause between two scroll flicks reads as "a fresh press", and the
+// second flick closes the sheet mid-scroll. (vaul calls this scrollLockTimeout.)
+const SCROLL_LOCK_MS = 100
+
+/** Can this scroll container still move in `dir` (+1 = toward larger scrollTop)? */
+function canScroll(el: Element, dir: 1 | -1): boolean {
+  if (el.scrollHeight <= el.clientHeight) return false
+  return dir > 0
+    ? el.scrollTop < el.scrollHeight - el.clientHeight - 1
+    : el.scrollTop > 0
+}
+
+/**
+ * Arbitrate one gesture between the panel drag and whatever the content wants to
+ * do with it. Ported from vaul's `shouldDrag` (the library behind shadcn's
+ * Drawer) — the ordering is load-bearing and was arrived at the hard way there.
+ *
+ * `delta` is signed movement along the drag axis; `sign` is the closing direction.
+ */
+function shouldDrag(
+  target: Element | null,
+  panel: Element | null,
+  axis: "x" | "y",
+  sign: 1 | -1,
+  delta: number,
+  scrollLockedUntil: number
+): boolean {
+  // Explicit opt-out for a subtree that owns its own pointer story (a slider, a
+  // canvas, a horizontally-scrolling strip). vaul ships the same escape hatch.
+  if (target?.closest("[data-acr-no-drag]")) return false
+
+  // A text selection means the browser already claimed this gesture. Checked
+  // before pointer capture, which would kill the selection outright.
+  const selection = typeof window !== "undefined" ? window.getSelection() : null
+  if (selection && !selection.isCollapsed) return false
+
+  // Side sheets drag on x while content scrolls on y — orthogonal, nothing to
+  // arbitrate. (vaul short-circuits left/right the same way.)
+  if (axis === "x") return true
+
+  if (Date.now() < scrollLockedUntil) return false
+
+  // Moving AWAY from the closing direction is a scroll, never a dismiss:
+  // on a bottom sheet, dragging up can only mean "show me more content".
+  const towardClose = delta * sign > 0
+  if (!towardClose) return false
+
+  // Climb to the panel looking for a scroll container that still has room in the
+  // direction this gesture would scroll. Dragging down on a bottom sheet scrolls
+  // UP (dir -1); the sheet only starts moving once every ancestor is at that edge.
+  const scrollDir: 1 | -1 = sign > 0 ? -1 : 1
+  let el: Element | null = target
+  while (el) {
+    if (canScroll(el, scrollDir)) return false
+    if (el === panel) break
+    el = el.parentElement
+  }
+  return true
+}
+
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = React.useState(false)
   React.useEffect(() => {
@@ -133,6 +194,11 @@ function SheetContent({
   const panelRef = React.useRef<HTMLDivElement>(null)
   const posAnim = React.useRef<ReturnType<typeof animate> | null>(null)
   const dragState = React.useRef({ start: 0, startPos: 0, size: 1 })
+  // The element the gesture STARTED on — pointermove's target drifts as the finger
+  // travels, and the arbitration has to reason about where the press landed.
+  const downTargetRef = React.useRef<Element | null>(null)
+  // Wall-clock until which the content owns gestures (set when a scroll wins one).
+  const scrollLockRef = React.useRef(0)
   const samples = React.useRef<{ c: number; t: number }[]>([])
 
   // `rendered` gates the portal: stays mounted through the close animation so
@@ -219,10 +285,11 @@ function SheetContent({
       // Don't hijack interactive controls (inputs, buttons, links, the close X).
       if (
         (e.target as HTMLElement).closest(
-          'input, textarea, select, button, a, [contenteditable="true"]'
+          'input, textarea, select, button, a, [contenteditable="true"], [data-acr-no-drag]'
         )
       )
         return
+      downTargetRef.current = e.target as Element
       const el = panelRef.current
       if (!el) return
       const rect = el.getBoundingClientRect()
@@ -245,25 +312,23 @@ function SheetContent({
       const delta = coord - start
       if (pendingRef.current) {
         if (Math.abs(delta) < DRAG_THRESHOLD) return
-        // The browser has first claim on this gesture. If a text selection has
-        // formed, the user is selecting, not dragging — let go.
-        //
-        // This must run BEFORE setPointerCapture: capturing the pointer kills the
-        // native selection outright, so by the time we could notice, the text the
-        // user was highlighting is already gone and the panel is sliding instead.
-        //
-        // No snapshot of the pre-gesture selection is needed: mousedown collapses
-        // any stale selection, and it fires before the first pointermove — so a
-        // non-collapsed selection here always belongs to THIS gesture.
-        //
-        // Touch is unaffected: a touch drag does not create a selection (that
-        // needs a long-press), so the check is inert there and dragging is
-        // unchanged. Pointer-down on padding or chrome selects nothing either,
-        // which is exactly where dragging the panel is the intended reading.
-        const selection =
-          typeof window !== "undefined" ? window.getSelection() : null
-        if (selection && !selection.isCollapsed) {
+        // The browser and the content get first claim on this gesture; the panel
+        // only takes what nobody else wanted. Decided BEFORE setPointerCapture,
+        // which would kill a native selection and swallow a scroll outright.
+        if (
+          !shouldDrag(
+            downTargetRef.current,
+            panelRef.current,
+            axis,
+            sign,
+            delta,
+            scrollLockRef.current
+          )
+        ) {
           pendingRef.current = false
+          // Remember that the content took this gesture: the pause between two
+          // scroll flicks would otherwise read as a fresh press on the panel.
+          scrollLockRef.current = Date.now() + SCROLL_LOCK_MS
           return
         }
         // Commit to a drag: grab the pointer and interrupt any running animation.
@@ -373,6 +438,16 @@ function SheetContent({
           {...dragHandlers}
           className={cn(
             "fixed z-50 flex flex-col gap-4 bg-[var(--acr-panel)] backdrop-blur-xl shadow-[0_0_0_1px_var(--acr-border-soft),0_16px_48px_rgba(0,0,0,0.35)]",
+            // Hand the browser the axis we don't dismiss on, keep ours.
+            //
+            // ⚠️ On a top/bottom sheet this line is why **scrollable content must
+            // live in a nested container, never as `overflow-y-auto` on
+            // SheetContent itself.** `touch-action` is consulted only from the
+            // scroll container that implements the pan downward, so a nested
+            // `overflow-*-auto` child scrolls natively no matter what the panel
+            // says — but putting the overflow ON the panel makes the panel that
+            // container, and then this value forbids the very axis it needs.
+            // (Same requirement vaul carries; `shouldDrag` handles the rest.)
             axis === "x" ? "touch-pan-y" : "touch-pan-x",
             positional,
             className

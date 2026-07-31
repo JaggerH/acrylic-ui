@@ -79,3 +79,112 @@ describe("Sheet drag vs. native text selection", () => {
     expect(capture).not.toHaveBeenCalled()
   })
 })
+
+/** jsdom gives every element scrollHeight/clientHeight of 0, so a "scrollable"
+ *  element has to be declared. `top` is where it currently sits. */
+function makeScrollable(el: Element, { top }: { top: number }) {
+  Object.defineProperty(el, "scrollHeight", { value: 1000, configurable: true })
+  Object.defineProperty(el, "clientHeight", { value: 400, configurable: true })
+  Object.defineProperty(el, "scrollTop", { value: top, writable: true, configurable: true })
+}
+
+function renderBottomSheet() {
+  render(
+    <Sheet open>
+      <SheetContent side="bottom">
+        <SheetTitle>标题</SheetTitle>
+        <div data-testid="scroller">
+          <p>很长的正文。</p>
+        </div>
+      </SheetContent>
+    </Sheet>
+  )
+  const panel = document.querySelector('[data-slot="sheet-content"]')
+  if (!panel) throw new Error("expected the sheet panel to be in the document")
+  const capture = vi.fn()
+  ;(panel as HTMLElement & { setPointerCapture: unknown }).setPointerCapture = capture
+  return { panel, capture, scroller: screen.getByTestId("scroller") }
+}
+
+/** A vertical gesture that starts on `from`. Negative dy = upward. */
+function dragVertically(from: Element, dy: number) {
+  fireEvent.pointerDown(from, { button: 0, clientX: 0, clientY: 0 })
+  fireEvent.pointerMove(from, { clientX: 0, clientY: dy, pointerId: 1 })
+}
+
+// A bottom sheet dismisses along the same axis its content scrolls on, so every
+// downward gesture is ambiguous. Ported from vaul's `shouldDrag`: the content is
+// asked first, and the panel only moves once nothing else wants the gesture.
+describe("Sheet drag vs. content scroll (bottom sheet)", () => {
+  it("drags when the content is already at the top", () => {
+    mockSelection(true)
+    const { capture, scroller } = renderBottomSheet()
+    makeScrollable(scroller, { top: 0 })
+
+    dragVertically(scroller, 40) // downward = toward dismiss
+
+    expect(capture).toHaveBeenCalled()
+  })
+
+  it("does not drag while the content still has somewhere to scroll", () => {
+    mockSelection(true)
+    const { capture, scroller } = renderBottomSheet()
+    makeScrollable(scroller, { top: 120 }) // scrolled down — pulling down scrolls back up
+
+    dragVertically(scroller, 40)
+
+    expect(capture).not.toHaveBeenCalled()
+  })
+
+  it("never drags away from the dismiss direction — that is always a scroll", () => {
+    mockSelection(true)
+    const { capture, scroller } = renderBottomSheet()
+    makeScrollable(scroller, { top: 0 })
+
+    dragVertically(scroller, -40) // upward on a bottom sheet = "show me more"
+
+    expect(capture).not.toHaveBeenCalled()
+  })
+
+  it("keeps dragging locked out briefly after the content took a gesture", () => {
+    // Without this, the pause between two scroll flicks reads as a fresh press
+    // and the second flick dismisses the sheet mid-scroll.
+    mockSelection(true)
+    const { capture, scroller } = renderBottomSheet()
+    makeScrollable(scroller, { top: 120 })
+    dragVertically(scroller, 40) // declined → arms the lock
+    expect(capture).not.toHaveBeenCalled()
+
+    // Content is at the top now, so this gesture would otherwise be a legal drag.
+    Object.defineProperty(scroller, "scrollTop", { value: 0, configurable: true })
+    dragVertically(scroller, 40)
+
+    expect(capture).not.toHaveBeenCalled()
+  })
+
+  it("honours the data-acr-no-drag opt-out", () => {
+    mockSelection(true)
+    const { capture, scroller } = renderBottomSheet()
+    scroller.setAttribute("data-acr-no-drag", "")
+
+    dragVertically(scroller, 40)
+
+    expect(capture).not.toHaveBeenCalled()
+  })
+})
+
+describe("Sheet drag vs. content scroll (side sheet)", () => {
+  it("still drags over scrollable content — the axes are orthogonal", () => {
+    // A right sheet dismisses on x while its content scrolls on y, so there is
+    // nothing to arbitrate; vaul short-circuits left/right the same way.
+    mockSelection(true)
+    const { panel, capture } = renderOpenSheet()
+    makeScrollable(panel, { top: 120 })
+
+    const text = screen.getByText("可以选中的正文。")
+    fireEvent.pointerDown(text, { button: 0, clientX: 0, clientY: 0 })
+    fireEvent.pointerMove(text, { clientX: 40, clientY: 0, pointerId: 1 })
+
+    expect(capture).toHaveBeenCalled()
+  })
+})
