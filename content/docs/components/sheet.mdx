@@ -70,3 +70,16 @@ direction.
   over an 8px-blur overlay; a built-in X sits in the top-right corner.
 - `SheetContent` only sets `gap-4`, so give any form body its own horizontal
   padding (e.g. `px-4`) to align it with the header and footer.
+- **Drag-to-dismiss is a touch affordance — a mouse cannot drag the panel.** With a
+  cursor, press-and-move already belongs to the browser (selecting text, scrolling);
+  taking it made the sheet slide away while the user was highlighting a sentence, and
+  no amount of arbitration fixed that reliably — at the few pixels where a drag has to
+  commit, the selection has not formed yet, and committing captures the pointer, which
+  kills it. Cursors close via the ✕, `Escape`, or the overlay.
+- **A top/bottom sheet needs its scrollable body in a nested container** — put
+  `overflow-y-auto` on a child, never on `SheetContent` itself. `touch-action` is read
+  from the scroll container that implements the pan, so a nested child scrolls
+  natively; on the panel it makes the panel that container, whose `touch-action`
+  forbids the very axis it needs, and the body cannot be scrolled by finger at all.
+- Content that owns its own pointer gestures (a slider, a canvas) can opt out of the
+  drag entirely with `data-acr-no-drag` on it or any ancestor inside the panel.

@@ -41,36 +41,6 @@ const DRAG_THRESHOLD = 5 // px of movement before a press becomes a drag
 // second flick closes the sheet mid-scroll. (vaul calls this scrollLockTimeout.)
 const SCROLL_LOCK_MS = 100
 
-/**
- * Did this press land on text the user can select?
- *
- * Asked at pointer-down, because asking later does not work: the drag commits
- * after DRAG_THRESHOLD px, and at 5px the browser usually has NOT extended the
- * selection yet (a character is wider than that), so `getSelection()` still
- * reads collapsed. Committing then calls setPointerCapture, which kills the
- * selection for good — the user drags across a sentence, highlights nothing,
- * and the panel slides away. Measured, not theorised: with a real selection in
- * place the arbitration blocks correctly; with a collapsed one it captures and
- * the panel translates 40px. Raising the threshold only moves the window — a
- * slow drag still decides before the first character boundary is crossed.
- *
- * A caret hit-test has no such race: only text yields a caret position.
- */
-function pressedOnSelectableText(target: Element | null, x: number, y: number): boolean {
-  if (!target || typeof document === "undefined") return false
-  const style = typeof getComputedStyle === "function" ? getComputedStyle(target) : null
-  if (style && style.userSelect === "none") return false
-  type CaretDoc = Document & {
-    caretPositionFromPoint?: (x: number, y: number) => { offsetNode?: Node } | null
-    caretRangeFromPoint?: (x: number, y: number) => Range | null
-  }
-  const doc = document as CaretDoc
-  const node =
-    doc.caretPositionFromPoint?.(x, y)?.offsetNode ??
-    doc.caretRangeFromPoint?.(x, y)?.startContainer
-  return node?.nodeType === 3 /* TEXT_NODE */
-}
-
 /** Can this scroll container still move in `dir` (+1 = toward larger scrollTop)? */
 function canScroll(el: Element, dir: 1 | -1): boolean {
   if (el.scrollHeight <= el.clientHeight) return false
@@ -92,22 +62,17 @@ function shouldDrag(
   axis: "x" | "y",
   sign: 1 | -1,
   delta: number,
-  scrollLockedUntil: number,
-  downOnText: boolean
+  scrollLockedUntil: number
 ): boolean {
   // Explicit opt-out for a subtree that owns its own pointer story (a slider, a
   // canvas, a horizontally-scrolling strip). vaul ships the same escape hatch.
   if (target?.closest("[data-acr-no-drag]")) return false
 
-  // The press landed on text, so this gesture is the browser's to finish.
-  // Decided at pointer-down (see pressedOnSelectableText) because by the time a
-  // drag would commit, the selection has not necessarily formed yet.
-  if (downOnText) return false
-
-  // Belt to that brace: a selection that IS already visible settles it outright
-  // (e.g. the caret test missed, or the press continued an existing selection).
-  const selection = typeof window !== "undefined" ? window.getSelection() : null
-  if (selection && !selection.isCollapsed) return false
+  // NOTE: no text-selection check here, deliberately. Only touch reaches this
+  // function (see onPointerDown), and a touch drag never selects text. Testing
+  // `getSelection()` would instead read a selection left over from some earlier
+  // MOUSE gesture and refuse to drag — breaking the phone because of something
+  // that happened on a desktop minutes ago.
 
   // Side sheets drag on x while content scrolls on y — orthogonal, nothing to
   // arbitrate. (vaul short-circuits left/right the same way.)
@@ -233,8 +198,6 @@ function SheetContent({
   // The element the gesture STARTED on — pointermove's target drifts as the finger
   // travels, and the arbitration has to reason about where the press landed.
   const downTargetRef = React.useRef<Element | null>(null)
-  // Was the press on selectable text? (mouse only — see onPointerDown)
-  const downOnTextRef = React.useRef(false)
   // Wall-clock until which the content owns gestures (set when a scroll wins one).
   const scrollLockRef = React.useRef(0)
   const samples = React.useRef<{ c: number; t: number }[]>([])
@@ -319,7 +282,14 @@ function SheetContent({
 
   const onPointerDown = React.useCallback(
     (e: React.PointerEvent) => {
-      if (reduced || (e.button !== undefined && e.button !== 0)) return
+      // **Touch only.** Dragging the panel with a mouse competed with the two
+      // things the browser already does with a press-and-move — selecting text and
+      // scrolling — and lost in ways no amount of arbitration made predictable
+      // (the selection has not formed yet at the moment a drag must commit). The
+      // affordance this gesture exists for is the phone one: flick a sheet away.
+      // On a pointer with a cursor, that is what the close button and Esc are for.
+      if (e.pointerType !== "touch") return
+      if (reduced) return
       // Don't hijack interactive controls (inputs, buttons, links, the close X).
       if (
         (e.target as HTMLElement).closest(
@@ -328,12 +298,6 @@ function SheetContent({
       )
         return
       downTargetRef.current = e.target as Element
-      // **Mouse only.** A touch drag never selects text (that needs a long-press),
-      // so applying this to touch would make the sheet undraggable on phones —
-      // where dragging it is the whole interaction.
-      downOnTextRef.current =
-        e.pointerType === "mouse" &&
-        pressedOnSelectableText(e.target as Element, e.clientX, e.clientY)
       const el = panelRef.current
       if (!el) return
       const rect = el.getBoundingClientRect()
@@ -366,8 +330,7 @@ function SheetContent({
             axis,
             sign,
             delta,
-            scrollLockRef.current,
-            downOnTextRef.current
+            scrollLockRef.current
           )
         ) {
           pendingRef.current = false

@@ -86,6 +86,32 @@ project momentum to pick the resting state; and rubber-band at boundaries instea
 stopping hard. Radix primitives stay underneath for a11y — Motion only owns *how it
 moves*. Use Apple's projection: `projected = current + (v/1000)·d/(1−d)`, `d ≈ 0.998`.
 
+**Drag is for fingers. Bind it to `pointerType === "touch"` and let a cursor alone.**
+A cursor's press-and-move is already spoken for — the browser selects text with it and
+scrolls with it — so a component that claims it is competing, and it loses in a way
+users read as a bug: the panel slides off while they are highlighting a sentence.
+Arbitration does not rescue this. The decision has to be made within a few pixels of
+movement, and at that distance the browser has not extended the selection yet (a
+character is wider than the threshold), so `getSelection()` still reads collapsed and
+the drag commits — after which `setPointerCapture` kills the selection for good.
+Raising the threshold only moves the window; a slow drag still decides too early.
+A finger has no such conflict: touch does not select (that needs a long-press), and
+swipe-to-dismiss is the affordance people expect there.
+
+**A drag that shares an axis with scrolling must ask the content first.** Port the
+arbitration rather than inventing one — vaul's `shouldDrag` (behind shadcn's Drawer)
+is the reference, and its ordering is load-bearing: explicit opt-out attribute →
+axis short-circuit (a side panel and a vertical scroll never conflict) → scroll-lock
+window → gestures moving away from the dismiss direction are scrolls → climb ancestors
+for one that still has room to scroll. The scroll-lock window is not paranoia: the
+pause between two flicks otherwise reads as a fresh press and dismisses mid-scroll.
+
+**Corollary for consumers**: a gesture component's scrollable body must live in a
+nested container. `touch-action` is read from the scroll container that implements the
+pan, so a nested child scrolls natively no matter what the panel declares — but
+`overflow-*-auto` on the panel makes the panel that container, and its own
+`touch-action` then forbids the axis it needs.
+
 ## Accessibility is baked into the tokens
 
 `acrylic.css` ships three `@media` blocks so components inherit a11y for free:

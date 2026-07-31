@@ -9,92 +9,15 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
-/** Stand in for the browser's selection state. `collapsed: true` = nothing selected. */
-function mockSelection(collapsed: boolean) {
-  vi.spyOn(window, "getSelection").mockReturnValue({
-    isCollapsed: collapsed,
-  } as unknown as Selection)
-}
-
-function renderOpenSheet() {
+/** Committing a drag is observable exactly here — it is the call that grabs the
+ *  pointer, and jsdom has no pointer capture of its own to get in the way. */
+function renderSheet(side: "right" | "bottom") {
   render(
     <Sheet open>
-      <SheetContent side="right">
+      <SheetContent side={side}>
         <SheetTitle>标题</SheetTitle>
-        <p>可以选中的正文。</p>
-      </SheetContent>
-    </Sheet>
-  )
-  const panel = document.querySelector('[data-slot="sheet-content"]')
-  if (!panel) throw new Error("expected the sheet panel to be in the document")
-  // The drag commit is observable exactly here: committing grabs the pointer,
-  // and grabbing the pointer is what kills a native text selection.
-  const capture = vi.fn()
-  // Assign directly — jsdom has no pointer capture, and fireEvent's `target`
-  // init key would splat properties onto the element instead of retargeting.
-  ;(panel as HTMLElement & { setPointerCapture: unknown }).setPointerCapture = capture
-  return { panel, capture }
-}
-
-/** Press ON THE BODY TEXT (events bubble to the panel's handler, so `e.target`
- *  is the paragraph — the real shape of "user drags across a sentence"), then
- *  move well past DRAG_THRESHOLD (5px). */
-function pressAndDrag(distance = 40) {
-  const text = screen.getByText("可以选中的正文。")
-  fireEvent.pointerDown(text, { button: 0, clientX: 0, clientY: 0 })
-  fireEvent.pointerMove(text, { clientX: distance, clientY: 0, pointerId: 1 })
-}
-
-describe("Sheet drag vs. native text selection", () => {
-  // The bug this pins: the gesture layer claimed every pointer-down outside form
-  // controls, so dragging to select body text slid the whole panel away instead.
-  // The panel is the only thing in the app that can steal a selection this way,
-  // because committing the drag calls setPointerCapture.
-  it("does not start a drag while the user is selecting text", () => {
-    mockSelection(false) // a selection formed under the pointer
-    const { capture } = renderOpenSheet()
-
-    pressAndDrag()
-
-    expect(capture).not.toHaveBeenCalled()
-  })
-
-  it("still drags when the gesture selects nothing (padding, chrome, touch)", () => {
-    mockSelection(true) // nothing got selected — this is a real drag
-    const { capture } = renderOpenSheet()
-
-    pressAndDrag()
-
-    expect(capture).toHaveBeenCalled()
-  })
-
-  it("ignores movement below the drag threshold either way", () => {
-    mockSelection(true)
-    const { capture } = renderOpenSheet()
-
-    const text = screen.getByText("可以选中的正文。")
-    fireEvent.pointerDown(text, { button: 0, clientX: 0, clientY: 0 })
-    fireEvent.pointerMove(text, { clientX: 3, clientY: 0, pointerId: 1 })
-
-    expect(capture).not.toHaveBeenCalled()
-  })
-})
-
-/** jsdom gives every element scrollHeight/clientHeight of 0, so a "scrollable"
- *  element has to be declared. `top` is where it currently sits. */
-function makeScrollable(el: Element, { top }: { top: number }) {
-  Object.defineProperty(el, "scrollHeight", { value: 1000, configurable: true })
-  Object.defineProperty(el, "clientHeight", { value: 400, configurable: true })
-  Object.defineProperty(el, "scrollTop", { value: top, writable: true, configurable: true })
-}
-
-function renderBottomSheet() {
-  render(
-    <Sheet open>
-      <SheetContent side="bottom">
-        <SheetTitle>标题</SheetTitle>
-        <div data-testid="scroller">
-          <p>很长的正文。</p>
+        <div data-testid="body">
+          <p>可以选中的正文。</p>
         </div>
       </SheetContent>
     </Sheet>
@@ -103,45 +26,97 @@ function renderBottomSheet() {
   if (!panel) throw new Error("expected the sheet panel to be in the document")
   const capture = vi.fn()
   ;(panel as HTMLElement & { setPointerCapture: unknown }).setPointerCapture = capture
-  return { panel, capture, scroller: screen.getByTestId("scroller") }
+  return { panel, capture, body: screen.getByTestId("body") }
 }
 
-/** A vertical gesture that starts on `from`. Negative dy = upward. */
-function dragVertically(from: Element, dy: number) {
-  fireEvent.pointerDown(from, { button: 0, clientX: 0, clientY: 0 })
-  fireEvent.pointerMove(from, { clientX: 0, clientY: dy, pointerId: 1 })
+/** One gesture: press on `from`, then move past DRAG_THRESHOLD (5px). */
+function drag(
+  from: Element,
+  { dx = 0, dy = 0, pointerType = "touch" }: { dx?: number; dy?: number; pointerType?: string }
+) {
+  fireEvent.pointerDown(from, { button: 0, clientX: 0, clientY: 0, pointerType })
+  fireEvent.pointerMove(from, { clientX: dx, clientY: dy, pointerId: 1 })
 }
+
+/** jsdom reports 0 for every scroll metric, so a scroller has to be declared. */
+function makeScrollable(el: Element, { top }: { top: number }) {
+  Object.defineProperty(el, "scrollHeight", { value: 1000, configurable: true })
+  Object.defineProperty(el, "clientHeight", { value: 400, configurable: true })
+  Object.defineProperty(el, "scrollTop", { value: top, writable: true, configurable: true })
+}
+
+// The panel is draggable by finger only. With a cursor, press-and-move already
+// belongs to the browser (select text, scroll), and taking it produced a sheet
+// that slid away while the user was trying to highlight a sentence. Arbitration
+// could not fix that reliably: at the 5px mark where a drag must commit, the
+// selection has not formed yet, and committing calls setPointerCapture, which
+// kills it for good. So the cursor keeps its gestures and closes via ✕ / Esc.
+describe("Sheet drag is a touch affordance", () => {
+  it.each(["mouse", "pen", ""])("ignores a %s press entirely", (pointerType) => {
+    const { capture, body } = renderSheet("right")
+
+    drag(body, { dx: 60, pointerType })
+
+    expect(capture).not.toHaveBeenCalled()
+  })
+
+  it("drags on touch", () => {
+    const { capture, body } = renderSheet("right")
+
+    drag(body, { dx: 60 })
+
+    expect(capture).toHaveBeenCalled()
+  })
+
+  it("ignores movement below the drag threshold", () => {
+    const { capture, body } = renderSheet("right")
+
+    drag(body, { dx: 3 })
+
+    expect(capture).not.toHaveBeenCalled()
+  })
+
+  it("is not blocked by a selection left over from an earlier mouse gesture", () => {
+    // Regression guard with teeth: an earlier version asked `getSelection()` here.
+    // Touch never creates a selection, so the only thing that check could ever see
+    // was a stale desktop one — and it would refuse to drag the sheet on a phone
+    // because of a highlight made minutes earlier.
+    vi.spyOn(window, "getSelection").mockReturnValue({ isCollapsed: false } as unknown as Selection)
+    const { capture, body } = renderSheet("right")
+
+    drag(body, { dx: 60 })
+
+    expect(capture).toHaveBeenCalled()
+  })
+})
 
 // A bottom sheet dismisses along the same axis its content scrolls on, so every
-// downward gesture is ambiguous. Ported from vaul's `shouldDrag`: the content is
+// downward flick is ambiguous. Ported from vaul's `shouldDrag`: the content is
 // asked first, and the panel only moves once nothing else wants the gesture.
 describe("Sheet drag vs. content scroll (bottom sheet)", () => {
   it("drags when the content is already at the top", () => {
-    mockSelection(true)
-    const { capture, scroller } = renderBottomSheet()
-    makeScrollable(scroller, { top: 0 })
+    const { capture, body } = renderSheet("bottom")
+    makeScrollable(body, { top: 0 })
 
-    dragVertically(scroller, 40) // downward = toward dismiss
+    drag(body, { dy: 40 }) // downward = toward dismiss
 
     expect(capture).toHaveBeenCalled()
   })
 
   it("does not drag while the content still has somewhere to scroll", () => {
-    mockSelection(true)
-    const { capture, scroller } = renderBottomSheet()
-    makeScrollable(scroller, { top: 120 }) // scrolled down — pulling down scrolls back up
+    const { capture, body } = renderSheet("bottom")
+    makeScrollable(body, { top: 120 }) // pulling down scrolls back up first
 
-    dragVertically(scroller, 40)
+    drag(body, { dy: 40 })
 
     expect(capture).not.toHaveBeenCalled()
   })
 
   it("never drags away from the dismiss direction — that is always a scroll", () => {
-    mockSelection(true)
-    const { capture, scroller } = renderBottomSheet()
-    makeScrollable(scroller, { top: 0 })
+    const { capture, body } = renderSheet("bottom")
+    makeScrollable(body, { top: 0 })
 
-    dragVertically(scroller, -40) // upward on a bottom sheet = "show me more"
+    drag(body, { dy: -40 }) // upward on a bottom sheet = "show me more"
 
     expect(capture).not.toHaveBeenCalled()
   })
@@ -149,100 +124,36 @@ describe("Sheet drag vs. content scroll (bottom sheet)", () => {
   it("keeps dragging locked out briefly after the content took a gesture", () => {
     // Without this, the pause between two scroll flicks reads as a fresh press
     // and the second flick dismisses the sheet mid-scroll.
-    mockSelection(true)
-    const { capture, scroller } = renderBottomSheet()
-    makeScrollable(scroller, { top: 120 })
-    dragVertically(scroller, 40) // declined → arms the lock
+    const { capture, body } = renderSheet("bottom")
+    makeScrollable(body, { top: 120 })
+    drag(body, { dy: 40 }) // declined → arms the lock
     expect(capture).not.toHaveBeenCalled()
 
-    // Content is at the top now, so this gesture would otherwise be a legal drag.
-    Object.defineProperty(scroller, "scrollTop", { value: 0, configurable: true })
-    dragVertically(scroller, 40)
+    Object.defineProperty(body, "scrollTop", { value: 0, configurable: true })
+    drag(body, { dy: 40 }) // would be legal now, but the lock is still warm
 
     expect(capture).not.toHaveBeenCalled()
   })
 
   it("honours the data-acr-no-drag opt-out", () => {
-    mockSelection(true)
-    const { capture, scroller } = renderBottomSheet()
-    scroller.setAttribute("data-acr-no-drag", "")
+    const { capture, body } = renderSheet("bottom")
+    body.setAttribute("data-acr-no-drag", "")
 
-    dragVertically(scroller, 40)
+    drag(body, { dy: 40 })
 
     expect(capture).not.toHaveBeenCalled()
   })
 })
 
 describe("Sheet drag vs. content scroll (side sheet)", () => {
-  it("still drags over scrollable content — the axes are orthogonal", () => {
+  it("drags over scrollable content — the axes are orthogonal", () => {
     // A right sheet dismisses on x while its content scrolls on y, so there is
     // nothing to arbitrate; vaul short-circuits left/right the same way.
-    mockSelection(true)
-    const { panel, capture } = renderOpenSheet()
-    makeScrollable(panel, { top: 120 })
+    const { capture, body } = renderSheet("right")
+    makeScrollable(body, { top: 120 })
 
-    const text = screen.getByText("可以选中的正文。")
-    fireEvent.pointerDown(text, { button: 0, clientX: 0, clientY: 0 })
-    fireEvent.pointerMove(text, { clientX: 40, clientY: 0, pointerId: 1 })
+    drag(body, { dx: 60 })
 
     expect(capture).toHaveBeenCalled()
-  })
-})
-
-/** jsdom has no caret API; declare what a hit-test at this point would find. */
-function mockCaret(onText: boolean) {
-  const node = onText ? document.createTextNode("正文") : document.createElement("div")
-  ;(document as unknown as { caretPositionFromPoint: unknown }).caretPositionFromPoint = () => ({
-    offsetNode: node,
-  })
-  return () => {
-    delete (document as unknown as { caretPositionFromPoint?: unknown }).caretPositionFromPoint
-  }
-}
-
-// Why the caret test exists at all: measured in a real browser, at the 5px commit
-// point the selection is still COLLAPSED (a character is wider than 5px), so
-// asking `getSelection()` there lets the drag through — and setPointerCapture
-// then kills the selection for good. Deciding at pointer-down has no such race.
-describe("Sheet drag vs. selection — decided at pointer-down", () => {
-  it("a mouse press on text never becomes a drag, even before any selection forms", () => {
-    mockSelection(true) // collapsed — exactly the state at 5px in the real browser
-    const restore = mockCaret(true)
-    const { capture } = renderOpenSheet()
-
-    const text = screen.getByText("可以选中的正文。")
-    fireEvent.pointerDown(text, { button: 0, clientX: 0, clientY: 0, pointerType: "mouse" })
-    fireEvent.pointerMove(text, { clientX: 40, clientY: 0, pointerId: 1 })
-
-    expect(capture).not.toHaveBeenCalled()
-    restore()
-  })
-
-  it("a TOUCH press on the same text still drags — touch never selects", () => {
-    // Guard against fixing the mouse by breaking phones: a touch drag does not
-    // create a selection (that needs a long-press), so blocking it there would
-    // leave the sheet undraggable exactly where dragging is the whole interaction.
-    mockSelection(true)
-    const restore = mockCaret(true)
-    const { capture } = renderOpenSheet()
-
-    const text = screen.getByText("可以选中的正文。")
-    fireEvent.pointerDown(text, { button: 0, clientX: 0, clientY: 0, pointerType: "touch" })
-    fireEvent.pointerMove(text, { clientX: 40, clientY: 0, pointerId: 1 })
-
-    expect(capture).toHaveBeenCalled()
-    restore()
-  })
-
-  it("a mouse press where there is no text drags as before", () => {
-    mockSelection(true)
-    const restore = mockCaret(false) // caret lands on an element, not a text node
-    const { panel, capture } = renderOpenSheet()
-
-    fireEvent.pointerDown(panel, { button: 0, clientX: 0, clientY: 0, pointerType: "mouse" })
-    fireEvent.pointerMove(panel, { clientX: 40, clientY: 0, pointerId: 1 })
-
-    expect(capture).toHaveBeenCalled()
-    restore()
   })
 })
