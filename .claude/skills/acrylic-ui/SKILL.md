@@ -153,6 +153,12 @@ Always enforced. Each links to Incorrect/Correct pairs.
 - **Gesture contract**: pointer-down response, 1:1 drag from the grab offset,
   interruptible from the live value, velocity handoff, momentum projection,
   rubber-band. Radix stays underneath for a11y; Motion owns only how it moves.
+  **Drag binds to `pointerType === "touch"` — a cursor never drags.** Press-and-move
+  with a cursor already belongs to the browser (select, scroll); taking it makes the
+  panel slide away mid-highlight, and arbitration cannot fix it (the selection has not
+  formed yet at the pixel where a drag must commit). A drag sharing an axis with
+  scrolling must also ask the content first — port vaul's `shouldDrag` ordering rather
+  than inventing one. Both in [rules/motion.md](./rules/motion.md).
 - **A11y is at the token layer** — `prefers-reduced-motion` / `-reduced-transparency`
   / `-contrast` `@media` blocks resolve through the tokens; don't re-implement per
   component. Gesture components also guard the JS path via `usePrefersReducedMotion`.
