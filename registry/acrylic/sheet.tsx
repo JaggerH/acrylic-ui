@@ -245,6 +245,27 @@ function SheetContent({
       const delta = coord - start
       if (pendingRef.current) {
         if (Math.abs(delta) < DRAG_THRESHOLD) return
+        // The browser has first claim on this gesture. If a text selection has
+        // formed, the user is selecting, not dragging — let go.
+        //
+        // This must run BEFORE setPointerCapture: capturing the pointer kills the
+        // native selection outright, so by the time we could notice, the text the
+        // user was highlighting is already gone and the panel is sliding instead.
+        //
+        // No snapshot of the pre-gesture selection is needed: mousedown collapses
+        // any stale selection, and it fires before the first pointermove — so a
+        // non-collapsed selection here always belongs to THIS gesture.
+        //
+        // Touch is unaffected: a touch drag does not create a selection (that
+        // needs a long-press), so the check is inert there and dragging is
+        // unchanged. Pointer-down on padding or chrome selects nothing either,
+        // which is exactly where dragging the panel is the intended reading.
+        const selection =
+          typeof window !== "undefined" ? window.getSelection() : null
+        if (selection && !selection.isCollapsed) {
+          pendingRef.current = false
+          return
+        }
         // Commit to a drag: grab the pointer and interrupt any running animation.
         pendingRef.current = false
         draggingRef.current = true
