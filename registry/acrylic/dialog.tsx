@@ -45,7 +45,12 @@ const DialogContent = React.forwardRef<
       // trigger instead of auto-focusing the X. Overridable via props.
       onOpenAutoFocus={(e) => e.preventDefault()}
       className={cn(
-        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 rounded-[20px] bg-[var(--acr-panel)] backdrop-blur-xl p-6 shadow-[0_0_0_1px_rgba(190,190,190,0.16),0_16px_48px_rgba(0,0,0,0.45)] duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]",
+        // `[&>*]:min-w-0` 是防撑宽的兜底,不是排版偏好:这个面板是 grid,而 grid 的 auto
+        // 轨道下限取子项的 min-content——子项里只要有一段 nowrap 的长文本(`truncate`
+        // 的路径/URL、`<pre>`、长英文单词),轨道就会被顶得比 `max-w-lg` 还宽,面板整体
+        // 跟着变形,而那行 `truncate` 反倒永远截不出来(它从没被约束过宽度)。给子项一个
+        // 0 下限,轨道就老实吃 max-width,溢出留在子项内部自己处理。
+        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg [&>*]:min-w-0 translate-x-[-50%] translate-y-[-50%] gap-4 rounded-[20px] bg-[var(--acr-panel)] backdrop-blur-xl p-6 shadow-[0_0_0_1px_rgba(190,190,190,0.16),0_16px_48px_rgba(0,0,0,0.45)] duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]",
         className
       )}
       {...props}

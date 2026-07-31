@@ -28,4 +28,9 @@ Basic (with a form), no close button, and scrollable content with a sticky foote
 - Exports `Dialog`, `DialogTrigger`, `DialogContent`, `DialogClose`, `DialogHeader`, `DialogFooter`, `DialogTitle`, `DialogDescription`.
 - The close (X) is the acrylic [Button](/docs/components/button) (`variant="ghost" size="icon"`). Hide it with `<DialogContent showCloseButton={false}>` and dismiss via your own `DialogClose` buttons.
 - On open, focus stays on the trigger (the X is not auto-focused, matching macOS). Override with `onOpenAutoFocus` on `DialogContent` if you need to focus a field.
+- The panel is a grid, and its children carry `min-w-0` — a long unbreakable string inside
+  (a `truncate`d path/URL, a `<pre>`, a long word) would otherwise push the grid track past
+  `max-w-lg` and stretch the whole panel, while the `truncate` never actually truncated.
+  With the floor at 0 the panel keeps its width and each child handles its own overflow —
+  so `truncate` / `overflow-x-auto` on your content works as written.
 - On a transparent (Tauri/Electron vibrancy) window, see the README for the optional `modal-acrylic` body-paint.
