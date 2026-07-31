@@ -23,3 +23,7 @@ npx shadcn add https://acrylic-ui.vercel.app/r/alert-dialog.json
 - `AlertDialogAction` / `AlertDialogCancel` reuse the acrylic [Button](/docs/components/button)
   (via `buttonVariants`) at the kit's **`large`** size (28px): Action → `default`, Cancel → `neutral`.
 - For a destructive action, pass `className={buttonVariants({ variant: "destructive", size: "large" })}`.
+- Like [Dialog](/docs/components/dialog), the panel is a grid whose children carry `min-w-0`:
+  a long unbreakable string inside (a `truncate`d path/URL, a `<pre>`) would otherwise push the
+  grid track past `max-w-lg` and stretch the whole panel. Overflow stays inside the child, so
+  `truncate` / `overflow-x-auto` on your content works as written.
