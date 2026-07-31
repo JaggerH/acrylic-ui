@@ -188,3 +188,61 @@ describe("Sheet drag vs. content scroll (side sheet)", () => {
     expect(capture).toHaveBeenCalled()
   })
 })
+
+/** jsdom has no caret API; declare what a hit-test at this point would find. */
+function mockCaret(onText: boolean) {
+  const node = onText ? document.createTextNode("正文") : document.createElement("div")
+  ;(document as unknown as { caretPositionFromPoint: unknown }).caretPositionFromPoint = () => ({
+    offsetNode: node,
+  })
+  return () => {
+    delete (document as unknown as { caretPositionFromPoint?: unknown }).caretPositionFromPoint
+  }
+}
+
+// Why the caret test exists at all: measured in a real browser, at the 5px commit
+// point the selection is still COLLAPSED (a character is wider than 5px), so
+// asking `getSelection()` there lets the drag through — and setPointerCapture
+// then kills the selection for good. Deciding at pointer-down has no such race.
+describe("Sheet drag vs. selection — decided at pointer-down", () => {
+  it("a mouse press on text never becomes a drag, even before any selection forms", () => {
+    mockSelection(true) // collapsed — exactly the state at 5px in the real browser
+    const restore = mockCaret(true)
+    const { capture } = renderOpenSheet()
+
+    const text = screen.getByText("可以选中的正文。")
+    fireEvent.pointerDown(text, { button: 0, clientX: 0, clientY: 0, pointerType: "mouse" })
+    fireEvent.pointerMove(text, { clientX: 40, clientY: 0, pointerId: 1 })
+
+    expect(capture).not.toHaveBeenCalled()
+    restore()
+  })
+
+  it("a TOUCH press on the same text still drags — touch never selects", () => {
+    // Guard against fixing the mouse by breaking phones: a touch drag does not
+    // create a selection (that needs a long-press), so blocking it there would
+    // leave the sheet undraggable exactly where dragging is the whole interaction.
+    mockSelection(true)
+    const restore = mockCaret(true)
+    const { capture } = renderOpenSheet()
+
+    const text = screen.getByText("可以选中的正文。")
+    fireEvent.pointerDown(text, { button: 0, clientX: 0, clientY: 0, pointerType: "touch" })
+    fireEvent.pointerMove(text, { clientX: 40, clientY: 0, pointerId: 1 })
+
+    expect(capture).toHaveBeenCalled()
+    restore()
+  })
+
+  it("a mouse press where there is no text drags as before", () => {
+    mockSelection(true)
+    const restore = mockCaret(false) // caret lands on an element, not a text node
+    const { panel, capture } = renderOpenSheet()
+
+    fireEvent.pointerDown(panel, { button: 0, clientX: 0, clientY: 0, pointerType: "mouse" })
+    fireEvent.pointerMove(panel, { clientX: 40, clientY: 0, pointerId: 1 })
+
+    expect(capture).toHaveBeenCalled()
+    restore()
+  })
+})
