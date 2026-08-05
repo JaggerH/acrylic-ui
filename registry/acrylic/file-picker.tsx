@@ -262,7 +262,25 @@ function FileBrowser({
 
   const [creating, setCreating] = React.useState(false)
 
+  // Same "was this unmounted while we were awaiting" concern as the mount-and-load
+  // and search effects above (their `alive` local), but commitDraft's await spans
+  // a host callback plus a reload, so it needs a ref that survives across renders
+  // rather than a closure-local flag. This one matters more than the other two:
+  // its post-await work isn't just setState (which React would silently drop on
+  // an unmounted tree) — `goTo` calls the host's onPathChange/onValueChange
+  // directly, so without this guard an already-unmounted panel (e.g. the Dialog
+  // wrapping it just closed) would still hand the host a "path changed"
+  // notification for a component that, as far as the host is concerned, is gone.
+  const mountedRef = React.useRef(true)
+  React.useEffect(() => {
+    return () => { mountedRef.current = false }
+  }, [])
+
   const commitDraft = React.useCallback(async () => {
+    // Reentrancy guard: the trigger button is also disabled while creating, but
+    // that alone only stops mouse clicks — this stops any other path (e.g. a
+    // second Enter) from clearing the in-flight draft's text.
+    if (creating) return
     if (!onCreateFolder || draft === null) return
     const name = draft.trim()
     // Locally knowable rules are checked locally — no round trip to learn what we
@@ -275,6 +293,7 @@ function FileBrowser({
     setDraftError(null)
     try {
       await onCreateFolder(path, name)
+      if (!mountedRef.current) return
       setDraft(null)
       // Reload ourselves rather than requiring the host to hand back the new entry
       // — one fewer convention the host has to get right for this to work. Go
@@ -282,16 +301,18 @@ function FileBrowser({
       // so an inline arrow-function consumer doesn't force this callback to be
       // rebuilt every render.
       const next = await loadDirRef.current(path)
+      if (!mountedRef.current) return
       setEntries(next)
       // Decision 7: creating a folder means you meant to use it — go inside.
       goTo(joinPath(path, name), { name, isDir: true })
     } catch (e: unknown) {
+      if (!mountedRef.current) return
       // Keep the row alive with the text still in it so the name can be fixed in place.
       setDraftError(e instanceof Error ? e.message : String(e))
     } finally {
-      setCreating(false)
+      if (mountedRef.current) setCreating(false)
     }
-  }, [onCreateFolder, draft, entries, path, l.nameRequired, l.nameTaken, goTo])
+  }, [onCreateFolder, draft, creating, entries, path, l.nameRequired, l.nameTaken, goTo])
 
   const shown = React.useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -349,10 +370,12 @@ function FileBrowser({
         </InputGroup>
         {onCreateFolder && (
           <Button
+            type="button"
             icon
             size="small"
             variant="ghost"
             aria-label={l.newFolder}
+            disabled={creating}
             onClick={() => { setDraft(""); setDraftError(null) }}
           >
             <FolderPlusIcon />

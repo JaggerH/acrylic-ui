@@ -516,6 +516,88 @@ describe("FileBrowser folder creation", () => {
   })
 })
 
+describe("FileBrowser folder creation guards against a stale trigger click", () => {
+  it("disables the trigger while creating so it cannot clear the in-flight draft, and keeps the text after the host rejects", async () => {
+    // Regression test for the review finding: the trigger button's onClick
+    // unconditionally does setDraft(""); setDraftError(null) — with no guard,
+    // a click while a create request is in flight would blank out the draft
+    // text a user just typed, so a subsequent rejection would show the error
+    // next to an empty input instead of the text that actually failed.
+    const user = userEvent.setup()
+    let rejectCreate: ((e: Error) => void) | undefined
+    const onCreateFolder = vi.fn(
+      () => new Promise<void>((_resolve, reject) => { rejectCreate = reject })
+    )
+    render(<FileBrowser loadDir={makeLoadDir()} onCreateFolder={onCreateFolder} />)
+
+    await user.click(await screen.findByRole("button", { name: "New folder" }))
+    await user.type(screen.getByRole("textbox", { name: "New folder" }), "a:b{Enter}")
+
+    await waitFor(() => expect(onCreateFolder).toHaveBeenCalledWith("/", "a:b"))
+
+    const trigger = screen.getByRole("button", { name: "New folder" })
+    expect(trigger).toBeDisabled()
+
+    // A click on a disabled button does not fire its handler — this is the
+    // guard actually being exercised, not userEvent being lenient.
+    await user.click(trigger)
+    expect(screen.getByRole("textbox", { name: "New folder" })).toHaveValue("a:b")
+
+    rejectCreate?.(new Error("name contains an illegal character"))
+
+    expect(await screen.findByText("name contains an illegal character")).toBeInTheDocument()
+    expect(screen.getByRole("textbox", { name: "New folder" })).toHaveValue("a:b")
+  })
+})
+
+describe("FileBrowser folder creation unmount safety", () => {
+  it("does not notify the host of a path/value change after the panel unmounts mid-creation", async () => {
+    // Regression test for the review finding: commitDraft's async continuation
+    // never checked whether the component was still mounted, unlike the
+    // mount-and-load and search effects which both use an `alive` flag. Its
+    // post-await work isn't just setState (React drops that safely on an
+    // unmounted tree) — it calls goTo, which reaches out to the host's
+    // onPathChange/onValueChange directly. Without a mounted guard, a host that
+    // unmounts this panel mid-request (e.g. closing the Dialog wrapping it)
+    // would still receive a "path changed" notification for a component it no
+    // longer considers alive.
+    const user = userEvent.setup()
+    let resolveCreate: (() => void) | undefined
+    const onCreateFolder = vi.fn(
+      () => new Promise<void>((resolve) => { resolveCreate = resolve })
+    )
+    const onPathChange = vi.fn()
+    const onValueChange = vi.fn()
+    const { unmount } = render(
+      <FileBrowser
+        loadDir={makeLoadDir()}
+        onCreateFolder={onCreateFolder}
+        select="dir"
+        onPathChange={onPathChange}
+        onValueChange={onValueChange}
+      />
+    )
+
+    await user.click(await screen.findByRole("button", { name: "New folder" }))
+    await user.type(screen.getByRole("textbox", { name: "New folder" }), "Fresh{Enter}")
+
+    await waitFor(() => expect(onCreateFolder).toHaveBeenCalledWith("/", "Fresh"))
+
+    // Clear the mount-time announce call so only post-unmount activity counts.
+    onPathChange.mockClear()
+    onValueChange.mockClear()
+
+    unmount()
+    resolveCreate?.()
+
+    // Flush the microtask queue the resolved promise's .then chain runs on.
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    expect(onPathChange).not.toHaveBeenCalled()
+    expect(onValueChange).not.toHaveBeenCalled()
+  })
+})
+
 describe("FileBrowser search box accessible name", () => {
   it("exposes the subtree label as the accessible name when searchDir is provided", async () => {
     render(<FileBrowser loadDir={makeLoadDir()} searchDir={async () => []} />)
