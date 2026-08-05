@@ -138,7 +138,8 @@ describe("FileBrowser browsing", () => {
     render(<FileBrowser loadDir={loadDir} defaultPath="/Shows/Season 3" />)
 
     await screen.findByRole("option", { name: "ep05.mp4" })
-    await user.click(screen.getByRole("link", { name: "Shows" }))
+    // 面包屑用 <button>：这些层级切换只改面板内的状态，不导航文档。
+    await user.click(screen.getByRole("button", { name: "Shows" }))
 
     await waitFor(() => expect(loadDir).toHaveBeenCalledWith("/Shows"))
     expect(await screen.findByRole("option", { name: "cover.jpg" })).toBeInTheDocument()
@@ -492,7 +493,8 @@ describe("FileBrowser selection", () => {
     )
 
     await screen.findByRole("option", { name: "ep05.mp4" })
-    await user.click(screen.getByRole("link", { name: "Shows" }))
+    // 面包屑用 <button>：这些层级切换只改面板内的状态，不导航文档。
+    await user.click(screen.getByRole("button", { name: "Shows" }))
 
     await waitFor(() => expect(onValueChange).toHaveBeenCalledWith("/Shows", null))
   })

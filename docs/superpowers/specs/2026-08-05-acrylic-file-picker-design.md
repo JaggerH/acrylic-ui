@@ -122,6 +122,12 @@ type FilePickerDialogProps = FileBrowserProps & {
 
 核心自己持有的只有三样：**当前浏览路径、当前目录条目、搜索词**。选中值受控，关闭/提交不归它管。
 
+**回调不要求稳定引用。** 组件内部用 ref 持有最新的 `loadDir` / `searchDir` / `onCreateFolder`，加载
+effect 只依赖 `path`。理由：消费者最自然的写法就是内联箭头函数（本项目的 stream 适配层正是如此），
+每次渲染都是新引用；若把它放进 effect 依赖数组，同一个目录会随父组件每次重渲染反复拉取。把「请用
+`useCallback` 包一下」写进文档是把一个组件能自己解决的问题推给每一个消费者，而且没人会记得。
+（用 `vi.fn()` 写的测试跑不出这个问题——它是外部创建的稳定引用。要覆盖必须显式传内联函数并重渲染。）
+
 **加载时机从 `open` 触发改为挂载即加载、卸载即忘。** 这是无壳化的必然——核心面板手上没有 `open` 这个 prop。
 顺带修掉现有实现的一个隐性缺陷：`useEffect` 依赖数组里带着 `open`，重复打开时旧目录数据会先闪一帧
 （`files` 状态没跟着重置）。
@@ -171,8 +177,14 @@ type FilePickerDialogProps = FileBrowserProps & {
 
 **表面层级**：列表区不再套 `rounded-md border border-[var(--acr-border-soft)]` 的框——那是在 Dialog 的
 玻璃面板上又画一个框，而 acrylic 的深度来自嵌套色阶不是描边（"the material is the design"）。
-改为列表容器声明 `data-nested-surface`，行的 hover/选中自然吃 `--acr-card-nested`。
+行的凹陷走 **`Item` 自己的 variant**（materials.md：「单个凹陷**行**用 `Item variant="muted"`，
+不要手搓 `bg-black/5`」）。
 同时这也遵守 Apple 的「不要把一层浅色半透明表面叠在另一层上」。
+
+> **别用 `data-nested-surface` 做这件事。** 那条 CSS 规则是
+> `[data-nested-surface="true"] [data-slot="card"]`——只对内部的 **Card** 生效。列表行是 `Item`
+> （`data-slot="item"`），永远匹配不上，加了等于什么都没做。本设计初稿写错过一次，Task 1 的 review
+> 抓出来了。
 
 **滚动边缘而非硬分隔线**：面包屑/搜索与列表之间、列表与 footer 之间的 1px 线去掉，换成 scroll edge
 effect——只在内容确实被滚上去时，在交界处淡出一小段遮罩。1px 线是永远在那儿的装饰；遮罩只在真有
