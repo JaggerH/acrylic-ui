@@ -241,6 +241,7 @@ Same name = same API surface, acrylic restyling only. File = `registry/acrylic/<
 | — | `shell.tsx` | **acrylic-only**: app window scaffolding (Shell/Inset/Panel/Navbar/Content) |
 | — | `media-box.tsx` | **acrylic-only**: media container |
 | — | `audio-player.tsx` | **acrylic-only** |
+| — | `file-picker.tsx` | **acrylic-only**: backend-agnostic filesystem browser/picker (FileBrowser + FilePickerDialog) |
 | — | `stepper.tsx` | **acrylic-only**: macOS stepper control |
 | — | `use-modal-acrylic.ts` | **acrylic-only**: Tauri vibrancy modal hook |
 
@@ -291,6 +292,7 @@ input-group), toggle, toggle-group.
 | Menus | `DropdownMenu`, `ContextMenu`, `Command` |
 | Feedback | `sonner` (toast), `Skeleton`, `Badge` |
 | Media | `MediaBox`, `AudioPlayer` |
+| Pick a file or folder | `FilePickerDialog`（或无壳的 `FileBrowser`） |
 
 ## Workflow
 

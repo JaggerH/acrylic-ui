@@ -1,0 +1,209 @@
+---
+title: File Picker
+description: A backend-agnostic filesystem browser and picker — drill into folders, search, create a folder in place, and pick a file or a directory. No component knows what a "file" physically is; every byte arrives through host callbacks.
+---
+
+Two exports, one file: [`FileBrowser`](#filebrowser) is the shell-less browsing panel — drop
+it into a Dialog, a Sheet, a Popover, or straight into the page. [`FilePickerDialog`](#filepickerdialog)
+is the same panel dropped into an acrylic [Dialog](/docs/components/dialog) with confirm/cancel wired
+up, for the common case where a modal picker is exactly what you want. All data — directory listings,
+search results, folder creation — arrives through callbacks you supply; the component has no backend
+of its own and can drive a cloud drive, an object store, or an in-memory tree without any change to
+this file.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/file-picker.json
+```
+
+## Usage
+
+<ComponentPreview name="file-picker-demo" />
+
+**Shell-less — `FileBrowser`**, for hosting inside your own container:
+
+```tsx
+import { FileBrowser } from "@/components/acrylic/file-picker"
+
+<FileBrowser
+  loadDir={(path) => api.listDir(path)}
+  select="dir"
+  defaultPath="/"
+  onValueChange={(path) => setChosenDir(path)}
+/>
+```
+
+**Official shell — `FilePickerDialog`**, a ready-made modal:
+
+```tsx
+import { FilePickerDialog } from "@/components/acrylic/file-picker"
+
+<FilePickerDialog
+  open={open}
+  onOpenChange={setOpen}
+  select="dir"
+  loadDir={(path) => api.listDir(path)}
+  onCreateFolder={(parent, name) => api.mkdir(parent, name)}
+  onCommit={(path) => setChosenDir(path)}
+/>
+```
+
+## Anatomy
+
+- **`FileBrowser`** owns everything about *browsing*: the current path, the loaded entries, the
+  breadcrumb, search, the new-folder draft row, and keyboard navigation. It does **not** know what
+  contains it, and it never closes anything — there is no `onOpenChange`, no Escape handler, no
+  concept of "done." Confirming a pick and dismissing whatever surface hosts the panel is entirely
+  the shell's job.
+- **`FilePickerDialog`** is that shell: `FileBrowser` inside an acrylic `Dialog`, with a footer
+  (Cancel / Choose) and an optional `commitOnSelect` fast path.
+
+This split exists because a general-purpose registry component has no business deciding what
+container it lives in. A `Dialog` baked into the browsing panel is a real trap: if a "browse for a
+folder" affordance sits inside a `Popover`, and the folder browser itself opens as a portal-rendered
+`Dialog`, the Popover treats the click that opens the browser as an outside click and dismisses
+itself the instant the user tries to browse — the editor that was supposed to receive the picked
+path is gone before the pick happens. `FileBrowser` being container-agnostic is what lets a host
+drop it into a `Popover` and never hit that. Reach for `FilePickerDialog` when a modal is genuinely
+what you want; reach for `FileBrowser` whenever you don't.
+
+## Data contract
+
+`loadDir(path)` returns the entries **directly inside** `path` — `name` is a bare child name
+(`"ep05.mp4"`, not a path).
+
+`searchDir(path, query)`, when provided, returns matches from anywhere in the subtree rooted at
+`path` — and here `name` must be a **path relative to `path`** (e.g. `"Season 3/ep05.mp4"`), not a
+bare filename. This is a real constraint, not a style preference: two files with the same bare name
+in different subdirectories would otherwise be indistinguishable in the results list, and there
+would be no way to reconstruct the absolute path of whichever one got picked. The component displays
+`name` exactly as given and joins it onto `path` on selection, so a bare filename from `searchDir`
+silently produces a wrong absolute path for anything not at the top level.
+
+## Capabilities unlock by callback
+
+Only `loadDir` is required. Each optional callback you omit turns off the feature it powers —
+never a disabled stand-in for it:
+
+| Omitted | Effect |
+| --- | --- |
+| `searchDir` | The search box still renders, but a query filters only the entries already loaded for the current level instead of searching the subtree. |
+| `onCreateFolder` | The new-folder button does not render at all — not a disabled button, since there is nothing to explain disabling it *for*. |
+
+## Validation split
+
+Creating a folder splits validation by who can actually know the answer:
+
+- **Empty name and duplicate name** are rejected locally, before any call to `onCreateFolder` — the
+  component already holds the current directory's listing, so this is a free check with no round
+  trip.
+- **Illegal characters** are the host's job. `onCreateFolder` should `reject` with an `Error` whose
+  message is meant for display; the component has no way to know AList's, S3's, or Windows's rules
+  for what a filename may contain, and guessing a rule would only produce false rejections for
+  otherwise-legal names. A rejection's message is shown verbatim under the still-open draft row —
+  the row does not disappear, so the name can be corrected in place.
+
+## Selection semantics
+
+`select` controls which kind of entry can become `value`:
+
+- **`"dir"`** (default) — the selection is **whatever level you're currently browsing**, not a row
+  in the list. Clicking a folder both drills into it and selects it in the same action — there is
+  no separate "choose this folder without entering it" target, by design (see Decision 4 in the
+  design doc): a folder row that both navigates *and* has its own independent "select" hit area is
+  the single easiest thing to mis-click in a picker like this.
+- **`"file"`** — folders are still shown (as read-only browsing context, `aria-disabled`) and clicking
+  one still drills in, but only files can become `value`.
+- **`"any"`** — both files and folders are selectable, but clicking a folder still drills in first
+  (same rule as `"dir"`). **This means `select="any"` cannot select a folder without entering it
+  either** — that follows directly from folders always being navigable, not a bug to report.
+
+## `commitOnSelect`
+
+`FilePickerDialog`-only, and only meaningful under `select="file"` or `select="any"` — the modes
+where a click can land on a file. It commits and closes the dialog the moment a file is picked,
+skipping the confirm button. Under the default `select="dir"` it is a no-op: every drill-down
+already reports the browsed level as the current selection, so committing on that same event would
+close the dialog before the user reached the folder they meant to land in.
+
+## Localization
+
+Every user-facing string lives in one flat `FileBrowserLabels` dictionary and defaults to English —
+the registry ships no other language. Pass a **partial** `labels`; it's merged over the defaults, so
+you only override what you translate:
+
+```tsx
+<FileBrowser
+  labels={{ root: "全部文件", empty: "此文件夹为空", newFolder: "新建文件夹" }}
+  …
+/>
+```
+
+| key | default | where it shows |
+| --- | --- | --- |
+| `root` | `"All files"` | root breadcrumb segment; the listbox's `aria-label` |
+| `empty` | `"This folder is empty"` | current directory has zero entries |
+| `noMatches` | `"No matches"` | a search (either mode) returns nothing |
+| `selectionEmpty` | `"Nothing selected"` | bottom selection strip when `value` is unset |
+| `searchLocal` | `"Search this folder…"` | search input placeholder/`aria-label` — no `searchDir` given |
+| `searchSubtree` | `"Search everything below…"` | search input placeholder/`aria-label` — `searchDir` given |
+| `newFolder` | `"New folder"` | new-folder button `aria-label`; draft row input `aria-label` |
+| `newFolderPlaceholder` | `"Folder name"` | draft row input placeholder |
+| `nameRequired` | `"Name required"` | local validation — empty name submitted |
+| `nameTaken` | `"That name is taken"` | local validation — name matches an existing entry |
+| `title` | `"Choose a location"` | `FilePickerDialog` only — dialog title |
+| `description` | `"Browse the list below, then confirm your selection."` | `FilePickerDialog` only — `sr-only` dialog description |
+| `cancel` | `"Cancel"` | `FilePickerDialog` only — cancel button |
+| `confirm` | `"Choose"` | `FilePickerDialog` only — confirm button |
+
+`loading` also exists on the type for forward compatibility, but nothing currently renders it — the
+loading state is a `Skeleton` placeholder, not text.
+
+`DEFAULT_FILE_BROWSER_LABELS` is exported if you want to read or spread the defaults.
+
+## API Reference
+
+### `FileBrowser`
+
+| prop | type | default | description |
+| --- | --- | --- | --- |
+| `loadDir` | `(path: string) => Promise<FileEntry[]>` | — | **required** — entries directly inside `path` |
+| `searchDir` | `(path: string, query: string) => Promise<FileEntry[]>` | — | subtree search; see [Data contract](#data-contract) for the `name` format |
+| `onCreateFolder` | `(parentPath: string, name: string) => Promise<void>` | — | create a subfolder; omit to hide the new-folder affordance — see [Validation split](#validation-split) |
+| `select` | `"dir" \| "file" \| "any"` | `"dir"` | which kind of entry can become `value` — see [Selection semantics](#selection-semantics) |
+| `value` | `string \| null` | — | controlled selected absolute path |
+| `onValueChange` | `(path: string \| null, entry: FileEntry \| null) => void` | — | fires on every selection change; `entry` is `null` when the selection is the browsed level itself rather than a clicked row (initial mount, a breadcrumb jump) |
+| `defaultPath` | `string` | `"/"` | uncontrolled starting browse path |
+| `path` | `string` | — | controlled browse path |
+| `onPathChange` | `(path: string) => void` | — | fires whenever the browse path changes |
+| `labels` | `Partial<FileBrowserLabels>` | English | see [Localization](#localization) |
+| `className` | `string` | — | on the panel's own wrapper `<div>` |
+
+### `FilePickerDialog`
+
+All of the above (its `className` styles the inner `FileBrowser`, not the `Dialog` surface), plus:
+
+| prop | type | default | description |
+| --- | --- | --- | --- |
+| `open` | `boolean` | — | **required** |
+| `onOpenChange` | `(open: boolean) => void` | — | **required** |
+| `commitOnSelect` | `boolean` | `false` | pick-and-close for `select="file"`/`"any"` — see [above](#commitonselect) |
+| `onCommit` | `(path: string, entry: FileEntry \| null) => void` | — | fires when the user confirms (Choose button, or a `commitOnSelect` pick) |
+
+### `FileEntry`
+
+```ts
+type FileEntry = {
+  name: string
+  isDir: boolean
+  /** Opaque host payload handed back untouched wherever this entry surfaces — never read here. */
+  meta?: unknown
+}
+```
+
+## Not supported
+
+Multi-select, virtualization, rename/delete/move, and a built-in "switch search root" control are
+all deliberately out of scope — see the design doc's *Explicitly not doing* section if you need one
+of these; the intended answer for each is host-side, not a prop this component should grow.
