@@ -68,7 +68,7 @@ describe("FileBrowser browsing", () => {
     render(<FileBrowser loadDir={loadDir} defaultPath="/Shows/Season 3" />)
 
     await screen.findByRole("option", { name: "ep05.mp4" })
-    await user.click(screen.getByRole("link", { name: "Shows" }))
+    await user.click(screen.getByRole("button", { name: "Shows" }))
 
     await waitFor(() => expect(loadDir).toHaveBeenCalledWith("/Shows"))
     expect(await screen.findByRole("option", { name: "cover.jpg" })).toBeInTheDocument()

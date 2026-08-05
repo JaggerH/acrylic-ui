@@ -139,16 +139,16 @@ function FileBrowser({
                 {i === crumbs.length - 1 ? (
                   <BreadcrumbPage>{c.label}</BreadcrumbPage>
                 ) : (
+                  // A button, not a link: this crumb navigates the panel's own
+                  // browse path, not the document, so it must not read as
+                  // "link" to assistive tech, open in a new tab on
+                  // ctrl/middle-click, or fall back to a top-of-page jump if
+                  // preventDefault ever fails to run (this panel is often
+                  // hosted inside a Dialog).
                   <BreadcrumbLink asChild>
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        goTo(c.path)
-                      }}
-                    >
+                    <button type="button" onClick={() => goTo(c.path)}>
                       {c.label}
-                    </a>
+                    </button>
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>
