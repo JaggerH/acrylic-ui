@@ -739,7 +739,9 @@ export type FilePickerDialogProps = Omit<FileBrowserProps, "className"> & {
    * Spread onto the inner `FileBrowser` panel via `...browser`, not onto
    * `DialogContent` — it styles the browsing panel's wrapper div, not the
    * dialog surface, which is the opposite of what "className on a Dialog
-   * component" usually means.
+   * component" usually means. Merged after this shell's own fixed-height
+   * class (see the render below), so a className passed here can override
+   * it, but does not have to — most callers just want the shell's default.
    */
   className?: string
   /**
@@ -764,6 +766,7 @@ function FilePickerDialog({
   value: valueProp,
   onValueChange,
   labels,
+  className: browserClassName,
   ...browser
 }: FilePickerDialogProps) {
   const l = { ...DEFAULT_FILE_BROWSER_LABELS, ...labels }
@@ -810,6 +813,23 @@ function FilePickerDialog({
           {...browser}
           labels={labels}
           value={value}
+          // `FileBrowser`'s own listing div only sets a *minimum* height
+          // (`min-h-[12rem]`, ~5 rows) — deliberately, since a shell-less
+          // panel dropped into an arbitrary container has no business
+          // claiming a fixed size for itself (that's the host's call). Left
+          // alone here, though, `DialogContent` has no height cap of its own
+          // either (it's a `grid` sized to content), so the two together
+          // mean nothing bounds the listing from above: a directory with
+          // more entries than fit in the min height doesn't scroll inside
+          // it, it just grows the whole dialog — confirmed live at 15
+          // entries (818px dialog in an 893px viewport, Cancel/Choose nearly
+          // pushed off-screen with no way to reach them). A fixed height
+          // here is what turns `overflow-y-auto` on that inner listing div
+          // into a real, working scroll boundary instead of a no-op, and as
+          // a side effect keeps the dialog the same size while drilling
+          // through directories of different lengths — no jumping. Override
+          // via `className` if a particular use needs a different height.
+          className={cn("h-[26rem]", browserClassName)}
           onValueChange={(path, entry) => {
             setPending(path === null ? null : { path, entry })
             onValueChange?.(path, entry)
