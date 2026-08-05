@@ -184,10 +184,26 @@ function FileBrowser({
 
   const [query, setQuery] = React.useState("")
   const [hits, setHits] = React.useState<FileEntry[] | null>(null)
+  const [searchError, setSearchError] = React.useState<string | null>(null)
 
   // Switching directories abandons the query — a search is scoped to where
-  // you were, and carrying it into a new level has no meaning.
-  React.useEffect(() => { setQuery(""); setHits(null) }, [path])
+  // you were, and carrying it into a new level has no meaning. This reset
+  // must happen synchronously during render (the React "adjust state while
+  // rendering" pattern), not in its own effect keyed on `path`: effects run
+  // in declaration order within the same commit, so a reset effect here
+  // would still run *after* the search effect below on the very render
+  // where `path` changes — the search effect would fire once more with the
+  // new path but the not-yet-cleared old query, sending the host one
+  // spurious searchDir(newPath, oldQuery) call before the reset ever lands.
+  // Doing the reset inline during render guarantees `query` is already
+  // empty by the time the search effect reads it.
+  const [lastPath, setLastPath] = React.useState(path)
+  if (path !== lastPath) {
+    setLastPath(path)
+    setQuery("")
+    setHits(null)
+    setSearchError(null)
+  }
 
   // Same reference-stability concern as loadDirRef above: `searchDir` is
   // typically passed as an inline arrow function, so the effect must not key
@@ -198,11 +214,20 @@ function FileBrowser({
 
   React.useEffect(() => {
     const q = query.trim()
-    if (!searchDirRef.current || !q) { setHits(null); return }
+    if (!searchDirRef.current || !q) { setHits(null); setSearchError(null); return }
     let alive = true
     searchDirRef.current(path, q)
-      .then((r) => { if (alive) setHits(r) })
-      .catch(() => { if (alive) setHits([]) })
+      .then((r) => { if (alive) { setHits(r); setSearchError(null) } })
+      .catch((e: unknown) => {
+        // Same principle as the load-failure guard above: a failed search
+        // must never look like "no matches" — that reads as "it's really
+        // not here" and sends people looking in the wrong place, instead of
+        // telling them the search itself broke.
+        if (alive) {
+          setHits(null)
+          setSearchError(e instanceof Error ? e.message : String(e))
+        }
+      })
     return () => { alive = false }
   }, [path, query])
 
@@ -253,6 +278,7 @@ function FileBrowser({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={searchDir ? l.searchSubtree : l.searchLocal}
+          aria-label={searchDir ? l.searchSubtree : l.searchLocal}
         />
         <InputGroupAddon>
           <SearchIcon />
@@ -271,6 +297,8 @@ function FileBrowser({
           </div>
         ) : error ? (
           <p className="px-2 py-3 text-sm text-destructive">{error}</p>
+        ) : searching && searchError ? (
+          <p className="px-2 py-3 text-sm text-destructive">{searchError}</p>
         ) : shown.length === 0 ? (
           <p className="px-2 py-3 text-sm text-muted-foreground">
             {searching ? l.noMatches : l.empty}

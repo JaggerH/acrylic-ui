@@ -376,3 +376,85 @@ describe("FileBrowser searchDir reference stability", () => {
     expect(calls).toBe(1)
   })
 })
+
+describe("FileBrowser query reset on directory change", () => {
+  it("does not call searchDir with the new path paired with the stale query", async () => {
+    // Regression test for the review finding: "path changed" and "query
+    // reset" used to be two separate effects. On the render where `path`
+    // changes, the search effect (declared after the reset effect but
+    // reading state captured at render time, not post-effect) would still
+    // see the *old* query — so it fired one searchDir(newPath, oldQuery)
+    // call the host never should have seen, before the reset effect's
+    // setQuery("") ever took visible effect.
+    const user = userEvent.setup()
+    const loadDir = makeLoadDir()
+    const searchDir = vi.fn(async () => [])
+    render(
+      <FileBrowser
+        loadDir={loadDir}
+        searchDir={searchDir}
+        defaultPath="/Shows"
+      />
+    )
+
+    await screen.findByRole("option", { name: "cover.jpg" })
+    await user.type(screen.getByRole("searchbox"), "x")
+    await waitFor(() => expect(searchDir).toHaveBeenCalledWith("/Shows", "x"))
+
+    // Navigate via the breadcrumb (always rendered, unlike a directory row
+    // which the active query may have filtered out of the list).
+    await user.click(screen.getByRole("button", { name: "All files" }))
+    await waitFor(() => expect(loadDir).toHaveBeenCalledWith("/"))
+
+    expect(searchDir).not.toHaveBeenCalledWith("/", "x")
+  })
+})
+
+describe("FileBrowser search failure", () => {
+  it("shows the search error, not the no-matches label, when searchDir rejects", async () => {
+    const user = userEvent.setup()
+    const searchDir = vi.fn(async () => {
+      throw new Error("search backend down")
+    })
+    render(<FileBrowser loadDir={makeLoadDir()} searchDir={searchDir} />)
+
+    await screen.findByRole("option", { name: "Shows" })
+    await user.type(screen.getByRole("searchbox"), "ep05")
+
+    expect(await screen.findByText("search backend down")).toBeInTheDocument()
+    expect(screen.queryByText("No matches")).not.toBeInTheDocument()
+  })
+
+  it("clears the search error once the query is cleared", async () => {
+    const user = userEvent.setup()
+    const searchDir = vi.fn(async () => {
+      throw new Error("search backend down")
+    })
+    render(<FileBrowser loadDir={makeLoadDir()} searchDir={searchDir} />)
+
+    await screen.findByRole("option", { name: "Shows" })
+    const box = screen.getByRole("searchbox")
+    await user.type(box, "ep05")
+    await screen.findByText("search backend down")
+
+    await user.clear(box)
+    expect(screen.queryByText("search backend down")).not.toBeInTheDocument()
+    expect(await screen.findByRole("option", { name: "Shows" })).toBeInTheDocument()
+  })
+})
+
+describe("FileBrowser search box accessible name", () => {
+  it("exposes the subtree label as the accessible name when searchDir is provided", async () => {
+    render(<FileBrowser loadDir={makeLoadDir()} searchDir={async () => []} />)
+    expect(
+      await screen.findByRole("searchbox", { name: "Search everything below…" })
+    ).toBeInTheDocument()
+  })
+
+  it("exposes the local label as the accessible name when searchDir is omitted", async () => {
+    render(<FileBrowser loadDir={makeLoadDir()} />)
+    expect(
+      await screen.findByRole("searchbox", { name: "Search this folder…" })
+    ).toBeInTheDocument()
+  })
+})
