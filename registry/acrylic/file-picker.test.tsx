@@ -1087,3 +1087,102 @@ describe("FilePickerDialog", () => {
     expect(screen.getByTestId("file-picker-selection")).toHaveTextContent("Nothing selected")
   })
 })
+
+describe("FilePickerDialog controlled value / onValueChange forwarding", () => {
+  // Regression coverage for a review finding: these two wiring paths — the
+  // shell reflecting a host-supplied `value` instead of its own internal
+  // `pending`, and the shell forwarding its internal selection changes back
+  // out through `onValueChange` — had no test coverage at all. A reviewer
+  // proved this by mutation: deleting the `onValueChange?.(path, entry)`
+  // forwarding line, and separately making `value` ignore `valueProp`
+  // entirely, both left the full suite green.
+
+  it("reflects a host-controlled `value` in the selection bar, not the internal pending selection", async () => {
+    render(
+      <FilePickerDialog
+        open
+        onOpenChange={vi.fn()}
+        loadDir={makeLoadDir()}
+        select="file"
+        value="/readme.txt"
+      />
+    )
+
+    // Nothing was clicked inside the panel — if this text showed up, it can
+    // only have come from the `value` prop the host passed in, not from
+    // `pending` (which starts out null and stays null here).
+    expect(await screen.findByTestId("file-picker-selection")).toHaveTextContent("/readme.txt")
+  })
+
+  it("forwards an internal selection change to the host's onValueChange, not just to internal state", async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    render(
+      <FilePickerDialog
+        open
+        onOpenChange={vi.fn()}
+        loadDir={makeLoadDir()}
+        select="file"
+        onValueChange={onValueChange}
+      />
+    )
+
+    await user.click(await screen.findByRole("option", { name: "readme.txt" }))
+
+    expect(onValueChange).toHaveBeenCalledWith(
+      "/readme.txt",
+      expect.objectContaining({ name: "readme.txt" })
+    )
+  })
+})
+
+describe("FilePickerDialog commit does not pair a stale pending entry with value", () => {
+  it("commits a host-controlled value with a null entry when the internal pending pick belongs to a different path", async () => {
+    // Regression test for the review finding: confirm used to commit
+    // `commit(value, pending?.entry ?? null)` unconditionally. Under a
+    // host-controlled `value`, `value` comes from the host while `pending`
+    // is this shell's own bookkeeping of the panel's last click — the two
+    // can disagree whenever the host has not yet re-rendered with the path
+    // the panel just reported (e.g. it debounces, or simply chooses to
+    // ignore some clicks). Confirming in that window used to hand the host
+    // `pending.entry` — metadata for a *different* file — paired with the
+    // host's own (unrelated) `value`.
+    const user = userEvent.setup()
+    const onCommit = vi.fn()
+    const { rerender } = render(
+      <FilePickerDialog
+        open
+        onOpenChange={vi.fn()}
+        onCommit={onCommit}
+        loadDir={makeLoadDir()}
+        select="file"
+        value="/readme.txt"
+      />
+    )
+    await screen.findByRole("option", { name: "Shows" })
+
+    // The panel's own click reports a different file, updating `pending` —
+    // but the host below never follows with a new `value` prop.
+    await user.click(await screen.findByRole("option", { name: "Shows" }))
+    await user.click(await screen.findByRole("option", { name: "cover.jpg" }))
+
+    // Host re-renders with the same stale `value` it started with.
+    rerender(
+      <FilePickerDialog
+        open
+        onOpenChange={vi.fn()}
+        onCommit={onCommit}
+        loadDir={makeLoadDir()}
+        select="file"
+        value="/readme.txt"
+      />
+    )
+
+    await user.click(screen.getByRole("button", { name: "Choose" }))
+
+    // Commits the host's actual value, paired with a null entry — never the
+    // internal `pending.entry` for "cover.jpg", which belongs to a path the
+    // host never confirmed.
+    expect(onCommit).toHaveBeenCalledWith("/readme.txt", null)
+  })
+})

@@ -63,8 +63,14 @@ export type FileBrowserLabels = {
   newFolderPlaceholder: string
   nameRequired: string
   nameTaken: string
-  /** FilePickerDialog only — the dialog title (also doubles as the sr-only description). */
+  /** FilePickerDialog only — the dialog title. */
   title: string
+  /**
+   * FilePickerDialog only — the sr-only dialog description. Must say
+   * something the title does not (screen readers announce both), so this is
+   * deliberately not a copy of `title`.
+   */
+  description: string
   /** FilePickerDialog only — the cancel button. */
   cancel: string
   /** FilePickerDialog only — the confirm button. */
@@ -84,6 +90,7 @@ export const DEFAULT_FILE_BROWSER_LABELS: FileBrowserLabels = {
   nameRequired: "Name required",
   nameTaken: "That name is taken",
   title: "Choose a location",
+  description: "Browse the list below, then confirm your selection.",
   cancel: "Cancel",
   confirm: "Choose",
 }
@@ -725,10 +732,26 @@ function FileBrowser({
 // both live here. `commitOnSelect` lets a single click both pick and close
 // (the old FilePicker's feel) coexist with pick-then-confirm (the old
 // DirPicker's feel) — the host chooses per instance.
-export type FilePickerDialogProps = FileBrowserProps & {
+export type FilePickerDialogProps = Omit<FileBrowserProps, "className"> & {
   open: boolean
   onOpenChange: (open: boolean) => void
-  /** Selecting an entry commits and closes immediately — no confirm button round trip. */
+  /**
+   * Spread onto the inner `FileBrowser` panel via `...browser`, not onto
+   * `DialogContent` — it styles the browsing panel's wrapper div, not the
+   * dialog surface, which is the opposite of what "className on a Dialog
+   * component" usually means.
+   */
+  className?: string
+  /**
+   * Selecting an entry commits and closes immediately, skipping the confirm
+   * button round trip. Only meaningful under `select="file"` or
+   * `select="any"` — those are the modes where a click can land on a file
+   * (see the `selectable` rule in `FileBrowserProps.select`). Under the
+   * default `select="dir"`, every drill-down already reports the browsed
+   * level as the selection, so committing on that same event would close
+   * the dialog before the user reached the folder they meant to land in;
+   * this prop is a no-op there.
+   */
   commitOnSelect?: boolean
   onCommit?: (path: string, entry: FileEntry | null) => void
 }
@@ -747,7 +770,6 @@ function FilePickerDialog({
   // The shell owns the pending selection so the browser stays purely controlled-or-not
   // from the host's point of view; the host only hears about it on commit.
   const [pending, setPending] = React.useState<{ path: string; entry: FileEntry | null } | null>(null)
-  const value = valueProp !== undefined ? valueProp : (pending?.path ?? null)
 
   // `FilePickerDialog` itself never unmounts across an open/close cycle — only
   // Radix's `DialogContent` (and the `FileBrowser` inside it) does, since it
@@ -757,12 +779,19 @@ function FilePickerDialog({
   // enabled over last time's stale path. Cleared here, at the render-time
   // false->true transition — the same pattern `FileBrowser` uses for its own
   // path/query resets above — rather than in an effect, which would still let
-  // one frame render with the stale value before the reset lands.
+  // one frame render with the stale value before the reset lands. This must
+  // run before `value` is derived below: it is a reset of `pending`, and
+  // `value` reads `pending` — deriving `value` first would only *look*
+  // correct because React discards a render's output and immediately
+  // re-renders whenever it sees a `setState` call during render, silently
+  // masking the ordering dependency rather than making it obviously correct.
   const [wasOpen, setWasOpen] = React.useState(open)
   if (open !== wasOpen) {
     setWasOpen(open)
     if (open) setPending(null)
   }
+
+  const value = valueProp !== undefined ? valueProp : (pending?.path ?? null)
 
   const commit = (path: string, entry: FileEntry | null) => {
     onCommit?.(path, entry)
@@ -771,10 +800,10 @@ function FilePickerDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>{l.title}</DialogTitle>
-          <DialogDescription className="sr-only">{l.title}</DialogDescription>
+          <DialogDescription className="sr-only">{l.description}</DialogDescription>
         </DialogHeader>
 
         <FileBrowser
@@ -801,14 +830,22 @@ function FilePickerDialog({
         />
 
         <DialogFooter>
-          <Button variant="ghost" size="small" onClick={() => onOpenChange(false)}>
+          <Button variant="neutral" onClick={() => onOpenChange(false)}>
             {l.cancel}
           </Button>
           <Button
-            variant="neutral"
-            size="small"
             disabled={!value}
-            onClick={() => { if (value) commit(value, pending?.entry ?? null) }}
+            onClick={() => {
+              // `pending.entry` only belongs with `value` when they refer to
+              // the same pick: under a host-controlled `value`, `value` comes
+              // from the host while `pending` is this panel's own internal
+              // tracking, and the two can fall out of sync (e.g. the host
+              // has not yet re-rendered with the path this panel's last
+              // click just reported). Pairing a mismatched `pending.entry`
+              // with the host's `value` would hand the host entry metadata
+              // for a path it never asked about.
+              if (value) commit(value, pending?.path === value ? pending.entry : null)
+            }}
           >
             {l.confirm}
           </Button>
