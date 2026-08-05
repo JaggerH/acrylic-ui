@@ -42,6 +42,7 @@ export type FileBrowserLabels = {
   loading: string
   empty: string
   noMatches: string
+  selectionEmpty: string
 }
 
 export const DEFAULT_FILE_BROWSER_LABELS: FileBrowserLabels = {
@@ -49,6 +50,7 @@ export const DEFAULT_FILE_BROWSER_LABELS: FileBrowserLabels = {
   loading: "Loading…",
   empty: "This folder is empty",
   noMatches: "No matches",
+  selectionEmpty: "Nothing selected",
 }
 
 /** Join a child name onto a directory path without doubling the root slash. */
@@ -70,11 +72,18 @@ export function pathCrumbs(
   return crumbs
 }
 
+export type FileSelectMode = "dir" | "file" | "any"
+
 export type FileBrowserProps = {
   loadDir: (path: string) => Promise<FileEntry[]>
   defaultPath?: string
   path?: string
   onPathChange?: (path: string) => void
+  /** Which kind of entry can become `value`. Files still render under 'dir' — as read-only context. */
+  select?: FileSelectMode
+  value?: string | null
+  /** `entry` is null when the selected level was not reached from a row (initial path, breadcrumb jump). */
+  onValueChange?: (path: string | null, entry: FileEntry | null) => void
   labels?: Partial<FileBrowserLabels>
   className?: string
 }
@@ -84,6 +93,9 @@ function FileBrowser({
   defaultPath = "/",
   path: pathProp,
   onPathChange,
+  select = "dir",
+  value,
+  onValueChange,
   labels,
   className,
 }: FileBrowserProps) {
@@ -95,13 +107,29 @@ function FileBrowser({
   const [loading, setLoading] = React.useState(true)
   const [error, setError] = React.useState<string | null>(null)
 
+  // Decision 4: with select='dir'|'any' the browsed level IS the selection, so
+  // drilling in and picking are one action — no second hit target on a folder row.
+  const selectsDir = select === "dir" || select === "any"
+
   const goTo = React.useCallback(
-    (next: string) => {
+    (next: string, viaEntry: FileEntry | null) => {
       if (pathProp === undefined) setUncontrolledPath(next)
       onPathChange?.(next)
+      if (selectsDir) onValueChange?.(next, viaEntry)
     },
-    [pathProp, onPathChange]
+    [pathProp, onPathChange, selectsDir, onValueChange]
   )
+
+  // The initial level is also a selection under select='dir'|'any' — announce it
+  // once so the host is never left holding a stale value from before this panel
+  // mounted (e.g. a value from a previously-shown picker instance).
+  const announcedRef = React.useRef(false)
+  React.useEffect(() => {
+    if (selectsDir && !announcedRef.current) {
+      announcedRef.current = true
+      onValueChange?.(path, null)
+    }
+  }, [selectsDir, path, onValueChange])
 
   // The natural way to pass loadDir is an inline arrow function
   // (`<FileBrowser loadDir={(p) => api.list(p)} />`), which is a new reference on
@@ -156,7 +184,7 @@ function FileBrowser({
                   // preventDefault ever fails to run (this panel is often
                   // hosted inside a Dialog).
                   <BreadcrumbLink asChild>
-                    <button type="button" onClick={() => goTo(c.path)}>
+                    <button type="button" onClick={() => goTo(c.path, null)}>
                       {c.label}
                     </button>
                   </BreadcrumbLink>
@@ -183,39 +211,58 @@ function FileBrowser({
         ) : shown.length === 0 ? (
           <p className="px-2 py-3 text-sm text-muted-foreground">{l.empty}</p>
         ) : (
-          shown.map((entry) => (
-            // Directories can be activated (drill in) and files can't (selection
-            // is a later task), so the two need to read differently at rest, not
-            // just on click. Directories stay transparent until touched — the
-            // same "flat until hovered" language as every other clickable row in
-            // this registry (sidebar, command, select) — while files sit on the
+          shown.map((entry) => {
+            const full = joinPath(path, entry.name)
+            // Decision 4: a directory row is always active (drill in), regardless
+            // of `select` — it is the file rows whose selectability depends on the
+            // mode. Directories stay transparent until touched — the same "flat
+            // until hovered" language as every other clickable row in this
+            // registry (sidebar, command, select) — while files sit on the
             // recessed `muted` fill that materials.md prescribes for a single
-            // nested row, which reads as an inert swatch with no hover promise.
-            <Item
-              key={entry.name}
-              asChild
-              size="xs"
-              variant={entry.isDir ? "default" : "muted"}
-              className={cn(
-                "w-full",
-                entry.isDir
-                  ? "cursor-pointer hover:bg-[var(--acr-hover)] active:scale-[0.995]"
-                  : "cursor-default"
-              )}
-            >
-              <div
-                role="option"
-                aria-selected={false}
-                onClick={() => { if (entry.isDir) goTo(joinPath(path, entry.name)) }}
+            // nested row, which reads as inert unless this mode makes it pickable.
+            const selectable = entry.isDir ? select !== "file" : select !== "dir"
+            const isSelected = value != null && value === full
+            return (
+              <Item
+                key={entry.name}
+                asChild
+                size="xs"
+                variant={entry.isDir ? "default" : "muted"}
+                selected={isSelected}
+                className={cn(
+                  "w-full",
+                  entry.isDir
+                    ? "cursor-pointer hover:bg-[var(--acr-hover)] active:scale-[0.995]"
+                    : selectable
+                      ? "cursor-pointer active:scale-[0.995]"
+                      : "cursor-default"
+                )}
               >
-                <ItemMedia>{entry.isDir ? <FolderIcon /> : <FileIcon />}</ItemMedia>
-                <ItemContent className="min-w-0">
-                  <span className="truncate text-sm">{entry.name}</span>
-                </ItemContent>
-              </div>
-            </Item>
-          ))
+                <div
+                  role="option"
+                  aria-selected={isSelected}
+                  aria-disabled={!selectable && !entry.isDir ? true : undefined}
+                  onClick={() => {
+                    if (entry.isDir) { goTo(full, entry); return }
+                    if (selectable) onValueChange?.(full, entry)
+                  }}
+                >
+                  <ItemMedia>{entry.isDir ? <FolderIcon /> : <FileIcon />}</ItemMedia>
+                  <ItemContent className="min-w-0">
+                    <span className="truncate text-sm">{entry.name}</span>
+                  </ItemContent>
+                </div>
+              </Item>
+            )
+          })
         )}
+      </div>
+
+      <div
+        data-testid="file-picker-selection"
+        className="shrink-0 truncate px-1 text-sm text-muted-foreground"
+      >
+        {value ?? l.selectionEmpty}
       </div>
     </div>
   )

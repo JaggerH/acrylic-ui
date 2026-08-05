@@ -115,6 +115,75 @@ describe("FileBrowser browsing", () => {
   })
 })
 
+describe("FileBrowser selection", () => {
+  it("select='dir': the current level IS the value, and it updates on drill-down", async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    render(<FileBrowser loadDir={makeLoadDir()} select="dir" onValueChange={onValueChange} />)
+
+    await user.click(await screen.findByRole("option", { name: "Shows" }))
+
+    await waitFor(() =>
+      expect(onValueChange).toHaveBeenCalledWith("/Shows", expect.objectContaining({ name: "Shows" }))
+    )
+  })
+
+  it("select='dir': files are shown but not selectable", async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    render(<FileBrowser loadDir={makeLoadDir()} select="dir" onValueChange={onValueChange} />)
+
+    const file = await screen.findByRole("option", { name: "readme.txt" })
+    expect(file).toHaveAttribute("aria-disabled", "true")
+
+    await user.click(file)
+    expect(onValueChange).not.toHaveBeenCalledWith("/readme.txt", expect.anything())
+  })
+
+  it("select='file': clicking a file selects it; clicking a dir only drills in", async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    render(<FileBrowser loadDir={makeLoadDir()} select="file" onValueChange={onValueChange} />)
+
+    await user.click(await screen.findByRole("option", { name: "Shows" }))
+    expect(onValueChange).not.toHaveBeenCalled()
+
+    await user.click(await screen.findByRole("option", { name: "cover.jpg" }))
+    expect(onValueChange).toHaveBeenCalledWith(
+      "/Shows/cover.jpg",
+      expect.objectContaining({ name: "cover.jpg" })
+    )
+  })
+
+  it("marks the row matching `value` as selected", async () => {
+    render(<FileBrowser loadDir={makeLoadDir()} select="file" value="/readme.txt" />)
+    const file = await screen.findByRole("option", { name: "readme.txt" })
+    expect(file).toHaveAttribute("aria-selected", "true")
+  })
+
+  it("shows the current value in the selection bar, and a placeholder when nothing is picked", async () => {
+    const { rerender } = render(<FileBrowser loadDir={makeLoadDir()} select="file" value={null} />)
+    expect(await screen.findByTestId("file-picker-selection")).toHaveTextContent("Nothing selected")
+
+    rerender(<FileBrowser loadDir={makeLoadDir()} select="file" value="/readme.txt" />)
+    expect(await screen.findByTestId("file-picker-selection")).toHaveTextContent("/readme.txt")
+  })
+
+  it("passes a null entry when the selected level was not reached from a row", async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    render(
+      <FileBrowser loadDir={makeLoadDir()} select="dir" defaultPath="/Shows/Season 3" onValueChange={onValueChange} />
+    )
+
+    await screen.findByRole("option", { name: "ep05.mp4" })
+    // 面包屑用 <button>：这些层级切换只改面板内的状态，不导航文档。
+    await user.click(screen.getByRole("button", { name: "Shows" }))
+
+    await waitFor(() => expect(onValueChange).toHaveBeenCalledWith("/Shows", null))
+  })
+})
+
 describe("FileBrowser loadDir reference stability", () => {
   it("does not refetch when the consumer passes a new loadDir reference on every render", async () => {
     // The realistic consumer shape is an inline arrow function
