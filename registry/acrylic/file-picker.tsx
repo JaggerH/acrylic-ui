@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { FileIcon, FolderIcon } from "lucide-react"
+import { FileIcon, FolderIcon, SearchIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import {
@@ -12,6 +12,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/registry/acrylic/breadcrumb"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/registry/acrylic/input-group"
 import { Item, ItemContent, ItemMedia } from "@/registry/acrylic/item"
 import { Skeleton } from "@/registry/acrylic/skeleton"
 
@@ -43,6 +48,8 @@ export type FileBrowserLabels = {
   empty: string
   noMatches: string
   selectionEmpty: string
+  searchLocal: string
+  searchSubtree: string
 }
 
 export const DEFAULT_FILE_BROWSER_LABELS: FileBrowserLabels = {
@@ -51,6 +58,8 @@ export const DEFAULT_FILE_BROWSER_LABELS: FileBrowserLabels = {
   empty: "This folder is empty",
   noMatches: "No matches",
   selectionEmpty: "Nothing selected",
+  searchLocal: "Search this folder…",
+  searchSubtree: "Search everything below…",
 }
 
 /** Join a child name onto a directory path without doubling the root slash. */
@@ -76,6 +85,18 @@ export type FileSelectMode = "dir" | "file" | "any"
 
 export type FileBrowserProps = {
   loadDir: (path: string) => Promise<FileEntry[]>
+  /**
+   * Search across the subtree rooted at `path`. When omitted, the search box
+   * still appears but falls back to filtering only the entries already
+   * loaded for the current level.
+   *
+   * The `name` of each returned entry must be a path *relative to `path`*
+   * (e.g. "Season 3/ep05.mp4"), not a bare filename — otherwise two same-
+   * named files in different subdirectories would be indistinguishable in
+   * the results, and a selection could not be joined back into a correct
+   * absolute path.
+   */
+  searchDir?: (path: string, query: string) => Promise<FileEntry[]>
   defaultPath?: string
   path?: string
   onPathChange?: (path: string) => void
@@ -90,6 +111,7 @@ export type FileBrowserProps = {
 
 function FileBrowser({
   loadDir,
+  searchDir,
   defaultPath = "/",
   path: pathProp,
   onPathChange,
@@ -160,10 +182,39 @@ function FileBrowser({
     return () => { alive = false }
   }, [path])
 
-  const shown = React.useMemo(
-    () => [...entries].sort((a, b) => Number(b.isDir) - Number(a.isDir)),
-    [entries]
-  )
+  const [query, setQuery] = React.useState("")
+  const [hits, setHits] = React.useState<FileEntry[] | null>(null)
+
+  // Switching directories abandons the query — a search is scoped to where
+  // you were, and carrying it into a new level has no meaning.
+  React.useEffect(() => { setQuery(""); setHits(null) }, [path])
+
+  // Same reference-stability concern as loadDirRef above: `searchDir` is
+  // typically passed as an inline arrow function, so the effect must not key
+  // off it directly or every unrelated parent re-render would re-issue the
+  // in-flight query.
+  const searchDirRef = React.useRef(searchDir)
+  searchDirRef.current = searchDir
+
+  React.useEffect(() => {
+    const q = query.trim()
+    if (!searchDirRef.current || !q) { setHits(null); return }
+    let alive = true
+    searchDirRef.current(path, q)
+      .then((r) => { if (alive) setHits(r) })
+      .catch(() => { if (alive) setHits([]) })
+    return () => { alive = false }
+  }, [path, query])
+
+  const shown = React.useMemo(() => {
+    const q = query.trim().toLowerCase()
+    // Host-driven subtree search wins when present; otherwise fall back to
+    // filtering the entries already loaded for this level.
+    const base = hits ?? (q ? entries.filter((e) => e.name.toLowerCase().includes(q)) : entries)
+    return [...base].sort((a, b) => Number(b.isDir) - Number(a.isDir))
+  }, [entries, hits, query])
+
+  const searching = query.trim().length > 0
 
   const crumbs = pathCrumbs(path, l.root)
 
@@ -196,6 +247,18 @@ function FileBrowser({
         </BreadcrumbList>
       </Breadcrumb>
 
+      <InputGroup>
+        <InputGroupInput
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={searchDir ? l.searchSubtree : l.searchLocal}
+        />
+        <InputGroupAddon>
+          <SearchIcon />
+        </InputGroupAddon>
+      </InputGroup>
+
       <div
         role="listbox"
         aria-label={l.root}
@@ -209,7 +272,9 @@ function FileBrowser({
         ) : error ? (
           <p className="px-2 py-3 text-sm text-destructive">{error}</p>
         ) : shown.length === 0 ? (
-          <p className="px-2 py-3 text-sm text-muted-foreground">{l.empty}</p>
+          <p className="px-2 py-3 text-sm text-muted-foreground">
+            {searching ? l.noMatches : l.empty}
+          </p>
         ) : (
           shown.map((entry) => {
             const full = joinPath(path, entry.name)

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { cleanup, render, screen, waitFor } from "@testing-library/react"
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
@@ -258,6 +258,115 @@ describe("FileBrowser loadDir reference stability", () => {
 
     for (let i = 0; i < 5; i++) {
       rerender(<FileBrowser loadDir={(p) => load(p)} />)
+    }
+
+    // Flush any microtask/effect queue a buggy implementation would have
+    // scheduled from the re-renders above.
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    expect(calls).toBe(1)
+  })
+})
+
+describe("FileBrowser search", () => {
+  it("without searchDir: filters the already-loaded level, client-side", async () => {
+    const user = userEvent.setup()
+    render(<FileBrowser loadDir={makeLoadDir()} />)
+
+    await screen.findByRole("option", { name: "Shows" })
+    await user.type(screen.getByRole("searchbox"), "read")
+
+    await waitFor(() => expect(screen.queryByRole("option", { name: "Shows" })).not.toBeInTheDocument())
+    expect(screen.getByRole("option", { name: "readme.txt" })).toBeInTheDocument()
+  })
+
+  it("with searchDir: delegates to the host and shows the returned relative paths", async () => {
+    const user = userEvent.setup()
+    const searchDir = vi.fn(async () => [{ name: "Season 3/ep05.mp4", isDir: false }])
+    render(<FileBrowser loadDir={makeLoadDir()} searchDir={searchDir} select="file" defaultPath="/Shows" />)
+
+    await screen.findByRole("option", { name: "cover.jpg" })
+    await user.type(screen.getByRole("searchbox"), "ep05")
+
+    await waitFor(() => expect(searchDir).toHaveBeenCalledWith("/Shows", "ep05"))
+    expect(await screen.findByRole("option", { name: "Season 3/ep05.mp4" })).toBeInTheDocument()
+  })
+
+  it("selecting a subtree hit joins the relative path onto the browsed path", async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    render(
+      <FileBrowser
+        loadDir={makeLoadDir()}
+        searchDir={async () => [{ name: "Season 3/ep05.mp4", isDir: false }]}
+        select="file"
+        defaultPath="/Shows"
+        onValueChange={onValueChange}
+      />
+    )
+
+    await screen.findByRole("option", { name: "cover.jpg" })
+    await user.type(screen.getByRole("searchbox"), "ep05")
+    await user.click(await screen.findByRole("option", { name: "Season 3/ep05.mp4" }))
+
+    expect(onValueChange).toHaveBeenCalledWith("/Shows/Season 3/ep05.mp4", expect.anything())
+  })
+
+  it("clearing the query returns to the plain directory listing", async () => {
+    const user = userEvent.setup()
+    render(<FileBrowser loadDir={makeLoadDir()} />)
+
+    await screen.findByRole("option", { name: "Shows" })
+    const box = screen.getByRole("searchbox")
+    await user.type(box, "read")
+    await waitFor(() => expect(screen.queryByRole("option", { name: "Shows" })).not.toBeInTheDocument())
+
+    await user.clear(box)
+    expect(await screen.findByRole("option", { name: "Shows" })).toBeInTheDocument()
+  })
+
+  it("shows the no-matches label when a query hits nothing", async () => {
+    const user = userEvent.setup()
+    render(<FileBrowser loadDir={makeLoadDir()} />)
+
+    await screen.findByRole("option", { name: "Shows" })
+    await user.type(screen.getByRole("searchbox"), "zzz")
+
+    expect(await screen.findByText("No matches")).toBeInTheDocument()
+  })
+})
+
+describe("FileBrowser searchDir reference stability", () => {
+  it("does not refetch when the consumer passes a new searchDir reference on every render", async () => {
+    // Same shape as the loadDir reference-stability test above: the
+    // realistic consumer passes an inline arrow function
+    // (`<FileBrowser searchDir={(p, q) => api.search(p, q)} />`), a fresh
+    // reference on every parent render. If the search effect keys off that
+    // reference directly instead of via a ref, an unrelated parent
+    // re-render while a query is active re-issues the same search over and
+    // over.
+    //
+    // The query is set in one shot (fireEvent.change) rather than typed
+    // keystroke-by-keystroke: typing legitimately fires one search per
+    // keystroke (the effect is correctly keyed on `query`), which would
+    // make the call count meaningless here. This test isolates the other
+    // axis — re-renders with a stable query must not add calls.
+    let calls = 0
+    const search = async (path: string, query: string) => {
+      calls += 1
+      return [{ name: `${query}-hit.mp4`, isDir: false }]
+    }
+
+    const { rerender } = render(
+      <FileBrowser loadDir={makeLoadDir()} searchDir={(p, q) => search(p, q)} />
+    )
+    await screen.findByRole("option", { name: "Shows" })
+
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "ep05" } })
+    await waitFor(() => expect(calls).toBe(1))
+
+    for (let i = 0; i < 5; i++) {
+      rerender(<FileBrowser loadDir={makeLoadDir()} searchDir={(p, q) => search(p, q)} />)
     }
 
     // Flush any microtask/effect queue a buggy implementation would have
