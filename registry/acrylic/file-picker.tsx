@@ -273,6 +273,14 @@ function FileBrowser({
   // notification for a component that, as far as the host is concerned, is gone.
   const mountedRef = React.useRef(true)
   React.useEffect(() => {
+    // Must be set here, not just relied on from useRef's initializer: React
+    // StrictMode in dev replays a mount -> unmount -> remount around every
+    // effect on first mount, but it only re-runs effect setup/cleanup, never
+    // the component function itself — so a useRef initial value is never
+    // reassigned on that replay. Without this line, the first simulated
+    // unmount's cleanup flips this to false and nothing ever flips it back,
+    // permanently wedging a still-mounted component's guard shut.
+    mountedRef.current = true
     return () => { mountedRef.current = false }
   }, [])
 

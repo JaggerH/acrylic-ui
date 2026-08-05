@@ -598,6 +598,52 @@ describe("FileBrowser folder creation unmount safety", () => {
   })
 })
 
+describe("FileBrowser folder creation under StrictMode", () => {
+  it("still completes the create-folder flow when rendered inside React.StrictMode", async () => {
+    // Regression test for the mountedRef StrictMode deadlock: RTL's render()
+    // does not wrap in StrictMode by default, so it only ever exercises a
+    // real unmount (one cleanup) — the path this bug hides on. StrictMode
+    // simulates an extra mount -> unmount -> remount around every effect
+    // right after the first real mount, replaying only effect setup/cleanup
+    // (never the component function, so a useRef initializer is not
+    // reassigned). A mountedRef that is never reset to true in the effect
+    // body gets permanently stuck at false by that simulated unmount, even
+    // though the component is still very much mounted — so commitDraft's
+    // post-await mounted checks would then always bail out here, even
+    // though onCreateFolder and the reload both genuinely succeeded.
+    const user = userEvent.setup()
+    const created: string[] = []
+    const loadDir = vi.fn(async (p: string) => {
+      if (p === "/Fresh") return []
+      return p === "/" ? [...(TREE["/"] ?? []), ...created.map((n) => ({ name: n, isDir: true }))] : (TREE[p] ?? [])
+    })
+    const onCreateFolder = vi.fn(async (_parent: string, name: string) => { created.push(name) })
+    const onPathChange = vi.fn()
+
+    render(
+      <React.StrictMode>
+        <FileBrowser
+          loadDir={loadDir}
+          onCreateFolder={onCreateFolder}
+          select="dir"
+          onPathChange={onPathChange}
+        />
+      </React.StrictMode>
+    )
+
+    await user.click(await screen.findByRole("button", { name: "New folder" }))
+    await user.type(screen.getByRole("textbox", { name: "New folder" }), "Fresh{Enter}")
+
+    await waitFor(() => expect(onCreateFolder).toHaveBeenCalledWith("/", "Fresh"))
+
+    // The effects that actually happen after a successful create — reload
+    // and drill-in — are exactly what a wedged mountedRef would suppress.
+    await waitFor(() => expect(loadDir).toHaveBeenCalledWith("/Fresh"))
+    await waitFor(() => expect(onPathChange).toHaveBeenCalledWith("/Fresh"))
+    expect(screen.queryByRole("textbox", { name: "New folder" })).not.toBeInTheDocument()
+  })
+})
+
 describe("FileBrowser search box accessible name", () => {
   it("exposes the subtree label as the accessible name when searchDir is provided", async () => {
     render(<FileBrowser loadDir={makeLoadDir()} searchDir={async () => []} />)
