@@ -15,22 +15,20 @@ import {
 import { Item, ItemContent, ItemMedia } from "@/registry/acrylic/item"
 import { Skeleton } from "@/registry/acrylic/skeleton"
 
-// Acrylic FilePicker — a backend-agnostic filesystem browser/picker. Nothing here
-// knows what a "file" physically is: every byte of data arrives through the
-// `loadDir` / `searchDir` / `onCreateFolder` callbacks the host supplies, so the
-// same component drives a cloud drive, an object store, or an in-memory tree.
+// Acrylic FilePicker — a backend-agnostic filesystem browser. Nothing here knows
+// what a "file" physically is: every byte of data arrives through the `loadDir`
+// callback the host supplies, so the same component can drive a cloud drive, an
+// object store, or an in-memory tree without any change to this file.
 //
-// Two exports, one family:
-//   • FileBrowser       — the shell-less panel. Drop it in a Dialog, a Sheet, a
-//                         Popover, or straight into the page. It never closes
-//                         anything: it does not know what contains it.
-//   • FilePickerDialog  — the ready-made version wrapped in the acrylic Dialog.
+// One export: FileBrowser — the shell-less panel. Drop it in a Dialog, a Sheet, a
+// Popover, or straight into the page. It never closes anything: it does not know
+// what contains it.
 //
 // Copy: every user-facing string lives in `labels` and defaults to English.
 // Override per instance; the registry ships no other language.
 //
 // Compose:
-//   <FileBrowser loadDir={listDir} select="dir" value={path} onValueChange={setPath} />
+//   <FileBrowser loadDir={listDir} defaultPath="/" onPathChange={setPath} />
 
 export type FileEntry = {
   name: string
@@ -105,13 +103,25 @@ function FileBrowser({
     [pathProp, onPathChange]
   )
 
+  // The natural way to pass loadDir is an inline arrow function
+  // (`<FileBrowser loadDir={(p) => api.list(p)} />`), which is a new reference on
+  // every parent render. Putting that reference in the load effect's dependency
+  // array would refetch the same directory on every unrelated parent re-render —
+  // the responsibility for a stable callback can't be pushed onto the consumer, so
+  // the component holds the latest function in a ref instead and keys the effect
+  // on `path` alone. The ref is written during render (not inside an effect) so
+  // it is always current by the time the effect below reads it, including on the
+  // very first run.
+  const loadDirRef = React.useRef(loadDir)
+  loadDirRef.current = loadDir
+
   // Mount-and-load, not open-and-load: a shell-less panel has no `open` prop to
   // key off. Whoever unmounts it forgets everything, which is the correct reset.
   React.useEffect(() => {
     let alive = true
     setLoading(true)
     setError(null)
-    loadDir(path)
+    loadDirRef.current(path)
       .then((r) => { if (alive) setEntries(r) })
       .catch((e: unknown) => {
         // A failed load must never look like an empty folder — that reads as
@@ -120,7 +130,7 @@ function FileBrowser({
       })
       .finally(() => { if (alive) setLoading(false) })
     return () => { alive = false }
-  }, [loadDir, path])
+  }, [path])
 
   const shown = React.useMemo(
     () => [...entries].sort((a, b) => Number(b.isDir) - Number(a.isDir)),
@@ -161,7 +171,6 @@ function FileBrowser({
       <div
         role="listbox"
         aria-label={l.root}
-        data-nested-surface="true"
         className="min-h-[12rem] flex-1 overflow-y-auto scrollbar-mac"
       >
         {loading ? (
@@ -175,11 +184,24 @@ function FileBrowser({
           <p className="px-2 py-3 text-sm text-muted-foreground">{l.empty}</p>
         ) : (
           shown.map((entry) => (
+            // Directories can be activated (drill in) and files can't (selection
+            // is a later task), so the two need to read differently at rest, not
+            // just on click. Directories stay transparent until touched — the
+            // same "flat until hovered" language as every other clickable row in
+            // this registry (sidebar, command, select) — while files sit on the
+            // recessed `muted` fill that materials.md prescribes for a single
+            // nested row, which reads as an inert swatch with no hover promise.
             <Item
               key={entry.name}
               asChild
               size="xs"
-              className="w-full cursor-default active:scale-[0.995]"
+              variant={entry.isDir ? "default" : "muted"}
+              className={cn(
+                "w-full",
+                entry.isDir
+                  ? "cursor-pointer hover:bg-[var(--acr-hover)] active:scale-[0.995]"
+                  : "cursor-default"
+              )}
             >
               <div
                 role="option"

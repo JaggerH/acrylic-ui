@@ -84,4 +84,64 @@ describe("FileBrowser browsing", () => {
     expect(await screen.findByText("upstream 502")).toBeInTheDocument()
     expect(screen.queryByText("This folder is empty")).not.toBeInTheDocument()
   })
+
+  it("does not navigate when a file row is clicked", async () => {
+    const user = userEvent.setup()
+    const loadDir = makeLoadDir()
+    render(<FileBrowser loadDir={loadDir} />)
+
+    await screen.findByRole("option", { name: "readme.txt" })
+    loadDir.mockClear()
+
+    await user.click(screen.getByRole("option", { name: "readme.txt" }))
+
+    // A directory click drives a new loadDir call; a file click must not.
+    expect(loadDir).not.toHaveBeenCalled()
+    expect(screen.getByRole("option", { name: "readme.txt" })).toBeInTheDocument()
+    expect(screen.getByRole("option", { name: "Shows" })).toBeInTheDocument()
+  })
+
+  it("jumps back to the root through the breadcrumb, not just an intermediate ancestor", async () => {
+    const user = userEvent.setup()
+    const loadDir = makeLoadDir()
+    render(<FileBrowser loadDir={loadDir} defaultPath="/Shows/Season 3" />)
+
+    await screen.findByRole("option", { name: "ep05.mp4" })
+    await user.click(screen.getByRole("button", { name: "All files" }))
+
+    await waitFor(() => expect(loadDir).toHaveBeenCalledWith("/"))
+    expect(await screen.findByRole("option", { name: "Shows" })).toBeInTheDocument()
+    expect(await screen.findByRole("option", { name: "readme.txt" })).toBeInTheDocument()
+  })
+})
+
+describe("FileBrowser loadDir reference stability", () => {
+  it("does not refetch when the consumer passes a new loadDir reference on every render", async () => {
+    // The realistic consumer shape is an inline arrow function
+    // (`<FileBrowser loadDir={(p) => api.list(p)} />`), which is a fresh
+    // reference on every parent render. If the load effect keys off that
+    // reference, an unrelated parent re-render refetches the same directory
+    // over and over. `load` below is the stable call counter; each render
+    // wraps it in a brand-new arrow function, so only a ref-based fix keeps
+    // the call count flat.
+    let calls = 0
+    const load = async (path: string) => {
+      calls += 1
+      return TREE[path] ?? []
+    }
+
+    const { rerender } = render(<FileBrowser loadDir={(p) => load(p)} />)
+    await screen.findAllByRole("option")
+    expect(calls).toBe(1)
+
+    for (let i = 0; i < 5; i++) {
+      rerender(<FileBrowser loadDir={(p) => load(p)} />)
+    }
+
+    // Flush any microtask/effect queue a buggy implementation would have
+    // scheduled from the re-renders above.
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    expect(calls).toBe(1)
+  })
 })

@@ -578,7 +578,7 @@
       "name": "file-picker",
       "type": "registry:component",
       "title": "File Picker",
-      "description": "A backend-agnostic filesystem browser and picker. FileBrowser is the shell-less panel (breadcrumb drill-down, in-place folder creation, cross-subtree search); FilePickerDialog is the ready-made acrylic Dialog wrapper. All data arrives through host callbacks, so it drives a cloud drive, an object store, or an in-memory tree without knowing the difference.",
+      "description": "A backend-agnostic filesystem browser. FileBrowser is a shell-less panel that lists a directory, drills into a subfolder on click, and jumps back to any ancestor through the breadcrumb. All data arrives through the loadDir host callback, so it drives a cloud drive, an object store, or an in-memory tree without knowing the difference.",
       "dependencies": ["lucide-react"],
       "registryDependencies": [
         "https://acrylic-ui.vercel.app/r/acrylic.json",
