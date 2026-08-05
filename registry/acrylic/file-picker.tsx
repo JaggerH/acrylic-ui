@@ -654,6 +654,9 @@ function FileBrowser({
           role="presentation"
           data-direction={direction}
           className={cn(
+            // A hairline between rows so two adjacent hover/selected fills read
+            // as two rounded rows instead of one blob pinched at every seam.
+            "flex flex-col gap-0.5",
             "motion-safe:animate-in motion-safe:fade-in",
             "motion-safe:data-[direction=in]:slide-in-from-right-2",
             "motion-safe:data-[direction=out]:slide-in-from-left-2"
@@ -681,28 +684,34 @@ function FileBrowser({
             const full = joinPath(path, entry.name)
             // A directory row is always active (drill in), regardless of
             // `select` — it is the file rows whose selectability depends on the
-            // mode. Directories stay transparent until touched — the same "flat
-            // until hovered" language as every other clickable row in this
-            // registry (sidebar, command, select) — while files sit on the
-            // recessed `muted` fill this registry's material system prescribes
-            // for a single nested row, which reads as inert unless this mode
-            // makes it pickable.
+            // mode.
+            //
+            // EVERY row is transparent at rest — the same "flat until hovered"
+            // language as every other row in this registry (sidebar, command,
+            // select). A resting fill is an affordance, so putting one on the
+            // rows you CANNOT pick states the opposite of what it means. An
+            // inert row is DIMMED instead, like a non-selectable file in the
+            // macOS open panel. That leaves four distinguishable steps:
+            // inert (dim) < interactive at rest (transparent) < hover < selected
+            // (solid accent).
+            //
+            // The hover wash is withheld from the selected row: `--acr-hover`
+            // is a faint white overlay and would visibly wash the solid accent
+            // back out when the pointer crosses it.
             const selectable = entry.isDir ? select !== "file" : select !== "dir"
             const isSelected = value != null && value === full
+            const interactive = entry.isDir || selectable
             return (
               <Item
                 key={`${entry.isDir}:${entry.name}`}
                 asChild
                 size="xs"
-                variant={entry.isDir ? "default" : "muted"}
                 selected={isSelected}
                 className={cn(
                   "w-full",
-                  entry.isDir
-                    ? "cursor-pointer hover:bg-[var(--acr-hover)] active:scale-[0.995]"
-                    : selectable
-                      ? "cursor-pointer active:scale-[0.995]"
-                      : "cursor-default"
+                  interactive
+                    ? "cursor-pointer active:scale-[0.995] [&:not([data-selected])]:hover:bg-[var(--acr-hover)]"
+                    : "cursor-default opacity-45"
                 )}
               >
                 <div
