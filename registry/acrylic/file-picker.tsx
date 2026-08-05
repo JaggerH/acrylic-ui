@@ -33,7 +33,7 @@ import { Skeleton } from "@/registry/acrylic/skeleton"
 export type FileEntry = {
   name: string
   isDir: boolean
-  /** Opaque host payload echoed back through onValueChange — never read here. */
+  /** Opaque host payload handed back untouched wherever this entry surfaces — never read here. */
   meta?: unknown
 }
 
