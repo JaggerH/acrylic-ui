@@ -659,3 +659,146 @@ describe("FileBrowser search box accessible name", () => {
     ).toBeInTheDocument()
   })
 })
+
+describe("FileBrowser keyboard", () => {
+  it("the whole list is a single tab stop (roving tabindex)", async () => {
+    render(<FileBrowser loadDir={makeLoadDir()} />)
+    await screen.findByRole("option", { name: "Shows" })
+
+    const rows = screen.getAllByRole("option")
+    expect(rows.filter((r) => r.getAttribute("tabindex") === "0")).toHaveLength(1)
+    expect(rows[0]).toHaveAttribute("tabindex", "0")
+    expect(rows[1]).toHaveAttribute("tabindex", "-1")
+  })
+
+  it("ArrowDown/ArrowUp move the active row", async () => {
+    const user = userEvent.setup()
+    render(<FileBrowser loadDir={makeLoadDir()} />)
+    const firstRow = await screen.findByRole("option", { name: "Shows" })
+
+    firstRow.focus()
+    await user.keyboard("{ArrowDown}")
+    expect(screen.getByRole("option", { name: "readme.txt" })).toHaveFocus()
+
+    await user.keyboard("{ArrowUp}")
+    expect(screen.getByRole("option", { name: "Shows" })).toHaveFocus()
+  })
+
+  it("ArrowRight enters a directory and ArrowLeft climbs back out", async () => {
+    const user = userEvent.setup()
+    const loadDir = makeLoadDir()
+    render(<FileBrowser loadDir={loadDir} />)
+    const firstRow = await screen.findByRole("option", { name: "Shows" })
+
+    firstRow.focus()
+    await user.keyboard("{ArrowRight}")
+    await waitFor(() => expect(loadDir).toHaveBeenCalledWith("/Shows"))
+
+    await user.keyboard("{ArrowLeft}")
+    await waitFor(() => expect(loadDir).toHaveBeenCalledWith("/"))
+  })
+
+  it("Enter on a file selects it", async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    render(<FileBrowser loadDir={makeLoadDir()} select="file" onValueChange={onValueChange} />)
+    const firstRow = await screen.findByRole("option", { name: "Shows" })
+
+    firstRow.focus()
+    await user.keyboard("{ArrowDown}{Enter}")
+
+    expect(onValueChange).toHaveBeenCalledWith("/readme.txt", expect.objectContaining({ name: "readme.txt" }))
+  })
+
+  it("ArrowLeft at the root does nothing (no parent to climb to)", async () => {
+    const user = userEvent.setup()
+    const loadDir = makeLoadDir()
+    render(<FileBrowser loadDir={loadDir} />)
+    const firstRow = await screen.findByRole("option", { name: "Shows" })
+
+    firstRow.focus()
+    loadDir.mockClear()
+    await user.keyboard("{ArrowLeft}")
+
+    // Flush any microtask a buggy implementation would have scheduled.
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    expect(loadDir).not.toHaveBeenCalled()
+  })
+
+  it("a non-selectable row (a file under select='dir') can still be reached and read by the arrow keys", async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    render(<FileBrowser loadDir={makeLoadDir()} select="dir" onValueChange={onValueChange} />)
+    const firstRow = await screen.findByRole("option", { name: "Shows" })
+
+    firstRow.focus()
+    await user.keyboard("{ArrowDown}")
+    const file = screen.getByRole("option", { name: "readme.txt" })
+    expect(file).toHaveFocus()
+    expect(file).toHaveAttribute("aria-disabled", "true")
+
+    // Enter must not select it — aria-disabled means "present, not activatable".
+    await user.keyboard("{Enter}")
+    expect(onValueChange).not.toHaveBeenCalledWith("/readme.txt", expect.anything())
+  })
+
+  it("changing the query resets the active row, so a stale index does not act on the filtered list", async () => {
+    const user = userEvent.setup()
+    render(<FileBrowser loadDir={makeLoadDir()} />)
+    const firstRow = await screen.findByRole("option", { name: "Shows" })
+
+    firstRow.focus()
+    await user.keyboard("{ArrowDown}")
+    expect(screen.getByRole("option", { name: "readme.txt" })).toHaveFocus()
+
+    // Filtering down to a single row must land the cursor back on row 0 of
+    // the *new* list, not keep pointing at whatever index 1 used to be.
+    await user.type(screen.getByRole("searchbox"), "read")
+    await waitFor(() => expect(screen.getAllByRole("option")).toHaveLength(1))
+    expect(screen.getByRole("option", { name: "readme.txt" })).toHaveAttribute("tabindex", "0")
+  })
+
+  describe("draft folder input isolation", () => {
+    // Regression coverage for an integration risk the brief did not
+    // anticipate: the new-folder draft <input> (Task 4) renders inside the
+    // same role="listbox" container this task attaches onKeyDown to. Without
+    // an explicit guard, typing in the draft box would leak into row
+    // navigation — Left/Right moving the text cursor would instead be read
+    // as "climb out of this folder" / "drill into the active row", and
+    // Up/Down (meaningless in a single-line input) would silently reassign
+    // the active row and, via ArrowRight-on-Enter's sibling case, the
+        // browsed directory out from under a half-typed name.
+    it("ArrowUp/ArrowDown/ArrowLeft/ArrowRight inside the draft input do not navigate or move row focus", async () => {
+      const user = userEvent.setup()
+      const loadDir = makeLoadDir()
+      render(<FileBrowser loadDir={loadDir} onCreateFolder={async () => {}} />)
+
+      await user.click(await screen.findByRole("button", { name: "New folder" }))
+      const input = screen.getByRole("textbox", { name: "New folder" })
+      await user.type(input, "Fresh")
+      loadDir.mockClear()
+
+      await user.type(input, "{ArrowLeft}{ArrowRight}{ArrowUp}{ArrowDown}")
+
+      // No directory navigation was triggered...
+      expect(loadDir).not.toHaveBeenCalled()
+      // ...the input kept the keystrokes/focus instead of losing them to a row...
+      expect(input).toHaveFocus()
+      expect(input).toHaveValue("Fresh")
+      // ...and the roving cursor never moved off row 0.
+      expect(screen.getByRole("option", { name: "Shows" })).toHaveAttribute("tabindex", "0")
+    })
+
+    it("Enter in the draft input creates the folder exactly once, not a second time via the list handler", async () => {
+      const user = userEvent.setup()
+      const onCreateFolder = vi.fn(async () => {})
+      render(<FileBrowser loadDir={makeLoadDir()} onCreateFolder={onCreateFolder} />)
+
+      await user.click(await screen.findByRole("button", { name: "New folder" }))
+      await user.type(screen.getByRole("textbox", { name: "New folder" }), "Fresh{Enter}")
+
+      await waitFor(() => expect(onCreateFolder).toHaveBeenCalledTimes(1))
+      expect(onCreateFolder).toHaveBeenCalledWith("/", "Fresh")
+    })
+  })
+})

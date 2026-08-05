@@ -207,6 +207,15 @@ function FileBrowser({
   const [draft, setDraft] = React.useState<string | null>(null)
   const [draftError, setDraftError] = React.useState<string | null>(null)
 
+  // The active row cursor for roving-tabindex keyboard navigation (Task 5).
+  // It rides the exact same render-time reset as `query`/`draft` below, for
+  // the same reason spelled out there: an effect keyed on [path, query]
+  // would still leave the *previous* listing's `active` index in place for
+  // one extra render, and a keyboard event landing in that window would act
+  // on `shown[active]` from the listing that just got replaced.
+  const [active, setActive] = React.useState(0)
+  const listRef = React.useRef<HTMLDivElement>(null)
+
   // Switching directories abandons the query — a search is scoped to where
   // you were, and carrying it into a new level has no meaning. This reset
   // must happen synchronously during render (the React "adjust state while
@@ -225,13 +234,23 @@ function FileBrowser({
   // itself just created, via commitDraft's own goTo — must not leave a
   // stale draft row or error message floating over unrelated entries.
   const [lastPath, setLastPath] = React.useState(path)
+  const [lastQuery, setLastQuery] = React.useState(query)
   if (path !== lastPath) {
     setLastPath(path)
     setQuery("")
+    setLastQuery("")
     setHits(null)
     setSearchError(null)
     setDraft(null)
     setDraftError(null)
+    setActive(0)
+  } else if (query !== lastQuery) {
+    // A query edit re-filters `shown` without touching `path`, so it needs
+    // its own comparison here — otherwise only a directory change would
+    // reset the cursor, and a stale `active` index would survive into a
+    // freshly filtered (and likely much shorter) result list.
+    setLastQuery(query)
+    setActive(0)
   }
 
   // Same reference-stability concern as loadDirRef above: `searchDir` is
@@ -334,6 +353,62 @@ function FileBrowser({
 
   const crumbs = pathCrumbs(path, l.root)
 
+  // Moves the roving-tabindex cursor by absolute index and hands DOM focus to
+  // that row directly, rather than waiting for a render to flip its
+  // tabIndex to 0 first — a negative tabIndex still accepts a programmatic
+  // .focus() call, only sequential Tab traversal skips it.
+  const focusRow = React.useCallback((i: number) => {
+    const rows = listRef.current?.querySelectorAll<HTMLElement>('[role="option"]')
+    if (!rows || rows.length === 0) return
+    const next = Math.max(0, Math.min(i, rows.length - 1))
+    setActive(next)
+    rows[next].focus()
+  }, [])
+
+  const parentPath = React.useMemo(() => {
+    const segs = path.split("/").filter(Boolean)
+    segs.pop()
+    return segs.length === 0 ? "/" : `/${segs.join("/")}`
+  }, [path])
+
+  // macOS open-panel model: Up/Down move the cursor, Right/Enter drill into a
+  // directory, Left climbs to the parent, Enter on a file selects it. Escape
+  // is deliberately not handled here — it belongs to whatever shell hosts
+  // this panel (a Dialog, a Sheet, ...), which this component never assumes.
+  const onListKeyDown = (e: React.KeyboardEvent) => {
+    // The new-folder draft row renders its own <input> *inside* this same
+    // listbox container (see the draft row below), so its native text-
+    // editing keys bubble up here too. Left/Right there are cursor movement
+    // inside the text, not "climb out of this folder" — and Up/Down have no
+    // meaning in a single-line input at all. Without this guard they would
+    // be reinterpreted as row navigation and silently swap out the
+    // directory being typed into. Enter is worse: the input's own
+    // onKeyDown already submits the draft, so letting the same event reach
+    // here would additionally run the "activate the row at `active`" branch
+    // below on the same keystroke.
+    const target = e.target as HTMLElement
+    if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return
+
+    const entry = shown[active]
+    switch (e.key) {
+      case "ArrowDown": e.preventDefault(); focusRow(active + 1); break
+      case "ArrowUp": e.preventDefault(); focusRow(active - 1); break
+      case "ArrowRight":
+        if (entry?.isDir) { e.preventDefault(); goTo(joinPath(path, entry.name), entry) }
+        break
+      case "ArrowLeft":
+        if (path !== "/") { e.preventDefault(); goTo(parentPath, null) }
+        break
+      case "Enter": {
+        if (!entry) break
+        e.preventDefault()
+        if (entry.isDir) { goTo(joinPath(path, entry.name), entry); break }
+        if (select !== "dir") onValueChange?.(joinPath(path, entry.name), entry)
+        break
+      }
+    }
+  }
+
   return (
     <div className={cn("flex min-h-0 flex-col gap-2", className)}>
       <Breadcrumb>
@@ -392,8 +467,10 @@ function FileBrowser({
       </div>
 
       <div
+        ref={listRef}
         role="listbox"
         aria-label={l.root}
+        onKeyDown={onListKeyDown}
         className="min-h-[12rem] flex-1 overflow-y-auto scrollbar-mac"
       >
         {draft !== null && (
@@ -431,7 +508,7 @@ function FileBrowser({
             {searching ? l.noMatches : l.empty}
           </p>
         ) : (
-          shown.map((entry) => {
+          shown.map((entry, i) => {
             const full = joinPath(path, entry.name)
             // Decision 4: a directory row is always active (drill in), regardless
             // of `select` — it is the file rows whose selectability depends on the
@@ -462,6 +539,8 @@ function FileBrowser({
                   role="option"
                   aria-selected={isSelected}
                   aria-disabled={!selectable && !entry.isDir ? true : undefined}
+                  tabIndex={i === active ? 0 : -1}
+                  onFocus={() => setActive(i)}
                   onClick={() => {
                     if (entry.isDir) { goTo(full, entry); return }
                     if (selectable) onValueChange?.(full, entry)
