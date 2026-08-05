@@ -575,6 +575,29 @@
       ]
     },
     {
+      "name": "file-picker",
+      "type": "registry:component",
+      "title": "File Picker",
+      "description": "A backend-agnostic filesystem browser and picker. FileBrowser is the shell-less panel (breadcrumb drill-down, in-place folder creation, cross-subtree search); FilePickerDialog is the ready-made acrylic Dialog wrapper. All data arrives through host callbacks, so it drives a cloud drive, an object store, or an in-memory tree without knowing the difference.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json",
+        "https://acrylic-ui.vercel.app/r/breadcrumb.json",
+        "https://acrylic-ui.vercel.app/r/button.json",
+        "https://acrylic-ui.vercel.app/r/dialog.json",
+        "https://acrylic-ui.vercel.app/r/input-group.json",
+        "https://acrylic-ui.vercel.app/r/item.json",
+        "https://acrylic-ui.vercel.app/r/skeleton.json"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/file-picker.tsx",
+          "type": "registry:component",
+          "target": "components/acrylic/file-picker.tsx"
+        }
+      ]
+    },
+    {
       "name": "input-group",
       "type": "registry:ui",
       "title": "Acrylic Input Group",
