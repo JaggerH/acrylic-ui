@@ -151,13 +151,23 @@ function FileBrowser({
   // drilling in and picking are one action — no second hit target on a folder row.
   const selectsDir = select === "dir" || select === "any"
 
+  // Which way the listing should appear to travel on the next change. Going
+  // deeper reads as content arriving from the right; climbing back out reads as
+  // it arriving from the left — the same path in reverse, so a level you just
+  // left comes back from where it went. Compared by segment count rather than
+  // string length because a short child name ("/a/b" -> "/a/bb") would otherwise
+  // be mistaken for a climb.
+  const [direction, setDirection] = React.useState<"in" | "out">("in")
+
   const goTo = React.useCallback(
     (next: string, viaEntry: FileEntry | null) => {
+      const depth = (p: string) => p.split("/").filter(Boolean).length
+      setDirection(depth(next) < depth(path) ? "out" : "in")
       if (pathProp === undefined) setUncontrolledPath(next)
       onPathChange?.(next)
       if (selectsDir) onValueChange?.(next, viaEntry)
     },
-    [pathProp, onPathChange, selectsDir, onValueChange]
+    [path, pathProp, onPathChange, selectsDir, onValueChange]
   )
 
   // The initial level is also a selection under select='dir'|'any' — announce it
@@ -215,6 +225,11 @@ function FileBrowser({
   // on `shown[active]` from the listing that just got replaced.
   const [active, setActive] = React.useState(0)
   const listRef = React.useRef<HTMLDivElement>(null)
+
+  // A hairline under the toolbar would be permanent furniture; this fades the
+  // top edge only while content is actually hidden above it, so the divider
+  // carries information (there is more up there) instead of decoration.
+  const [scrolled, setScrolled] = React.useState(false)
 
   // Switching directories abandons the query — a search is scoped to where
   // you were, and carrying it into a new level has no meaning. This reset
@@ -490,6 +505,15 @@ function FileBrowser({
         role="listbox"
         aria-label={l.root}
         onKeyDown={onListKeyDown}
+        onScroll={(e) => setScrolled(e.currentTarget.scrollTop > 0)}
+        style={
+          scrolled
+            ? {
+                maskImage: "linear-gradient(to bottom, transparent 0, black 12px)",
+                WebkitMaskImage: "linear-gradient(to bottom, transparent 0, black 12px)",
+              }
+            : undefined
+        }
         className="min-h-[12rem] flex-1 overflow-y-auto scrollbar-mac"
       >
         {draft !== null && (
@@ -513,6 +537,33 @@ function FileBrowser({
             {draftError && <p className="pl-6 text-sm text-destructive">{draftError}</p>}
           </div>
         )}
+        {/*
+          Keyed on `path` so every level change is a real remount and the
+          entrance animation replays. `role="presentation"` keeps this wrapper
+          out of the accessibility tree — a listbox must own its options
+          directly, and an anonymous div between them would break that
+          relationship for screen readers.
+
+          The motion is CSS-tier on purpose: this component has no drag
+          gesture, so pulling in a JS spring runtime for a 0.4s entrance would
+          be a dependency nobody asked for. `--acr-spring-default` is
+          critically damped (damping 1.0) — overshoot belongs to motion a
+          finger carried, not to content that simply replaced other content.
+        */}
+        <div
+          key={path}
+          role="presentation"
+          data-direction={direction}
+          className={cn(
+            "motion-safe:animate-in motion-safe:fade-in",
+            "motion-safe:data-[direction=in]:slide-in-from-right-2",
+            "motion-safe:data-[direction=out]:slide-in-from-left-2"
+          )}
+          style={{
+            animationDuration: "var(--acr-spring-default-duration)",
+            animationTimingFunction: "var(--acr-spring-default)",
+          }}
+        >
         {loading ? (
           <div className="flex flex-col gap-1 p-1">
             <Skeleton className="h-8 w-full" />
@@ -574,6 +625,7 @@ function FileBrowser({
             )
           })
         )}
+        </div>
       </div>
 
       <div
