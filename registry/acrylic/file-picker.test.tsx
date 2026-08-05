@@ -443,6 +443,79 @@ describe("FileBrowser search failure", () => {
   })
 })
 
+describe("FileBrowser folder creation", () => {
+  it("renders no new-folder affordance when the host gives no callback", async () => {
+    render(<FileBrowser loadDir={makeLoadDir()} />)
+    await screen.findByRole("option", { name: "Shows" })
+    expect(screen.queryByRole("button", { name: "New folder" })).not.toBeInTheDocument()
+  })
+
+  it("creates in place, reloads, and enters the new folder", async () => {
+    const user = userEvent.setup()
+    const created: string[] = []
+    const loadDir = vi.fn(async (p: string) => {
+      if (p === "/Fresh") return []
+      return p === "/" ? [...(TREE["/"] ?? []), ...created.map((n) => ({ name: n, isDir: true }))] : (TREE[p] ?? [])
+    })
+    const onCreateFolder = vi.fn(async (_parent: string, name: string) => { created.push(name) })
+
+    render(<FileBrowser loadDir={loadDir} onCreateFolder={onCreateFolder} select="dir" />)
+
+    await user.click(await screen.findByRole("button", { name: "New folder" }))
+    await user.type(screen.getByRole("textbox", { name: "New folder" }), "Fresh{Enter}")
+
+    await waitFor(() => expect(onCreateFolder).toHaveBeenCalledWith("/", "Fresh"))
+    // Decision 7: creating a folder means you meant to use it — go inside.
+    await waitFor(() => expect(loadDir).toHaveBeenCalledWith("/Fresh"))
+  })
+
+  it("rejects an empty name locally, without calling the host", async () => {
+    const user = userEvent.setup()
+    const onCreateFolder = vi.fn()
+    render(<FileBrowser loadDir={makeLoadDir()} onCreateFolder={onCreateFolder} />)
+
+    await user.click(await screen.findByRole("button", { name: "New folder" }))
+    await user.type(screen.getByRole("textbox", { name: "New folder" }), "   {Enter}")
+
+    expect(await screen.findByText("Name required")).toBeInTheDocument()
+    expect(onCreateFolder).not.toHaveBeenCalled()
+  })
+
+  it("rejects a duplicate name locally, without calling the host", async () => {
+    const user = userEvent.setup()
+    const onCreateFolder = vi.fn()
+    render(<FileBrowser loadDir={makeLoadDir()} onCreateFolder={onCreateFolder} />)
+
+    await user.click(await screen.findByRole("button", { name: "New folder" }))
+    await user.type(screen.getByRole("textbox", { name: "New folder" }), "Shows{Enter}")
+
+    expect(await screen.findByText("That name is taken")).toBeInTheDocument()
+    expect(onCreateFolder).not.toHaveBeenCalled()
+  })
+
+  it("keeps the row and shows the host's message when creation fails", async () => {
+    const user = userEvent.setup()
+    const onCreateFolder = vi.fn(async () => { throw new Error("name contains an illegal character") })
+    render(<FileBrowser loadDir={makeLoadDir()} onCreateFolder={onCreateFolder} />)
+
+    await user.click(await screen.findByRole("button", { name: "New folder" }))
+    await user.type(screen.getByRole("textbox", { name: "New folder" }), "a:b{Enter}")
+
+    expect(await screen.findByText("name contains an illegal character")).toBeInTheDocument()
+    expect(screen.getByRole("textbox", { name: "New folder" })).toHaveValue("a:b")
+  })
+
+  it("Escape abandons the draft row", async () => {
+    const user = userEvent.setup()
+    render(<FileBrowser loadDir={makeLoadDir()} onCreateFolder={async () => {}} />)
+
+    await user.click(await screen.findByRole("button", { name: "New folder" }))
+    await user.type(screen.getByRole("textbox", { name: "New folder" }), "x{Escape}")
+
+    expect(screen.queryByRole("textbox", { name: "New folder" })).not.toBeInTheDocument()
+  })
+})
+
 describe("FileBrowser search box accessible name", () => {
   it("exposes the subtree label as the accessible name when searchDir is provided", async () => {
     render(<FileBrowser loadDir={makeLoadDir()} searchDir={async () => []} />)

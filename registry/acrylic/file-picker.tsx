@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { FileIcon, FolderIcon, SearchIcon } from "lucide-react"
+import { FileIcon, FolderIcon, FolderPlusIcon, SearchIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import {
@@ -12,6 +12,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/registry/acrylic/breadcrumb"
+import { Button } from "@/registry/acrylic/button"
 import {
   InputGroup,
   InputGroupAddon,
@@ -50,6 +51,10 @@ export type FileBrowserLabels = {
   selectionEmpty: string
   searchLocal: string
   searchSubtree: string
+  newFolder: string
+  newFolderPlaceholder: string
+  nameRequired: string
+  nameTaken: string
 }
 
 export const DEFAULT_FILE_BROWSER_LABELS: FileBrowserLabels = {
@@ -60,6 +65,10 @@ export const DEFAULT_FILE_BROWSER_LABELS: FileBrowserLabels = {
   selectionEmpty: "Nothing selected",
   searchLocal: "Search this folder…",
   searchSubtree: "Search everything below…",
+  newFolder: "New folder",
+  newFolderPlaceholder: "Folder name",
+  nameRequired: "Name required",
+  nameTaken: "That name is taken",
 }
 
 /** Join a child name onto a directory path without doubling the root slash. */
@@ -97,6 +106,14 @@ export type FileBrowserProps = {
    * absolute path.
    */
   searchDir?: (path: string, query: string) => Promise<FileEntry[]>
+  /**
+   * Create a subfolder of `parentPath`. Omit to hide the new-folder affordance
+   * entirely — no disabled button, since there is nothing useful to disable it
+   * *for*. Reject with a message meant for display: the host is the only party
+   * that knows its own illegal-character rules, so that check lives there and
+   * its failure message is shown verbatim next to the still-open draft row.
+   */
+  onCreateFolder?: (parentPath: string, name: string) => Promise<void>
   defaultPath?: string
   path?: string
   onPathChange?: (path: string) => void
@@ -112,6 +129,7 @@ export type FileBrowserProps = {
 function FileBrowser({
   loadDir,
   searchDir,
+  onCreateFolder,
   defaultPath = "/",
   path: pathProp,
   onPathChange,
@@ -186,6 +204,9 @@ function FileBrowser({
   const [hits, setHits] = React.useState<FileEntry[] | null>(null)
   const [searchError, setSearchError] = React.useState<string | null>(null)
 
+  const [draft, setDraft] = React.useState<string | null>(null)
+  const [draftError, setDraftError] = React.useState<string | null>(null)
+
   // Switching directories abandons the query — a search is scoped to where
   // you were, and carrying it into a new level has no meaning. This reset
   // must happen synchronously during render (the React "adjust state while
@@ -197,12 +218,20 @@ function FileBrowser({
   // spurious searchDir(newPath, oldQuery) call before the reset ever lands.
   // Doing the reset inline during render guarantees `query` is already
   // empty by the time the search effect reads it.
+  //
+  // The draft folder row rides the same reset for the same reason: it is
+  // scoped to the level it was opened on (its dupe-check reads `entries` for
+  // *this* path), so arriving at a new level — including the one this draft
+  // itself just created, via commitDraft's own goTo — must not leave a
+  // stale draft row or error message floating over unrelated entries.
   const [lastPath, setLastPath] = React.useState(path)
   if (path !== lastPath) {
     setLastPath(path)
     setQuery("")
     setHits(null)
     setSearchError(null)
+    setDraft(null)
+    setDraftError(null)
   }
 
   // Same reference-stability concern as loadDirRef above: `searchDir` is
@@ -230,6 +259,39 @@ function FileBrowser({
       })
     return () => { alive = false }
   }, [path, query])
+
+  const [creating, setCreating] = React.useState(false)
+
+  const commitDraft = React.useCallback(async () => {
+    if (!onCreateFolder || draft === null) return
+    const name = draft.trim()
+    // Locally knowable rules are checked locally — no round trip to learn what we
+    // already know. Illegal characters are NOT one of them: every backend has its
+    // own set, and guessing one only produces false rejections.
+    if (!name) { setDraftError(l.nameRequired); return }
+    if (entries.some((e) => e.name === name)) { setDraftError(l.nameTaken); return }
+
+    setCreating(true)
+    setDraftError(null)
+    try {
+      await onCreateFolder(path, name)
+      setDraft(null)
+      // Reload ourselves rather than requiring the host to hand back the new entry
+      // — one fewer convention the host has to get right for this to work. Go
+      // through the same ref as the mount-and-load effect (not `loadDir` directly)
+      // so an inline arrow-function consumer doesn't force this callback to be
+      // rebuilt every render.
+      const next = await loadDirRef.current(path)
+      setEntries(next)
+      // Decision 7: creating a folder means you meant to use it — go inside.
+      goTo(joinPath(path, name), { name, isDir: true })
+    } catch (e: unknown) {
+      // Keep the row alive with the text still in it so the name can be fixed in place.
+      setDraftError(e instanceof Error ? e.message : String(e))
+    } finally {
+      setCreating(false)
+    }
+  }, [onCreateFolder, draft, entries, path, l.nameRequired, l.nameTaken, goTo])
 
   const shown = React.useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -272,24 +334,58 @@ function FileBrowser({
         </BreadcrumbList>
       </Breadcrumb>
 
-      <InputGroup>
-        <InputGroupInput
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={searchDir ? l.searchSubtree : l.searchLocal}
-          aria-label={searchDir ? l.searchSubtree : l.searchLocal}
-        />
-        <InputGroupAddon>
-          <SearchIcon />
-        </InputGroupAddon>
-      </InputGroup>
+      <div className="flex items-center gap-2">
+        <InputGroup className="flex-1">
+          <InputGroupInput
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={searchDir ? l.searchSubtree : l.searchLocal}
+            aria-label={searchDir ? l.searchSubtree : l.searchLocal}
+          />
+          <InputGroupAddon>
+            <SearchIcon />
+          </InputGroupAddon>
+        </InputGroup>
+        {onCreateFolder && (
+          <Button
+            icon
+            size="small"
+            variant="ghost"
+            aria-label={l.newFolder}
+            onClick={() => { setDraft(""); setDraftError(null) }}
+          >
+            <FolderPlusIcon />
+          </Button>
+        )}
+      </div>
 
       <div
         role="listbox"
         aria-label={l.root}
         className="min-h-[12rem] flex-1 overflow-y-auto scrollbar-mac"
       >
+        {draft !== null && (
+          <div className="flex flex-col gap-1 px-2 py-1.5">
+            <div className="flex items-center gap-2">
+              <FolderIcon className="size-3.5 shrink-0 text-muted-foreground" />
+              <input
+                autoFocus
+                aria-label={l.newFolder}
+                placeholder={l.newFolderPlaceholder}
+                value={draft}
+                disabled={creating}
+                onChange={(e) => setDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") { e.preventDefault(); void commitDraft() }
+                  if (e.key === "Escape") { e.preventDefault(); setDraft(null); setDraftError(null) }
+                }}
+                className="min-w-0 flex-1 border-0 bg-transparent text-sm outline-none"
+              />
+            </div>
+            {draftError && <p className="pl-6 text-sm text-destructive">{draftError}</p>}
+          </div>
+        )}
         {loading ? (
           <div className="flex flex-col gap-1 p-1">
             <Skeleton className="h-8 w-full" />
