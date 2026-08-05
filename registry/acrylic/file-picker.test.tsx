@@ -182,6 +182,59 @@ describe("FileBrowser selection", () => {
 
     await waitFor(() => expect(onValueChange).toHaveBeenCalledWith("/Shows", null))
   })
+
+  it("select='any': clicking a file selects it", async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    render(<FileBrowser loadDir={makeLoadDir()} select="any" onValueChange={onValueChange} />)
+
+    await user.click(await screen.findByRole("option", { name: "readme.txt" }))
+
+    expect(onValueChange).toHaveBeenCalledWith(
+      "/readme.txt",
+      expect.objectContaining({ name: "readme.txt" })
+    )
+  })
+
+  it("select='any': clicking a directory drills in AND selects it in the same action", async () => {
+    const user = userEvent.setup()
+    const loadDir = makeLoadDir()
+    const onValueChange = vi.fn()
+    render(<FileBrowser loadDir={loadDir} select="any" onValueChange={onValueChange} />)
+
+    await user.click(await screen.findByRole("option", { name: "Shows" }))
+
+    // Same click both navigates (new level loaded and rendered)...
+    await waitFor(() => expect(loadDir).toHaveBeenCalledWith("/Shows"))
+    expect(await screen.findByRole("option", { name: "cover.jpg" })).toBeInTheDocument()
+    // ...and reports the directory itself as the selection — there is no way
+    // under 'any' to select a directory without also entering it.
+    await waitFor(() =>
+      expect(onValueChange).toHaveBeenCalledWith("/Shows", expect.objectContaining({ name: "Shows" }))
+    )
+  })
+
+  it("select='any': neither files nor directories are aria-disabled", async () => {
+    render(<FileBrowser loadDir={makeLoadDir()} select="any" />)
+
+    const dir = await screen.findByRole("option", { name: "Shows" })
+    const file = await screen.findByRole("option", { name: "readme.txt" })
+    expect(dir).not.toHaveAttribute("aria-disabled")
+    expect(file).not.toHaveAttribute("aria-disabled")
+  })
+
+  it("select='any': a breadcrumb jump still reports a selection, with a null entry", async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    render(
+      <FileBrowser loadDir={makeLoadDir()} select="any" defaultPath="/Shows/Season 3" onValueChange={onValueChange} />
+    )
+
+    await screen.findByRole("option", { name: "ep05.mp4" })
+    await user.click(screen.getByRole("button", { name: "Shows" }))
+
+    await waitFor(() => expect(onValueChange).toHaveBeenCalledWith("/Shows", null))
+  })
 })
 
 describe("FileBrowser loadDir reference stability", () => {
