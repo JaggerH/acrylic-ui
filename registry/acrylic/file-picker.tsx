@@ -11,8 +11,8 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/registry/acrylic/breadcrumb"
-import { Button } from "@/registry/acrylic/button"
+} from "./breadcrumb"
+import { Button } from "./button"
 import {
   Dialog,
   DialogContent,
@@ -20,14 +20,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/registry/acrylic/dialog"
+} from "./dialog"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/registry/acrylic/input-group"
-import { Item, ItemContent, ItemMedia } from "@/registry/acrylic/item"
-import { Skeleton } from "@/registry/acrylic/skeleton"
+} from "./input-group"
+import { Item, ItemContent, ItemMedia } from "./item"
+import { Skeleton } from "./skeleton"
 
 // Acrylic FilePicker — a backend-agnostic filesystem browser. Nothing here knows
 // what a "file" physically is: every byte of data arrives through the `loadDir`

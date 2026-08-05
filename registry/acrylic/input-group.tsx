@@ -3,7 +3,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/registry/acrylic/button"
+import { Button } from "./button"
 
 // Acrylic InputGroup — the shadcn/ui composable input group, restyled with the
 // Acrylic tokens so it matches our Input field. The GROUP owns the chrome
