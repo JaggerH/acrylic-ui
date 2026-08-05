@@ -148,6 +148,40 @@ the row-level `--acr-card-nested` fill. Do not hand-roll `bg-black/5`.
 
 ---
 
+## A resting fill is an affordance — don't put one on what can't be touched
+
+`variant="muted"` answers "how do I recess a row", not "should this row be
+recessed". In a list of rows, a resting fill reads as *this is a thing you act
+on*. Rows you cannot act on — a non-selectable file in a folder picker, a
+disabled option — get **dimmed** (`opacity-45`), never filled. Filling the inert
+row and leaving the interactive one transparent puts the heaviest ink on the
+deadest element.
+
+The full ladder a list has to keep separable:
+
+| step | treatment |
+|---|---|
+| inert | transparent + `opacity-45` |
+| interactive, at rest | transparent |
+| hover | `--acr-hover` |
+| selected | `Item selected` → solid `bg-primary` |
+
+Two consequences that are easy to miss:
+
+- **Withhold hover from the selected row** (`[&:not([data-selected])]:hover:…`).
+  `--acr-hover` is a faint white overlay and it *replaces* the element's
+  background — crossing a selected row would wash the solid accent back out.
+- **Rows need a gap** (`gap-0.5`). Flush rounded rows merge their fills into one
+  blob pinched at every seam.
+
+**Token invariant: `--acr-hover` is one step (+0.03) above the resting recess
+tokens (`--acr-field` / `--acr-card-nested`) in every theme block.** They used to
+share a value, which made a recessed row at rest pixel-identical to an
+interactive row under the cursor. Hover is attention; a recess is depth. Never
+collapse them.
+
+---
+
 ## One `<Backdrop />` at the app root
 
 The Backdrop is the body-level wallpaper the frosted chrome blurs over. Mount

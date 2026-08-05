@@ -54,7 +54,12 @@
   --acr-chip: rgba(0, 0, 0, 0.06);
   --acr-chip-hover: rgba(0, 0, 0, 0.10);
   --acr-field: rgba(0, 0, 0, 0.04);
-  --acr-hover: rgba(0, 0, 0, 0.04);
+  /* INVARIANT: hover sits one step (+0.03) BELOW the resting recess tokens
+     (--acr-field / --acr-card-nested) in every theme block. They used to share
+     one value, which made a recessed row at rest pixel-identical to an
+     interactive row under the cursor — two opposite meanings, one look.
+     Hover is attention; a recess is depth. Never collapse them again. */
+  --acr-hover: rgba(0, 0, 0, 0.07);
   --acr-border: #e3e3e6;
   --acr-border-soft: #ececef;
   --acr-button-group-divider: rgba(0, 0, 0, 0.16);
@@ -109,7 +114,10 @@
   --acr-chip: rgba(255, 255, 255, 0.08);
   --acr-chip-hover: rgba(255, 255, 255, 0.12);
   --acr-field: rgba(255, 255, 255, 0.05);
-  --acr-hover: rgba(255, 255, 255, 0.05);
+  /* One step above the resting recess (--acr-field/--acr-card-nested = 0.05);
+     see the invariant in the light block. 0.08 is also what --sidebar-hover
+     had already been tuned to independently. */
+  --acr-hover: rgba(255, 255, 255, 0.08);
   --acr-border: #2a2a2c;
   /* A relative white overlay, not a hand-picked hex — #232325 used to sit ~1
      level from --acr-surface (#222226) and ~7 from --acr-panel (#1c1c1e),
@@ -176,7 +184,8 @@
   --acr-chip: rgba(255, 255, 255, 0.10);
   --acr-chip-hover: rgba(255, 255, 255, 0.14);
   --acr-field: rgba(255, 255, 255, 0.06);
-  --acr-hover: rgba(255, 255, 255, 0.06);
+  /* One step above the resting recess (0.06); see the light block's invariant. */
+  --acr-hover: rgba(255, 255, 255, 0.09);
   --acr-border: rgba(255, 255, 255, 0.16);
   --acr-border-soft: rgba(255, 255, 255, 0.10);
   --acr-button-group-divider: rgba(255, 255, 255, 0.22);
