@@ -45,6 +45,33 @@ import { AudioPlayer } from "@/components/acrylic/audio-player"
 Pass `track={null}` (or omit it) for the idle state — the transport stays visible and the
 info group collapses. Drop the `volume`/`onVolumeChange` pair to hide the volume control.
 
+## Localization
+
+Every user-facing string — the button `aria-label`s a screen reader announces, and the
+visible stand-in for an empty `track.title` — lives in one flat `AudioPlayerLabels`
+dictionary and defaults to English. Pass a **partial** `labels` to translate; it is merged
+over the defaults, so you override only the keys you translate:
+
+```tsx
+<AudioPlayer
+  labels={{ previous: "上一首", play: "播放", pause: "暂停", next: "下一首", volume: "音量" }}
+  …
+/>
+```
+
+| key | default | where it shows |
+| --- | --- | --- |
+| `previous` | `"Previous track"` | prev button `aria-label` |
+| `play` / `pause` | `"Play"` / `"Pause"` | play-pause button `aria-label` (by state) |
+| `next` | `"Next track"` | next button `aria-label` |
+| `volume` | `"Volume"` | volume button + its slider `aria-label` |
+| `nowPlaying` | `"Now playing"` | **visible** text when `track.title` is empty |
+| `openNowPlaying` | `"Open now playing: {title}"` | `mini` only — the cover/title button's `aria-label`; `{title}` is substituted |
+
+`DEFAULT_AUDIO_PLAYER_LABELS` is exported if you want to read or spread the defaults.
+Nothing user-facing is hard-coded in the markup — a string you can't reach through `labels`
+is a bug, so report it rather than patching your vendored copy.
+
 ## Mini variant
 
 `variant="mini"` renders a compact chip for a sidebar footer or any tight rail — cover +
@@ -133,7 +160,21 @@ import { AudioPlayerStage } from "@/components/acrylic/audio-player-stage"
 | `accentColor` | `string` | — | force the background color (skips cover extraction) |
 | `extractFromCover` | `boolean` | `true` | pull the background color from the cover art |
 | `colorTransitionMs` | `number` | `400` | crossfade duration between track colors (`0` = snap) |
+| `nowPlayingLabel` | `string` | — | optional eyebrow caption above the cover (e.g. `"FROM YOUR LIBRARY"`); off when unset |
+| `labels` | `Partial<AudioPlayerStageLabels>` | English | override the stage's own UI copy — see below |
 | `onClose` | `() => void` | — | the collapse (▾) button / Escape |
+
+The stage has its own label dictionary, `AudioPlayerStageLabels` (defaults exported as
+`DEFAULT_AUDIO_PLAYER_STAGE_LABELS`), merged the same way as AudioPlayer's:
+`collapse`, `enterFullscreen` / `exitFullscreen`, `previous`, `play` / `pause`, `next`,
+`progress`, `volume`, and `unknownTrack` (the **visible** stand-in for an empty
+`track.title`).
+
+`labels` and `nowPlayingLabel` are not interchangeable, and deliberately can't set the same
+string: `labels` is the component's own UI copy — fixed strings that vary only by locale —
+while `nowPlayingLabel` is caller content that varies per instance. That's why a missing
+title falls back to `labels.unknownTrack` and never to `nowPlayingLabel`: an eyebrow caption
+rendered in the title slot reads as if it *were* the track's name.
 
 The playback props (`playing`, `currentTime`, `duration`, `volume`, `hasPrev`/`hasNext`,
 `onToggle`/`onPrev`/`onNext`/`onSeek`/`onVolumeChange`) match AudioPlayer above.
@@ -155,5 +196,6 @@ The playback props (`playing`, `currentTime`, `duration`, `volume`, `hasPrev`/`h
 | `onSeek` | `(seconds: number) => void` | — | seek rail clicked |
 | `onVolumeChange` | `(volume: number) => void` | — | volume slider dragged (0..1) |
 | `actions` | `ReactNode` | — | extra tool buttons at the right end of the transport |
+| `labels` | `Partial<AudioPlayerLabels>` | English | override the built-in strings — see [Localization](#localization) |
 
 Plus all native `<div>` props.

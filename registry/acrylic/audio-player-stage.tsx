@@ -23,6 +23,16 @@ import { Slider } from "./slider"
 // the flowing Silk background (color pulled from the cover), a big cover, marquee title,
 // and time-synced karaoke lyrics. Kept in its own file so the lean bar/mini transport
 // (audio-player.tsx) never has to pull in the Silk WebGL shader.
+//
+// Copy: like AudioPlayer, every string the stage renders or hands to assistive tech lives in
+// `AudioPlayerStageLabels` and defaults to English. Pass a partial `labels` to translate — it's
+// merged over the defaults, so you override only what you translate:
+//   <AudioPlayerStage labels={{ play: "播放", pause: "暂停", collapse: "收起" }} … />
+// `labels` and `nowPlayingLabel` are NOT interchangeable: `labels` is the component's own UI
+// copy (fixed strings that change only with locale), `nowPlayingLabel` is caller content — an
+// optional eyebrow caption above the cover ("FROM YOUR LIBRARY", "正在播放"), per instance. It
+// is deliberately not a fallback for a missing track title (`labels.unknownTrack` is), so one
+// string can never end up doing both jobs.
 
 export interface AudioPlayerLyric {
   /** start time of this line, in seconds */
@@ -34,6 +44,47 @@ export interface AudioPlayerLyric {
 export interface AudioPlayerStageTrack extends AudioPlayerTrack {
   /** LRC-style timed lines; omit/empty → the lyrics pane is hidden (no-lyrics fallback) */
   lyrics?: AudioPlayerLyric[]
+}
+
+/**
+ * Every user-facing string the stage renders or exposes to assistive technology.
+ * Defaults are English (see `DEFAULT_AUDIO_PLAYER_STAGE_LABELS`); pass a partial
+ * `labels` prop to translate — it is merged over the defaults per render.
+ */
+export interface AudioPlayerStageLabels {
+  /** the ▾ button that closes the stage */
+  collapse: string
+  /** the ⤢ button while windowed */
+  enterFullscreen: string
+  /** the ⤢ button while fullscreen */
+  exitFullscreen: string
+  /** previous-track button */
+  previous: string
+  /** play/pause button while paused */
+  play: string
+  /** play/pause button while playing */
+  pause: string
+  /** next-track button */
+  next: string
+  /** the seek slider */
+  progress: string
+  /** the volume slider */
+  volume: string
+  /** visible stand-in for an empty `track.title` */
+  unknownTrack: string
+}
+
+const DEFAULT_AUDIO_PLAYER_STAGE_LABELS: AudioPlayerStageLabels = {
+  collapse: "Collapse",
+  enterFullscreen: "Enter full screen",
+  exitFullscreen: "Exit full screen",
+  previous: "Previous track",
+  play: "Play",
+  pause: "Pause",
+  next: "Next track",
+  progress: "Progress",
+  volume: "Volume",
+  unknownTrack: "Unknown track",
 }
 
 const DEFAULT_ACCENT = "#5E3AA8"
@@ -162,8 +213,12 @@ export interface AudioPlayerStageProps
   extractFromCover?: boolean
   /** ms to crossfade the background between tracks (0 = snap) */
   colorTransitionMs?: number
-  /** optional small header label above the cover (e.g. "正在播放"); off when unset */
+  /** optional eyebrow caption above the cover (e.g. "FROM YOUR LIBRARY"); off when unset.
+   *  Caller content, not UI copy — it never stands in for a missing title (that's
+   *  `labels.unknownTrack`). */
   nowPlayingLabel?: string
+  /** override any of the built-in English strings (button labels, empty-title fallback) */
+  labels?: Partial<AudioPlayerStageLabels>
   /** request the Fullscreen API on mount (call from a user gesture, e.g. a button) */
   autoFullscreen?: boolean
   onToggle?: () => void
@@ -186,6 +241,7 @@ function AudioPlayerStage({
   extractFromCover = true,
   colorTransitionMs = 400,
   nowPlayingLabel,
+  labels,
   autoFullscreen = false,
   onToggle,
   onPrev,
@@ -196,6 +252,7 @@ function AudioPlayerStage({
   className,
   ...props
 }: AudioPlayerStageProps) {
+  const l = { ...DEFAULT_AUDIO_PLAYER_STAGE_LABELS, ...labels }
   const rootRef = React.useRef<HTMLDivElement>(null)
   const [coverFailed, setCoverFailed] = React.useState(false)
   const lyrics = track.lyrics ?? []
@@ -308,7 +365,7 @@ function AudioPlayerStage({
         <div className="flex items-center justify-between">
           <button
             onClick={onClose}
-            aria-label="收起"
+            aria-label={l.collapse}
             className={cn("flex size-9 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white", !onClose && "invisible")}
           >
             <ChevronDown className="size-5" />
@@ -320,7 +377,7 @@ function AudioPlayerStage({
           )}
           <button
             onClick={toggleFs}
-            aria-label={isFs ? "退出全屏" : "全屏"}
+            aria-label={isFs ? l.exitFullscreen : l.enterFullscreen}
             className="flex size-9 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
           >
             {isFs ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
@@ -341,14 +398,14 @@ function AudioPlayerStage({
             </div>
 
             <div className={cn("min-w-0", !hasLyrics && "text-center")}>
-              <ScrollingText className="text-2xl font-bold leading-tight [text-shadow:0_1px_12px_rgba(0,0,0,0.4)]">{track.title || nowPlayingLabel || "未知曲目"}</ScrollingText>
+              <ScrollingText className="text-2xl font-bold leading-tight [text-shadow:0_1px_12px_rgba(0,0,0,0.4)]">{track.title || l.unknownTrack}</ScrollingText>
               {track.artist && (
                 <ScrollingText className="mt-1 text-base leading-tight text-white/70 [text-shadow:0_1px_10px_rgba(0,0,0,0.5)]">{track.artist}</ScrollingText>
               )}
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Slider value={[Math.min(displayTime, duration)]} min={0} max={duration || 1} step={1} onValueChange={(v) => seekTo(v[0])} aria-label="进度" />
+              <Slider value={[Math.min(displayTime, duration)]} min={0} max={duration || 1} step={1} onValueChange={(v) => seekTo(v[0])} aria-label={l.progress} />
               <div className="flex justify-between font-mono text-[11px] tabular-nums text-white/50">
                 <span>{fmtClock(displayTime)}</span>
                 <span>-{fmtClock(Math.max(0, duration - displayTime))}</span>
@@ -356,17 +413,17 @@ function AudioPlayerStage({
             </div>
 
             <div className="flex items-center justify-center gap-8">
-              <button onClick={onPrev} disabled={!hasPrev} aria-label="上一首" className="flex size-12 items-center justify-center rounded-full text-white/80 transition-transform hover:scale-105 hover:text-white disabled:pointer-events-none disabled:opacity-30"><SkipBack className="size-7 fill-current" /></button>
-              <button onClick={onToggle} aria-label={playing ? "暂停" : "播放"} className="flex size-16 items-center justify-center rounded-full bg-white text-black shadow-lg transition-transform hover:scale-105">
+              <button onClick={onPrev} disabled={!hasPrev} aria-label={l.previous} className="flex size-12 items-center justify-center rounded-full text-white/80 transition-transform hover:scale-105 hover:text-white disabled:pointer-events-none disabled:opacity-30"><SkipBack className="size-7 fill-current" /></button>
+              <button onClick={onToggle} aria-label={playing ? l.pause : l.play} className="flex size-16 items-center justify-center rounded-full bg-white text-black shadow-lg transition-transform hover:scale-105">
                 {playing ? <Pause className="size-7 fill-current" /> : <Play className="size-7 translate-x-0.5 fill-current" />}
               </button>
-              <button onClick={onNext} disabled={!hasNext} aria-label="下一首" className="flex size-12 items-center justify-center rounded-full text-white/80 transition-transform hover:scale-105 hover:text-white disabled:pointer-events-none disabled:opacity-30"><SkipForward className="size-7 fill-current" /></button>
+              <button onClick={onNext} disabled={!hasNext} aria-label={l.next} className="flex size-12 items-center justify-center rounded-full text-white/80 transition-transform hover:scale-105 hover:text-white disabled:pointer-events-none disabled:opacity-30"><SkipForward className="size-7 fill-current" /></button>
             </div>
 
             {showVolume && (
               <div className="flex items-center gap-3 text-white/60">
                 <Volume2 className="size-4 shrink-0" />
-                <Slider value={[Math.round((volume ?? 0) * 100)]} min={0} max={100} onValueChange={(v) => onVolumeChange?.(v[0] / 100)} aria-label="音量" className="flex-1" />
+                <Slider value={[Math.round((volume ?? 0) * 100)]} min={0} max={100} onValueChange={(v) => onVolumeChange?.(v[0] / 100)} aria-label={l.volume} className="flex-1" />
               </div>
             )}
           </div>
@@ -395,4 +452,4 @@ function AudioPlayerStage({
   )
 }
 
-export { AudioPlayerStage }
+export { AudioPlayerStage, DEFAULT_AUDIO_PLAYER_STAGE_LABELS }

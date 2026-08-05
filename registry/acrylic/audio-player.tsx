@@ -30,6 +30,13 @@ import { Slider } from "./slider"
 //
 // The whole pill is a CAPSULE (rounded-full, radius = height/2). The optional volume control
 // reveals a VERTICAL acrylic Slider on hover — drag up/down to set the level.
+//
+// Copy: every string the player renders or hands to assistive tech lives in `AudioPlayerLabels`
+// and defaults to English. Localize by passing a partial `labels` — it's merged over the
+// defaults, so you override only what you translate:
+//   <AudioPlayer labels={{ play: "播放", pause: "暂停", previous: "上一首", next: "下一首" }} />
+// Nothing user-facing is hard-coded in the markup; if you find a string that isn't in `labels`,
+// that's a bug, not a styling choice.
 
 /** mm:ss from seconds; clamps NaN/∞/negative to 0:00. */
 function fmtClock(s: number): string {
@@ -117,6 +124,39 @@ export interface AudioPlayerTrack {
   cover?: string
 }
 
+/**
+ * Every user-facing string the player renders or exposes to assistive technology.
+ * Defaults are English (see `DEFAULT_AUDIO_PLAYER_LABELS`); pass a partial `labels`
+ * prop to translate — it is merged over the defaults per render.
+ */
+export interface AudioPlayerLabels {
+  /** previous-track button */
+  previous: string
+  /** play/pause button while paused */
+  play: string
+  /** play/pause button while playing */
+  pause: string
+  /** next-track button */
+  next: string
+  /** volume button and the vertical slider it reveals */
+  volume: string
+  /** visible stand-in for an empty `track.title` */
+  nowPlaying: string
+  /** `mini` only — label of the cover/title button that opens the full player.
+   *  `{title}` is substituted with the track title (or `nowPlaying` when it is empty). */
+  openNowPlaying: string
+}
+
+const DEFAULT_AUDIO_PLAYER_LABELS: AudioPlayerLabels = {
+  previous: "Previous track",
+  play: "Play",
+  pause: "Pause",
+  next: "Next track",
+  volume: "Volume",
+  nowPlaying: "Now playing",
+  openNowPlaying: "Open now playing: {title}",
+}
+
 const TOOL =
   "flex size-9 shrink-0 items-center justify-center rounded-full text-foreground/70 transition-colors hover:bg-[var(--acr-hover)] hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
 
@@ -145,6 +185,8 @@ export interface AudioPlayerProps
   onVolumeChange?: (volume: number) => void
   /** extra tool buttons rendered at the right end of the transport (歌词 / 队列 / more …) */
   actions?: React.ReactNode
+  /** override any of the built-in English strings (button labels, empty-title fallback) */
+  labels?: Partial<AudioPlayerLabels>
 }
 
 function AudioPlayer({
@@ -163,9 +205,11 @@ function AudioPlayer({
   onSeek,
   onVolumeChange,
   actions,
+  labels,
   className,
   ...props
 }: AudioPlayerProps) {
+  const l = { ...DEFAULT_AUDIO_PLAYER_LABELS, ...labels }
   const pct = track && duration ? (currentTime / duration) * 100 : 0
   const seek = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!track || !duration || !onSeek) return
@@ -191,16 +235,16 @@ function AudioPlayer({
         className={cn("relative flex min-w-0 items-center gap-2 rounded-xl bg-[var(--acr-chip)] px-2 pb-2.5 pt-1.5", className)}
         {...props}
       >
-        <button onClick={onOpen} aria-label={`Open now playing: ${track.title || "Now playing"}`} className="flex min-w-0 flex-1 items-center gap-2 text-left">
+        <button onClick={onOpen} aria-label={l.openNowPlaying.replace("{title}", track.title || l.nowPlaying)} className="flex min-w-0 flex-1 items-center gap-2 text-left">
           {cover}
           <span className="min-w-0 flex-1">
-            <ScrollingText className="text-[12px] font-semibold leading-tight">{track.title || "Now playing"}</ScrollingText>
+            <ScrollingText className="text-[12px] font-semibold leading-tight">{track.title || l.nowPlaying}</ScrollingText>
             {track.artist && <ScrollingText className="text-[10px] leading-tight text-muted-foreground">{track.artist}</ScrollingText>}
           </span>
         </button>
         <button
           onClick={onToggle}
-          aria-label={playing ? "Pause" : "Play"}
+          aria-label={playing ? l.pause : l.play}
           className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[var(--acr-chip-hover)] text-foreground transition-all hover:scale-105"
         >
           {playing ? <Pause className="size-3.5 fill-current" /> : <Play className="size-3.5 translate-x-px fill-current" />}
@@ -230,13 +274,13 @@ function AudioPlayer({
       {...props}
     >
       {/* ===== 播放组件 (transport) — always visible ===== */}
-      <button onClick={onPrev} disabled={!hasPrev} aria-label="上一首" className={TOOL}>
+      <button onClick={onPrev} disabled={!hasPrev} aria-label={l.previous} className={TOOL}>
         <SkipBack className="size-4 fill-current" />
       </button>
       <button
         onClick={onToggle}
         disabled={!track}
-        aria-label={playing ? "暂停" : "播放"}
+        aria-label={playing ? l.pause : l.play}
         className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[var(--acr-chip)] text-foreground transition-all hover:scale-105 hover:bg-[var(--acr-chip-hover)] disabled:pointer-events-none disabled:opacity-30"
       >
         {playing ? (
@@ -245,7 +289,7 @@ function AudioPlayer({
           <Play className="size-5 translate-x-px fill-current" />
         )}
       </button>
-      <button onClick={onNext} disabled={!hasNext} aria-label="下一首" className={TOOL}>
+      <button onClick={onNext} disabled={!hasNext} aria-label={l.next} className={TOOL}>
         <SkipForward className="size-4 fill-current" />
       </button>
 
@@ -266,7 +310,7 @@ function AudioPlayer({
           )}
           <div className="min-w-0 flex-1">
             <ScrollingText className="text-[13px] font-semibold leading-tight">
-              {track.title || "播放中"}
+              {track.title || l.nowPlaying}
             </ScrollingText>
             {track.artist && (
               <ScrollingText className="text-[11px] leading-tight text-muted-foreground">
@@ -299,7 +343,7 @@ function AudioPlayer({
       {showVolume && (
         <HoverCardPrimitive.Root openDelay={60} closeDelay={120}>
           <HoverCardPrimitive.Trigger asChild>
-            <button aria-label="音量" className={TOOL}>
+            <button aria-label={l.volume} className={TOOL}>
               <VolIcon className="size-4" />
             </button>
           </HoverCardPrimitive.Trigger>
@@ -316,7 +360,7 @@ function AudioPlayer({
                 max={100}
                 value={[Math.round((volume ?? 0) * 100)]}
                 onValueChange={(v) => onVolumeChange?.(v[0] / 100)}
-                aria-label="音量"
+                aria-label={l.volume}
                 style={{ minHeight: 0 }}
                 className="h-full"
               />
@@ -331,4 +375,4 @@ function AudioPlayer({
   )
 }
 
-export { AudioPlayer, ScrollingText, fmtClock }
+export { AudioPlayer, ScrollingText, fmtClock, DEFAULT_AUDIO_PLAYER_LABELS }
