@@ -23,7 +23,8 @@ stream 侧的存量是直接动因：
 
 - `NetdiskDirPicker.tsx`（选目录）和 `NetdiskFilePicker.tsx`（选文件，带跨目录切换）**约 70% 代码重复**
   ——Dialog 外壳、搜索框、带图标的列表行、加载/空态各写了一遍。
-- 合计 **11 个调用点**：`ReconcilePanel` 4、`NetdiskBindings` 5、`WorkBinding` 1、`MusicChannel` 1。
+- 合计 **13 个调用点**：`NetdiskDirPicker` 11 处（`ReconcilePanel` 4、`NetdiskBindings` 5、
+  `WorkBinding` 1、`MusicChannel` 1）+ `NetdiskFilePicker` 2 处（都在 `NetdiskBindings`）。
 - 缺「新建文件夹」，尽管后端 `POST /api/netdisk/fs/mkdir` 和前端 `api.netdisk.mkdir()` 早就存在。
 - 两份实现都手搓了 acrylic 已经提供的东西（见「UI 与材质」的替换表）。
 
