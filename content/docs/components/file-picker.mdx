@@ -110,11 +110,12 @@ Creating a folder splits validation by who can actually know the answer:
 
 - **`"dir"`** (default) — the selection is **whatever level you're currently browsing**, not a row
   in the list. Clicking a folder both drills into it and selects it in the same action — there is
-  no separate "choose this folder without entering it" target, by design (see Decision 4 in the
-  design doc): a folder row that both navigates *and* has its own independent "select" hit area is
-  the single easiest thing to mis-click in a picker like this.
-- **`"file"`** — folders are still shown (as read-only browsing context, `aria-disabled`) and clicking
-  one still drills in, but only files can become `value`.
+  no separate "choose this folder without entering it" target, by design: a folder row that both
+  navigates *and* has its own independent "select" hit area is the single easiest thing to mis-click
+  in a picker like this.
+- **`"file"`** — folders are still shown as browsing context and clicking one still drills in, but
+  only files can become `value`. Folders are never disabled — they stay navigable in every mode,
+  since drilling in is how you reach the files underneath.
 - **`"any"`** — both files and folders are selectable, but clicking a folder still drills in first
   (same rule as `"dir"`). **This means `select="any"` cannot select a folder without entering it
   either** — that follows directly from folders always being navigable, not a bug to report.
@@ -202,8 +203,35 @@ type FileEntry = {
 }
 ```
 
+### Path helpers
+
+`joinPath` and `pathCrumbs` are exported alongside the components. Both are exactly what
+`FileBrowser` itself uses internally to build child paths and breadcrumb segments, so a host
+implementing `loadDir`/`searchDir` against its own backend can reuse the same joining and
+breadcrumb-building logic instead of re-deriving it:
+
+```ts
+function joinPath(base: string, name: string): string
+```
+
+Joins a child name onto a directory path without doubling the root slash — `joinPath("/", "docs")`
+is `"/docs"`, `joinPath("/docs", "a.txt")` is `"/docs/a.txt"`.
+
+```ts
+function pathCrumbs(
+  path: string,
+  rootLabel: string
+): Array<{ label: string; path: string }>
+```
+
+Turns an absolute path into breadcrumb segments, root first — useful if you need to render your own
+path indicator outside the component (e.g. in a title bar) that stays in sync with `path`.
+
 ## Not supported
 
 Multi-select, virtualization, rename/delete/move, and a built-in "switch search root" control are
-all deliberately out of scope — see the design doc's *Explicitly not doing* section if you need one
-of these; the intended answer for each is host-side, not a prop this component should grow.
+all deliberately out of scope. For each, the intended answer is host-side, not a prop this component
+should grow: build multi-select or rename/delete/move on top of `FileEntry.meta` and your own action
+UI, virtualize the listing yourself if a directory can hold enough entries to need it, and swap
+`loadDir`/`searchDir` (or drive `path`/`defaultPath`) if you need to point browsing at a different
+root.

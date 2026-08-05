@@ -34,15 +34,25 @@ import { Skeleton } from "./skeleton"
 // callback the host supplies, so the same component can drive a cloud drive, an
 // object store, or an in-memory tree without any change to this file.
 //
-// One export: FileBrowser — the shell-less panel. Drop it in a Dialog, a Sheet, a
-// Popover, or straight into the page. It never closes anything: it does not know
-// what contains it.
+// Two exports: FileBrowser is the shell-less panel — drop it in a Dialog, a
+// Sheet, a Popover, or straight into the page. It never closes anything: it
+// does not know what contains it. FilePickerDialog is that same panel already
+// wired into an acrylic Dialog with confirm/cancel — the one most consumers
+// reach for first when a modal picker is exactly what they want.
 //
 // Copy: every user-facing string lives in `labels` and defaults to English.
 // Override per instance; the registry ships no other language.
 //
-// Compose:
+// Compose (shell-less, host supplies the container):
 //   <FileBrowser loadDir={listDir} defaultPath="/" onPathChange={setPath} />
+//
+// Compose (official shell, ready-made modal):
+//   <FilePickerDialog
+//     open={open}
+//     onOpenChange={setOpen}
+//     loadDir={listDir}
+//     onCommit={(path) => setChosenPath(path)}
+//   />
 
 export type FileEntry = {
   name: string
@@ -171,7 +181,7 @@ function FileBrowser({
   const [loading, setLoading] = React.useState(true)
   const [error, setError] = React.useState<string | null>(null)
 
-  // Decision 4: with select='dir'|'any' the browsed level IS the selection, so
+  // With select='dir'|'any' the browsed level IS the selection, so
   // drilling in and picking are one action — no second hit target on a folder row.
   const selectsDir = select === "dir" || select === "any"
 
@@ -258,7 +268,7 @@ function FileBrowser({
   const [draft, setDraft] = React.useState<string | null>(null)
   const [draftError, setDraftError] = React.useState<string | null>(null)
 
-  // The active row cursor for roving-tabindex keyboard navigation (Task 5).
+  // The active row cursor for roving-tabindex keyboard navigation.
   // It rides the exact same render-time reset as `query`/`draft` below, for
   // the same reason spelled out there: an effect keyed on [path, query]
   // would still leave the *previous* listing's `active` index in place for
@@ -403,7 +413,7 @@ function FileBrowser({
       const next = await loadDirRef.current(path)
       if (!mountedRef.current) return
       setEntries(next)
-      // Decision 7: creating a folder means you meant to use it — go inside.
+      // Creating a folder means you meant to use it — go inside.
       goTo(joinPath(path, name), { name, isDir: true })
     } catch (e: unknown) {
       if (!mountedRef.current) return
@@ -592,7 +602,7 @@ function FileBrowser({
       <div
         ref={listRef}
         role="listbox"
-        aria-label={l.root}
+        aria-label={crumbs[crumbs.length - 1].label}
         onKeyDown={onListKeyDown}
         onScroll={(e) => setScrolled(e.currentTarget.scrollTop > 0)}
         style={
@@ -669,18 +679,19 @@ function FileBrowser({
         ) : (
           shown.map((entry, i) => {
             const full = joinPath(path, entry.name)
-            // Decision 4: a directory row is always active (drill in), regardless
-            // of `select` — it is the file rows whose selectability depends on the
+            // A directory row is always active (drill in), regardless of
+            // `select` — it is the file rows whose selectability depends on the
             // mode. Directories stay transparent until touched — the same "flat
             // until hovered" language as every other clickable row in this
             // registry (sidebar, command, select) — while files sit on the
-            // recessed `muted` fill that materials.md prescribes for a single
-            // nested row, which reads as inert unless this mode makes it pickable.
+            // recessed `muted` fill this registry's material system prescribes
+            // for a single nested row, which reads as inert unless this mode
+            // makes it pickable.
             const selectable = entry.isDir ? select !== "file" : select !== "dir"
             const isSelected = value != null && value === full
             return (
               <Item
-                key={entry.name}
+                key={`${entry.isDir}:${entry.name}`}
                 asChild
                 size="xs"
                 variant={entry.isDir ? "default" : "muted"}
@@ -728,7 +739,7 @@ function FileBrowser({
 }
 
 // FilePickerDialog — the official shell: FileBrowser dropped into an acrylic
-// Dialog. Decision 5: the core never closes anything, so confirm and close
+// Dialog. The core never closes anything, so confirm and close
 // both live here. `commitOnSelect` lets a single click both pick and close
 // (the old FilePicker's feel) coexist with pick-then-confirm (the old
 // DirPicker's feel) — the host chooses per instance.

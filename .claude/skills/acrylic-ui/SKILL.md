@@ -292,7 +292,7 @@ input-group), toggle, toggle-group.
 | Menus | `DropdownMenu`, `ContextMenu`, `Command` |
 | Feedback | `sonner` (toast), `Skeleton`, `Badge` |
 | Media | `MediaBox`, `AudioPlayer` |
-| Pick a file or folder | `FilePickerDialog`（或无壳的 `FileBrowser`） |
+| Pick a file or folder | `FilePickerDialog` (or shell-less `FileBrowser`) |
 
 ## Workflow
 
