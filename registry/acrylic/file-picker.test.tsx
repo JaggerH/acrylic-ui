@@ -690,6 +690,39 @@ describe("FileBrowser keyboard", () => {
   })
 
   it("ArrowRight enters a directory and ArrowLeft climbs back out", async () => {
+    // The second assertion here used to be `expect(loadDir).toHaveBeenCalledWith("/")`,
+    // which is true from the moment the component mounts (defaultPath="/" already
+    // triggers loadDir("/")) — so it passed whether or not ArrowLeft did anything at
+    // all. Asserting the call count and the *last* call actually distinguishes "the
+    // mount-time call" from "ArrowLeft climbed back to the root".
+    const user = userEvent.setup()
+    const loadDir = makeLoadDir()
+    render(<FileBrowser loadDir={loadDir} />)
+    const firstRow = await screen.findByRole("option", { name: "Shows" })
+
+    firstRow.focus()
+    await user.keyboard("{ArrowRight}")
+    await waitFor(() => expect(loadDir).toHaveBeenCalledWith("/Shows"))
+    expect(loadDir).toHaveBeenCalledTimes(2)
+
+    // The focus-restore effect only lands once the new listing has actually
+    // rendered; sending ArrowLeft before that would target a keydown at
+    // whatever is still focused in the interim (or nothing at all), not the
+    // listbox this handler lives on.
+    const newFirstRow = await screen.findByRole("option", { name: "Season 3" })
+    await waitFor(() => expect(newFirstRow).toHaveFocus())
+
+    await user.keyboard("{ArrowLeft}")
+    await waitFor(() => expect(loadDir).toHaveBeenCalledTimes(3))
+    expect(loadDir).toHaveBeenLastCalledWith("/")
+  })
+
+  it("focus lands on the first row of the new listing after drilling in with ArrowRight, not on body", async () => {
+    // Regression test for the review finding: `key={path}` on the listing
+    // remounts the row DOM on every navigation, unmounting whatever row was
+    // focused and dropping focus to <body> — which is not a descendant of the
+    // listbox container the keydown handler lives on, so keyboard input stops
+    // reaching the panel entirely until the user blindly Tabs back in.
     const user = userEvent.setup()
     const loadDir = makeLoadDir()
     render(<FileBrowser loadDir={loadDir} />)
@@ -699,8 +732,40 @@ describe("FileBrowser keyboard", () => {
     await user.keyboard("{ArrowRight}")
     await waitFor(() => expect(loadDir).toHaveBeenCalledWith("/Shows"))
 
-    await user.keyboard("{ArrowLeft}")
-    await waitFor(() => expect(loadDir).toHaveBeenCalledWith("/"))
+    const newFirstRow = await screen.findByRole("option", { name: "Season 3" })
+    await waitFor(() => expect(newFirstRow).toHaveFocus())
+    expect(document.activeElement).not.toBe(document.body)
+  })
+
+  it("a breadcrumb click does not steal focus into the list", async () => {
+    // The focus-restore effect must only fire when keyboard navigation (focus
+    // already inside the listbox) drove the `goTo` call — a mouse click on a
+    // breadcrumb crumb navigates too, but focus at that moment is on the
+    // crumb button itself, outside `listRef`, so the new listing's first row
+    // must not steal it.
+    //
+    // Note: the crumb clicked here becomes the *current* page after
+    // navigating (it turns into a non-interactive `BreadcrumbPage`, not a
+    // link — see `pathCrumbs`/the render below), so the button itself is
+    // unmounted and focus naturally reverts to `<body>`, same as a real
+    // browser does when a focused element is removed from the DOM. That is
+    // unrelated to this bug: the regression this guards against is the list's
+    // first row specifically claiming focus, so that is what gets asserted.
+    const user = userEvent.setup()
+    const loadDir = makeLoadDir()
+    render(<FileBrowser loadDir={loadDir} defaultPath="/Shows/Season 3" />)
+    await screen.findByRole("option", { name: "ep05.mp4" })
+
+    await user.click(screen.getByRole("button", { name: "Shows" }))
+
+    await waitFor(() => expect(loadDir).toHaveBeenCalledWith("/Shows"))
+    const rows = await screen.findAllByRole("option")
+    expect(rows).toHaveLength(2)
+
+    // Give a buggy unconditional focus-restore effect a chance to run before
+    // asserting nothing grabbed focus.
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    for (const row of rows) expect(row).not.toHaveFocus()
   })
 
   it("Enter on a file selects it", async () => {

@@ -159,8 +159,25 @@ function FileBrowser({
   // be mistaken for a climb.
   const [direction, setDirection] = React.useState<"in" | "out">("in")
 
+  const listRef = React.useRef<HTMLDivElement>(null)
+
+  // `key={path}` on the listing below makes every level change a real
+  // remount of the row DOM, so a row that was focused right before a drill-
+  // down/climb-out is unmounted and focus falls back to <body> — and the
+  // keydown handler lives on the listbox container, which is not an
+  // ancestor of body, so keyboard input stops reaching this panel entirely.
+  // `goTo` is the single chokepoint every internal navigation (row
+  // activation, arrow keys, breadcrumb click, folder creation) runs
+  // through, so this is where "was the keyboard actually driving this"
+  // gets decided — only when focus is inside `listRef` at the moment of
+  // navigation do we owe it a focus restore once the new listing lands; a
+  // breadcrumb click or a host-driven `path` prop change must not steal
+  // focus from wherever the user actually was.
+  const restoreFocusRef = React.useRef(false)
+
   const goTo = React.useCallback(
     (next: string, viaEntry: FileEntry | null) => {
+      restoreFocusRef.current = !!listRef.current?.contains(document.activeElement)
       const depth = (p: string) => p.split("/").filter(Boolean).length
       setDirection(depth(next) < depth(path) ? "out" : "in")
       if (pathProp === undefined) setUncontrolledPath(next)
@@ -224,12 +241,29 @@ function FileBrowser({
   // one extra render, and a keyboard event landing in that window would act
   // on `shown[active]` from the listing that just got replaced.
   const [active, setActive] = React.useState(0)
-  const listRef = React.useRef<HTMLDivElement>(null)
 
   // A hairline under the toolbar would be permanent furniture; this fades the
   // top edge only while content is actually hidden above it, so the divider
   // carries information (there is more up there) instead of decoration.
   const [scrolled, setScrolled] = React.useState(false)
+
+  // The scrollable element itself is not keyed on `path` — only its
+  // `key={path}` child below remounts — so a scroll position built up
+  // scrolling through one directory otherwise survives, unchanged, into
+  // whatever directory is drilled into or climbed out of next. That leaves a
+  // freshly-loaded listing rendered mid-scroll, with the top-edge mask this
+  // component paints while `scrolled` is true now hiding real rows instead
+  // of announcing "there is more above" for content the mask itself put out
+  // of sight. `useLayoutEffect`, not `useEffect`, so the reset lands before
+  // the browser paints the new listing — a plain effect would let the old
+  // offset flash on screen for one frame first. This is a DOM side effect on
+  // an element that isn't itself state, so it does not belong in the
+  // render-time `path`/`query` reset block below (that block only resets
+  // React state).
+  React.useLayoutEffect(() => {
+    if (listRef.current) listRef.current.scrollTop = 0
+    setScrolled(false)
+  }, [path])
 
   // Switching directories abandons the query — a search is scoped to where
   // you were, and carrying it into a new level has no meaning. This reset
@@ -392,6 +426,37 @@ function FileBrowser({
     setActive(next)
     rows[next].focus()
   }, [])
+
+  // Pairs with the `restoreFocusRef` write in `goTo` above: once the listing
+  // `goTo` triggered has actually finished loading — not merely requested,
+  // since the rows this needs to focus do not exist in the DOM until then —
+  // hand focus to the first row, but only if keyboard navigation is what put
+  // us here.
+  //
+  // Gated on an observed `loading: true -> false` *transition* (via
+  // `prevLoadingRef`), not merely on reading `loading === false`. `goTo`
+  // changes `path` synchronously, and React re-renders with that new `path`
+  // one commit *before* the mount-and-load effect below has even run its
+  // `setLoading(true)` — on that interim commit `loading` is still `false`,
+  // left over from the *previous* directory's finished load, and `entries`
+  // still holds that previous directory's rows too. A version of this effect
+  // that fired on any `loading === false` render (keyed on `[path, loading]`)
+  // consumed `restoreFocusRef` right there, on that stale interim render, and
+  // focused a row from the directory being left rather than the one being
+  // entered — and never got a second chance once the real fetch resolved.
+  // Requiring an actual transition means the interim commit (where `loading`
+  // never stops being `false`) cannot trigger this at all; only the mount
+  // effect's genuine `setLoading(false)` — which lands together with the
+  // real `entries` for the new `path` — can.
+  const prevLoadingRef = React.useRef(loading)
+  React.useEffect(() => {
+    const wasLoading = prevLoadingRef.current
+    prevLoadingRef.current = loading
+    if (wasLoading && !loading && restoreFocusRef.current) {
+      restoreFocusRef.current = false
+      if (shown.length > 0) focusRow(0)
+    }
+  }, [loading, shown, focusRow])
 
   const parentPath = React.useMemo(() => {
     const segs = path.split("/").filter(Boolean)
