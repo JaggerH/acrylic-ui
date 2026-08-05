@@ -17,6 +17,11 @@ const TREE: Record<string, FileEntry[]> = {
     { name: "cover.jpg", isDir: false },
   ],
   "/Shows/Season 3": [{ name: "ep05.mp4", isDir: false }],
+  "/Seasons": [
+    { name: "Season 1", isDir: true },
+    { name: "Season 2", isDir: true },
+    { name: "Season 3", isDir: true },
+  ],
 }
 
 function makeLoadDir() {
@@ -758,6 +763,50 @@ describe("FileBrowser keyboard", () => {
     expect(screen.getByRole("option", { name: "readme.txt" })).toHaveAttribute("tabindex", "0")
   })
 
+  it("stays immune to the third way `shown` shrinks: an async searchDir result landing shorter than the client-side filter that stood in while it was pending", async () => {
+    // The render-time reset block only clamps `active` on a `path` or
+    // `query` change. This is a third case where `shown` shrinks with
+    // neither changing: while a searchDir(path, query) call is in flight,
+    // `shown` falls back to filtering the entries already loaded for this
+    // level (see the `hits ?? …` fallback in the `shown` memo) — a list
+    // that can be longer than what the host's subtree search eventually
+    // resolves with. If `active` is read unclamped at render time, once it
+    // lands past the end of the now-shorter list, no row equals it, so the
+    // "exactly one option has tabIndex=0" invariant silently disappears
+    // until the next arrow key happens to re-clamp it via focusRow.
+    const user = userEvent.setup()
+    const loadDir = makeLoadDir()
+    let resolveHits: ((v: FileEntry[]) => void) | undefined
+    const searchDir = vi.fn(() => new Promise<FileEntry[]>((resolve) => { resolveHits = resolve }))
+    render(<FileBrowser loadDir={loadDir} searchDir={searchDir} defaultPath="/Seasons" />)
+
+    const firstRow = await screen.findByRole("option", { name: "Season 1" })
+
+    // One query change, in a single shot, so exactly one searchDir call is
+    // in flight (typing keystroke-by-keystroke would fire one per
+    // keystroke and make "the" in-flight call ambiguous).
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "season" } })
+    // While that call is pending, `hits` is still null, so `shown` falls
+    // back to the client-side filter of the already-loaded entries — all
+    // three rows still match "season".
+    await waitFor(() => expect(screen.getAllByRole("option")).toHaveLength(3))
+
+    // Move the roving cursor to the last row of that (soon to be stale)
+    // three-row list.
+    firstRow.focus()
+    await user.keyboard("{ArrowDown}{ArrowDown}")
+    expect(screen.getByRole("option", { name: "Season 3" })).toHaveFocus()
+
+    // The host's subtree search lands with a single, shorter result —
+    // `active` (2) is now past the end of a 1-row list.
+    resolveHits?.([{ name: "Season 2/extras.mp4", isDir: false }])
+    await waitFor(() => expect(screen.getAllByRole("option")).toHaveLength(1))
+
+    const rows = screen.getAllByRole("option")
+    expect(rows.filter((r) => r.getAttribute("tabindex") === "0")).toHaveLength(1)
+    expect(rows[0]).toHaveAttribute("tabindex", "0")
+  })
+
   describe("draft folder input isolation", () => {
     // Regression coverage for an integration risk the brief did not
     // anticipate: the new-folder draft <input> (Task 4) renders inside the
@@ -790,15 +839,50 @@ describe("FileBrowser keyboard", () => {
     })
 
     it("Enter in the draft input creates the folder exactly once, not a second time via the list handler", async () => {
+      // The original version of this test only asserted on onCreateFolder,
+      // which stays "called once with the right args" even with the source
+      // guard fully disabled: commitDraft is a useCallback closure, so
+      // `name`/`path` are captured in the same synchronous tick the Enter
+      // keydown fires, before any bubbled duplicate handling could run. What
+      // an unguarded bubble actually does is different: it re-reads the
+      // *current* onListKeyDown "Enter" branch, which activates whatever row
+      // the roving cursor is sitting on (`shown[activeIndex]`) — here, the
+      // still-focused-by-default "Shows" row, isDir — as a *second, spurious
+      // navigation* via goTo. That is a `loadDir("/Shows")` call and an
+      // `onPathChange("/Shows")` call that a correctly guarded flow would
+      // never produce, ahead of the real, create-driven `goTo("/Fresh", …)`.
+      // Assert on that spurious side effect, not on onCreateFolder.
       const user = userEvent.setup()
-      const onCreateFolder = vi.fn(async () => {})
-      render(<FileBrowser loadDir={makeLoadDir()} onCreateFolder={onCreateFolder} />)
+      const created: string[] = []
+      const loadDir = vi.fn(async (p: string) => {
+        if (p === "/Fresh") return []
+        return p === "/" ? [...(TREE["/"] ?? []), ...created.map((n) => ({ name: n, isDir: true }))] : (TREE[p] ?? [])
+      })
+      const onCreateFolder = vi.fn(async (_parent: string, name: string) => { created.push(name) })
+      const onPathChange = vi.fn()
+      render(
+        <FileBrowser
+          loadDir={loadDir}
+          onCreateFolder={onCreateFolder}
+          select="dir"
+          onPathChange={onPathChange}
+        />
+      )
 
       await user.click(await screen.findByRole("button", { name: "New folder" }))
+      loadDir.mockClear()
       await user.type(screen.getByRole("textbox", { name: "New folder" }), "Fresh{Enter}")
 
       await waitFor(() => expect(onCreateFolder).toHaveBeenCalledTimes(1))
       expect(onCreateFolder).toHaveBeenCalledWith("/", "Fresh")
+
+      // The legitimate, create-driven navigation.
+      await waitFor(() => expect(loadDir).toHaveBeenCalledWith("/Fresh"))
+      // The guard's actual job: no extra navigation to whatever row the
+      // roving cursor happened to be sitting on when Enter was pressed.
+      expect(loadDir).not.toHaveBeenCalledWith("/Shows")
+      expect(onPathChange).toHaveBeenCalledTimes(1)
+      expect(onPathChange).toHaveBeenCalledWith("/Fresh")
     })
   })
 })

@@ -349,6 +349,19 @@ function FileBrowser({
     return [...base].sort((a, b) => Number(b.isDir) - Number(a.isDir))
   }, [entries, hits, query])
 
+  // `active` is only clamped back into range by the render-time reset block
+  // above, which fires on a `path`/`query` change. It does NOT fire when
+  // `shown` shrinks for a third reason — searchDir resolving with fewer hits
+  // than the client-side filter it temporarily stood in for, with neither
+  // `path` nor `query` changing in that window. Reading `active` directly
+  // during render would then be out of bounds: no row would match it, so
+  // every row's tabIndex would fall to -1 and the whole listbox would lose
+  // its one Tab stop until the next arrow key re-clamps it via `focusRow`.
+  // Clamping here, at every render, keeps the "exactly one tabIndex=0 row
+  // when shown.length > 0" invariant unconditional instead of contingent on
+  // which state changed.
+  const activeIndex = shown.length === 0 ? -1 : Math.min(active, shown.length - 1)
+
   const searching = query.trim().length > 0
 
   const crumbs = pathCrumbs(path, l.root)
@@ -376,23 +389,29 @@ function FileBrowser({
   // is deliberately not handled here — it belongs to whatever shell hosts
   // this panel (a Dialog, a Sheet, ...), which this component never assumes.
   const onListKeyDown = (e: React.KeyboardEvent) => {
-    // The new-folder draft row renders its own <input> *inside* this same
-    // listbox container (see the draft row below), so its native text-
-    // editing keys bubble up here too. Left/Right there are cursor movement
-    // inside the text, not "climb out of this folder" — and Up/Down have no
-    // meaning in a single-line input at all. Without this guard they would
-    // be reinterpreted as row navigation and silently swap out the
-    // directory being typed into. Enter is worse: the input's own
-    // onKeyDown already submits the draft, so letting the same event reach
-    // here would additionally run the "activate the row at `active`" branch
-    // below on the same keystroke.
+    // Whitelist, not blacklist: only an actual row (`role="option"`) may
+    // drive list navigation. The new-folder draft row renders its own
+    // <input> *inside* this same listbox container (see the draft row
+    // below), so its native text-editing keys bubble up here too — Left/
+    // Right there are cursor movement inside the text, not "climb out of
+    // this folder", Up/Down have no meaning in a single-line input at all,
+    // and Enter is already handled by the input's own onKeyDown, so letting
+    // the same event reach here would additionally run the "activate the
+    // row at `activeIndex`" branch below on the same keystroke. A tagName
+    // blacklist (INPUT/TEXTAREA) only excludes today's known non-row
+    // controls; any future focusable control dropped into this listbox
+    // (a button, a link, a contenteditable rename field) would silently
+    // fall through to row navigation unless it happened to match one of
+    // those tag names. `closest`, not a direct comparison, because a click
+    // or keyboard event inside a row can target one of its child nodes
+    // (icon, text span) rather than the `role="option"` element itself.
     const target = e.target as HTMLElement
-    if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return
+    if (!target.closest('[role="option"]')) return
 
-    const entry = shown[active]
+    const entry = shown[activeIndex]
     switch (e.key) {
-      case "ArrowDown": e.preventDefault(); focusRow(active + 1); break
-      case "ArrowUp": e.preventDefault(); focusRow(active - 1); break
+      case "ArrowDown": e.preventDefault(); focusRow(activeIndex + 1); break
+      case "ArrowUp": e.preventDefault(); focusRow(activeIndex - 1); break
       case "ArrowRight":
         if (entry?.isDir) { e.preventDefault(); goTo(joinPath(path, entry.name), entry) }
         break
@@ -539,7 +558,7 @@ function FileBrowser({
                   role="option"
                   aria-selected={isSelected}
                   aria-disabled={!selectable && !entry.isDir ? true : undefined}
-                  tabIndex={i === active ? 0 : -1}
+                  tabIndex={i === activeIndex ? 0 : -1}
                   onFocus={() => setActive(i)}
                   onClick={() => {
                     if (entry.isDir) { goTo(full, entry); return }
