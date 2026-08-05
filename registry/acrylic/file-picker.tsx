@@ -14,6 +14,14 @@ import {
 } from "@/registry/acrylic/breadcrumb"
 import { Button } from "@/registry/acrylic/button"
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/registry/acrylic/dialog"
+import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
@@ -55,6 +63,12 @@ export type FileBrowserLabels = {
   newFolderPlaceholder: string
   nameRequired: string
   nameTaken: string
+  /** FilePickerDialog only — the dialog title (also doubles as the sr-only description). */
+  title: string
+  /** FilePickerDialog only — the cancel button. */
+  cancel: string
+  /** FilePickerDialog only — the confirm button. */
+  confirm: string
 }
 
 export const DEFAULT_FILE_BROWSER_LABELS: FileBrowserLabels = {
@@ -69,6 +83,9 @@ export const DEFAULT_FILE_BROWSER_LABELS: FileBrowserLabels = {
   newFolderPlaceholder: "Folder name",
   nameRequired: "Name required",
   nameTaken: "That name is taken",
+  title: "Choose a location",
+  cancel: "Cancel",
+  confirm: "Choose",
 }
 
 /** Join a child name onto a directory path without doubling the root slash. */
@@ -703,4 +720,102 @@ function FileBrowser({
   )
 }
 
-export { FileBrowser }
+// FilePickerDialog — the official shell: FileBrowser dropped into an acrylic
+// Dialog. Decision 5: the core never closes anything, so confirm and close
+// both live here. `commitOnSelect` lets a single click both pick and close
+// (the old FilePicker's feel) coexist with pick-then-confirm (the old
+// DirPicker's feel) — the host chooses per instance.
+export type FilePickerDialogProps = FileBrowserProps & {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  /** Selecting an entry commits and closes immediately — no confirm button round trip. */
+  commitOnSelect?: boolean
+  onCommit?: (path: string, entry: FileEntry | null) => void
+}
+
+function FilePickerDialog({
+  open,
+  onOpenChange,
+  commitOnSelect,
+  onCommit,
+  value: valueProp,
+  onValueChange,
+  labels,
+  ...browser
+}: FilePickerDialogProps) {
+  const l = { ...DEFAULT_FILE_BROWSER_LABELS, ...labels }
+  // The shell owns the pending selection so the browser stays purely controlled-or-not
+  // from the host's point of view; the host only hears about it on commit.
+  const [pending, setPending] = React.useState<{ path: string; entry: FileEntry | null } | null>(null)
+  const value = valueProp !== undefined ? valueProp : (pending?.path ?? null)
+
+  // `FilePickerDialog` itself never unmounts across an open/close cycle — only
+  // Radix's `DialogContent` (and the `FileBrowser` inside it) does, since it
+  // lives behind a Presence-gated Portal. That means `pending` would
+  // otherwise survive a close and leak into the next open: reopen the dialog
+  // having picked nothing new, and the confirm button would already be
+  // enabled over last time's stale path. Cleared here, at the render-time
+  // false->true transition — the same pattern `FileBrowser` uses for its own
+  // path/query resets above — rather than in an effect, which would still let
+  // one frame render with the stale value before the reset lands.
+  const [wasOpen, setWasOpen] = React.useState(open)
+  if (open !== wasOpen) {
+    setWasOpen(open)
+    if (open) setPending(null)
+  }
+
+  const commit = (path: string, entry: FileEntry | null) => {
+    onCommit?.(path, entry)
+    onOpenChange(false)
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>{l.title}</DialogTitle>
+          <DialogDescription className="sr-only">{l.title}</DialogDescription>
+        </DialogHeader>
+
+        <FileBrowser
+          {...browser}
+          labels={labels}
+          value={value}
+          onValueChange={(path, entry) => {
+            setPending(path === null ? null : { path, entry })
+            onValueChange?.(path, entry)
+            // Only a real, non-directory pick commits immediately. `entry` is
+            // null whenever the announced selection is the browsed level
+            // itself (initial mount announce, a breadcrumb jump) — which only
+            // ever happens under select='dir'|'any', i.e. the selection IS a
+            // directory even though there is no FileEntry object for "the
+            // level I'm standing in". Treating that null as "not a
+            // directory" (e.g. `!(entry?.isDir ?? false)`) would auto-commit
+            // on the very first render under select='dir', closing the
+            // dialog before the user did anything, and again on every
+            // breadcrumb jump.
+            if (commitOnSelect && path !== null && entry !== null && !entry.isDir) {
+              commit(path, entry)
+            }
+          }}
+        />
+
+        <DialogFooter>
+          <Button variant="ghost" size="small" onClick={() => onOpenChange(false)}>
+            {l.cancel}
+          </Button>
+          <Button
+            variant="neutral"
+            size="small"
+            disabled={!value}
+            onClick={() => { if (value) commit(value, pending?.entry ?? null) }}
+          >
+            {l.confirm}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+export { FileBrowser, FilePickerDialog }

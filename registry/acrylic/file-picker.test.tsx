@@ -3,7 +3,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import userEvent from "@testing-library/user-event"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
-import { FileBrowser, joinPath, pathCrumbs, type FileEntry } from "./file-picker"
+import { FileBrowser, FilePickerDialog, joinPath, pathCrumbs, type FileEntry } from "./file-picker"
 
 afterEach(cleanup)
 
@@ -949,5 +949,141 @@ describe("FileBrowser keyboard", () => {
       expect(onPathChange).toHaveBeenCalledTimes(1)
       expect(onPathChange).toHaveBeenCalledWith("/Fresh")
     })
+  })
+})
+
+describe("FilePickerDialog", () => {
+  it("commits the current value and closes when confirm is pressed", async () => {
+    const user = userEvent.setup()
+    const onCommit = vi.fn()
+    const onOpenChange = vi.fn()
+    render(
+      <FilePickerDialog
+        open
+        onOpenChange={onOpenChange}
+        onCommit={onCommit}
+        loadDir={makeLoadDir()}
+        select="dir"
+      />
+    )
+
+    await user.click(await screen.findByRole("option", { name: "Shows" }))
+    await user.click(screen.getByRole("button", { name: "Choose" }))
+
+    expect(onCommit).toHaveBeenCalledWith("/Shows", expect.objectContaining({ name: "Shows" }))
+    expect(onOpenChange).toHaveBeenCalledWith(false)
+  })
+
+  it("commitOnSelect: picking a file commits and closes in one click", async () => {
+    const user = userEvent.setup()
+    const onCommit = vi.fn()
+    const onOpenChange = vi.fn()
+    render(
+      <FilePickerDialog
+        open
+        commitOnSelect
+        onOpenChange={onOpenChange}
+        onCommit={onCommit}
+        loadDir={makeLoadDir()}
+        select="file"
+      />
+    )
+
+    await user.click(await screen.findByRole("option", { name: "readme.txt" }))
+
+    expect(onCommit).toHaveBeenCalledWith("/readme.txt", expect.objectContaining({ name: "readme.txt" }))
+    expect(onOpenChange).toHaveBeenCalledWith(false)
+  })
+
+  it("cancel closes without committing", async () => {
+    const user = userEvent.setup()
+    const onCommit = vi.fn()
+    const onOpenChange = vi.fn()
+    render(
+      <FilePickerDialog open onOpenChange={onOpenChange} onCommit={onCommit} loadDir={makeLoadDir()} />
+    )
+
+    await screen.findByRole("option", { name: "Shows" })
+    await user.click(screen.getByRole("button", { name: "Cancel" }))
+
+    expect(onCommit).not.toHaveBeenCalled()
+    expect(onOpenChange).toHaveBeenCalledWith(false)
+  })
+
+  it("confirm is disabled while nothing is selected", async () => {
+    render(
+      <FilePickerDialog open onOpenChange={vi.fn()} loadDir={makeLoadDir()} select="file" />
+    )
+    await screen.findByRole("option", { name: "Shows" })
+    expect(screen.getByRole("button", { name: "Choose" })).toBeDisabled()
+  })
+
+  it("commitOnSelect + select='dir': does not auto-commit on mount or on drilling into a directory", async () => {
+    // Regression test: `entry` is null for the mount-time announce (and for a
+    // breadcrumb jump) under select='dir'|'any' — the selection there IS a
+    // directory (the browsed level itself), it just has no FileEntry object
+    // behind it. A naive `!(entry?.isDir ?? false)` reads that null as "not a
+    // directory" and commits immediately, which would close this dialog the
+    // instant it opens, and again on every drill-down.
+    const user = userEvent.setup()
+    const onCommit = vi.fn()
+    const onOpenChange = vi.fn()
+    const loadDir = makeLoadDir()
+    render(
+      <FilePickerDialog
+        open
+        commitOnSelect
+        onOpenChange={onOpenChange}
+        onCommit={onCommit}
+        loadDir={loadDir}
+        select="dir"
+      />
+    )
+
+    // The mount-time announce (entry: null) must not self-close the dialog.
+    await screen.findByRole("option", { name: "Shows" })
+    expect(onCommit).not.toHaveBeenCalled()
+    expect(onOpenChange).not.toHaveBeenCalledWith(false)
+
+    // Drilling into a directory re-announces the new level (also entry: the
+    // FileEntry with isDir: true, or null via a breadcrumb) — still not a commit.
+    await user.click(screen.getByRole("option", { name: "Shows" }))
+    await waitFor(() => expect(loadDir).toHaveBeenCalledWith("/Shows"))
+    await screen.findByRole("option", { name: "Season 3" })
+
+    expect(onCommit).not.toHaveBeenCalled()
+    expect(onOpenChange).not.toHaveBeenCalledWith(false)
+  })
+
+  it("does not carry a stale pending selection across a close/reopen cycle", async () => {
+    // Regression test: FilePickerDialog itself never unmounts across
+    // open/close — only Radix's DialogContent (and the FileBrowser inside
+    // it) does, being behind a Presence-gated Portal. The shell's own
+    // `pending` state used to survive a close, so reopening showed last
+    // time's selection already chosen — confirm enabled, selection bar
+    // showing a path the user never touched this time around.
+    const user = userEvent.setup()
+    const onCommit = vi.fn()
+    const onOpenChange = vi.fn()
+    const { rerender } = render(
+      <FilePickerDialog open onOpenChange={onOpenChange} onCommit={onCommit} loadDir={makeLoadDir()} select="file" />
+    )
+
+    await user.click(await screen.findByRole("option", { name: "readme.txt" }))
+    expect(screen.getByRole("button", { name: "Choose" })).not.toBeDisabled()
+    expect(screen.getByTestId("file-picker-selection")).toHaveTextContent("/readme.txt")
+
+    // The host closes the dialog (e.g. Cancel, or Esc via Radix) without committing.
+    rerender(
+      <FilePickerDialog open={false} onOpenChange={onOpenChange} onCommit={onCommit} loadDir={makeLoadDir()} select="file" />
+    )
+    // Reopen with nothing selected this time.
+    rerender(
+      <FilePickerDialog open onOpenChange={onOpenChange} onCommit={onCommit} loadDir={makeLoadDir()} select="file" />
+    )
+
+    await screen.findByRole("option", { name: "Shows" })
+    expect(screen.getByRole("button", { name: "Choose" })).toBeDisabled()
+    expect(screen.getByTestId("file-picker-selection")).toHaveTextContent("Nothing selected")
   })
 })
