@@ -588,7 +588,11 @@ function FileBrowser({
           <Button
             type="button"
             icon
-            size="small"
+            // Matches the InputGroup it shares a row with (24px vs the field's
+            // 26px). At `small` it was 20px — a control four pixels shorter
+            // than its neighbour reads as an afterthought, and this is the
+            // panel's only creation affordance.
+            size="medium"
             variant="ghost"
             aria-label={l.newFolder}
             disabled={creating}
@@ -613,7 +617,13 @@ function FileBrowser({
               }
             : undefined
         }
-        className="min-h-[12rem] flex-1 overflow-y-auto scrollbar-mac"
+        // `overflow-x-hidden` is load-bearing, not tidying: CSS forces the
+        // other axis to `auto` as soon as one axis is not `visible`, so
+        // `overflow-y-auto` alone leaves overflow-x scrollable — and the
+        // entrance animation below translates the listing 8px along X. That
+        // produced a horizontal scrollbar that flashed once on every open and
+        // every level change.
+        className="min-h-[12rem] flex-1 overflow-y-auto overflow-x-hidden scrollbar-mac"
       >
         {draft !== null && (
           <div className="flex flex-col gap-1 px-2 py-1.5">
@@ -725,9 +735,31 @@ function FileBrowser({
                     if (selectable) onValueChange?.(full, entry)
                   }}
                 >
-                  <ItemMedia>{entry.isDir ? <FolderIcon /> : <FileIcon />}</ItemMedia>
-                  <ItemContent className="min-w-0">
-                    <span className="truncate text-sm">{entry.name}</span>
+                  {/*
+                    ItemMedia's default well is sized for avatars and
+                    thumbnails — at `size="xs"` it is still 28px around a 14px
+                    glyph, which alone made every row 40px tall and left only
+                    ~7 rows visible in the dialog. A file list's job is showing
+                    files: shrink the well to the glyph (16px) and the row
+                    drops to ~29px, ~10 rows. Overriding through the SAME
+                    variant prefix matters — a bare `size-4` loses to
+                    `group-data-[size=xs]/item:size-7` on specificity, while
+                    the prefixed form is the same key and tailwind-merge keeps
+                    the later one.
+                  */}
+                  <ItemMedia className="group-data-[size=xs]/item:size-4">
+                    {entry.isDir ? <FolderIcon /> : <FileIcon />}
+                  </ItemMedia>
+                  {/*
+                    `text-sm` belongs on the block, not on an inner span: the
+                    row inherits the dialog's 16px/24px line box, so a 14px
+                    span left the line 24px tall and the row 4px taller than
+                    its content for no reason. Truncation also has to sit on
+                    the block — `overflow` does nothing on an inline span, so
+                    a long name would have escaped rather than ellipsed.
+                  */}
+                  <ItemContent className="min-w-0 truncate text-sm">
+                    {entry.name}
                   </ItemContent>
                 </div>
               </Item>
@@ -737,12 +769,23 @@ function FileBrowser({
         </div>
       </div>
 
-      <div
-        data-testid="file-picker-selection"
-        className="shrink-0 truncate px-1 text-sm text-muted-foreground"
-      >
-        {value ?? l.selectionEmpty}
-      </div>
+      {/*
+        The selection echo answers "what will the confirm button act on". It
+        earns its place only when that is something OTHER than the folder the
+        breadcrumb is already showing — under select='dir' the two are the
+        same string rendered 300px apart, which is why it read as debris
+        parked at the bottom. Hidden (not just empty) so it doesn't leave a
+        gap, and flush with the breadcrumb/list left edge; it used to carry a
+        4px inset that lined up with nothing.
+      */}
+      {value !== path && (
+        <div
+          data-testid="file-picker-selection"
+          className="shrink-0 truncate text-sm text-muted-foreground"
+        >
+          {value ?? l.selectionEmpty}
+        </div>
+      )}
     </div>
   )
 }

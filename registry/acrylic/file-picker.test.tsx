@@ -174,6 +174,15 @@ describe("FileBrowser selection", () => {
     expect(await screen.findByTestId("file-picker-selection")).toHaveTextContent("/readme.txt")
   })
 
+  it("hides the selection bar when it would only repeat the breadcrumb", async () => {
+    // select='dir' standing in the folder it would return: the breadcrumb
+    // already says "/docs", so a second copy at the bottom of the panel is
+    // duplication, not information.
+    render(<FileBrowser loadDir={makeLoadDir()} select="dir" defaultPath="/docs" value="/docs" />)
+    await screen.findByRole("listbox")
+    expect(screen.queryByTestId("file-picker-selection")).toBeNull()
+  })
+
   it("passes a null entry when the selected level was not reached from a row", async () => {
     const user = userEvent.setup()
     const onValueChange = vi.fn()
