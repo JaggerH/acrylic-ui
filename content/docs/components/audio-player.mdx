@@ -151,6 +151,13 @@ import { AudioPlayerStage } from "@/components/acrylic/audio-player-stage"
   crossfades over `colorTransitionMs`.
 - **Fullscreen**: the ⤢ button calls the Fullscreen API on the stage (browsers require a real
   user click).
+- **Layout** is built on one measure — the cover's width, `min(60vw, 280px)`. Title, seek bar
+  and transport all inherit it, so the play button is concentric with the cover rather than
+  centered on some wider box. The side gutter is `max(1.5rem, 9.5vw)`; the ▾ / ⤢ buttons pull
+  themselves out by 8px so their **glyph** sits on that gutter (their round hit area overhangs
+  it on purpose), and in the two-column lyrics layout the player block is inset a further 50px
+  so it reads as its own block instead of a continuation of the ▾ button's column. The stage is
+  `fixed inset-0` and owns its own padding — don't wrap it in a padded container.
 
 ### Stage-only props
 

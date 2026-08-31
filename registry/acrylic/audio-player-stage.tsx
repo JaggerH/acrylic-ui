@@ -360,13 +360,19 @@ function AudioPlayerStage({
       <Silk className="!absolute inset-0" color={silkColor} colorTransitionMs={colorTransitionMs} speed={4} scale={0.8} noiseIntensity={1} rotation={0.05} />
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/70" />
 
-      <div className="relative flex h-full flex-col px-[5vw] pb-8 pt-5 text-white">
+      {/* Side gutter scales with the viewport but never collapses on a phone: max(1.5rem, 9.5vw)
+          → 24px at 320w, ~160px at a 1680 desktop. Both the top chrome and the player column
+          hang off this one edge, so they stay on a single line. */}
+      <div className="relative flex h-full flex-col px-[max(1.5rem,9.5vw)] pb-8 pt-5 text-white">
         {/* top chrome */}
         <div className="flex items-center justify-between">
           <button
             onClick={onClose}
             aria-label={l.collapse}
-            className={cn("flex size-9 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white", !onClose && "invisible")}
+            // -ml-2 cancels the 8px the 20px glyph sits inset inside its 36px hit area, so what
+            // lines up with the gutter is the glyph's INK, not the invisible box around it.
+            // Without it the title/cover read as sitting further left than the ▾ above them.
+            className={cn("-ml-2 flex size-9 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white", !onClose && "invisible")}
           >
             <ChevronDown className="size-5" />
           </button>
@@ -378,17 +384,26 @@ function AudioPlayerStage({
           <button
             onClick={toggleFs}
             aria-label={isFs ? l.exitFullscreen : l.enterFullscreen}
-            className="flex size-9 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+            // mirror of the ▾ button's -ml-2 (see there)
+            className="-mr-2 flex size-9 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
           >
             {isFs ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
           </button>
         </div>
 
         {/* body: two columns when lyrics exist, otherwise a centered player */}
-        <div className={cn("flex min-h-0 flex-1 items-center gap-[6vw]", hasLyrics ? "justify-start" : "justify-center")}>
+        {/* The body deliberately does NOT sit on the chrome's edge: it is inset a further 50px
+            so the cover/title read as their own block rather than as a continuation of the ▾
+            button's column. Only in the two-column (lyrics) layout — the no-lyrics layout is
+            centered, and below `md` the column is centered too, so the inset would fight it. */}
+        <div className={cn("flex min-h-0 flex-1 items-center gap-[6vw]", hasLyrics ? "justify-start md:pl-[50px]" : "justify-center")}>
           {/* player */}
-          <div className={cn("flex w-full max-w-sm flex-col gap-7", hasLyrics && "shrink-0 md:w-[40%]")}>
-            <div className={cn("aspect-square w-[min(60vw,280px)] overflow-hidden rounded-3xl shadow-2xl ring-1 ring-white/10 transition-transform duration-500 ease-out", hasLyrics ? "" : "mx-auto", playing ? "scale-100" : "scale-95")}>
+          {/* ONE measure for the whole column: the cover's width. The title, the seek bar and
+              the transport all inherit it, so the play button is concentric with the cover.
+              (It used to be `max-w-sm`/`40%` while the cover was min(60vw,280px) — two
+              different measures, which read as "the cover is off to one side".) */}
+          <div className={cn("mx-auto flex w-full max-w-[min(60vw,280px)] flex-col gap-7", hasLyrics && "shrink-0 md:mx-0")}>
+            <div className={cn("aspect-square w-full overflow-hidden rounded-3xl shadow-2xl ring-1 ring-white/10 transition-transform duration-500 ease-out", playing ? "scale-100" : "scale-95")}>
               {cover ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={track.cover} alt="" onError={() => setCoverFailed(true)} className="size-full object-cover" />
