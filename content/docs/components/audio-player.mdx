@@ -103,7 +103,7 @@ any page.
 
 `AudioPlayerStage` is the immersive, full-screen face of the same player — an Apple-Music
 "now playing" view on a flowing **Silk** shader background. It shares AudioPlayer's controlled
-API (its `track` **extends** `AudioPlayerTrack`) and adds time-synced **karaoke lyrics**, a
+API (its `track` **extends** `AudioPlayerTrack`) and adds time-synced **lyrics**, a
 cover-derived background color that crossfades between tracks, and a real Fullscreen toggle. It
 installs separately, so the lightweight bar/mini transport never has to pull in the WebGL shader.
 
@@ -128,7 +128,7 @@ import { AudioPlayerStage } from "@/components/acrylic/audio-player-stage"
     lyrics: [ { time: 0, text: "…" }, { time: 12, text: "…" } ], // omit → no-lyrics layout
   }}
   playing={playing}
-  currentTime={time}       // seconds; the stage runs its own smooth clock for karaoke
+  currentTime={time}       // seconds; the stage runs its own smooth clock for the lyrics
   duration={duration}
   volume={volume}
   extractFromCover         // pull the background color from the cover art…
@@ -143,9 +143,10 @@ import { AudioPlayerStage } from "@/components/acrylic/audio-player-stage"
 />
 ```
 
-- **Lyrics** are LRC-style `{ time, text }` lines; the active line fills bright, karaoke-style,
-  as playback crosses it. Omit `lyrics` (or pass `[]`) and the lyrics pane disappears — the
-  player centers instead.
+- **Lyrics** are LRC-style `{ time, text }` lines; the active line highlights as playback
+  crosses it and the pane keeps it centered. Scrolling the pane yourself pauses that follow for
+  5s, then it snaps back to whatever line is active by then; clicking a line seeks to it. Omit
+  `lyrics` (or pass `[]`) and the pane disappears — the player centers instead.
 - **Background color** comes from the cover when `extractFromCover` is set (needs a same-origin
   or CORS-enabled cover; otherwise it falls back to `accentColor`, then a default) and
   crossfades over `colorTransitionMs`.

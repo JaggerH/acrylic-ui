@@ -21,7 +21,7 @@ import { Slider } from "./slider"
 // AudioPlayerStage — the full-screen "now playing" face of the Audio Player family. It
 // shares AudioPlayer's controlled track/playback API and adds an immersive presentation:
 // the flowing Silk background (color pulled from the cover), a big cover, marquee title,
-// and time-synced karaoke lyrics. Kept in its own file so the lean bar/mini transport
+// and time-synced lyrics. Kept in its own file so the lean bar/mini transport
 // (audio-player.tsx) never has to pull in the Silk WebGL shader.
 //
 // Copy: like AudioPlayer, every string the stage renders or hands to assistive tech lives in
@@ -40,7 +40,7 @@ export interface AudioPlayerLyric {
   text: string
 }
 
-/** an AudioPlayer track plus optional timed lyrics for the stage's karaoke pane */
+/** an AudioPlayer track plus optional timed lyrics for the stage's lyrics pane */
 export interface AudioPlayerStageTrack extends AudioPlayerTrack {
   /** LRC-style timed lines; omit/empty → the lyrics pane is hidden (no-lyrics fallback) */
   lyrics?: AudioPlayerLyric[]
@@ -158,45 +158,6 @@ function useCoverColor(cover: string | undefined, enabled: boolean) {
   return color
 }
 
-// ---- karaoke line: fills bright over dim as the clock crosses [start, end) ----------
-function KaraokeLine({
-  text,
-  start,
-  end,
-  clockRef,
-}: {
-  text: string
-  start: number
-  end: number
-  clockRef: React.RefObject<number>
-}) {
-  const fillRef = React.useRef<HTMLSpanElement>(null)
-  React.useEffect(() => {
-    let raf = 0
-    const tick = () => {
-      raf = requestAnimationFrame(tick)
-      const t = clockRef.current ?? 0
-      const p = end > start ? Math.min(1, Math.max(0, (t - start) / (end - start))) : t >= start ? 1 : 0
-      const el = fillRef.current
-      if (el) el.style.width = (p * 100).toFixed(2) + "%"
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [start, end, clockRef])
-  return (
-    <span className="relative inline-block whitespace-nowrap">
-      <span className="text-white/25">{text}</span>
-      <span
-        ref={fillRef}
-        style={{ width: 0 }}
-        className="absolute inset-y-0 left-0 overflow-hidden whitespace-nowrap text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.5)]"
-      >
-        {text}
-      </span>
-    </span>
-  )
-}
-
 export interface AudioPlayerStageProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onVolumeChange"> {
   track: AudioPlayerStageTrack
@@ -262,7 +223,7 @@ function AudioPlayerStage({
   const extracted = useCoverColor(track.cover, extractFromCover && !accentColor && !coverFailed)
   const silkColor = accentColor ?? extracted ?? DEFAULT_ACCENT
 
-  // ---- smooth internal clock (so karaoke stays fluid between 1 Hz time updates) ----
+  // ---- smooth internal clock (so line changes stay fluid between 1 Hz time updates) ----
   const clockRef = React.useRef(currentTime)
   const [displayTime, setDisplayTime] = React.useState(currentTime)
   React.useEffect(() => {
@@ -315,11 +276,35 @@ function AudioPlayerStage({
   }, [lyrics, displayTime])
   const scrollRef = React.useRef<HTMLDivElement>(null)
   const lineRefs = React.useRef<(HTMLParagraphElement | null)[]>([])
-  React.useEffect(() => {
+  // Auto-follow keeps the active line centered — but a real user scroll (wheel/touch) pauses
+  // that for 5s of inactivity, then snaps back to whichever line is active by then. Detecting
+  // "user scrolled" via input events (not the `scroll` event) sidesteps having to tell our own
+  // smooth-scroll animation's scroll events apart from a genuine new user scroll mid-animation.
+  const userScrollingRef = React.useRef(false)
+  const resumeTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+  const centerActiveLine = React.useCallback((behavior: ScrollBehavior = "smooth") => {
     const el = lineRefs.current[active]
     const box = scrollRef.current
-    if (el && box) box.scrollTo({ top: el.offsetTop - box.clientHeight / 2 + el.clientHeight / 2, behavior: "smooth" })
-  }, [active, track])
+    if (el && box) box.scrollTo({ top: el.offsetTop - box.clientHeight / 2 + el.clientHeight / 2, behavior })
+  }, [active])
+  React.useEffect(() => {
+    if (userScrollingRef.current) return
+    // Debounced: `active` can flicker back and forth by one line right at a boundary (the
+    // jump-resync clock is allowed to step backward for seek handling), and re-firing a
+    // `smooth` scrollTo on every flicker looks like a jerky little tug rather than one settled
+    // move. Only the value `active` settles on after 220ms of quiet triggers a real scroll.
+    const id = setTimeout(() => centerActiveLine(), 220)
+    return () => clearTimeout(id)
+  }, [active, track, centerActiveLine])
+  React.useEffect(() => () => { if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current) }, [])
+  const handleUserScroll = () => {
+    userScrollingRef.current = true
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current)
+    resumeTimerRef.current = setTimeout(() => {
+      userScrollingRef.current = false
+      centerActiveLine()
+    }, 5000)
+  }
 
   // ---- fullscreen ----
   const [isFs, setIsFs] = React.useState(false)
@@ -443,22 +428,28 @@ function AudioPlayerStage({
             )}
           </div>
 
-          {/* lyrics — hidden entirely when the track has none */}
+          {/* lyrics — hidden entirely when the track has none.
+              `self-stretch` below is load-bearing: the row is `items-center`, so without it this
+              pane shrink-wraps its content instead of taking the row's height — its
+              `overflow-y-auto` then has nothing to overflow and the lyrics never scroll. */}
           {hasLyrics && (
-            <div ref={scrollRef} className="relative hidden min-h-0 flex-1 overflow-y-auto py-[38vh] [scrollbar-width:none] md:block [&::-webkit-scrollbar]:hidden">
-              {lyrics.map((ln, i) => {
-                const end = i + 1 < lyrics.length ? lyrics[i + 1].time : duration || ln.time + 4
-                return (
-                  <p
-                    key={i}
-                    ref={(el) => { lineRefs.current[i] = el }}
-                    onClick={() => seekTo(ln.time)}
-                    className={cn("max-w-2xl cursor-pointer px-2 py-2.5 text-2xl font-semibold leading-snug transition-colors duration-300 lg:text-3xl", i !== active && "text-white/30 hover:text-white/55")}
-                  >
-                    {i === active ? <KaraokeLine text={ln.text} start={ln.time} end={end} clockRef={clockRef} /> : ln.text}
-                  </p>
-                )
-              })}
+            <div
+              ref={scrollRef}
+              onWheel={handleUserScroll}
+              onTouchStart={handleUserScroll}
+              onTouchMove={handleUserScroll}
+              className="relative hidden min-h-0 flex-1 self-stretch overflow-y-auto py-[38vh] [scrollbar-width:none] md:block [&::-webkit-scrollbar]:hidden"
+            >
+              {lyrics.map((ln, i) => (
+                <p
+                  key={i}
+                  ref={(el) => { lineRefs.current[i] = el }}
+                  onClick={() => seekTo(ln.time)}
+                  className={cn("max-w-2xl cursor-pointer px-2 py-2.5 text-2xl font-semibold leading-snug transition-colors duration-300 lg:text-3xl", i !== active && "text-white/30 hover:text-white/55")}
+                >
+                  {ln.text}
+                </p>
+              ))}
             </div>
           )}
         </div>
