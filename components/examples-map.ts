@@ -18,66 +18,68 @@ import C14 from "./examples/card-demo"
 import C15 from "./examples/card-gallery"
 import C16 from "./examples/card-image-thumb"
 import C17 from "./examples/card-nested"
-import C18 from "./examples/combobox-demo"
-import C19 from "./examples/combobox-showcase"
-import C20 from "./examples/command-demo"
-import C21 from "./examples/context-menu-demo"
-import C22 from "./examples/context-menu-finder"
-import C23 from "./examples/context-menu-showcase"
-import C24 from "./examples/context-menu-sizes"
-import C25 from "./examples/dialog-demo"
-import C26 from "./examples/dialog-showcase"
-import C27 from "./examples/dropdown-menu-demo"
-import C28 from "./examples/field-demo"
-import C29 from "./examples/field-showcase"
-import C30 from "./examples/field-sizes"
-import C31 from "./examples/file-picker-demo"
-import C32 from "./examples/hover-card-demo"
-import C33 from "./examples/input-demo"
-import C34 from "./examples/input-group-demo"
-import C35 from "./examples/input-group-showcase"
-import C36 from "./examples/input-showcase"
-import C37 from "./examples/item-actions"
-import C38 from "./examples/item-avatar"
-import C39 from "./examples/item-demo"
-import C40 from "./examples/item-dropdown"
-import C41 from "./examples/item-group"
-import C42 from "./examples/item-header"
-import C43 from "./examples/item-image"
-import C44 from "./examples/item-link"
-import C45 from "./examples/item-post"
-import C46 from "./examples/item-rtl"
-import C47 from "./examples/item-sizes"
-import C48 from "./examples/item-text"
-import C49 from "./examples/item-variants"
-import C50 from "./examples/media-box-demo"
-import C51 from "./examples/popover-demo"
-import C52 from "./examples/radio-group-demo"
-import C53 from "./examples/radio-group-showcase"
-import C54 from "./examples/searchbar-demo"
-import C55 from "./examples/searchbar-showcase"
-import C56 from "./examples/select-demo"
-import C57 from "./examples/select-showcase"
-import C58 from "./examples/sheet-demo"
-import C59 from "./examples/sheet-showcase"
-import C60 from "./examples/shell-mail"
-import C61 from "./examples/shell-notes"
-import C62 from "./examples/sidebar-app"
-import C63 from "./examples/sidebar-demo"
-import C64 from "./examples/sidebar-sizes"
-import C65 from "./examples/slider-demo"
-import C66 from "./examples/slider-showcase"
-import C67 from "./examples/slider-sizes"
-import C68 from "./examples/slider-variants"
-import C69 from "./examples/sonner-demo"
-import C70 from "./examples/sonner-showcase"
-import C71 from "./examples/spinner-demo"
-import C72 from "./examples/stepper-demo"
-import C73 from "./examples/stepper-showcase"
-import C74 from "./examples/switch-demo"
-import C75 from "./examples/switch-showcase"
-import C76 from "./examples/table-demo"
-import C77 from "./examples/table-sticky"
+import C18 from "./examples/checkbox-demo"
+import C19 from "./examples/checkbox-showcase"
+import C20 from "./examples/combobox-demo"
+import C21 from "./examples/combobox-showcase"
+import C22 from "./examples/command-demo"
+import C23 from "./examples/context-menu-demo"
+import C24 from "./examples/context-menu-finder"
+import C25 from "./examples/context-menu-showcase"
+import C26 from "./examples/context-menu-sizes"
+import C27 from "./examples/dialog-demo"
+import C28 from "./examples/dialog-showcase"
+import C29 from "./examples/dropdown-menu-demo"
+import C30 from "./examples/field-demo"
+import C31 from "./examples/field-showcase"
+import C32 from "./examples/field-sizes"
+import C33 from "./examples/file-picker-demo"
+import C34 from "./examples/hover-card-demo"
+import C35 from "./examples/input-demo"
+import C36 from "./examples/input-group-demo"
+import C37 from "./examples/input-group-showcase"
+import C38 from "./examples/input-showcase"
+import C39 from "./examples/item-actions"
+import C40 from "./examples/item-avatar"
+import C41 from "./examples/item-demo"
+import C42 from "./examples/item-dropdown"
+import C43 from "./examples/item-group"
+import C44 from "./examples/item-header"
+import C45 from "./examples/item-image"
+import C46 from "./examples/item-link"
+import C47 from "./examples/item-post"
+import C48 from "./examples/item-rtl"
+import C49 from "./examples/item-sizes"
+import C50 from "./examples/item-text"
+import C51 from "./examples/item-variants"
+import C52 from "./examples/media-box-demo"
+import C53 from "./examples/popover-demo"
+import C54 from "./examples/radio-group-demo"
+import C55 from "./examples/radio-group-showcase"
+import C56 from "./examples/searchbar-demo"
+import C57 from "./examples/searchbar-showcase"
+import C58 from "./examples/select-demo"
+import C59 from "./examples/select-showcase"
+import C60 from "./examples/sheet-demo"
+import C61 from "./examples/sheet-showcase"
+import C62 from "./examples/shell-mail"
+import C63 from "./examples/shell-notes"
+import C64 from "./examples/sidebar-app"
+import C65 from "./examples/sidebar-demo"
+import C66 from "./examples/sidebar-sizes"
+import C67 from "./examples/slider-demo"
+import C68 from "./examples/slider-showcase"
+import C69 from "./examples/slider-sizes"
+import C70 from "./examples/slider-variants"
+import C71 from "./examples/sonner-demo"
+import C72 from "./examples/sonner-showcase"
+import C73 from "./examples/spinner-demo"
+import C74 from "./examples/stepper-demo"
+import C75 from "./examples/stepper-showcase"
+import C76 from "./examples/switch-demo"
+import C77 from "./examples/switch-showcase"
+import C78 from "./examples/table-demo"
+import C79 from "./examples/table-sticky"
 
 export const examples: Record<string, ComponentType> = {
   "alert-dialog-demo": C0,
@@ -98,64 +100,66 @@ export const examples: Record<string, ComponentType> = {
   "card-gallery": C15,
   "card-image-thumb": C16,
   "card-nested": C17,
-  "combobox-demo": C18,
-  "combobox-showcase": C19,
-  "command-demo": C20,
-  "context-menu-demo": C21,
-  "context-menu-finder": C22,
-  "context-menu-showcase": C23,
-  "context-menu-sizes": C24,
-  "dialog-demo": C25,
-  "dialog-showcase": C26,
-  "dropdown-menu-demo": C27,
-  "field-demo": C28,
-  "field-showcase": C29,
-  "field-sizes": C30,
-  "file-picker-demo": C31,
-  "hover-card-demo": C32,
-  "input-demo": C33,
-  "input-group-demo": C34,
-  "input-group-showcase": C35,
-  "input-showcase": C36,
-  "item-actions": C37,
-  "item-avatar": C38,
-  "item-demo": C39,
-  "item-dropdown": C40,
-  "item-group": C41,
-  "item-header": C42,
-  "item-image": C43,
-  "item-link": C44,
-  "item-post": C45,
-  "item-rtl": C46,
-  "item-sizes": C47,
-  "item-text": C48,
-  "item-variants": C49,
-  "media-box-demo": C50,
-  "popover-demo": C51,
-  "radio-group-demo": C52,
-  "radio-group-showcase": C53,
-  "searchbar-demo": C54,
-  "searchbar-showcase": C55,
-  "select-demo": C56,
-  "select-showcase": C57,
-  "sheet-demo": C58,
-  "sheet-showcase": C59,
-  "shell-mail": C60,
-  "shell-notes": C61,
-  "sidebar-app": C62,
-  "sidebar-demo": C63,
-  "sidebar-sizes": C64,
-  "slider-demo": C65,
-  "slider-showcase": C66,
-  "slider-sizes": C67,
-  "slider-variants": C68,
-  "sonner-demo": C69,
-  "sonner-showcase": C70,
-  "spinner-demo": C71,
-  "stepper-demo": C72,
-  "stepper-showcase": C73,
-  "switch-demo": C74,
-  "switch-showcase": C75,
-  "table-demo": C76,
-  "table-sticky": C77,
+  "checkbox-demo": C18,
+  "checkbox-showcase": C19,
+  "combobox-demo": C20,
+  "combobox-showcase": C21,
+  "command-demo": C22,
+  "context-menu-demo": C23,
+  "context-menu-finder": C24,
+  "context-menu-showcase": C25,
+  "context-menu-sizes": C26,
+  "dialog-demo": C27,
+  "dialog-showcase": C28,
+  "dropdown-menu-demo": C29,
+  "field-demo": C30,
+  "field-showcase": C31,
+  "field-sizes": C32,
+  "file-picker-demo": C33,
+  "hover-card-demo": C34,
+  "input-demo": C35,
+  "input-group-demo": C36,
+  "input-group-showcase": C37,
+  "input-showcase": C38,
+  "item-actions": C39,
+  "item-avatar": C40,
+  "item-demo": C41,
+  "item-dropdown": C42,
+  "item-group": C43,
+  "item-header": C44,
+  "item-image": C45,
+  "item-link": C46,
+  "item-post": C47,
+  "item-rtl": C48,
+  "item-sizes": C49,
+  "item-text": C50,
+  "item-variants": C51,
+  "media-box-demo": C52,
+  "popover-demo": C53,
+  "radio-group-demo": C54,
+  "radio-group-showcase": C55,
+  "searchbar-demo": C56,
+  "searchbar-showcase": C57,
+  "select-demo": C58,
+  "select-showcase": C59,
+  "sheet-demo": C60,
+  "sheet-showcase": C61,
+  "shell-mail": C62,
+  "shell-notes": C63,
+  "sidebar-app": C64,
+  "sidebar-demo": C65,
+  "sidebar-sizes": C66,
+  "slider-demo": C67,
+  "slider-showcase": C68,
+  "slider-sizes": C69,
+  "slider-variants": C70,
+  "sonner-demo": C71,
+  "sonner-showcase": C72,
+  "spinner-demo": C73,
+  "stepper-demo": C74,
+  "stepper-showcase": C75,
+  "switch-demo": C76,
+  "switch-showcase": C77,
+  "table-demo": C78,
+  "table-sticky": C79,
 }
