@@ -49,6 +49,10 @@ export interface SearchbarProps
   extends Omit<React.ComponentProps<"input">, "size">,
     VariantProps<typeof searchbarVariants> {
   onClear?: () => void
+  /** Accessible name for the clear button. The button is icon-only, so without a
+   *  label a screen reader announces just "button". Pass a localised string from
+   *  the host (the component itself stays language-neutral). */
+  clearLabel?: string
   /** Optional trailing keyboard-shortcut hint (e.g. "⌘K"), rendered as a keycap
    *  while the field is empty and hidden once the clear button appears. Purely
    *  visual + pointer-events-none — bind the actual hotkey yourself (or let the
@@ -58,7 +62,7 @@ export interface SearchbarProps
 }
 
 const Searchbar = React.forwardRef<HTMLInputElement, SearchbarProps>(
-  ({ className, variant, size = "medium", onClear, shortcut, value, onChange, disabled, ...props }, ref) => {
+  ({ className, variant, size = "medium", onClear, clearLabel = "Clear", shortcut, value, onChange, disabled, ...props }, ref) => {
     const [localValue, setLocalValue] = React.useState("")
     const isControlled = value !== undefined
     const currentValue = isControlled ? value : localValue
@@ -117,6 +121,7 @@ const Searchbar = React.forwardRef<HTMLInputElement, SearchbarProps>(
           <button
             type="button"
             onClick={handleClear}
+            aria-label={clearLabel}
             className={cn(
               "absolute top-1/2 -translate-y-1/2 flex items-center justify-center rounded-full bg-muted-foreground/30 hover:bg-muted-foreground/45 text-background focus:outline-none transition-[background-color,scale] active:scale-90",
               {
