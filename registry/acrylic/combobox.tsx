@@ -34,7 +34,8 @@ type ComboboxProps = {
   emptyText?: string
   className?: string
   contentClassName?: string
-} & VariantProps<typeof inputVariants>
+} & VariantProps<typeof inputVariants> &
+  React.ComponentPropsWithoutRef<"button">
 
 function Combobox({
   options,
@@ -46,6 +47,9 @@ function Combobox({
   size = "medium",
   className,
   contentClassName,
+  type: _type,
+  children: _children,
+  ...props
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const selected = options.find((o) => o.value === value)
@@ -64,6 +68,7 @@ function Combobox({
             !selected && "text-muted-foreground",
             className
           )}
+          {...props}
         >
           <span className="truncate">{selected ? selected.label : placeholder}</span>
           <ChevronDown className="size-3.5 shrink-0 opacity-60" />
@@ -83,7 +88,7 @@ function Combobox({
                   key={o.value}
                   value={o.label}
                   onSelect={() => {
-                    onValueChange?.(o.value === value ? "" : o.value)
+                    onValueChange?.(o.value)
                     setOpen(false)
                   }}
                 >

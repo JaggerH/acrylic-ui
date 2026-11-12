@@ -26,3 +26,9 @@ if (typeof globalThis.matchMedia === "undefined") {
     dispatchEvent: () => false,
   })) as unknown as typeof matchMedia
 }
+
+// cmdk highlights the selected item and calls scrollIntoView on it; jsdom
+// (like for pointer capture) has no implementation, so stub it as a no-op.
+if (typeof Element !== "undefined" && typeof Element.prototype.scrollIntoView === "undefined") {
+  Element.prototype.scrollIntoView = function scrollIntoView() {}
+}
