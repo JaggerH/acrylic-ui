@@ -694,6 +694,25 @@
       ]
     },
     {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Acrylic Checkbox",
+      "description": "Selection control from the macOS 26 Toggles page: a rounded square that flips from a gray fill to accent blue with a soft white check, plus a mixed (dash) state. Radix Checkbox; colors flip light/dark via the Acrylic theme tokens.",
+      "dependencies": [
+        "radix-ui"
+      ],
+      "files": [
+        {
+          "path": "registry/acrylic/checkbox.tsx",
+          "type": "registry:ui",
+          "target": "components/acrylic/checkbox.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://acrylic-ui.vercel.app/r/acrylic.json"
+      ]
+    },
+    {
       "name": "radio-group",
       "type": "registry:ui",
       "title": "Acrylic Radio Group",

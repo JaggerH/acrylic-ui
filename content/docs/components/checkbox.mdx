@@ -1,0 +1,59 @@
+---
+title: Checkbox
+description: macOS 26 selection control — a rounded square that flips from a translucent gray fill to accent blue with a soft white check, plus a mixed (dash) state, on Radix Checkbox.
+---
+
+The macOS 26 checkbox, aligned onto the Radix Checkbox primitive: a rounded
+square that flips from a translucent gray fill (unchecked) to accent blue with
+a soft white check (checked), and a white dash bar for the mixed
+(indeterminate) state — the kit's sibling control to our Radio Button. Colors
+flip light/dark via the Acrylic theme tokens. Fully accessible and
+keyboard-operable with a shadcn-compatible API.
+
+## Installation
+
+```bash
+npx shadcn add https://acrylic-ui.vercel.app/r/checkbox.json
+```
+
+## Usage
+
+<ComponentPreview name="checkbox-demo" />
+
+```tsx
+import { Checkbox } from "@/components/acrylic/checkbox"
+
+<Checkbox defaultChecked />
+```
+
+## Examples
+
+The five macOS control sizes across checked / unchecked / mixed / disabled
+states, plus a labelled settings-style row.
+
+<ComponentPreview name="checkbox-showcase" />
+
+## Notes
+
+- **Shape:** a rounded square (radius ≈ 1/4 of the edge). Unchecked is the
+  kit's translucent gray fill (black 5% light / white 5% dark), wired to
+  `--acr-chip` so it flips light/dark for free. Checked and mixed are the
+  kit's opaque accent `#0088FF` (dark `#0091FF`), which maps onto `bg-primary`.
+- **Marks:** a soft white check (~60% of the edge, 3px stroke) when checked;
+  a white dash bar when mixed — the kit's mixed treatment. Marks render in a
+  `CheckboxPrimitive.Indicator`, so they only appear while on.
+- **Sizes:** the same selection-control scale as `RadioGroup` — `12 / 14 / 16 /
+  18 / 18` px edges for `mini / small / medium / large / xl`; `medium` (16px)
+  is the canonical default.
+- **States:** focus shows an accent ring (`ring-ring/25`); disabled dims to
+  40% opacity, matching the kit's accent-50% + group-opacity treatment.
+- **Props:** `checked` (boolean or `"indeterminate"`), `defaultChecked`,
+  `onCheckedChange`, `disabled`, `required`, `name`, `value`, and `size`
+  (`mini` · `small` · `medium` (default) · `large` · `xl`).
+
+```tsx
+<Checkbox defaultChecked />
+<Checkbox checked={allSelected} onCheckedChange={setAllSelected} />
+<Checkbox checked="indeterminate" />
+<Checkbox disabled />
+```
