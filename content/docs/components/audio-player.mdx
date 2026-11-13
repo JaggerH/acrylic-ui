@@ -75,7 +75,9 @@ is a bug, so report it rather than patching your vendored copy.
 ## Mini variant
 
 `variant="mini"` renders a compact chip for a sidebar footer or any tight rail — cover +
-title/artist + play/pause with the seek rail along the bottom, and no prev/next/volume/actions.
+title/artist + play/pause, and no prev/next/volume/actions. Its seek rail sits along the
+bottom edge of the now-playing info group (directly below the title), exactly as in the
+bar — the rail spans the cover/title group only, not the bottom edge of the whole chip.
 It renders **nothing** when idle (so it takes no space); `onOpen` (cover/title click) is where
 you navigate to the full player. When the rail is too narrow for it (e.g. an icon-only sidebar),
 hide it — a cover-only stub isn't a usable player.

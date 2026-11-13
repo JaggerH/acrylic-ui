@@ -159,6 +159,115 @@ const DEFAULT_AUDIO_PLAYER_LABELS: AudioPlayerLabels = {
 const TOOL =
   "flex size-9 shrink-0 items-center justify-center rounded-full text-foreground/70 transition-colors hover:bg-[var(--acr-hover)] hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
 
+/**
+ * Now-playing info group — cover + title/artist (+ the time readout in the
+ * bar) as ONE unit, shared by both variants. The seek rail is part of THIS
+ * group, absolutely positioned along its bottom edge (`inset-x-2 bottom-1`),
+ * so it always sits directly below the title — never along the bottom edge
+ * of the whole pill. The bar passes its chip background via `className`;
+ * the `mini` variant leaves it off because its outer pill already provides
+ * the surface.
+ * When `interactive`, the group is a button (mini: cover/title opens the
+ * full player) and the rail stops propagation so a seek click doesn't also
+ * fire `onOpen`.
+ */
+function NowPlayingInfo({
+  track,
+  coverClassName,
+  coverIconClassName,
+  titleClassName,
+  artistClassName,
+  showTime = false,
+  currentTime = 0,
+  duration = 0,
+  pct,
+  onSeekClick,
+  seekTrackClassName,
+  labels,
+  interactive = false,
+  onOpen,
+  className,
+}: {
+  track: AudioPlayerTrack
+  coverClassName: string
+  coverIconClassName: string
+  titleClassName: string
+  artistClassName: string
+  showTime?: boolean
+  currentTime?: number
+  duration?: number
+  pct: number
+  onSeekClick: (e: React.MouseEvent<HTMLDivElement>) => void
+  seekTrackClassName: string
+  labels: AudioPlayerLabels
+  interactive?: boolean
+  onOpen?: () => void
+  className?: string
+}) {
+  const content = (
+    <>
+      {track.cover ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={track.cover}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className={cn(coverClassName, "shrink-0 rounded-md object-cover shadow-sm")}
+        />
+      ) : (
+        <span
+          className={cn(
+            coverClassName,
+            "flex shrink-0 items-center justify-center rounded-md bg-[var(--acr-chip)] text-muted-foreground"
+          )}
+        >
+          <ListMusic className={coverIconClassName} />
+        </span>
+      )}
+      <div className="min-w-0 flex-1">
+        <ScrollingText className={titleClassName}>{track.title || labels.nowPlaying}</ScrollingText>
+        {track.artist && <ScrollingText className={artistClassName}>{track.artist}</ScrollingText>}
+      </div>
+      {showTime && (
+        <span className="shrink-0 font-mono text-[10px] tabular-nums text-muted-foreground">
+          {fmtClock(currentTime)}/{fmtClock(duration)}
+        </span>
+      )}
+      {/* seek rail — part of THIS group, along its bottom edge */}
+      <div
+        onClick={(e) => {
+          e.stopPropagation()
+          onSeekClick(e)
+        }}
+        className={cn(
+          "absolute inset-x-2 bottom-1 h-[3px] cursor-pointer overflow-hidden rounded-full",
+          seekTrackClassName
+        )}
+      >
+        <div className="h-full rounded-full bg-foreground/70" style={{ width: `${pct}%` }} />
+      </div>
+    </>
+  )
+  const classes = cn(
+    "relative flex min-w-0 flex-1 items-center px-2 pb-2.5 pt-1.5",
+    className
+  )
+  if (interactive) {
+    return (
+      <button
+        type="button"
+        onClick={onOpen}
+        aria-label={labels.openNowPlaying.replace("{title}", track.title || labels.nowPlaying)}
+        className={cn(classes, "text-left")}
+      >
+        {content}
+      </button>
+    )
+  }
+  return <div className={classes}>{content}</div>
+}
+
 export interface AudioPlayerProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onVolumeChange"> {
   /** layout: the full transport bar (default), or a compact `mini` chip for a sidebar / rail —
@@ -217,30 +326,34 @@ function AudioPlayer({
   }
 
   // ===== mini variant — a compact chip for a sidebar/rail; renders nothing when idle =====
+  // Reuses the shared NowPlayingInfo group (cover + title/artist + seek rail),
+  // so the rail sits along the bottom edge of the info group — below the title,
+  // exactly as in the bar — rather than along the bottom edge of the whole pill.
+  // The outer pill provides the surface (and the vertical padding, via the group),
+  // so the group itself carries no background here.
   if (variant === "mini") {
     if (!track) return null
-    const cover = track.cover ? (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img src={track.cover} alt="" loading="lazy" decoding="async" className="size-8 shrink-0 rounded-md object-cover shadow-sm" />
-    ) : (
-      <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-[var(--acr-chip)] text-muted-foreground">
-        <ListMusic className="size-3.5" />
-      </span>
-    )
     return (
       <div
         data-slot="audio-player"
         data-variant="mini"
-        className={cn("relative flex min-w-0 items-center gap-2 rounded-xl bg-[var(--acr-chip)] px-2 pb-2.5 pt-1.5", className)}
+        className={cn("relative flex min-w-0 items-center gap-2 rounded-xl bg-[var(--acr-chip)] px-2", className)}
         {...props}
       >
-        <button onClick={onOpen} aria-label={l.openNowPlaying.replace("{title}", track.title || l.nowPlaying)} className="flex min-w-0 flex-1 items-center gap-2 text-left">
-          {cover}
-          <span className="min-w-0 flex-1">
-            <ScrollingText className="text-[12px] font-semibold leading-tight">{track.title || l.nowPlaying}</ScrollingText>
-            {track.artist && <ScrollingText className="text-[10px] leading-tight text-muted-foreground">{track.artist}</ScrollingText>}
-          </span>
-        </button>
+        <NowPlayingInfo
+          track={track}
+          coverClassName="size-8"
+          coverIconClassName="size-3.5"
+          titleClassName="text-[12px] font-semibold leading-tight"
+          artistClassName="text-[10px] leading-tight text-muted-foreground"
+          pct={pct}
+          onSeekClick={seek}
+          seekTrackClassName="bg-foreground/15"
+          labels={l}
+          interactive
+          onOpen={onOpen}
+          className="gap-2 rounded-xl"
+        />
         <button
           onClick={onToggle}
           aria-label={playing ? l.pause : l.play}
@@ -248,9 +361,6 @@ function AudioPlayer({
         >
           {playing ? <Pause className="size-3.5 fill-current" /> : <Play className="size-3.5 translate-x-px fill-current" />}
         </button>
-        <div onClick={seek} className="absolute inset-x-2 bottom-1 h-[3px] cursor-pointer overflow-hidden rounded-full bg-foreground/15">
-          <div className="h-full rounded-full bg-foreground/70" style={{ width: `${pct}%` }} />
-        </div>
       </div>
     )
   }
@@ -294,43 +404,21 @@ function AudioPlayer({
 
       {/* ===== 歌曲信息组件 — cover + title/artist + seek, as ONE group; hidden when idle ===== */}
       {track ? (
-        <div className="relative mx-1.5 flex min-w-0 flex-1 items-center gap-2.5 rounded-2xl bg-[var(--acr-chip)] px-2 pb-2.5 pt-1.5">
-          {track.cover ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={track.cover}
-              alt=""
-              className="size-9 shrink-0 rounded-md object-cover shadow-sm"
-            />
-          ) : (
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-[var(--acr-chip)] text-muted-foreground">
-              <ListMusic className="size-4" />
-            </span>
-          )}
-          <div className="min-w-0 flex-1">
-            <ScrollingText className="text-[13px] font-semibold leading-tight">
-              {track.title || l.nowPlaying}
-            </ScrollingText>
-            {track.artist && (
-              <ScrollingText className="text-[11px] leading-tight text-muted-foreground">
-                {track.artist}
-              </ScrollingText>
-            )}
-          </div>
-          <span className="shrink-0 font-mono text-[10px] tabular-nums text-muted-foreground">
-            {fmtClock(currentTime)}/{fmtClock(duration)}
-          </span>
-          {/* seek rail — part of THIS group, along its bottom edge */}
-          <div
-            onClick={seek}
-            className="absolute inset-x-2 bottom-1 h-[3px] cursor-pointer overflow-hidden rounded-full bg-[var(--acr-chip)]"
-          >
-            <div
-              className="h-full rounded-full bg-foreground/70"
-              style={{ width: `${pct}%` }}
-            />
-          </div>
-        </div>
+        <NowPlayingInfo
+          track={track}
+          coverClassName="size-9"
+          coverIconClassName="size-4"
+          titleClassName="text-[13px] font-semibold leading-tight"
+          artistClassName="text-[11px] leading-tight text-muted-foreground"
+          showTime
+          currentTime={currentTime}
+          duration={duration}
+          pct={pct}
+          onSeekClick={seek}
+          seekTrackClassName="bg-[var(--acr-chip)]"
+          labels={l}
+          className="mx-1.5 gap-2.5 rounded-2xl bg-[var(--acr-chip)]"
+        />
       ) : (
         <div className="mx-1.5 flex-1" />
       )}
